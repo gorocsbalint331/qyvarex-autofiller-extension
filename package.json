@@ -1,0 +1,58 @@
+{
+  "name": "jobright-fork-extension",
+  "displayName": "Qyvarex Autofill",
+  "version": "0.1.8",
+  "description": "Autofill job applications from your Qyvarex team profiles, resumes, and saved answers.",
+  "author": "Qyvarex",
+  "homepage": "https://jobright-team-site.vercel.app",
+  "scripts": {
+    "dev": "plasmo dev",
+    "build": "plasmo build",
+    "package": "plasmo package"
+  },
+  "dependencies": {
+    "@plasmohq/messaging": "^0.7.1",
+    "@plasmohq/storage": "^1.13.0",
+    "react": "18.2.0",
+    "react-dom": "18.2.0"
+  },
+  "devDependencies": {
+    "@types/chrome": "0.0.258",
+    "@types/node": "20.11.5",
+    "@types/react": "18.2.48",
+    "@types/react-dom": "18.2.18",
+    "plasmo": "0.90.5",
+    "typescript": "5.3.3"
+  },
+  "manifest": {
+    "host_permissions": [
+      "https://*/*",
+      "http://*/*"
+    ],
+    "permissions": [
+      "storage",
+      "tabs",
+      "activeTab",
+      "scripting"
+    ],
+    "externally_connectable": {
+      "matches": [
+        "http://localhost:3210/*",
+        "http://127.0.0.1:3210/*",
+        "https://jobright-team-site.vercel.app/*"
+      ]
+    },
+    "web_accessible_resources": [
+      {
+        "resources": [
+          "assets/helper-app.js",
+          "assets/*"
+        ],
+        "matches": [
+          "https://*/*",
+          "http://*/*"
+        ]
+      }
+    ]
+  }
+}
