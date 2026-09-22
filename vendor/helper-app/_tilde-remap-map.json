@@ -1,0 +1,1756 @@
+{
+  "moves": [
+    {
+      "id": "45ABC",
+      "from": "_tilde_api/env-resolver.js",
+      "to": "src/api/env-resolver.js"
+    },
+    {
+      "id": "69yl1",
+      "from": "_tilde_components/DraggableIcon.js",
+      "to": "src/components/DraggableIcon.js"
+    },
+    {
+      "id": "jZodJ",
+      "from": "_tilde_components/HelperContainer.js",
+      "to": "src/components/HelperContainer.js"
+    },
+    {
+      "id": "PlGZV",
+      "from": "_tilde_components/AutofillInfoModal.js",
+      "to": "src/components/AutofillInfoModal.js"
+    },
+    {
+      "id": "3ZEEL",
+      "from": "_tilde_api/autofill-info.js",
+      "to": "src/api/autofill-info.js"
+    },
+    {
+      "id": "52vOt",
+      "from": "_tilde_api/autofill-signup-information.js",
+      "to": "src/api/autofill-signup-information.js"
+    },
+    {
+      "id": "g8Ksi",
+      "from": "_tilde_components/Popups/PageConfirmPopup.js",
+      "to": "src/components/Popups/PageConfirmPopup.js"
+    },
+    {
+      "id": "hcTk6",
+      "from": "_tilde_components/StarRatingModal/shared.js",
+      "to": "src/components/StarRatingModal/shared.js"
+    },
+    {
+      "id": "dWG0e",
+      "from": "_tilde_core/cloudflare-challenge.js",
+      "to": "src/core/cloudflare-challenge.js"
+    },
+    {
+      "id": "kEmo3",
+      "from": "_tilde_utils/autofill-install-attribution-client.js",
+      "to": "src/utils/autofill-install-attribution-client.js"
+    },
+    {
+      "id": "8ImK9",
+      "from": "_tilde_utils/autofill-completion.js",
+      "to": "src/utils/autofill-completion.js"
+    },
+    {
+      "id": "9mVDf",
+      "from": "_tilde_contents/shared/early-url-normalization.js",
+      "to": "src/contents/shared/early-url-normalization.js"
+    },
+    {
+      "id": "lpxpl",
+      "from": "_tilde_core/supported-sites.js",
+      "to": "src/core/supported-sites.js"
+    },
+    {
+      "id": "IgBHR",
+      "from": "_tilde_contents/pre-autofill-flow/account-flow.js",
+      "to": "src/contents/pre-autofill-flow/account-flow.js"
+    },
+    {
+      "id": "hCUzf",
+      "from": "_tilde_store/autofillResult.js",
+      "to": "src/store/autofillResult.js"
+    },
+    {
+      "id": "2aELO",
+      "from": "_tilde_core/autofill-progress-protocol.js",
+      "to": "src/core/autofill-progress-protocol.js"
+    },
+    {
+      "id": "aKRqS",
+      "from": "_tilde_contents/pre-autofill-flow/core.js",
+      "to": "src/contents/pre-autofill-flow/core.js"
+    },
+    {
+      "id": "8WOx2",
+      "from": "_tilde_contents/pre-autofill-flow/account-flow-state.js",
+      "to": "src/contents/pre-autofill-flow/account-flow-state.js"
+    },
+    {
+      "id": "aCElZ",
+      "from": "_tilde_contents/sites/autofill-answer-pair-tracking.js",
+      "to": "src/contents/sites/autofill-answer-pair-tracking.js"
+    },
+    {
+      "id": "5bGe0",
+      "from": "_tilde_utils/autofill-answer-pair.js",
+      "to": "src/utils/autofill-answer-pair.js"
+    },
+    {
+      "id": "2vI9E",
+      "from": "_tilde_contents/sites/falcon-answer-tracking.js",
+      "to": "src/contents/sites/falcon-answer-tracking.js"
+    },
+    {
+      "id": "79VNP",
+      "from": "_tilde_store/autofillInfo.js",
+      "to": "src/store/autofillInfo.js"
+    },
+    {
+      "id": "e2WM4",
+      "from": "_tilde_enums/storage.js",
+      "to": "src/enums/storage.js"
+    },
+    {
+      "id": "3L9SO",
+      "from": "_tilde_store/autofill-diff.js",
+      "to": "src/store/autofill-diff.js"
+    },
+    {
+      "id": "gw4pD",
+      "from": "_tilde_store/autofill-storage.js",
+      "to": "src/store/autofill-storage.js"
+    },
+    {
+      "id": "iSBDf",
+      "from": "_tilde_store/resume.js",
+      "to": "src/store/resume.js"
+    },
+    {
+      "id": "2rFEx",
+      "from": "_tilde_api/resume-helpers.js",
+      "to": "src/api/resume-helpers.js"
+    },
+    {
+      "id": "7VR5i",
+      "from": "_tilde_contents/methods/cover-letter.js",
+      "to": "src/contents/methods/cover-letter.js"
+    },
+    {
+      "id": "luJfs",
+      "from": "_tilde_contents/methods/cancellation.js",
+      "to": "src/contents/methods/cancellation.js"
+    },
+    {
+      "id": "1O3nc",
+      "from": "_tilde_core/enums.js",
+      "to": "src/core/enums.js"
+    },
+    {
+      "id": "cAdEa",
+      "from": "_tilde_utils/current-job-id.js",
+      "to": "src/utils/current-job-id.js"
+    },
+    {
+      "id": "1YpU3",
+      "from": "_tilde_store/externalJob.js",
+      "to": "src/store/externalJob.js"
+    },
+    {
+      "id": "dUqCQ",
+      "from": "_tilde_api/externalJob.js",
+      "to": "src/api/externalJob.js"
+    },
+    {
+      "id": "h3FNP",
+      "from": "_tilde_core/markdownConverter.js",
+      "to": "src/core/markdownConverter.js"
+    },
+    {
+      "id": "aTDh5",
+      "from": "_tilde_core/utils.js",
+      "to": "src/core/utils.js"
+    },
+    {
+      "id": "eJFqj",
+      "from": "_tilde_enums/http.js",
+      "to": "src/enums/http.js"
+    },
+    {
+      "id": "fttIf",
+      "from": "_tilde_enums/jobs/joblist.js",
+      "to": "src/enums/jobs/joblist.js"
+    },
+    {
+      "id": "b53L3",
+      "from": "_tilde_store/url.js",
+      "to": "src/store/url.js"
+    },
+    {
+      "id": "5xJv6",
+      "from": "_tilde_utils/checkLinkedin.js",
+      "to": "src/utils/checkLinkedin.js"
+    },
+    {
+      "id": "klnOn",
+      "from": "_tilde_utils/job-id.js",
+      "to": "src/utils/job-id.js"
+    },
+    {
+      "id": "ayCbq",
+      "from": "_tilde_contents/shared/constants.js",
+      "to": "src/contents/shared/constants.js"
+    },
+    {
+      "id": "1ik0r",
+      "from": "_tilde_utils/trace.js",
+      "to": "src/utils/trace.js"
+    },
+    {
+      "id": "9omPD",
+      "from": "_tilde_store/profile.js",
+      "to": "src/store/profile.js"
+    },
+    {
+      "id": "eEchw",
+      "from": "_tilde_utils/ab-test.js",
+      "to": "src/utils/ab-test.js"
+    },
+    {
+      "id": "bU3EA",
+      "from": "_tilde_store/inventory-match-job.js",
+      "to": "src/store/inventory-match-job.js"
+    },
+    {
+      "id": "3lKd7",
+      "from": "_tilde_enums/jobs/resume.js",
+      "to": "src/enums/jobs/resume.js"
+    },
+    {
+      "id": "c3KQJ",
+      "from": "_tilde_utils/jobright-agent-page.js",
+      "to": "src/utils/jobright-agent-page.js"
+    },
+    {
+      "id": "67Z8T",
+      "from": "_tilde_utils/resume-job-id.js",
+      "to": "src/utils/resume-job-id.js"
+    },
+    {
+      "id": "ev1lJ",
+      "from": "_tilde_utils/resume-upload-filename.js",
+      "to": "src/utils/resume-upload-filename.js"
+    },
+    {
+      "id": "74lkH",
+      "from": "_tilde_utils/skill-list.js",
+      "to": "src/utils/skill-list.js"
+    },
+    {
+      "id": "7Ks3y",
+      "from": "_tilde_store/cover-letter-state.js",
+      "to": "src/store/cover-letter-state.js"
+    },
+    {
+      "id": "jjbI7",
+      "from": "_tilde_store/workday-signup-info.js",
+      "to": "src/store/workday-signup-info.js"
+    },
+    {
+      "id": "4o1kC",
+      "from": "_tilde_utils/workday-signup-password.js",
+      "to": "src/utils/workday-signup-password.js"
+    },
+    {
+      "id": "8nENw",
+      "from": "_tilde_core/phone-country-code.js",
+      "to": "src/core/phone-country-code.js"
+    },
+    {
+      "id": "exLmg",
+      "from": "_tilde_core/phone-country-code/answer.js",
+      "to": "src/core/phone-country-code/answer.js"
+    },
+    {
+      "id": "4atQ2",
+      "from": "_tilde_utils/phone.js",
+      "to": "src/utils/phone.js"
+    },
+    {
+      "id": "7z2Rw",
+      "from": "_tilde_constants/country.js",
+      "to": "src/constants/country.js"
+    },
+    {
+      "id": "gm8fZ",
+      "from": "_tilde_components/CoverLetter/CoverLetterReview.js",
+      "to": "src/components/CoverLetter/CoverLetterReview.js"
+    },
+    {
+      "id": "cmrQu",
+      "from": "_tilde_utils/download-file.js",
+      "to": "src/utils/download-file.js"
+    },
+    {
+      "id": "2yZZ7",
+      "from": "_tilde_components/Resume/ResumeReview/components/DrawerFooter.js",
+      "to": "src/components/Resume/ResumeReview/components/DrawerFooter.js"
+    },
+    {
+      "id": "hQIM0",
+      "from": "_tilde_components/Resume/ResumeReview/download-menu.js",
+      "to": "src/components/Resume/ResumeReview/download-menu.js"
+    },
+    {
+      "id": "hlAaS",
+      "from": "_tilde_components/Resume/ResumeReview/components/ResumeLoading.js",
+      "to": "src/components/Resume/ResumeReview/components/ResumeLoading.js"
+    },
+    {
+      "id": "6apkD",
+      "from": "_tilde_assets/lottie/aistar.json.js",
+      "to": "src/assets/lottie/aistar.json.js"
+    },
+    {
+      "id": "2izun",
+      "from": "_tilde_components/HelperContainer/page-layout.js",
+      "to": "src/components/HelperContainer/page-layout.js"
+    },
+    {
+      "id": "2y1sa",
+      "from": "_tilde_components/HelperContainer/PluginSetting.js",
+      "to": "src/components/HelperContainer/PluginSetting.js"
+    },
+    {
+      "id": "dFEPH",
+      "from": "_tilde_components/ExternalJob/BackHomeButton.js",
+      "to": "src/components/ExternalJob/BackHomeButton.js"
+    },
+    {
+      "id": "cKIaQ",
+      "from": "_tilde_store/container.js",
+      "to": "src/store/container.js"
+    },
+    {
+      "id": "1Q6Yp",
+      "from": "_tilde_store/setting.js",
+      "to": "src/store/setting.js"
+    },
+    {
+      "id": "2TASB",
+      "from": "_tilde_components/HelperContainer/render-step.js",
+      "to": "src/components/HelperContainer/render-step.js"
+    },
+    {
+      "id": "8dRWn",
+      "from": "_tilde_components/HelperContainer/StepContent.js",
+      "to": "src/components/HelperContainer/StepContent.js"
+    },
+    {
+      "id": "dv20f",
+      "from": "_tilde_components/JobProfileStep.js",
+      "to": "src/components/JobProfileStep.js"
+    },
+    {
+      "id": "iJxrg",
+      "from": "_tilde_components/ExternalJob/ExternalJobAnalyzing.js",
+      "to": "src/components/ExternalJob/ExternalJobAnalyzing.js"
+    },
+    {
+      "id": "8RkiA",
+      "from": "_tilde_components/ExternalJob/ExternalJobIcon.js",
+      "to": "src/components/ExternalJob/ExternalJobIcon.js"
+    },
+    {
+      "id": "2GxpS",
+      "from": "_tilde_components/ExternalJob/ExternalJobEntry.js",
+      "to": "src/components/ExternalJob/ExternalJobEntry.js"
+    },
+    {
+      "id": "4koZP",
+      "from": "_tilde_components/ExternalJob/ExternalJobFail.js",
+      "to": "src/components/ExternalJob/ExternalJobFail.js"
+    },
+    {
+      "id": "30xAs",
+      "from": "_tilde_components/ExternalJob/ExternalJobForm.js",
+      "to": "src/components/ExternalJob/ExternalJobForm.js"
+    },
+    {
+      "id": "2Kr5V",
+      "from": "_tilde_components/CompanyAutoComplete.js",
+      "to": "src/components/CompanyAutoComplete.js"
+    },
+    {
+      "id": "b1t9t",
+      "from": "_tilde_core/jobPageScraper.js",
+      "to": "src/core/jobPageScraper.js"
+    },
+    {
+      "id": "agE4u",
+      "from": "_tilde_core/xpath.js",
+      "to": "src/core/xpath.js"
+    },
+    {
+      "id": "f5rbp",
+      "from": "_tilde_utils/lang.js",
+      "to": "src/utils/lang.js"
+    },
+    {
+      "id": "3fOSF",
+      "from": "_tilde_utils/date.js",
+      "to": "src/utils/date.js"
+    },
+    {
+      "id": "iqFDb",
+      "from": "_tilde_components/FillProgress.js",
+      "to": "src/components/FillProgress.js"
+    },
+    {
+      "id": "8Z9FF",
+      "from": "_tilde_components/AutoFillRuleGroup.js",
+      "to": "src/components/AutoFillRuleGroup.js"
+    },
+    {
+      "id": "5LY8K",
+      "from": "_tilde_components/CheckedIcon.js",
+      "to": "src/components/CheckedIcon.js"
+    },
+    {
+      "id": "66cuE",
+      "from": "_tilde_components/FillProgress/progress-state.js",
+      "to": "src/components/FillProgress/progress-state.js"
+    },
+    {
+      "id": "1RmGw",
+      "from": "_tilde_utils/fieldLabel.js",
+      "to": "src/utils/fieldLabel.js"
+    },
+    {
+      "id": "03WOh",
+      "from": "_tilde_components/LoadingIcon.js",
+      "to": "src/components/LoadingIcon.js"
+    },
+    {
+      "id": "f7hgC",
+      "from": "_tilde_components/UnCheckedIcon.js",
+      "to": "src/components/UnCheckedIcon.js"
+    },
+    {
+      "id": "hLMJX",
+      "from": "_tilde_core/dom.js",
+      "to": "src/core/dom.js"
+    },
+    {
+      "id": "lwAIe",
+      "from": "_tilde_hooks/useSkipTimer.js",
+      "to": "src/hooks/useSkipTimer.js"
+    },
+    {
+      "id": "hh9tB",
+      "from": "_tilde_components/JobCard.js",
+      "to": "src/components/JobCard.js"
+    },
+    {
+      "id": "dzqGl",
+      "from": "_tilde_components/JobProfileStep/myworkday-progress.js",
+      "to": "src/components/JobProfileStep/myworkday-progress.js"
+    },
+    {
+      "id": "knAUl",
+      "from": "_tilde_components/JobProfileStep/resolve-job-to-show.js",
+      "to": "src/components/JobProfileStep/resolve-job-to-show.js"
+    },
+    {
+      "id": "3KGxk",
+      "from": "_tilde_components/LoadingButton.js",
+      "to": "src/components/LoadingButton.js"
+    },
+    {
+      "id": "cb8Df",
+      "from": "_tilde_components/NextPageButton.js",
+      "to": "src/components/NextPageButton.js"
+    },
+    {
+      "id": "kkscK",
+      "from": "_tilde_contents/crawler/target.js",
+      "to": "src/contents/crawler/target.js"
+    },
+    {
+      "id": "e4STq",
+      "from": "_tilde_contents/sites/eightfold/careerhub/route.js",
+      "to": "src/contents/sites/eightfold/careerhub/route.js"
+    },
+    {
+      "id": "1TnOy",
+      "from": "_tilde_contents/sites/dayforce/auth.js",
+      "to": "src/contents/sites/dayforce/auth.js"
+    },
+    {
+      "id": "hbWOC",
+      "from": "_tilde_contents/sites/dayforce/navigation.js",
+      "to": "src/contents/sites/dayforce/navigation.js"
+    },
+    {
+      "id": "4GQXn",
+      "from": "_tilde_contents/sites/google.js",
+      "to": "src/contents/sites/google.js"
+    },
+    {
+      "id": "8xj6F",
+      "from": "_tilde_contents/sites/base-filler.js",
+      "to": "src/contents/sites/base-filler.js"
+    },
+    {
+      "id": "2aGsX",
+      "from": "_tilde_contents/shared/filler.js",
+      "to": "src/contents/shared/filler.js"
+    },
+    {
+      "id": "h479b",
+      "from": "_tilde_contents/methods/track.js",
+      "to": "src/contents/methods/track.js"
+    },
+    {
+      "id": "ijEFi",
+      "from": "_tilde_utils/string.js",
+      "to": "src/utils/string.js"
+    },
+    {
+      "id": "7T5eW",
+      "from": "_tilde_contents/methods/answer.js",
+      "to": "src/contents/methods/answer.js"
+    },
+    {
+      "id": "hA5Qa",
+      "from": "_tilde_contents/methods/dom.js",
+      "to": "src/contents/methods/dom.js"
+    },
+    {
+      "id": "6mkI4",
+      "from": "_tilde_contents/methods/choice-match.js",
+      "to": "src/contents/methods/choice-match.js"
+    },
+    {
+      "id": "5MP6u",
+      "from": "_tilde_contents/crawler/utils/checkbox.js",
+      "to": "src/contents/crawler/utils/checkbox.js"
+    },
+    {
+      "id": "iPIvT",
+      "from": "_tilde_contents/crawler/utils/input.js",
+      "to": "src/contents/crawler/utils/input.js"
+    },
+    {
+      "id": "2KQwH",
+      "from": "_tilde_contents/methods/checkbox-label.js",
+      "to": "src/contents/methods/checkbox-label.js"
+    },
+    {
+      "id": "cYBXq",
+      "from": "_tilde_contents/methods/runtime-error.js",
+      "to": "src/contents/methods/runtime-error.js"
+    },
+    {
+      "id": "imWVP",
+      "from": "_tilde_utils/starRating.js",
+      "to": "src/utils/starRating.js"
+    },
+    {
+      "id": "7L3Rw",
+      "from": "_tilde_contents/methods/submit-success-observer.js",
+      "to": "src/contents/methods/submit-success-observer.js"
+    },
+    {
+      "id": "l2vHp",
+      "from": "_tilde_store/feedback.js",
+      "to": "src/store/feedback.js"
+    },
+    {
+      "id": "9lWmK",
+      "from": "_tilde_contents/sites/falcon-response-accumulator.js",
+      "to": "src/contents/sites/falcon-response-accumulator.js"
+    },
+    {
+      "id": "l1kUK",
+      "from": "_tilde_core/pagenation.js",
+      "to": "src/core/pagenation.js"
+    },
+    {
+      "id": "6ejQS",
+      "from": "_tilde_core/observer-scheduler.js",
+      "to": "src/core/observer-scheduler.js"
+    },
+    {
+      "id": "am614",
+      "from": "_tilde_utils/delay.js",
+      "to": "src/utils/delay.js"
+    },
+    {
+      "id": "1TBhF",
+      "from": "_tilde_utils/getTargetOrTimeout.js",
+      "to": "src/utils/getTargetOrTimeout.js"
+    },
+    {
+      "id": "b2rO1",
+      "from": "_tilde_contents/methods/autocomplete-listbox.js",
+      "to": "src/contents/methods/autocomplete-listbox.js"
+    },
+    {
+      "id": "3a5UU",
+      "from": "_tilde_contents/sites/walmart.js",
+      "to": "src/contents/sites/walmart.js"
+    },
+    {
+      "id": "6WWsC",
+      "from": "_tilde_contents/methods/section-results.js",
+      "to": "src/contents/methods/section-results.js"
+    },
+    {
+      "id": "eTzUx",
+      "from": "_tilde_contents/methods/observer.js",
+      "to": "src/contents/methods/observer.js"
+    },
+    {
+      "id": "lxTxV",
+      "from": "_tilde_hooks/useShowSubmitted.js",
+      "to": "src/hooks/useShowSubmitted.js"
+    },
+    {
+      "id": "d4qMp",
+      "from": "_tilde_components/NextPageButton/navigation-state.js",
+      "to": "src/components/NextPageButton/navigation-state.js"
+    },
+    {
+      "id": "7ej6w",
+      "from": "_tilde_components/Popups/AutofillErrorModal.js",
+      "to": "src/components/Popups/AutofillErrorModal.js"
+    },
+    {
+      "id": "heASZ",
+      "from": "_tilde_components/Popups/DoubleConfirmPopup.js",
+      "to": "src/components/Popups/DoubleConfirmPopup.js"
+    },
+    {
+      "id": "jMDeX",
+      "from": "_tilde_components/Popups/OutofCreditModal.js",
+      "to": "src/components/Popups/OutofCreditModal.js"
+    },
+    {
+      "id": "aukl5",
+      "from": "_tilde_constants/payment.js",
+      "to": "src/constants/payment.js"
+    },
+    {
+      "id": "zWHj6",
+      "from": "_tilde_components/Popups/ResumeMissingKeyPopup.js",
+      "to": "src/components/Popups/ResumeMissingKeyPopup.js"
+    },
+    {
+      "id": "ihewf",
+      "from": "_tilde_components/ResumeSwitcher.js",
+      "to": "src/components/ResumeSwitcher.js"
+    },
+    {
+      "id": "32feq",
+      "from": "_tilde_components/Popups/AddJobFirstPopup.js",
+      "to": "src/components/Popups/AddJobFirstPopup.js"
+    },
+    {
+      "id": "fDGTw",
+      "from": "_tilde_components/UpdateJobInfoLink.js",
+      "to": "src/components/UpdateJobInfoLink.js"
+    },
+    {
+      "id": "8WhUc",
+      "from": "_tilde_components/VersionUpdate.js",
+      "to": "src/components/VersionUpdate.js"
+    },
+    {
+      "id": "daBan",
+      "from": "_tilde_components/VersionUpdate/UpdateReadyModal.js",
+      "to": "src/components/VersionUpdate/UpdateReadyModal.js"
+    },
+    {
+      "id": "1s9oG",
+      "from": "_tilde_components/VersionUpdate/UpdateUnavailableModal.js",
+      "to": "src/components/VersionUpdate/UpdateUnavailableModal.js"
+    },
+    {
+      "id": "kh4HF",
+      "from": "_tilde_components/VersionUpdate/VersionBottomBar.js",
+      "to": "src/components/VersionUpdate/VersionBottomBar.js"
+    },
+    {
+      "id": "jktea",
+      "from": "_tilde_store/version-update.js",
+      "to": "src/store/version-update.js"
+    },
+    {
+      "id": "COLfJ",
+      "from": "_tilde_components/VersionUpdate/WhatsNewSheet.js",
+      "to": "src/components/VersionUpdate/WhatsNewSheet.js"
+    },
+    {
+      "id": "1wgrD",
+      "from": "_tilde_background/update-check.js",
+      "to": "src/background/update-check.js"
+    },
+    {
+      "id": "3CGFK",
+      "from": "_tilde_components/VersionUpdate/whats-new-icons.js",
+      "to": "src/components/VersionUpdate/whats-new-icons.js"
+    },
+    {
+      "id": "9mB6w",
+      "from": "_tilde_hooks/useVersionUpdate.js",
+      "to": "src/hooks/useVersionUpdate.js"
+    },
+    {
+      "id": "2DXqr",
+      "from": "_tilde_core/version-update-ui.js",
+      "to": "src/core/version-update-ui.js"
+    },
+    {
+      "id": "3L3xh",
+      "from": "_tilde_contents/pre-autofill-flow/tracking.js",
+      "to": "src/contents/pre-autofill-flow/tracking.js"
+    },
+    {
+      "id": "7xg1Q",
+      "from": "_tilde_hooks/usePaginationObserver.js",
+      "to": "src/hooks/usePaginationObserver.js"
+    },
+    {
+      "id": "lfzZV",
+      "from": "_tilde_contents/pre-autofill-flow/registry.js",
+      "to": "src/contents/pre-autofill-flow/registry.js"
+    },
+    {
+      "id": "hOSkB",
+      "from": "_tilde_contents/sites/myworkday/account-preflow.js",
+      "to": "src/contents/sites/myworkday/account-preflow.js"
+    },
+    {
+      "id": "fChu0",
+      "from": "_tilde_contents/pre-autofill-flow/dom.js",
+      "to": "src/contents/pre-autofill-flow/dom.js"
+    },
+    {
+      "id": "6WEEz",
+      "from": "_tilde_contents/sites/smartrecruiters/entry-preflow.js",
+      "to": "src/contents/sites/smartrecruiters/entry-preflow.js"
+    },
+    {
+      "id": "62ozi",
+      "from": "_tilde_hooks/usePreAutofillFlowRunner.js",
+      "to": "src/hooks/usePreAutofillFlowRunner.js"
+    },
+    {
+      "id": "l5wRD",
+      "from": "_tilde_hooks/useRegisterAgentCancel.js",
+      "to": "src/hooks/useRegisterAgentCancel.js"
+    },
+    {
+      "id": "anm6s",
+      "from": "_tilde_hooks/useRegisterAgentSkip.js",
+      "to": "src/hooks/useRegisterAgentSkip.js"
+    },
+    {
+      "id": "12lb0",
+      "from": "_tilde_hooks/useStartAutofill.js",
+      "to": "src/hooks/useStartAutofill.js"
+    },
+    {
+      "id": "clZg3",
+      "from": "_tilde_hooks/useSubmitApplication.js",
+      "to": "src/hooks/useSubmitApplication.js"
+    },
+    {
+      "id": "e52YT",
+      "from": "_tilde_hooks/useUpdateAgentResume.js",
+      "to": "src/hooks/useUpdateAgentResume.js"
+    },
+    {
+      "id": "lTWHp",
+      "from": "_tilde_hooks/useUpdateCoverLetter.js",
+      "to": "src/hooks/useUpdateCoverLetter.js"
+    },
+    {
+      "id": "iSvIR",
+      "from": "_tilde_components/NotAvailableStatus.js",
+      "to": "src/components/NotAvailableStatus.js"
+    },
+    {
+      "id": "4fFO5",
+      "from": "_tilde_components/Onboarding.js",
+      "to": "src/components/Onboarding.js"
+    },
+    {
+      "id": "bXn7T",
+      "from": "_tilde_components/QuickChecklistItem.js",
+      "to": "src/components/QuickChecklistItem.js"
+    },
+    {
+      "id": "8dTkf",
+      "from": "_tilde_utils/jobright-url.js",
+      "to": "src/utils/jobright-url.js"
+    },
+    {
+      "id": "d9oZa",
+      "from": "_tilde_components/HelperContainer/visibility.js",
+      "to": "src/components/HelperContainer/visibility.js"
+    },
+    {
+      "id": "hfEAA",
+      "from": "_tilde_components/HelperHeader.js",
+      "to": "src/components/HelperHeader.js"
+    },
+    {
+      "id": "lMgsL",
+      "from": "_tilde_components/PaymentEntry.js",
+      "to": "src/components/PaymentEntry.js"
+    },
+    {
+      "id": "eUGsX",
+      "from": "_tilde_components/Popups/FeedbackPopup/Button.js",
+      "to": "src/components/Popups/FeedbackPopup/Button.js"
+    },
+    {
+      "id": "iBOtA",
+      "from": "_tilde_components/WorkdayToast.js",
+      "to": "src/components/WorkdayToast.js"
+    },
+    {
+      "id": "az1YZ",
+      "from": "_tilde_store/hide.js",
+      "to": "src/store/hide.js"
+    },
+    {
+      "id": "9pWmc",
+      "from": "_tilde_components/Resume/ResumeReview.js",
+      "to": "src/components/Resume/ResumeReview.js"
+    },
+    {
+      "id": "03leW",
+      "from": "_tilde_components/BasicButton.js",
+      "to": "src/components/BasicButton.js"
+    },
+    {
+      "id": "7dIdK",
+      "from": "_tilde_hooks/useShowContinue.js",
+      "to": "src/hooks/useShowContinue.js"
+    },
+    {
+      "id": "cFD6N",
+      "from": "_tilde_hooks/useShowContinueState.js",
+      "to": "src/hooks/useShowContinueState.js"
+    },
+    {
+      "id": "33jc0",
+      "from": "_tilde_hooks/useTrackPopup.js",
+      "to": "src/hooks/useTrackPopup.js"
+    },
+    {
+      "id": "6uxLs",
+      "from": "_tilde_utils/successfactors-job-context.js",
+      "to": "src/utils/successfactors-job-context.js"
+    },
+    {
+      "id": "fv4lo",
+      "from": "_tilde_utils/hide-logic.js",
+      "to": "src/utils/hide-logic.js"
+    },
+    {
+      "id": "jt2yS",
+      "from": "_tilde_components/LinkedinBannerProvider.js",
+      "to": "src/components/LinkedinBannerProvider.js"
+    },
+    {
+      "id": "lff8Y",
+      "from": "_tilde_components/LinkedinBannerProvider/AutofillButton.js",
+      "to": "src/components/LinkedinBannerProvider/AutofillButton.js"
+    },
+    {
+      "id": "1dQk6",
+      "from": "_tilde_components/LinkedinBannerProvider/job-detail-mount.js",
+      "to": "src/components/LinkedinBannerProvider/job-detail-mount.js"
+    },
+    {
+      "id": "7Bbgd",
+      "from": "_tilde_components/LinkedinBannerProvider/LinkedinBanner.js",
+      "to": "src/components/LinkedinBannerProvider/LinkedinBanner.js"
+    },
+    {
+      "id": "7UKxV",
+      "from": "_tilde_components/LinkedinBannerProvider/BirdBanner.js",
+      "to": "src/components/LinkedinBannerProvider/BirdBanner.js"
+    },
+    {
+      "id": "5A2Ti",
+      "from": "_tilde_components/LinkedinBannerProvider/copy.js",
+      "to": "src/components/LinkedinBannerProvider/copy.js"
+    },
+    {
+      "id": "lGKKE",
+      "from": "_tilde_components/LinkedinBannerProvider/JumpArrow.js",
+      "to": "src/components/LinkedinBannerProvider/JumpArrow.js"
+    },
+    {
+      "id": "8fs0H",
+      "from": "_tilde_components/LinkedinBannerProvider/Ring.js",
+      "to": "src/components/LinkedinBannerProvider/Ring.js"
+    },
+    {
+      "id": "kwAtx",
+      "from": "_tilde_hooks/useLinkedinBannerClick.js",
+      "to": "src/hooks/useLinkedinBannerClick.js"
+    },
+    {
+      "id": "2Qwhr",
+      "from": "_tilde_hooks/useLinkedinBannerRefresh.js",
+      "to": "src/hooks/useLinkedinBannerRefresh.js"
+    },
+    {
+      "id": "eP3QC",
+      "from": "_tilde_components/Popups/FeedbackPopup.js",
+      "to": "src/components/Popups/FeedbackPopup.js"
+    },
+    {
+      "id": "6eqE8",
+      "from": "_tilde_components/CustomRate.js",
+      "to": "src/components/CustomRate.js"
+    },
+    {
+      "id": "948zT",
+      "from": "_tilde_components/StarRatingModal.js",
+      "to": "src/components/StarRatingModal.js"
+    },
+    {
+      "id": "W8A6P",
+      "from": "_tilde_components/Popups/CriticizeReviewsModal.js",
+      "to": "src/components/Popups/CriticizeReviewsModal.js"
+    },
+    {
+      "id": "3lzkO",
+      "from": "_tilde_components/Popups/GoodReviewsModel.js",
+      "to": "src/components/Popups/GoodReviewsModel.js"
+    },
+    {
+      "id": "8llzP",
+      "from": "_tilde_components/TextareaGenerateButton.js",
+      "to": "src/components/TextareaGenerateButton.js"
+    },
+    {
+      "id": "egLL9",
+      "from": "_tilde_components/TraceProvider.js",
+      "to": "src/components/TraceProvider.js"
+    },
+    {
+      "id": "7RE4t",
+      "from": "_tilde_contents/crawler/factory.js",
+      "to": "src/contents/crawler/factory.js"
+    },
+    {
+      "id": "eGEF6",
+      "from": "_tilde_contents/sites/adobe.js",
+      "to": "src/contents/sites/adobe.js"
+    },
+    {
+      "id": "3cWKC",
+      "from": "_tilde_contents/methods/rules.js",
+      "to": "src/contents/methods/rules.js"
+    },
+    {
+      "id": "i9smx",
+      "from": "_tilde_contents/sites/adp-myjobs.js",
+      "to": "src/contents/sites/adp-myjobs.js"
+    },
+    {
+      "id": "9zFM0",
+      "from": "_tilde_contents/sites/adp-recruiting.js",
+      "to": "src/contents/sites/adp-recruiting.js"
+    },
+    {
+      "id": "8CqoG",
+      "from": "_tilde_contents/sites/adp-workforcenow.js",
+      "to": "src/contents/sites/adp-workforcenow.js"
+    },
+    {
+      "id": "de7zi",
+      "from": "_tilde_contents/sites/amazon.js",
+      "to": "src/contents/sites/amazon.js"
+    },
+    {
+      "id": "c6v3o",
+      "from": "_tilde_contents/sites/apple.js",
+      "to": "src/contents/sites/apple.js"
+    },
+    {
+      "id": "dcxvW",
+      "from": "_tilde_contents/sites/apple/operations.js",
+      "to": "src/contents/sites/apple/operations.js"
+    },
+    {
+      "id": "bPSBK",
+      "from": "_tilde_contents/sites/apple/rules.js",
+      "to": "src/contents/sites/apple/rules.js"
+    },
+    {
+      "id": "lI3rh",
+      "from": "_tilde_contents/sites/apple/typeahead.js",
+      "to": "src/contents/sites/apple/typeahead.js"
+    },
+    {
+      "id": "1vP8Z",
+      "from": "_tilde_contents/sites/apple/answer.js",
+      "to": "src/contents/sites/apple/answer.js"
+    },
+    {
+      "id": "g9Qd1",
+      "from": "_tilde_contents/sites/apple/country.js",
+      "to": "src/contents/sites/apple/country.js"
+    },
+    {
+      "id": "9H7dQ",
+      "from": "_tilde_contents/sites/ashby.js",
+      "to": "src/contents/sites/ashby.js"
+    },
+    {
+      "id": "Cpwm9",
+      "from": "_tilde_contents/sites/ashby/answer.js",
+      "to": "src/contents/sites/ashby/answer.js"
+    },
+    {
+      "id": "99dYo",
+      "from": "_tilde_contents/sites/ashby/canonical-search.js",
+      "to": "src/contents/sites/ashby/canonical-search.js"
+    },
+    {
+      "id": "e158F",
+      "from": "_tilde_contents/sites/ashby/location-operation.js",
+      "to": "src/contents/sites/ashby/location-operation.js"
+    },
+    {
+      "id": "3giV6",
+      "from": "_tilde_contents/sites/ashby/operations.js",
+      "to": "src/contents/sites/ashby/operations.js"
+    },
+    {
+      "id": "8jmJu",
+      "from": "_tilde_contents/sites/ashby/phone-value.js",
+      "to": "src/contents/sites/ashby/phone-value.js"
+    },
+    {
+      "id": "lLsBv",
+      "from": "_tilde_contents/sites/ashby/native-select.js",
+      "to": "src/contents/sites/ashby/native-select.js"
+    },
+    {
+      "id": "5iMv1",
+      "from": "_tilde_contents/sites/ashby/rules.js",
+      "to": "src/contents/sites/ashby/rules.js"
+    },
+    {
+      "id": "dCLIj",
+      "from": "_tilde_contents/sites/ashby/field-metadata.js",
+      "to": "src/contents/sites/ashby/field-metadata.js"
+    },
+    {
+      "id": "bdkMH",
+      "from": "_tilde_contents/sites/ashby/country.js",
+      "to": "src/contents/sites/ashby/country.js"
+    },
+    {
+      "id": "8kwJN",
+      "from": "_tilde_contents/sites/profile-location-original-answer.js",
+      "to": "src/contents/sites/profile-location-original-answer.js"
+    },
+    {
+      "id": "g7awH",
+      "from": "_tilde_contents/sites/avature.js",
+      "to": "src/contents/sites/avature.js"
+    },
+    {
+      "id": "3KzDR",
+      "from": "_tilde_api/autofill-client-search.js",
+      "to": "src/api/autofill-client-search.js"
+    },
+    {
+      "id": "flUgg",
+      "from": "_tilde_contents/sites/bamboohr.js",
+      "to": "src/contents/sites/bamboohr.js"
+    },
+    {
+      "id": "648AA",
+      "from": "_tilde_contents/sites/bamboohr/answer.js",
+      "to": "src/contents/sites/bamboohr/answer.js"
+    },
+    {
+      "id": "gz0J8",
+      "from": "_tilde_contents/sites/bamboohr/operations.js",
+      "to": "src/contents/sites/bamboohr/operations.js"
+    },
+    {
+      "id": "jiUzT",
+      "from": "_tilde_contents/sites/brassring.js",
+      "to": "src/contents/sites/brassring.js"
+    },
+    {
+      "id": "l4T7j",
+      "from": "_tilde_utils/gpa.js",
+      "to": "src/utils/gpa.js"
+    },
+    {
+      "id": "kl5FS",
+      "from": "_tilde_contents/sites/breezy.js",
+      "to": "src/contents/sites/breezy.js"
+    },
+    {
+      "id": "1Ai17",
+      "from": "_tilde_contents/sites/breezy/answer.js",
+      "to": "src/contents/sites/breezy/answer.js"
+    },
+    {
+      "id": "4P8sE",
+      "from": "_tilde_contents/sites/breezy/operations.js",
+      "to": "src/contents/sites/breezy/operations.js"
+    },
+    {
+      "id": "hU5fc",
+      "from": "_tilde_contents/sites/breezy/rules.js",
+      "to": "src/contents/sites/breezy/rules.js"
+    },
+    {
+      "id": "jVtpK",
+      "from": "_tilde_contents/sites/bytedance.js",
+      "to": "src/contents/sites/bytedance.js"
+    },
+    {
+      "id": "ZCM0a",
+      "from": "_tilde_contents/sites/bytedance/answer.js",
+      "to": "src/contents/sites/bytedance/answer.js"
+    },
+    {
+      "id": "iBjKs",
+      "from": "_tilde_contents/sites/careerplug.js",
+      "to": "src/contents/sites/careerplug.js"
+    },
+    {
+      "id": "dcvWr",
+      "from": "_tilde_contents/sites/careers-page.js",
+      "to": "src/contents/sites/careers-page.js"
+    },
+    {
+      "id": "44HAb",
+      "from": "_tilde_contents/sites/careers-toasttab.js",
+      "to": "src/contents/sites/careers-toasttab.js"
+    },
+    {
+      "id": "1lFq9",
+      "from": "_tilde_contents/sites/careers-withwaymo.js",
+      "to": "src/contents/sites/careers-withwaymo.js"
+    },
+    {
+      "id": "hNdaV",
+      "from": "_tilde_contents/sites/catsone.js",
+      "to": "src/contents/sites/catsone.js"
+    },
+    {
+      "id": "bZSKO",
+      "from": "_tilde_contents/sites/cisco.js",
+      "to": "src/contents/sites/cisco.js"
+    },
+    {
+      "id": "h22JB",
+      "from": "_tilde_contents/crawler/utils/select.js",
+      "to": "src/contents/crawler/utils/select.js"
+    },
+    {
+      "id": "HYvSE",
+      "from": "_tilde_contents/sites/comeet.js",
+      "to": "src/contents/sites/comeet.js"
+    },
+    {
+      "id": "3Jd0v",
+      "from": "_tilde_contents/sites/dayforce.js",
+      "to": "src/contents/sites/dayforce.js"
+    },
+    {
+      "id": "1Lzdy",
+      "from": "_tilde_contents/sites/eightfold.js",
+      "to": "src/contents/sites/eightfold.js"
+    },
+    {
+      "id": "eMRh5",
+      "from": "_tilde_contents/sites/eightfold/careerhub.js",
+      "to": "src/contents/sites/eightfold/careerhub.js"
+    },
+    {
+      "id": "jqMtR",
+      "from": "_tilde_contents/sites/freshteam.js",
+      "to": "src/contents/sites/freshteam.js"
+    },
+    {
+      "id": "eT4X2",
+      "from": "_tilde_contents/sites/gem.js",
+      "to": "src/contents/sites/gem.js"
+    },
+    {
+      "id": "2yhOH",
+      "from": "_tilde_contents/sites/gohire.js",
+      "to": "src/contents/sites/gohire.js"
+    },
+    {
+      "id": "jlOd6",
+      "from": "_tilde_contents/sites/greenhouse.js",
+      "to": "src/contents/sites/greenhouse.js"
+    },
+    {
+      "id": "j7UGI",
+      "from": "_tilde_contents/sites/education-item-trace.js",
+      "to": "src/contents/sites/education-item-trace.js"
+    },
+    {
+      "id": "3lHOC",
+      "from": "_tilde_contents/sites/greenhouse/answer.js",
+      "to": "src/contents/sites/greenhouse/answer.js"
+    },
+    {
+      "id": "1wqHT",
+      "from": "_tilde_contents/sites/greenhouse/education-operation.js",
+      "to": "src/contents/sites/greenhouse/education-operation.js"
+    },
+    {
+      "id": "3FZ4r",
+      "from": "_tilde_contents/sites/greenhouse/location-operation.js",
+      "to": "src/contents/sites/greenhouse/location-operation.js"
+    },
+    {
+      "id": "6Nc4c",
+      "from": "_tilde_contents/sites/greenhouse/resolve-tracking.js",
+      "to": "src/contents/sites/greenhouse/resolve-tracking.js"
+    },
+    {
+      "id": "da2o3",
+      "from": "_tilde_contents/sites/resolve-trace-tracking.js",
+      "to": "src/contents/sites/resolve-trace-tracking.js"
+    },
+    {
+      "id": "jly3y",
+      "from": "_tilde_contents/sites/greenhouse/rules.js",
+      "to": "src/contents/sites/greenhouse/rules.js"
+    },
+    {
+      "id": "ewjev",
+      "from": "_tilde_contents/sites/greenhouse/snapshot-alignment.js",
+      "to": "src/contents/sites/greenhouse/snapshot-alignment.js"
+    },
+    {
+      "id": "aVQsr",
+      "from": "_tilde_contents/sites/greenhouse/validation-tracking.js",
+      "to": "src/contents/sites/greenhouse/validation-tracking.js"
+    },
+    {
+      "id": "8W2JT",
+      "from": "_tilde_contents/sites/runtime-validation-tracking.js",
+      "to": "src/contents/sites/runtime-validation-tracking.js"
+    },
+    {
+      "id": "htn4O",
+      "from": "_tilde_contents/sites/gusto.js",
+      "to": "src/contents/sites/gusto.js"
+    },
+    {
+      "id": "4guEq",
+      "from": "_tilde_contents/sites/hiringthing.js",
+      "to": "src/contents/sites/hiringthing.js"
+    },
+    {
+      "id": "8Ikc2",
+      "from": "_tilde_contents/sites/hrmdirect.js",
+      "to": "src/contents/sites/hrmdirect.js"
+    },
+    {
+      "id": "kqg1H",
+      "from": "_tilde_contents/sites/hubspot.js",
+      "to": "src/contents/sites/hubspot.js"
+    },
+    {
+      "id": "j70hj",
+      "from": "_tilde_contents/sites/icims.js",
+      "to": "src/contents/sites/icims.js"
+    },
+    {
+      "id": "gJ2cP",
+      "from": "_tilde_contents/sites/intuit.js",
+      "to": "src/contents/sites/intuit.js"
+    },
+    {
+      "id": "8kaHg",
+      "from": "_tilde_contents/sites/isolved.js",
+      "to": "src/contents/sites/isolved.js"
+    },
+    {
+      "id": "4befB",
+      "from": "_tilde_contents/sites/jacobs.js",
+      "to": "src/contents/sites/jacobs.js"
+    },
+    {
+      "id": "1xsGf",
+      "from": "_tilde_contents/sites/jazzhr.js",
+      "to": "src/contents/sites/jazzhr.js"
+    },
+    {
+      "id": "9eGoe",
+      "from": "_tilde_contents/sites/jobdiva.js",
+      "to": "src/contents/sites/jobdiva.js"
+    },
+    {
+      "id": "d9UPP",
+      "from": "_tilde_contents/sites/JobScore.js",
+      "to": "src/contents/sites/JobScore.js"
+    },
+    {
+      "id": "6yD7X",
+      "from": "_tilde_contents/sites/jobvite.js",
+      "to": "src/contents/sites/jobvite.js"
+    },
+    {
+      "id": "92ViD",
+      "from": "_tilde_contents/sites/jobvite/answer.js",
+      "to": "src/contents/sites/jobvite/answer.js"
+    },
+    {
+      "id": "2W7tx",
+      "from": "_tilde_contents/sites/jobvite/operations.js",
+      "to": "src/contents/sites/jobvite/operations.js"
+    },
+    {
+      "id": "e00gr",
+      "from": "_tilde_contents/sites/jobvite/rules.js",
+      "to": "src/contents/sites/jobvite/rules.js"
+    },
+    {
+      "id": "hdblo",
+      "from": "_tilde_contents/sites/kula.js",
+      "to": "src/contents/sites/kula.js"
+    },
+    {
+      "id": "j4zKu",
+      "from": "_tilde_contents/sites/lever.js",
+      "to": "src/contents/sites/lever.js"
+    },
+    {
+      "id": "4VdlM",
+      "from": "_tilde_contents/sites/metacareers.js",
+      "to": "src/contents/sites/metacareers.js"
+    },
+    {
+      "id": "iAZMN",
+      "from": "_tilde_contents/crawler/utils/executor.js",
+      "to": "src/contents/crawler/utils/executor.js"
+    },
+    {
+      "id": "6Cqo2",
+      "from": "_tilde_contents/sites/myworkday.js",
+      "to": "src/contents/sites/myworkday.js"
+    },
+    {
+      "id": "eUq3l",
+      "from": "_tilde_contents/sites/myworkday/answer.js",
+      "to": "src/contents/sites/myworkday/answer.js"
+    },
+    {
+      "id": "aet9i",
+      "from": "_tilde_contents/sites/myworkday/education-operation.js",
+      "to": "src/contents/sites/myworkday/education-operation.js"
+    },
+    {
+      "id": "6KKZk",
+      "from": "_tilde_contents/sites/myworkday/education-resolve-scheduler.js",
+      "to": "src/contents/sites/myworkday/education-resolve-scheduler.js"
+    },
+    {
+      "id": "apMik",
+      "from": "_tilde_contents/sites/myworkday/operations.js",
+      "to": "src/contents/sites/myworkday/operations.js"
+    },
+    {
+      "id": "1H2ID",
+      "from": "_tilde_contents/sites/myworkday/rules.js",
+      "to": "src/contents/sites/myworkday/rules.js"
+    },
+    {
+      "id": "25NpF",
+      "from": "_tilde_contents/sites/myworkday/snapshot-alignment.js",
+      "to": "src/contents/sites/myworkday/snapshot-alignment.js"
+    },
+    {
+      "id": "dMQWN",
+      "from": "_tilde_contents/crawler/utils.js",
+      "to": "src/contents/crawler/utils.js"
+    },
+    {
+      "id": "jywL4",
+      "from": "_tilde_contents/sites/myworkday/section-results.js",
+      "to": "src/contents/sites/myworkday/section-results.js"
+    },
+    {
+      "id": "3gFNd",
+      "from": "_tilde_contents/sites/okta.js",
+      "to": "src/contents/sites/okta.js"
+    },
+    {
+      "id": "8A5ca",
+      "from": "_tilde_contents/sites/oraclecloud.js",
+      "to": "src/contents/sites/oraclecloud.js"
+    },
+    {
+      "id": "cEpli",
+      "from": "_tilde_contents/sites/oraclecloud/address-operation.js",
+      "to": "src/contents/sites/oraclecloud/address-operation.js"
+    },
+    {
+      "id": "lJw3h",
+      "from": "_tilde_contents/sites/oraclecloud/education-raw-values.js",
+      "to": "src/contents/sites/oraclecloud/education-raw-values.js"
+    },
+    {
+      "id": "9Ki4d",
+      "from": "_tilde_contents/sites/oraclecloud/answer.js",
+      "to": "src/contents/sites/oraclecloud/answer.js"
+    },
+    {
+      "id": "3iM7P",
+      "from": "_tilde_constants/phone-country-code.js",
+      "to": "src/constants/phone-country-code.js"
+    },
+    {
+      "id": "gduo7",
+      "from": "_tilde_contents/sites/oraclecloud/operations.js",
+      "to": "src/contents/sites/oraclecloud/operations.js"
+    },
+    {
+      "id": "7oftP",
+      "from": "_tilde_contents/sites/oraclecloud/url.js",
+      "to": "src/contents/sites/oraclecloud/url.js"
+    },
+    {
+      "id": "883w6",
+      "from": "_tilde_contents/sites/oraclecloud/education-client-search.js",
+      "to": "src/contents/sites/oraclecloud/education-client-search.js"
+    },
+    {
+      "id": "aWY8j",
+      "from": "_tilde_contents/sites/oraclecloud/education-lov-candidates.js",
+      "to": "src/contents/sites/oraclecloud/education-lov-candidates.js"
+    },
+    {
+      "id": "j2pat",
+      "from": "_tilde_contents/sites/oraclecloud/rules.js",
+      "to": "src/contents/sites/oraclecloud/rules.js"
+    },
+    {
+      "id": "9JNPk",
+      "from": "_tilde_contents/sites/oraclecloud/section-results.js",
+      "to": "src/contents/sites/oraclecloud/section-results.js"
+    },
+    {
+      "id": "gHOdW",
+      "from": "_tilde_contents/sites/paycomonline-v3.js",
+      "to": "src/contents/sites/paycomonline-v3.js"
+    },
+    {
+      "id": "4Wyl0",
+      "from": "_tilde_contents/sites/paylocity.js",
+      "to": "src/contents/sites/paylocity.js"
+    },
+    {
+      "id": "eiV7s",
+      "from": "_tilde_contents/sites/paylocity/answer.js",
+      "to": "src/contents/sites/paylocity/answer.js"
+    },
+    {
+      "id": "bmU1E",
+      "from": "_tilde_contents/sites/paylocity/operations.js",
+      "to": "src/contents/sites/paylocity/operations.js"
+    },
+    {
+      "id": "5BvUQ",
+      "from": "_tilde_contents/sites/paylocity/rules.js",
+      "to": "src/contents/sites/paylocity/rules.js"
+    },
+    {
+      "id": "53R5p",
+      "from": "_tilde_contents/sites/personio.js",
+      "to": "src/contents/sites/personio.js"
+    },
+    {
+      "id": "2Q4En",
+      "from": "_tilde_contents/sites/phenom.js",
+      "to": "src/contents/sites/phenom.js"
+    },
+    {
+      "id": "bacSi",
+      "from": "_tilde_contents/sites/pinpointhq.js",
+      "to": "src/contents/sites/pinpointhq.js"
+    },
+    {
+      "id": "6GcvC",
+      "from": "_tilde_contents/sites/polymer.js",
+      "to": "src/contents/sites/polymer.js"
+    },
+    {
+      "id": "XfQNt",
+      "from": "_tilde_contents/sites/polymer/answer.js",
+      "to": "src/contents/sites/polymer/answer.js"
+    },
+    {
+      "id": "75HQr",
+      "from": "_tilde_contents/sites/polymer/operations.js",
+      "to": "src/contents/sites/polymer/operations.js"
+    },
+    {
+      "id": "i5Zyz",
+      "from": "_tilde_contents/sites/polymer/rules.js",
+      "to": "src/contents/sites/polymer/rules.js"
+    },
+    {
+      "id": "kQ6A7",
+      "from": "_tilde_contents/sites/recruitee.js",
+      "to": "src/contents/sites/recruitee.js"
+    },
+    {
+      "id": "4QJwa",
+      "from": "_tilde_contents/sites/recruiterflow.js",
+      "to": "src/contents/sites/recruiterflow.js"
+    },
+    {
+      "id": "9ge8X",
+      "from": "_tilde_contents/sites/recruiterflow/answer.js",
+      "to": "src/contents/sites/recruiterflow/answer.js"
+    },
+    {
+      "id": "i18hS",
+      "from": "_tilde_contents/sites/recruiterflow/operations.js",
+      "to": "src/contents/sites/recruiterflow/operations.js"
+    },
+    {
+      "id": "gLFZj",
+      "from": "_tilde_contents/sites/recruiterflow/phone-country-code.js",
+      "to": "src/contents/sites/recruiterflow/phone-country-code.js"
+    },
+    {
+      "id": "aHzuN",
+      "from": "_tilde_contents/sites/recruiterflow/rules.js",
+      "to": "src/contents/sites/recruiterflow/rules.js"
+    },
+    {
+      "id": "f8QJv",
+      "from": "_tilde_contents/sites/ripplehire.js",
+      "to": "src/contents/sites/ripplehire.js"
+    },
+    {
+      "id": "goL8m",
+      "from": "_tilde_contents/sites/rippling.js",
+      "to": "src/contents/sites/rippling.js"
+    },
+    {
+      "id": "4pApn",
+      "from": "_tilde_contents/sites/smartrecruiters.js",
+      "to": "src/contents/sites/smartrecruiters.js"
+    },
+    {
+      "id": "gzsfs",
+      "from": "_tilde_contents/sites/successfactors.js",
+      "to": "src/contents/sites/successfactors.js"
+    },
+    {
+      "id": "4lwWU",
+      "from": "_tilde_contents/sites/taleo.js",
+      "to": "src/contents/sites/taleo.js"
+    },
+    {
+      "id": "hJ857",
+      "from": "_tilde_contents/sites/teamtailor.js",
+      "to": "src/contents/sites/teamtailor.js"
+    },
+    {
+      "id": "8f5hc",
+      "from": "_tilde_contents/sites/tesla.js",
+      "to": "src/contents/sites/tesla.js"
+    },
+    {
+      "id": "9OkhZ",
+      "from": "_tilde_contents/sites/tiktok.js",
+      "to": "src/contents/sites/tiktok.js"
+    },
+    {
+      "id": "jM4Cn",
+      "from": "_tilde_contents/sites/tiktok/answer.js",
+      "to": "src/contents/sites/tiktok/answer.js"
+    },
+    {
+      "id": "4fCvO",
+      "from": "_tilde_contents/sites/trakstar.js",
+      "to": "src/contents/sites/trakstar.js"
+    },
+    {
+      "id": "fPOUf",
+      "from": "_tilde_contents/sites/trinethire.js",
+      "to": "src/contents/sites/trinethire.js"
+    },
+    {
+      "id": "jpdPu",
+      "from": "_tilde_contents/sites/uber.js",
+      "to": "src/contents/sites/uber.js"
+    },
+    {
+      "id": "5R3mN",
+      "from": "_tilde_contents/sites/ultipro.js",
+      "to": "src/contents/sites/ultipro.js"
+    },
+    {
+      "id": "2rZII",
+      "from": "_tilde_contents/sites/workable.js",
+      "to": "src/contents/sites/workable.js"
+    },
+    {
+      "id": "4X7iu",
+      "from": "_tilde_contents/sites/workable/answer.js",
+      "to": "src/contents/sites/workable/answer.js"
+    },
+    {
+      "id": "bQ04a",
+      "from": "_tilde_contents/sites/workable/operations.js",
+      "to": "src/contents/sites/workable/operations.js"
+    },
+    {
+      "id": "7FMtF",
+      "from": "_tilde_contents/sites/workable/rules.js",
+      "to": "src/contents/sites/workable/rules.js"
+    },
+    {
+      "id": "5lsEB",
+      "from": "_tilde_contents/sites/workable/phone-country-code.js",
+      "to": "src/contents/sites/workable/phone-country-code.js"
+    },
+    {
+      "id": "47Efl",
+      "from": "_tilde_contents/sites/xcompany.js",
+      "to": "src/contents/sites/xcompany.js"
+    },
+    {
+      "id": "dUXAd",
+      "from": "_tilde_contents/sites/ycombinator.js",
+      "to": "src/contents/sites/ycombinator.js"
+    },
+    {
+      "id": "fVVzT",
+      "from": "_tilde_contents/sites/zohorecruit.js",
+      "to": "src/contents/sites/zohorecruit.js"
+    },
+    {
+      "id": "9TR3h",
+      "from": "_tilde_contents/sites/zohorecruit/answer.js",
+      "to": "src/contents/sites/zohorecruit/answer.js"
+    },
+    {
+      "id": "joTPk",
+      "from": "_tilde_contents/sites/zohorecruit/location-operation.js",
+      "to": "src/contents/sites/zohorecruit/location-operation.js"
+    },
+    {
+      "id": "ayFdv",
+      "from": "_tilde_contents/sites/zohorecruit/operations.js",
+      "to": "src/contents/sites/zohorecruit/operations.js"
+    },
+    {
+      "id": "gn723",
+      "from": "_tilde_contents/sites/zohorecruit/progress.js",
+      "to": "src/contents/sites/zohorecruit/progress.js"
+    },
+    {
+      "id": "6kRQQ",
+      "from": "_tilde_contents/sites/zohorecruit/rules.js",
+      "to": "src/contents/sites/zohorecruit/rules.js"
+    },
+    {
+      "id": "1A34s",
+      "from": "_tilde_contents/sites/zohorecruit/section-results.js",
+      "to": "src/contents/sites/zohorecruit/section-results.js"
+    },
+    {
+      "id": "4sEbH",
+      "from": "_tilde_contents/sites/zohorecruit-v2.js",
+      "to": "src/contents/sites/zohorecruit-v2.js"
+    },
+    {
+      "id": "jmQw3",
+      "from": "_tilde_contents/sites/zohorecruit-v2/answer.js",
+      "to": "src/contents/sites/zohorecruit-v2/answer.js"
+    },
+    {
+      "id": "98qwB",
+      "from": "_tilde_contents/sites/zohorecruit-v2/operations.js",
+      "to": "src/contents/sites/zohorecruit-v2/operations.js"
+    },
+    {
+      "id": "aNfWC",
+      "from": "_tilde_contents/sites/zohorecruit-v2/rules.js",
+      "to": "src/contents/sites/zohorecruit-v2/rules.js"
+    },
+    {
+      "id": "ekS98",
+      "from": "_tilde_contents/shared/autofill-instance-lifecycle.js",
+      "to": "src/contents/shared/autofill-instance-lifecycle.js"
+    },
+    {
+      "id": "fu3wC",
+      "from": "_tilde_contents/shared/click-jr-injector.js",
+      "to": "src/contents/shared/click-jr-injector.js"
+    },
+    {
+      "id": "5Q00I",
+      "from": "_tilde_contents/shared/css-assets.js",
+      "to": "src/contents/shared/css-assets.js"
+    },
+    {
+      "id": "lDfqE",
+      "from": "_tilde_contents/shared/helper-host-stacking.js",
+      "to": "src/contents/shared/helper-host-stacking.js"
+    },
+    {
+      "id": "3WQu4",
+      "from": "_tilde_core/iframeEventHandle.js",
+      "to": "src/core/iframeEventHandle.js"
+    },
+    {
+      "id": "jbRXW",
+      "from": "_tilde_hooks/useOpenNewTab.js",
+      "to": "src/hooks/useOpenNewTab.js"
+    },
+    {
+      "id": "7sm2G",
+      "from": "_tilde_hooks/useSubscribeTabUrl.js",
+      "to": "src/hooks/useSubscribeTabUrl.js"
+    },
+    {
+      "id": "dSL5Z",
+      "from": "_tilde_hooks/useTrackAutofillStuck.js",
+      "to": "src/hooks/useTrackAutofillStuck.js"
+    }
+  ],
+  "skip": [
+    {
+      "id": "fnhXp",
+      "from": "_tilde_node_modules/dayjs.js",
+      "reason": "keep-node-modules"
+    }
+  ]
+}

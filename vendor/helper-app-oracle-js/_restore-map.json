@@ -1,0 +1,3851 @@
+{
+  "generatedAt": "2026-09-22T10:12:46.598Z",
+  "outRoot": "engine/helper-app-src",
+  "copied": 549,
+  "skipped": 1491,
+  "entries": [
+    {
+      "parcelId": "78502",
+      "manifestPath": "src/contents/sites/okta/rules.js",
+      "logical": "contents/sites/okta/rules.js",
+      "from": "src/contents/sites/okta/rules.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "45ABC",
+      "manifestPath": "_tilde_api/env-resolver.js",
+      "logical": "api/env-resolver.js",
+      "from": "src/api/env-resolver.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "69yl1",
+      "manifestPath": "_tilde_components/DraggableIcon.js",
+      "logical": "components/DraggableIcon.js",
+      "from": "src/components/DraggableIcon.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "jZodJ",
+      "manifestPath": "_tilde_components/HelperContainer.js",
+      "logical": "components/HelperContainer.js",
+      "from": "src/components/HelperContainer.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "ao7Kb",
+      "manifestPath": "src/useRequest.js",
+      "logical": "useRequest.js",
+      "from": "src/useRequest.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "PlGZV",
+      "manifestPath": "_tilde_components/AutofillInfoModal.js",
+      "logical": "components/AutofillInfoModal.js",
+      "from": "src/components/AutofillInfoModal.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "3ZEEL",
+      "manifestPath": "_tilde_api/autofill-info.js",
+      "logical": "api/autofill-info.js",
+      "from": "src/api/autofill-info.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "52vOt",
+      "manifestPath": "_tilde_api/autofill-signup-information.js",
+      "logical": "api/autofill-signup-information.js",
+      "from": "src/api/autofill-signup-information.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "g8Ksi",
+      "manifestPath": "_tilde_components/Popups/PageConfirmPopup.js",
+      "logical": "components/Popups/PageConfirmPopup.js",
+      "from": "src/components/Popups/PageConfirmPopup.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "hcTk6",
+      "manifestPath": "_tilde_components/StarRatingModal/shared.js",
+      "logical": "components/StarRatingModal/shared.js",
+      "from": "src/components/StarRatingModal/shared.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "6VEjR",
+      "manifestPath": "_tilde_constants.js",
+      "logical": "constants.js",
+      "from": "src/constants.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "d4tj7",
+      "manifestPath": "_tilde_contents.js",
+      "logical": "contents.js",
+      "from": "src/contents.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "dWG0e",
+      "manifestPath": "_tilde_core/cloudflare-challenge.js",
+      "logical": "core/cloudflare-challenge.js",
+      "from": "src/core/cloudflare-challenge.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "kEmo3",
+      "manifestPath": "_tilde_utils/autofill-install-attribution-client.js",
+      "logical": "utils/autofill-install-attribution-client.js",
+      "from": "src/utils/autofill-install-attribution-client.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "8ImK9",
+      "manifestPath": "_tilde_utils/autofill-completion.js",
+      "logical": "utils/autofill-completion.js",
+      "from": "src/utils/autofill-completion.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "9mVDf",
+      "manifestPath": "_tilde_contents/shared/early-url-normalization.js",
+      "logical": "contents/shared/early-url-normalization.js",
+      "from": "src/contents/shared/early-url-normalization.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "lpxpl",
+      "manifestPath": "_tilde_core/supported-sites.js",
+      "logical": "core/supported-sites.js",
+      "from": "src/core/supported-sites.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "IgBHR",
+      "manifestPath": "_tilde_contents/pre-autofill-flow/account-flow.js",
+      "logical": "contents/pre-autofill-flow/account-flow.js",
+      "from": "src/contents/pre-autofill-flow/account-flow.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "hCUzf",
+      "manifestPath": "_tilde_store/autofillResult.js",
+      "logical": "store/autofillResult.js",
+      "from": "src/store/autofillResult.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "2aELO",
+      "manifestPath": "_tilde_core/autofill-progress-protocol.js",
+      "logical": "core/autofill-progress-protocol.js",
+      "from": "src/core/autofill-progress-protocol.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "aKRqS",
+      "manifestPath": "_tilde_contents/pre-autofill-flow/core.js",
+      "logical": "contents/pre-autofill-flow/core.js",
+      "from": "src/contents/pre-autofill-flow/core.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "8WOx2",
+      "manifestPath": "_tilde_contents/pre-autofill-flow/account-flow-state.js",
+      "logical": "contents/pre-autofill-flow/account-flow-state.js",
+      "from": "src/contents/pre-autofill-flow/account-flow-state.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "aCElZ",
+      "manifestPath": "_tilde_contents/sites/autofill-answer-pair-tracking.js",
+      "logical": "contents/sites/autofill-answer-pair-tracking.js",
+      "from": "src/contents/sites/autofill-answer-pair-tracking.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "5bGe0",
+      "manifestPath": "_tilde_utils/autofill-answer-pair.js",
+      "logical": "utils/autofill-answer-pair.js",
+      "from": "src/utils/autofill-answer-pair.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "2vI9E",
+      "manifestPath": "_tilde_contents/sites/falcon-answer-tracking.js",
+      "logical": "contents/sites/falcon-answer-tracking.js",
+      "from": "src/contents/sites/falcon-answer-tracking.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "79VNP",
+      "manifestPath": "_tilde_store/autofillInfo.js",
+      "logical": "store/autofillInfo.js",
+      "from": "src/store/autofillInfo.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "e2WM4",
+      "manifestPath": "_tilde_enums/storage.js",
+      "logical": "enums/storage.js",
+      "from": "src/enums/storage.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "3L9SO",
+      "manifestPath": "_tilde_store/autofill-diff.js",
+      "logical": "store/autofill-diff.js",
+      "from": "src/store/autofill-diff.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "gw4pD",
+      "manifestPath": "_tilde_store/autofill-storage.js",
+      "logical": "store/autofill-storage.js",
+      "from": "src/store/autofill-storage.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "iSBDf",
+      "manifestPath": "_tilde_store/resume.js",
+      "logical": "store/resume.js",
+      "from": "src/store/resume.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "2rFEx",
+      "manifestPath": "_tilde_api/resume-helpers.js",
+      "logical": "api/resume-helpers.js",
+      "from": "src/api/resume-helpers.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "7VR5i",
+      "manifestPath": "_tilde_contents/methods/cover-letter.js",
+      "logical": "contents/methods/cover-letter.js",
+      "from": "src/contents/methods/cover-letter.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "luJfs",
+      "manifestPath": "_tilde_contents/methods/cancellation.js",
+      "logical": "contents/methods/cancellation.js",
+      "from": "src/contents/methods/cancellation.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "1O3nc",
+      "manifestPath": "_tilde_core/enums.js",
+      "logical": "core/enums.js",
+      "from": "src/core/enums.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "cAdEa",
+      "manifestPath": "_tilde_utils/current-job-id.js",
+      "logical": "utils/current-job-id.js",
+      "from": "src/utils/current-job-id.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "1YpU3",
+      "manifestPath": "_tilde_store/externalJob.js",
+      "logical": "store/externalJob.js",
+      "from": "src/store/externalJob.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "dUqCQ",
+      "manifestPath": "_tilde_api/externalJob.js",
+      "logical": "api/externalJob.js",
+      "from": "src/api/externalJob.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "h3FNP",
+      "manifestPath": "_tilde_core/markdownConverter.js",
+      "logical": "core/markdownConverter.js",
+      "from": "src/core/markdownConverter.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "aTDh5",
+      "manifestPath": "_tilde_core/utils.js",
+      "logical": "core/utils.js",
+      "from": "src/core/utils.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "drZvv",
+      "manifestPath": "_tilde_enums.js",
+      "logical": "enums.js",
+      "from": "src/enums.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "eJFqj",
+      "manifestPath": "_tilde_enums/http.js",
+      "logical": "enums/http.js",
+      "from": "src/enums/http.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "fttIf",
+      "manifestPath": "_tilde_enums/jobs/joblist.js",
+      "logical": "enums/jobs/joblist.js",
+      "from": "src/enums/jobs/joblist.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "b53L3",
+      "manifestPath": "_tilde_store/url.js",
+      "logical": "store/url.js",
+      "from": "src/store/url.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "5xJv6",
+      "manifestPath": "_tilde_utils/checkLinkedin.js",
+      "logical": "utils/checkLinkedin.js",
+      "from": "src/utils/checkLinkedin.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "klnOn",
+      "manifestPath": "_tilde_utils/job-id.js",
+      "logical": "utils/job-id.js",
+      "from": "src/utils/job-id.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "ayCbq",
+      "manifestPath": "_tilde_contents/shared/constants.js",
+      "logical": "contents/shared/constants.js",
+      "from": "src/contents/shared/constants.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "1ik0r",
+      "manifestPath": "_tilde_utils/trace.js",
+      "logical": "utils/trace.js",
+      "from": "src/utils/trace.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "9omPD",
+      "manifestPath": "_tilde_store/profile.js",
+      "logical": "store/profile.js",
+      "from": "src/store/profile.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "eEchw",
+      "manifestPath": "_tilde_utils/ab-test.js",
+      "logical": "utils/ab-test.js",
+      "from": "src/utils/ab-test.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "bU3EA",
+      "manifestPath": "_tilde_store/inventory-match-job.js",
+      "logical": "store/inventory-match-job.js",
+      "from": "src/store/inventory-match-job.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "3lKd7",
+      "manifestPath": "_tilde_enums/jobs/resume.js",
+      "logical": "enums/jobs/resume.js",
+      "from": "src/enums/jobs/resume.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "c3KQJ",
+      "manifestPath": "_tilde_utils/jobright-agent-page.js",
+      "logical": "utils/jobright-agent-page.js",
+      "from": "src/utils/jobright-agent-page.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "67Z8T",
+      "manifestPath": "_tilde_utils/resume-job-id.js",
+      "logical": "utils/resume-job-id.js",
+      "from": "src/utils/resume-job-id.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "ev1lJ",
+      "manifestPath": "_tilde_utils/resume-upload-filename.js",
+      "logical": "utils/resume-upload-filename.js",
+      "from": "src/utils/resume-upload-filename.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "74lkH",
+      "manifestPath": "_tilde_utils/skill-list.js",
+      "logical": "utils/skill-list.js",
+      "from": "src/utils/skill-list.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "7Ks3y",
+      "manifestPath": "_tilde_store/cover-letter-state.js",
+      "logical": "store/cover-letter-state.js",
+      "from": "src/store/cover-letter-state.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "jjbI7",
+      "manifestPath": "_tilde_store/workday-signup-info.js",
+      "logical": "store/workday-signup-info.js",
+      "from": "src/store/workday-signup-info.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "4o1kC",
+      "manifestPath": "_tilde_utils/workday-signup-password.js",
+      "logical": "utils/workday-signup-password.js",
+      "from": "src/utils/workday-signup-password.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "4wCrP",
+      "manifestPath": "_tilde_/ui/Image.js",
+      "logical": "/ui/Image.js",
+      "from": "_tilde_/ui/Image.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "8nENw",
+      "manifestPath": "_tilde_core/phone-country-code.js",
+      "logical": "core/phone-country-code.js",
+      "from": "src/core/phone-country-code.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "exLmg",
+      "manifestPath": "_tilde_core/phone-country-code/answer.js",
+      "logical": "core/phone-country-code/answer.js",
+      "from": "src/core/phone-country-code/answer.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "kazUY",
+      "manifestPath": "src/core/number.js",
+      "logical": "core/number.js",
+      "from": "src/core/number.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "4atQ2",
+      "manifestPath": "_tilde_utils/phone.js",
+      "logical": "utils/phone.js",
+      "from": "src/utils/phone.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "7z2Rw",
+      "manifestPath": "_tilde_constants/country.js",
+      "logical": "constants/country.js",
+      "from": "src/constants/country.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "gm8fZ",
+      "manifestPath": "_tilde_components/CoverLetter/CoverLetterReview.js",
+      "logical": "components/CoverLetter/CoverLetterReview.js",
+      "from": "src/components/CoverLetter/CoverLetterReview.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "cmrQu",
+      "manifestPath": "_tilde_utils/download-file.js",
+      "logical": "utils/download-file.js",
+      "from": "src/utils/download-file.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "2yZZ7",
+      "manifestPath": "_tilde_components/Resume/ResumeReview/components/DrawerFooter.js",
+      "logical": "components/Resume/ResumeReview/components/DrawerFooter.js",
+      "from": "src/components/Resume/ResumeReview/components/DrawerFooter.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "gvQGk",
+      "manifestPath": "_tilde_/ui/BasicButton.js",
+      "logical": "/ui/BasicButton.js",
+      "from": "_tilde_/ui/BasicButton.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "dqnbE",
+      "manifestPath": "_tilde_/ui/SimpleButton.js",
+      "logical": "/ui/SimpleButton.js",
+      "from": "_tilde_/ui/SimpleButton.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "hQIM0",
+      "manifestPath": "_tilde_components/Resume/ResumeReview/download-menu.js",
+      "logical": "components/Resume/ResumeReview/download-menu.js",
+      "from": "src/components/Resume/ResumeReview/download-menu.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "hlAaS",
+      "manifestPath": "_tilde_components/Resume/ResumeReview/components/ResumeLoading.js",
+      "logical": "components/Resume/ResumeReview/components/ResumeLoading.js",
+      "from": "src/components/Resume/ResumeReview/components/ResumeLoading.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "6apkD",
+      "manifestPath": "_tilde_assets/lottie/aistar.json.js",
+      "logical": "assets/lottie/aistar.json.js",
+      "from": "src/assets/lottie/aistar.json.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "2izun",
+      "manifestPath": "_tilde_components/HelperContainer/page-layout.js",
+      "logical": "components/HelperContainer/page-layout.js",
+      "from": "src/components/HelperContainer/page-layout.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "2y1sa",
+      "manifestPath": "_tilde_components/HelperContainer/PluginSetting.js",
+      "logical": "components/HelperContainer/PluginSetting.js",
+      "from": "src/components/HelperContainer/PluginSetting.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "dFEPH",
+      "manifestPath": "_tilde_components/ExternalJob/BackHomeButton.js",
+      "logical": "components/ExternalJob/BackHomeButton.js",
+      "from": "src/components/ExternalJob/BackHomeButton.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "cKIaQ",
+      "manifestPath": "_tilde_store/container.js",
+      "logical": "store/container.js",
+      "from": "src/store/container.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "1Q6Yp",
+      "manifestPath": "_tilde_store/setting.js",
+      "logical": "store/setting.js",
+      "from": "src/store/setting.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "2TASB",
+      "manifestPath": "_tilde_components/HelperContainer/render-step.js",
+      "logical": "components/HelperContainer/render-step.js",
+      "from": "src/components/HelperContainer/render-step.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "8dRWn",
+      "manifestPath": "_tilde_components/HelperContainer/StepContent.js",
+      "logical": "components/HelperContainer/StepContent.js",
+      "from": "src/components/HelperContainer/StepContent.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "dv20f",
+      "manifestPath": "_tilde_components/JobProfileStep.js",
+      "logical": "components/JobProfileStep.js",
+      "from": "src/components/JobProfileStep.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "iJxrg",
+      "manifestPath": "_tilde_components/ExternalJob/ExternalJobAnalyzing.js",
+      "logical": "components/ExternalJob/ExternalJobAnalyzing.js",
+      "from": "src/components/ExternalJob/ExternalJobAnalyzing.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "8RkiA",
+      "manifestPath": "_tilde_components/ExternalJob/ExternalJobIcon.js",
+      "logical": "components/ExternalJob/ExternalJobIcon.js",
+      "from": "src/components/ExternalJob/ExternalJobIcon.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "2GxpS",
+      "manifestPath": "_tilde_components/ExternalJob/ExternalJobEntry.js",
+      "logical": "components/ExternalJob/ExternalJobEntry.js",
+      "from": "src/components/ExternalJob/ExternalJobEntry.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "4koZP",
+      "manifestPath": "_tilde_components/ExternalJob/ExternalJobFail.js",
+      "logical": "components/ExternalJob/ExternalJobFail.js",
+      "from": "src/components/ExternalJob/ExternalJobFail.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "30xAs",
+      "manifestPath": "_tilde_components/ExternalJob/ExternalJobForm.js",
+      "logical": "components/ExternalJob/ExternalJobForm.js",
+      "from": "src/components/ExternalJob/ExternalJobForm.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "2Kr5V",
+      "manifestPath": "_tilde_components/CompanyAutoComplete.js",
+      "logical": "components/CompanyAutoComplete.js",
+      "from": "src/components/CompanyAutoComplete.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "jzS4E",
+      "manifestPath": "src/components/match.js",
+      "logical": "components/match.js",
+      "from": "src/components/match.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "b1t9t",
+      "manifestPath": "_tilde_core/jobPageScraper.js",
+      "logical": "core/jobPageScraper.js",
+      "from": "src/core/jobPageScraper.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "agE4u",
+      "manifestPath": "_tilde_core/xpath.js",
+      "logical": "core/xpath.js",
+      "from": "src/core/xpath.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "czatw",
+      "manifestPath": "_tilde_utils.js",
+      "logical": "utils.js",
+      "from": "src/utils.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "f5rbp",
+      "manifestPath": "_tilde_utils/lang.js",
+      "logical": "utils/lang.js",
+      "from": "src/utils/lang.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "3fOSF",
+      "manifestPath": "_tilde_utils/date.js",
+      "logical": "utils/date.js",
+      "from": "src/utils/date.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "iqFDb",
+      "manifestPath": "_tilde_components/FillProgress.js",
+      "logical": "components/FillProgress.js",
+      "from": "src/components/FillProgress.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "8Z9FF",
+      "manifestPath": "_tilde_components/AutoFillRuleGroup.js",
+      "logical": "components/AutoFillRuleGroup.js",
+      "from": "src/components/AutoFillRuleGroup.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "5LY8K",
+      "manifestPath": "_tilde_components/CheckedIcon.js",
+      "logical": "components/CheckedIcon.js",
+      "from": "src/components/CheckedIcon.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "66cuE",
+      "manifestPath": "_tilde_components/FillProgress/progress-state.js",
+      "logical": "components/FillProgress/progress-state.js",
+      "from": "src/components/FillProgress/progress-state.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "1RmGw",
+      "manifestPath": "_tilde_utils/fieldLabel.js",
+      "logical": "utils/fieldLabel.js",
+      "from": "src/utils/fieldLabel.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "03WOh",
+      "manifestPath": "_tilde_components/LoadingIcon.js",
+      "logical": "components/LoadingIcon.js",
+      "from": "src/components/LoadingIcon.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "f7hgC",
+      "manifestPath": "_tilde_components/UnCheckedIcon.js",
+      "logical": "components/UnCheckedIcon.js",
+      "from": "src/components/UnCheckedIcon.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "hLMJX",
+      "manifestPath": "_tilde_core/dom.js",
+      "logical": "core/dom.js",
+      "from": "src/core/dom.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "lwAIe",
+      "manifestPath": "_tilde_hooks/useSkipTimer.js",
+      "logical": "hooks/useSkipTimer.js",
+      "from": "src/hooks/useSkipTimer.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "hh9tB",
+      "manifestPath": "_tilde_components/JobCard.js",
+      "logical": "components/JobCard.js",
+      "from": "src/components/JobCard.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "dzqGl",
+      "manifestPath": "_tilde_components/JobProfileStep/myworkday-progress.js",
+      "logical": "components/JobProfileStep/myworkday-progress.js",
+      "from": "src/components/JobProfileStep/myworkday-progress.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "knAUl",
+      "manifestPath": "_tilde_components/JobProfileStep/resolve-job-to-show.js",
+      "logical": "components/JobProfileStep/resolve-job-to-show.js",
+      "from": "src/components/JobProfileStep/resolve-job-to-show.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "3KGxk",
+      "manifestPath": "_tilde_components/LoadingButton.js",
+      "logical": "components/LoadingButton.js",
+      "from": "src/components/LoadingButton.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "cb8Df",
+      "manifestPath": "_tilde_components/NextPageButton.js",
+      "logical": "components/NextPageButton.js",
+      "from": "src/components/NextPageButton.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "kkscK",
+      "manifestPath": "_tilde_contents/crawler/target.js",
+      "logical": "contents/crawler/target.js",
+      "from": "src/contents/crawler/target.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "e4STq",
+      "manifestPath": "_tilde_contents/sites/eightfold/careerhub/route.js",
+      "logical": "contents/sites/eightfold/careerhub/route.js",
+      "from": "src/contents/sites/eightfold/careerhub/route.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "1TnOy",
+      "manifestPath": "_tilde_contents/sites/dayforce/auth.js",
+      "logical": "contents/sites/dayforce/auth.js",
+      "from": "src/contents/sites/dayforce/auth.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "hbWOC",
+      "manifestPath": "_tilde_contents/sites/dayforce/navigation.js",
+      "logical": "contents/sites/dayforce/navigation.js",
+      "from": "src/contents/sites/dayforce/navigation.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "4GQXn",
+      "manifestPath": "_tilde_contents/sites/google.js",
+      "logical": "contents/sites/google.js",
+      "from": "src/contents/sites/google.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "8xj6F",
+      "manifestPath": "_tilde_contents/sites/base-filler.js",
+      "logical": "contents/sites/base-filler.js",
+      "from": "src/contents/sites/base-filler.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "2aGsX",
+      "manifestPath": "_tilde_contents/shared/filler.js",
+      "logical": "contents/shared/filler.js",
+      "from": "src/contents/shared/filler.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "h479b",
+      "manifestPath": "_tilde_contents/methods/track.js",
+      "logical": "contents/methods/track.js",
+      "from": "src/contents/methods/track.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "ijEFi",
+      "manifestPath": "_tilde_utils/string.js",
+      "logical": "utils/string.js",
+      "from": "src/utils/string.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "7T5eW",
+      "manifestPath": "_tilde_contents/methods/answer.js",
+      "logical": "contents/methods/answer.js",
+      "from": "src/contents/methods/answer.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "hA5Qa",
+      "manifestPath": "_tilde_contents/methods/dom.js",
+      "logical": "contents/methods/dom.js",
+      "from": "src/contents/methods/dom.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "6mkI4",
+      "manifestPath": "_tilde_contents/methods/choice-match.js",
+      "logical": "contents/methods/choice-match.js",
+      "from": "src/contents/methods/choice-match.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "5MP6u",
+      "manifestPath": "_tilde_contents/crawler/utils/checkbox.js",
+      "logical": "contents/crawler/utils/checkbox.js",
+      "from": "src/contents/crawler/utils/checkbox.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "iPIvT",
+      "manifestPath": "_tilde_contents/crawler/utils/input.js",
+      "logical": "contents/crawler/utils/input.js",
+      "from": "src/contents/crawler/utils/input.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "2KQwH",
+      "manifestPath": "_tilde_contents/methods/checkbox-label.js",
+      "logical": "contents/methods/checkbox-label.js",
+      "from": "src/contents/methods/checkbox-label.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "cYBXq",
+      "manifestPath": "_tilde_contents/methods/runtime-error.js",
+      "logical": "contents/methods/runtime-error.js",
+      "from": "src/contents/methods/runtime-error.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "imWVP",
+      "manifestPath": "_tilde_utils/starRating.js",
+      "logical": "utils/starRating.js",
+      "from": "src/utils/starRating.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "7L3Rw",
+      "manifestPath": "_tilde_contents/methods/submit-success-observer.js",
+      "logical": "contents/methods/submit-success-observer.js",
+      "from": "src/contents/methods/submit-success-observer.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "l2vHp",
+      "manifestPath": "_tilde_store/feedback.js",
+      "logical": "store/feedback.js",
+      "from": "src/store/feedback.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "9lWmK",
+      "manifestPath": "_tilde_contents/sites/falcon-response-accumulator.js",
+      "logical": "contents/sites/falcon-response-accumulator.js",
+      "from": "src/contents/sites/falcon-response-accumulator.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "l1kUK",
+      "manifestPath": "_tilde_core/pagenation.js",
+      "logical": "core/pagenation.js",
+      "from": "src/core/pagenation.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "6ejQS",
+      "manifestPath": "_tilde_core/observer-scheduler.js",
+      "logical": "core/observer-scheduler.js",
+      "from": "src/core/observer-scheduler.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "am614",
+      "manifestPath": "_tilde_utils/delay.js",
+      "logical": "utils/delay.js",
+      "from": "src/utils/delay.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "1TBhF",
+      "manifestPath": "_tilde_utils/getTargetOrTimeout.js",
+      "logical": "utils/getTargetOrTimeout.js",
+      "from": "src/utils/getTargetOrTimeout.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "b2rO1",
+      "manifestPath": "_tilde_contents/methods/autocomplete-listbox.js",
+      "logical": "contents/methods/autocomplete-listbox.js",
+      "from": "src/contents/methods/autocomplete-listbox.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "3a5UU",
+      "manifestPath": "_tilde_contents/sites/walmart.js",
+      "logical": "contents/sites/walmart.js",
+      "from": "src/contents/sites/walmart.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "6WWsC",
+      "manifestPath": "_tilde_contents/methods/section-results.js",
+      "logical": "contents/methods/section-results.js",
+      "from": "src/contents/methods/section-results.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "jevYI",
+      "manifestPath": "src/contents/sites/walmart/answer.js",
+      "logical": "contents/sites/walmart/answer.js",
+      "from": "src/contents/sites/walmart/answer.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "eTzUx",
+      "manifestPath": "_tilde_contents/methods/observer.js",
+      "logical": "contents/methods/observer.js",
+      "from": "src/contents/methods/observer.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "hgvPN",
+      "manifestPath": "src/contents/sites/walmart/rules.js",
+      "logical": "contents/sites/walmart/rules.js",
+      "from": "src/contents/sites/walmart/rules.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "1ivz8",
+      "manifestPath": "src/contents/sites/walmart/operations.js",
+      "logical": "contents/sites/walmart/operations.js",
+      "from": "src/contents/sites/walmart/operations.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "lxTxV",
+      "manifestPath": "_tilde_hooks/useShowSubmitted.js",
+      "logical": "hooks/useShowSubmitted.js",
+      "from": "src/hooks/useShowSubmitted.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "d4qMp",
+      "manifestPath": "_tilde_components/NextPageButton/navigation-state.js",
+      "logical": "components/NextPageButton/navigation-state.js",
+      "from": "src/components/NextPageButton/navigation-state.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "7ej6w",
+      "manifestPath": "_tilde_components/Popups/AutofillErrorModal.js",
+      "logical": "components/Popups/AutofillErrorModal.js",
+      "from": "src/components/Popups/AutofillErrorModal.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "heASZ",
+      "manifestPath": "_tilde_components/Popups/DoubleConfirmPopup.js",
+      "logical": "components/Popups/DoubleConfirmPopup.js",
+      "from": "src/components/Popups/DoubleConfirmPopup.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "jMDeX",
+      "manifestPath": "_tilde_components/Popups/OutofCreditModal.js",
+      "logical": "components/Popups/OutofCreditModal.js",
+      "from": "src/components/Popups/OutofCreditModal.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "aukl5",
+      "manifestPath": "_tilde_constants/payment.js",
+      "logical": "constants/payment.js",
+      "from": "src/constants/payment.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "zWHj6",
+      "manifestPath": "_tilde_components/Popups/ResumeMissingKeyPopup.js",
+      "logical": "components/Popups/ResumeMissingKeyPopup.js",
+      "from": "src/components/Popups/ResumeMissingKeyPopup.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "ihewf",
+      "manifestPath": "_tilde_components/ResumeSwitcher.js",
+      "logical": "components/ResumeSwitcher.js",
+      "from": "src/components/ResumeSwitcher.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "32feq",
+      "manifestPath": "_tilde_components/Popups/AddJobFirstPopup.js",
+      "logical": "components/Popups/AddJobFirstPopup.js",
+      "from": "src/components/Popups/AddJobFirstPopup.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "fDGTw",
+      "manifestPath": "_tilde_components/UpdateJobInfoLink.js",
+      "logical": "components/UpdateJobInfoLink.js",
+      "from": "src/components/UpdateJobInfoLink.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "8WhUc",
+      "manifestPath": "_tilde_components/VersionUpdate.js",
+      "logical": "components/VersionUpdate.js",
+      "from": "src/components/VersionUpdate.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "daBan",
+      "manifestPath": "_tilde_components/VersionUpdate/UpdateReadyModal.js",
+      "logical": "components/VersionUpdate/UpdateReadyModal.js",
+      "from": "src/components/VersionUpdate/UpdateReadyModal.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "1s9oG",
+      "manifestPath": "_tilde_components/VersionUpdate/UpdateUnavailableModal.js",
+      "logical": "components/VersionUpdate/UpdateUnavailableModal.js",
+      "from": "src/components/VersionUpdate/UpdateUnavailableModal.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "kh4HF",
+      "manifestPath": "_tilde_components/VersionUpdate/VersionBottomBar.js",
+      "logical": "components/VersionUpdate/VersionBottomBar.js",
+      "from": "src/components/VersionUpdate/VersionBottomBar.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "jktea",
+      "manifestPath": "_tilde_store/version-update.js",
+      "logical": "store/version-update.js",
+      "from": "src/store/version-update.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "COLfJ",
+      "manifestPath": "_tilde_components/VersionUpdate/WhatsNewSheet.js",
+      "logical": "components/VersionUpdate/WhatsNewSheet.js",
+      "from": "src/components/VersionUpdate/WhatsNewSheet.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "1wgrD",
+      "manifestPath": "_tilde_background/update-check.js",
+      "logical": "background/update-check.js",
+      "from": "src/background/update-check.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "3CGFK",
+      "manifestPath": "_tilde_components/VersionUpdate/whats-new-icons.js",
+      "logical": "components/VersionUpdate/whats-new-icons.js",
+      "from": "src/components/VersionUpdate/whats-new-icons.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "9mB6w",
+      "manifestPath": "_tilde_hooks/useVersionUpdate.js",
+      "logical": "hooks/useVersionUpdate.js",
+      "from": "src/hooks/useVersionUpdate.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "2DXqr",
+      "manifestPath": "_tilde_core/version-update-ui.js",
+      "logical": "core/version-update-ui.js",
+      "from": "src/core/version-update-ui.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "3L3xh",
+      "manifestPath": "_tilde_contents/pre-autofill-flow/tracking.js",
+      "logical": "contents/pre-autofill-flow/tracking.js",
+      "from": "src/contents/pre-autofill-flow/tracking.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "7xg1Q",
+      "manifestPath": "_tilde_hooks/usePaginationObserver.js",
+      "logical": "hooks/usePaginationObserver.js",
+      "from": "src/hooks/usePaginationObserver.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "lfzZV",
+      "manifestPath": "_tilde_contents/pre-autofill-flow/registry.js",
+      "logical": "contents/pre-autofill-flow/registry.js",
+      "from": "src/contents/pre-autofill-flow/registry.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "hOSkB",
+      "manifestPath": "_tilde_contents/sites/myworkday/account-preflow.js",
+      "logical": "contents/sites/myworkday/account-preflow.js",
+      "from": "src/contents/sites/myworkday/account-preflow.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "fChu0",
+      "manifestPath": "_tilde_contents/pre-autofill-flow/dom.js",
+      "logical": "contents/pre-autofill-flow/dom.js",
+      "from": "src/contents/pre-autofill-flow/dom.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "6WEEz",
+      "manifestPath": "_tilde_contents/sites/smartrecruiters/entry-preflow.js",
+      "logical": "contents/sites/smartrecruiters/entry-preflow.js",
+      "from": "src/contents/sites/smartrecruiters/entry-preflow.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "62ozi",
+      "manifestPath": "_tilde_hooks/usePreAutofillFlowRunner.js",
+      "logical": "hooks/usePreAutofillFlowRunner.js",
+      "from": "src/hooks/usePreAutofillFlowRunner.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "l5wRD",
+      "manifestPath": "_tilde_hooks/useRegisterAgentCancel.js",
+      "logical": "hooks/useRegisterAgentCancel.js",
+      "from": "src/hooks/useRegisterAgentCancel.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "anm6s",
+      "manifestPath": "_tilde_hooks/useRegisterAgentSkip.js",
+      "logical": "hooks/useRegisterAgentSkip.js",
+      "from": "src/hooks/useRegisterAgentSkip.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "12lb0",
+      "manifestPath": "_tilde_hooks/useStartAutofill.js",
+      "logical": "hooks/useStartAutofill.js",
+      "from": "src/hooks/useStartAutofill.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "clZg3",
+      "manifestPath": "_tilde_hooks/useSubmitApplication.js",
+      "logical": "hooks/useSubmitApplication.js",
+      "from": "src/hooks/useSubmitApplication.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "e52YT",
+      "manifestPath": "_tilde_hooks/useUpdateAgentResume.js",
+      "logical": "hooks/useUpdateAgentResume.js",
+      "from": "src/hooks/useUpdateAgentResume.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "lTWHp",
+      "manifestPath": "_tilde_hooks/useUpdateCoverLetter.js",
+      "logical": "hooks/useUpdateCoverLetter.js",
+      "from": "src/hooks/useUpdateCoverLetter.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "iSvIR",
+      "manifestPath": "_tilde_components/NotAvailableStatus.js",
+      "logical": "components/NotAvailableStatus.js",
+      "from": "src/components/NotAvailableStatus.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "4fFO5",
+      "manifestPath": "_tilde_components/Onboarding.js",
+      "logical": "components/Onboarding.js",
+      "from": "src/components/Onboarding.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "bXn7T",
+      "manifestPath": "_tilde_components/QuickChecklistItem.js",
+      "logical": "components/QuickChecklistItem.js",
+      "from": "src/components/QuickChecklistItem.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "8dTkf",
+      "manifestPath": "_tilde_utils/jobright-url.js",
+      "logical": "utils/jobright-url.js",
+      "from": "src/utils/jobright-url.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "d9oZa",
+      "manifestPath": "_tilde_components/HelperContainer/visibility.js",
+      "logical": "components/HelperContainer/visibility.js",
+      "from": "src/components/HelperContainer/visibility.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "hfEAA",
+      "manifestPath": "_tilde_components/HelperHeader.js",
+      "logical": "components/HelperHeader.js",
+      "from": "src/components/HelperHeader.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "lMgsL",
+      "manifestPath": "_tilde_components/PaymentEntry.js",
+      "logical": "components/PaymentEntry.js",
+      "from": "src/components/PaymentEntry.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "eUGsX",
+      "manifestPath": "_tilde_components/Popups/FeedbackPopup/Button.js",
+      "logical": "components/Popups/FeedbackPopup/Button.js",
+      "from": "src/components/Popups/FeedbackPopup/Button.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "iBOtA",
+      "manifestPath": "_tilde_components/WorkdayToast.js",
+      "logical": "components/WorkdayToast.js",
+      "from": "src/components/WorkdayToast.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "az1YZ",
+      "manifestPath": "_tilde_store/hide.js",
+      "logical": "store/hide.js",
+      "from": "src/store/hide.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "9pWmc",
+      "manifestPath": "_tilde_components/Resume/ResumeReview.js",
+      "logical": "components/Resume/ResumeReview.js",
+      "from": "src/components/Resume/ResumeReview.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "03leW",
+      "manifestPath": "_tilde_components/BasicButton.js",
+      "logical": "components/BasicButton.js",
+      "from": "src/components/BasicButton.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "hOhD5",
+      "manifestPath": "src/components/Resume/dirty-state.js",
+      "logical": "components/Resume/dirty-state.js",
+      "from": "src/components/Resume/dirty-state.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "jjZvo",
+      "manifestPath": "src/components/Resume/view-model.js",
+      "logical": "components/Resume/view-model.js",
+      "from": "src/components/Resume/view-model.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "7dIdK",
+      "manifestPath": "_tilde_hooks/useShowContinue.js",
+      "logical": "hooks/useShowContinue.js",
+      "from": "src/hooks/useShowContinue.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "cFD6N",
+      "manifestPath": "_tilde_hooks/useShowContinueState.js",
+      "logical": "hooks/useShowContinueState.js",
+      "from": "src/hooks/useShowContinueState.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "33jc0",
+      "manifestPath": "_tilde_hooks/useTrackPopup.js",
+      "logical": "hooks/useTrackPopup.js",
+      "from": "src/hooks/useTrackPopup.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "6uxLs",
+      "manifestPath": "_tilde_utils/successfactors-job-context.js",
+      "logical": "utils/successfactors-job-context.js",
+      "from": "src/utils/successfactors-job-context.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "fv4lo",
+      "manifestPath": "_tilde_utils/hide-logic.js",
+      "logical": "utils/hide-logic.js",
+      "from": "src/utils/hide-logic.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "bKfuC",
+      "manifestPath": "_tilde_theme.js",
+      "logical": "theme.js",
+      "from": "src/theme.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "jt2yS",
+      "manifestPath": "_tilde_components/LinkedinBannerProvider.js",
+      "logical": "components/LinkedinBannerProvider.js",
+      "from": "src/components/LinkedinBannerProvider.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "lff8Y",
+      "manifestPath": "_tilde_components/LinkedinBannerProvider/AutofillButton.js",
+      "logical": "components/LinkedinBannerProvider/AutofillButton.js",
+      "from": "src/components/LinkedinBannerProvider/AutofillButton.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "1dQk6",
+      "manifestPath": "_tilde_components/LinkedinBannerProvider/job-detail-mount.js",
+      "logical": "components/LinkedinBannerProvider/job-detail-mount.js",
+      "from": "src/components/LinkedinBannerProvider/job-detail-mount.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "7Bbgd",
+      "manifestPath": "_tilde_components/LinkedinBannerProvider/LinkedinBanner.js",
+      "logical": "components/LinkedinBannerProvider/LinkedinBanner.js",
+      "from": "src/components/LinkedinBannerProvider/LinkedinBanner.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "7UKxV",
+      "manifestPath": "_tilde_components/LinkedinBannerProvider/BirdBanner.js",
+      "logical": "components/LinkedinBannerProvider/BirdBanner.js",
+      "from": "src/components/LinkedinBannerProvider/BirdBanner.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "5A2Ti",
+      "manifestPath": "_tilde_components/LinkedinBannerProvider/copy.js",
+      "logical": "components/LinkedinBannerProvider/copy.js",
+      "from": "src/components/LinkedinBannerProvider/copy.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "lGKKE",
+      "manifestPath": "_tilde_components/LinkedinBannerProvider/JumpArrow.js",
+      "logical": "components/LinkedinBannerProvider/JumpArrow.js",
+      "from": "src/components/LinkedinBannerProvider/JumpArrow.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "8fs0H",
+      "manifestPath": "_tilde_components/LinkedinBannerProvider/Ring.js",
+      "logical": "components/LinkedinBannerProvider/Ring.js",
+      "from": "src/components/LinkedinBannerProvider/Ring.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "kwAtx",
+      "manifestPath": "_tilde_hooks/useLinkedinBannerClick.js",
+      "logical": "hooks/useLinkedinBannerClick.js",
+      "from": "src/hooks/useLinkedinBannerClick.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "2Qwhr",
+      "manifestPath": "_tilde_hooks/useLinkedinBannerRefresh.js",
+      "logical": "hooks/useLinkedinBannerRefresh.js",
+      "from": "src/hooks/useLinkedinBannerRefresh.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "eP3QC",
+      "manifestPath": "_tilde_components/Popups/FeedbackPopup.js",
+      "logical": "components/Popups/FeedbackPopup.js",
+      "from": "src/components/Popups/FeedbackPopup.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "6eqE8",
+      "manifestPath": "_tilde_components/CustomRate.js",
+      "logical": "components/CustomRate.js",
+      "from": "src/components/CustomRate.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "948zT",
+      "manifestPath": "_tilde_components/StarRatingModal.js",
+      "logical": "components/StarRatingModal.js",
+      "from": "src/components/StarRatingModal.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "W8A6P",
+      "manifestPath": "_tilde_components/Popups/CriticizeReviewsModal.js",
+      "logical": "components/Popups/CriticizeReviewsModal.js",
+      "from": "src/components/Popups/CriticizeReviewsModal.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "3lzkO",
+      "manifestPath": "_tilde_components/Popups/GoodReviewsModel.js",
+      "logical": "components/Popups/GoodReviewsModel.js",
+      "from": "src/components/Popups/GoodReviewsModel.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "8llzP",
+      "manifestPath": "_tilde_components/TextareaGenerateButton.js",
+      "logical": "components/TextareaGenerateButton.js",
+      "from": "src/components/TextareaGenerateButton.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "egLL9",
+      "manifestPath": "_tilde_components/TraceProvider.js",
+      "logical": "components/TraceProvider.js",
+      "from": "src/components/TraceProvider.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "7RE4t",
+      "manifestPath": "_tilde_contents/crawler/factory.js",
+      "logical": "contents/crawler/factory.js",
+      "from": "src/contents/crawler/factory.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "eGEF6",
+      "manifestPath": "_tilde_contents/sites/adobe.js",
+      "logical": "contents/sites/adobe.js",
+      "from": "src/contents/sites/adobe.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "3cWKC",
+      "manifestPath": "_tilde_contents/methods/rules.js",
+      "logical": "contents/methods/rules.js",
+      "from": "src/contents/methods/rules.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "dudnu",
+      "manifestPath": "src/contents/sites/adobe/answer.js",
+      "logical": "contents/sites/adobe/answer.js",
+      "from": "src/contents/sites/adobe/answer.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "1f2zg",
+      "manifestPath": "src/contents/sites/adobe/operations.js",
+      "logical": "contents/sites/adobe/operations.js",
+      "from": "src/contents/sites/adobe/operations.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "lWgAg",
+      "manifestPath": "src/contents/sites/adobe/rules.js",
+      "logical": "contents/sites/adobe/rules.js",
+      "from": "src/contents/sites/adobe/rules.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "5dRDr",
+      "manifestPath": "src/contents/sites/adobe/style.js",
+      "logical": "contents/sites/adobe/style.js",
+      "from": "src/contents/sites/adobe/style.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "i9smx",
+      "manifestPath": "_tilde_contents/sites/adp-myjobs.js",
+      "logical": "contents/sites/adp-myjobs.js",
+      "from": "src/contents/sites/adp-myjobs.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "69xYI",
+      "manifestPath": "src/contents/sites/adp-myjobs/operations.js",
+      "logical": "contents/sites/adp-myjobs/operations.js",
+      "from": "src/contents/sites/adp-myjobs/operations.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "7wDqa",
+      "manifestPath": "src/contents/sites/adp-myjobs/rules.js",
+      "logical": "contents/sites/adp-myjobs/rules.js",
+      "from": "src/contents/sites/adp-myjobs/rules.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "9zFM0",
+      "manifestPath": "_tilde_contents/sites/adp-recruiting.js",
+      "logical": "contents/sites/adp-recruiting.js",
+      "from": "src/contents/sites/adp-recruiting.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "3LhvH",
+      "manifestPath": "src/contents/sites/adp-recruiting/answer.js",
+      "logical": "contents/sites/adp-recruiting/answer.js",
+      "from": "src/contents/sites/adp-recruiting/answer.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "1IQSh",
+      "manifestPath": "src/contents/sites/adp-recruiting/operations.js",
+      "logical": "contents/sites/adp-recruiting/operations.js",
+      "from": "src/contents/sites/adp-recruiting/operations.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "jTK8L",
+      "manifestPath": "src/contents/sites/adp-recruiting/rules.js",
+      "logical": "contents/sites/adp-recruiting/rules.js",
+      "from": "src/contents/sites/adp-recruiting/rules.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "8CqoG",
+      "manifestPath": "_tilde_contents/sites/adp-workforcenow.js",
+      "logical": "contents/sites/adp-workforcenow.js",
+      "from": "src/contents/sites/adp-workforcenow.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "3cqYs",
+      "manifestPath": "src/contents/sites/adp-workforcenow/answer.js",
+      "logical": "contents/sites/adp-workforcenow/answer.js",
+      "from": "src/contents/sites/adp-workforcenow/answer.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "lIV4n",
+      "manifestPath": "src/contents/sites/adp-workforcenow/operations.js",
+      "logical": "contents/sites/adp-workforcenow/operations.js",
+      "from": "src/contents/sites/adp-workforcenow/operations.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "5fFF1",
+      "manifestPath": "src/contents/sites/adp-workforcenow/rules.js",
+      "logical": "contents/sites/adp-workforcenow/rules.js",
+      "from": "src/contents/sites/adp-workforcenow/rules.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "de7zi",
+      "manifestPath": "_tilde_contents/sites/amazon.js",
+      "logical": "contents/sites/amazon.js",
+      "from": "src/contents/sites/amazon.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "8ZXaS",
+      "manifestPath": "src/contents/sites/amazon/operations.js",
+      "logical": "contents/sites/amazon/operations.js",
+      "from": "src/contents/sites/amazon/operations.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "1pEJD",
+      "manifestPath": "src/contents/sites/amazon/rules.js",
+      "logical": "contents/sites/amazon/rules.js",
+      "from": "src/contents/sites/amazon/rules.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "c6v3o",
+      "manifestPath": "_tilde_contents/sites/apple.js",
+      "logical": "contents/sites/apple.js",
+      "from": "src/contents/sites/apple.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "dcxvW",
+      "manifestPath": "_tilde_contents/sites/apple/operations.js",
+      "logical": "contents/sites/apple/operations.js",
+      "from": "src/contents/sites/apple/operations.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "bPSBK",
+      "manifestPath": "_tilde_contents/sites/apple/rules.js",
+      "logical": "contents/sites/apple/rules.js",
+      "from": "src/contents/sites/apple/rules.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "lI3rh",
+      "manifestPath": "_tilde_contents/sites/apple/typeahead.js",
+      "logical": "contents/sites/apple/typeahead.js",
+      "from": "src/contents/sites/apple/typeahead.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "1vP8Z",
+      "manifestPath": "_tilde_contents/sites/apple/answer.js",
+      "logical": "contents/sites/apple/answer.js",
+      "from": "src/contents/sites/apple/answer.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "g9Qd1",
+      "manifestPath": "_tilde_contents/sites/apple/country.js",
+      "logical": "contents/sites/apple/country.js",
+      "from": "src/contents/sites/apple/country.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "9H7dQ",
+      "manifestPath": "_tilde_contents/sites/ashby.js",
+      "logical": "contents/sites/ashby.js",
+      "from": "src/contents/sites/ashby.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "Cpwm9",
+      "manifestPath": "_tilde_contents/sites/ashby/answer.js",
+      "logical": "contents/sites/ashby/answer.js",
+      "from": "src/contents/sites/ashby/answer.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "99dYo",
+      "manifestPath": "_tilde_contents/sites/ashby/canonical-search.js",
+      "logical": "contents/sites/ashby/canonical-search.js",
+      "from": "src/contents/sites/ashby/canonical-search.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "e158F",
+      "manifestPath": "_tilde_contents/sites/ashby/location-operation.js",
+      "logical": "contents/sites/ashby/location-operation.js",
+      "from": "src/contents/sites/ashby/location-operation.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "3giV6",
+      "manifestPath": "_tilde_contents/sites/ashby/operations.js",
+      "logical": "contents/sites/ashby/operations.js",
+      "from": "src/contents/sites/ashby/operations.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "8jmJu",
+      "manifestPath": "_tilde_contents/sites/ashby/phone-value.js",
+      "logical": "contents/sites/ashby/phone-value.js",
+      "from": "src/contents/sites/ashby/phone-value.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "lLsBv",
+      "manifestPath": "_tilde_contents/sites/ashby/native-select.js",
+      "logical": "contents/sites/ashby/native-select.js",
+      "from": "src/contents/sites/ashby/native-select.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "5iMv1",
+      "manifestPath": "_tilde_contents/sites/ashby/rules.js",
+      "logical": "contents/sites/ashby/rules.js",
+      "from": "src/contents/sites/ashby/rules.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "dCLIj",
+      "manifestPath": "_tilde_contents/sites/ashby/field-metadata.js",
+      "logical": "contents/sites/ashby/field-metadata.js",
+      "from": "src/contents/sites/ashby/field-metadata.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "bdkMH",
+      "manifestPath": "_tilde_contents/sites/ashby/country.js",
+      "logical": "contents/sites/ashby/country.js",
+      "from": "src/contents/sites/ashby/country.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "8kwJN",
+      "manifestPath": "_tilde_contents/sites/profile-location-original-answer.js",
+      "logical": "contents/sites/profile-location-original-answer.js",
+      "from": "src/contents/sites/profile-location-original-answer.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "g7awH",
+      "manifestPath": "_tilde_contents/sites/avature.js",
+      "logical": "contents/sites/avature.js",
+      "from": "src/contents/sites/avature.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "ctNoD",
+      "manifestPath": "src/contents/sites/avature/answer.js",
+      "logical": "contents/sites/avature/answer.js",
+      "from": "src/contents/sites/avature/answer.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "5hwtt",
+      "manifestPath": "src/contents/sites/avature/combo-questions.js",
+      "logical": "contents/sites/avature/combo-questions.js",
+      "from": "src/contents/sites/avature/combo-questions.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "6pytM",
+      "manifestPath": "src/contents/sites/avature/country.js",
+      "logical": "contents/sites/avature/country.js",
+      "from": "src/contents/sites/avature/country.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "KsG95",
+      "manifestPath": "src/contents/sites/avature/operations.js",
+      "logical": "contents/sites/avature/operations.js",
+      "from": "src/contents/sites/avature/operations.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "3KzDR",
+      "manifestPath": "_tilde_api/autofill-client-search.js",
+      "logical": "api/autofill-client-search.js",
+      "from": "src/api/autofill-client-search.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "flUgg",
+      "manifestPath": "_tilde_contents/sites/bamboohr.js",
+      "logical": "contents/sites/bamboohr.js",
+      "from": "src/contents/sites/bamboohr.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "648AA",
+      "manifestPath": "_tilde_contents/sites/bamboohr/answer.js",
+      "logical": "contents/sites/bamboohr/answer.js",
+      "from": "src/contents/sites/bamboohr/answer.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "gz0J8",
+      "manifestPath": "_tilde_contents/sites/bamboohr/operations.js",
+      "logical": "contents/sites/bamboohr/operations.js",
+      "from": "src/contents/sites/bamboohr/operations.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "bxLeu",
+      "manifestPath": "src/contents/sites/bamboohr/rules.js",
+      "logical": "contents/sites/bamboohr/rules.js",
+      "from": "src/contents/sites/bamboohr/rules.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "jiUzT",
+      "manifestPath": "_tilde_contents/sites/brassring.js",
+      "logical": "contents/sites/brassring.js",
+      "from": "src/contents/sites/brassring.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "LdxVK",
+      "manifestPath": "src/contents/sites/brassring/answer.js",
+      "logical": "contents/sites/brassring/answer.js",
+      "from": "src/contents/sites/brassring/answer.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "l4T7j",
+      "manifestPath": "_tilde_utils/gpa.js",
+      "logical": "utils/gpa.js",
+      "from": "src/utils/gpa.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "huUp4",
+      "manifestPath": "src/contents/sites/brassring/country.js",
+      "logical": "contents/sites/brassring/country.js",
+      "from": "src/contents/sites/brassring/country.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "9ZJbU",
+      "manifestPath": "src/contents/sites/brassring/operations.js",
+      "logical": "contents/sites/brassring/operations.js",
+      "from": "src/contents/sites/brassring/operations.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "79ZpG",
+      "manifestPath": "src/contents/sites/brassring/rules.js",
+      "logical": "contents/sites/brassring/rules.js",
+      "from": "src/contents/sites/brassring/rules.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "kl5FS",
+      "manifestPath": "_tilde_contents/sites/breezy.js",
+      "logical": "contents/sites/breezy.js",
+      "from": "src/contents/sites/breezy.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "1Ai17",
+      "manifestPath": "_tilde_contents/sites/breezy/answer.js",
+      "logical": "contents/sites/breezy/answer.js",
+      "from": "src/contents/sites/breezy/answer.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "4P8sE",
+      "manifestPath": "_tilde_contents/sites/breezy/operations.js",
+      "logical": "contents/sites/breezy/operations.js",
+      "from": "src/contents/sites/breezy/operations.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "hU5fc",
+      "manifestPath": "_tilde_contents/sites/breezy/rules.js",
+      "logical": "contents/sites/breezy/rules.js",
+      "from": "src/contents/sites/breezy/rules.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "jVtpK",
+      "manifestPath": "_tilde_contents/sites/bytedance.js",
+      "logical": "contents/sites/bytedance.js",
+      "from": "src/contents/sites/bytedance.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "ZCM0a",
+      "manifestPath": "_tilde_contents/sites/bytedance/answer.js",
+      "logical": "contents/sites/bytedance/answer.js",
+      "from": "src/contents/sites/bytedance/answer.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "4D6AE",
+      "manifestPath": "src/contents/sites/bytedance/operations.js",
+      "logical": "contents/sites/bytedance/operations.js",
+      "from": "src/contents/sites/bytedance/operations.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "8j7Jw",
+      "manifestPath": "src/contents/sites/bytedance/rules.js",
+      "logical": "contents/sites/bytedance/rules.js",
+      "from": "src/contents/sites/bytedance/rules.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "iBjKs",
+      "manifestPath": "_tilde_contents/sites/careerplug.js",
+      "logical": "contents/sites/careerplug.js",
+      "from": "src/contents/sites/careerplug.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "aJPXi",
+      "manifestPath": "src/contents/sites/careerplug/operations.js",
+      "logical": "contents/sites/careerplug/operations.js",
+      "from": "src/contents/sites/careerplug/operations.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "hHAqn",
+      "manifestPath": "src/contents/sites/careerplug/rules.js",
+      "logical": "contents/sites/careerplug/rules.js",
+      "from": "src/contents/sites/careerplug/rules.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "dcvWr",
+      "manifestPath": "_tilde_contents/sites/careers-page.js",
+      "logical": "contents/sites/careers-page.js",
+      "from": "src/contents/sites/careers-page.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "7ABcJ",
+      "manifestPath": "src/contents/sites/careers-page/answer.js",
+      "logical": "contents/sites/careers-page/answer.js",
+      "from": "src/contents/sites/careers-page/answer.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "1VGS1",
+      "manifestPath": "src/contents/sites/careers-page/operations.js",
+      "logical": "contents/sites/careers-page/operations.js",
+      "from": "src/contents/sites/careers-page/operations.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "9NM9Q",
+      "manifestPath": "src/contents/sites/careers-page/rules.js",
+      "logical": "contents/sites/careers-page/rules.js",
+      "from": "src/contents/sites/careers-page/rules.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "44HAb",
+      "manifestPath": "_tilde_contents/sites/careers-toasttab.js",
+      "logical": "contents/sites/careers-toasttab.js",
+      "from": "src/contents/sites/careers-toasttab.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "kkjJL",
+      "manifestPath": "src/contents/sites/careers-toasttab/operations.js",
+      "logical": "contents/sites/careers-toasttab/operations.js",
+      "from": "src/contents/sites/careers-toasttab/operations.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "4xhlr",
+      "manifestPath": "src/contents/sites/careers-toasttab/rules.js",
+      "logical": "contents/sites/careers-toasttab/rules.js",
+      "from": "src/contents/sites/careers-toasttab/rules.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "1lFq9",
+      "manifestPath": "_tilde_contents/sites/careers-withwaymo.js",
+      "logical": "contents/sites/careers-withwaymo.js",
+      "from": "src/contents/sites/careers-withwaymo.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "3ZdOq",
+      "manifestPath": "src/contents/sites/careers-withwaymo/answer.js",
+      "logical": "contents/sites/careers-withwaymo/answer.js",
+      "from": "src/contents/sites/careers-withwaymo/answer.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "dD71w",
+      "manifestPath": "src/contents/sites/careers-withwaymo/operations.js",
+      "logical": "contents/sites/careers-withwaymo/operations.js",
+      "from": "src/contents/sites/careers-withwaymo/operations.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "aBisk",
+      "manifestPath": "src/contents/sites/careers-withwaymo/rules.js",
+      "logical": "contents/sites/careers-withwaymo/rules.js",
+      "from": "src/contents/sites/careers-withwaymo/rules.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "hNdaV",
+      "manifestPath": "_tilde_contents/sites/catsone.js",
+      "logical": "contents/sites/catsone.js",
+      "from": "src/contents/sites/catsone.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "euMfJ",
+      "manifestPath": "src/contents/sites/catsone/operations.js",
+      "logical": "contents/sites/catsone/operations.js",
+      "from": "src/contents/sites/catsone/operations.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "5Fn00",
+      "manifestPath": "src/contents/sites/catsone/rules.js",
+      "logical": "contents/sites/catsone/rules.js",
+      "from": "src/contents/sites/catsone/rules.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "dotEY",
+      "manifestPath": "src/contents/sites/catsone/answer.js",
+      "logical": "contents/sites/catsone/answer.js",
+      "from": "src/contents/sites/catsone/answer.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "bZSKO",
+      "manifestPath": "_tilde_contents/sites/cisco.js",
+      "logical": "contents/sites/cisco.js",
+      "from": "src/contents/sites/cisco.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "leElr",
+      "manifestPath": "src/contents/sites/cisco/answer.js",
+      "logical": "contents/sites/cisco/answer.js",
+      "from": "src/contents/sites/cisco/answer.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "48J5W",
+      "manifestPath": "src/contents/sites/cisco/operations.js",
+      "logical": "contents/sites/cisco/operations.js",
+      "from": "src/contents/sites/cisco/operations.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "h22JB",
+      "manifestPath": "_tilde_contents/crawler/utils/select.js",
+      "logical": "contents/crawler/utils/select.js",
+      "from": "src/contents/crawler/utils/select.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "hx3S7",
+      "manifestPath": "src/contents/sites/cisco/rules.js",
+      "logical": "contents/sites/cisco/rules.js",
+      "from": "src/contents/sites/cisco/rules.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "HYvSE",
+      "manifestPath": "_tilde_contents/sites/comeet.js",
+      "logical": "contents/sites/comeet.js",
+      "from": "src/contents/sites/comeet.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "8Dbst",
+      "manifestPath": "src/contents/sites/comeet/operations.js",
+      "logical": "contents/sites/comeet/operations.js",
+      "from": "src/contents/sites/comeet/operations.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "9qxec",
+      "manifestPath": "src/contents/sites/comeet/rules.js",
+      "logical": "contents/sites/comeet/rules.js",
+      "from": "src/contents/sites/comeet/rules.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "3Jd0v",
+      "manifestPath": "_tilde_contents/sites/dayforce.js",
+      "logical": "contents/sites/dayforce.js",
+      "from": "src/contents/sites/dayforce.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "irXfm",
+      "manifestPath": "src/contents/sites/dayforce/answer.js",
+      "logical": "contents/sites/dayforce/answer.js",
+      "from": "src/contents/sites/dayforce/answer.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "gnj33",
+      "manifestPath": "src/contents/sites/dayforce/operations.js",
+      "logical": "contents/sites/dayforce/operations.js",
+      "from": "src/contents/sites/dayforce/operations.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "5ymq4",
+      "manifestPath": "src/contents/sites/dayforce/rules.js",
+      "logical": "contents/sites/dayforce/rules.js",
+      "from": "src/contents/sites/dayforce/rules.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "1Lzdy",
+      "manifestPath": "_tilde_contents/sites/eightfold.js",
+      "logical": "contents/sites/eightfold.js",
+      "from": "src/contents/sites/eightfold.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "6ct1g",
+      "manifestPath": "src/contents/sites/eightfold/operations.js",
+      "logical": "contents/sites/eightfold/operations.js",
+      "from": "src/contents/sites/eightfold/operations.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "eMRh5",
+      "manifestPath": "_tilde_contents/sites/eightfold/careerhub.js",
+      "logical": "contents/sites/eightfold/careerhub.js",
+      "from": "src/contents/sites/eightfold/careerhub.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "ejJsZ",
+      "manifestPath": "src/contents/sites/eightfold/operations.js",
+      "logical": "contents/sites/eightfold/operations.js",
+      "from": "src/contents/sites/eightfold/operations.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "dYxzO",
+      "manifestPath": "src/contents/sites/eightfold/rules.js",
+      "logical": "contents/sites/eightfold/rules.js",
+      "from": "src/contents/sites/eightfold/rules.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "jqMtR",
+      "manifestPath": "_tilde_contents/sites/freshteam.js",
+      "logical": "contents/sites/freshteam.js",
+      "from": "src/contents/sites/freshteam.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "4rngB",
+      "manifestPath": "src/contents/sites/freshteam/operations.js",
+      "logical": "contents/sites/freshteam/operations.js",
+      "from": "src/contents/sites/freshteam/operations.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "2Z3hS",
+      "manifestPath": "src/contents/sites/freshteam/rules.js",
+      "logical": "contents/sites/freshteam/rules.js",
+      "from": "src/contents/sites/freshteam/rules.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "eT4X2",
+      "manifestPath": "_tilde_contents/sites/gem.js",
+      "logical": "contents/sites/gem.js",
+      "from": "src/contents/sites/gem.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "dRGXb",
+      "manifestPath": "src/contents/sites/gem/answer.js",
+      "logical": "contents/sites/gem/answer.js",
+      "from": "src/contents/sites/gem/answer.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "2OQ69",
+      "manifestPath": "src/contents/sites/gem/operations.js",
+      "logical": "contents/sites/gem/operations.js",
+      "from": "src/contents/sites/gem/operations.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "fXFdA",
+      "manifestPath": "src/contents/sites/gem/rules.js",
+      "logical": "contents/sites/gem/rules.js",
+      "from": "src/contents/sites/gem/rules.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "2yhOH",
+      "manifestPath": "_tilde_contents/sites/gohire.js",
+      "logical": "contents/sites/gohire.js",
+      "from": "src/contents/sites/gohire.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "jCrxS",
+      "manifestPath": "src/contents/sites/gohire/operations.js",
+      "logical": "contents/sites/gohire/operations.js",
+      "from": "src/contents/sites/gohire/operations.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "4BwUW",
+      "manifestPath": "src/contents/sites/gohire/rules.js",
+      "logical": "contents/sites/gohire/rules.js",
+      "from": "src/contents/sites/gohire/rules.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "jlOd6",
+      "manifestPath": "_tilde_contents/sites/greenhouse.js",
+      "logical": "contents/sites/greenhouse.js",
+      "from": "src/contents/sites/greenhouse.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "j7UGI",
+      "manifestPath": "_tilde_contents/sites/education-item-trace.js",
+      "logical": "contents/sites/education-item-trace.js",
+      "from": "src/contents/sites/education-item-trace.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "3lHOC",
+      "manifestPath": "_tilde_contents/sites/greenhouse/answer.js",
+      "logical": "contents/sites/greenhouse/answer.js",
+      "from": "src/contents/sites/greenhouse/answer.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "1wqHT",
+      "manifestPath": "_tilde_contents/sites/greenhouse/education-operation.js",
+      "logical": "contents/sites/greenhouse/education-operation.js",
+      "from": "src/contents/sites/greenhouse/education-operation.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "3FZ4r",
+      "manifestPath": "_tilde_contents/sites/greenhouse/location-operation.js",
+      "logical": "contents/sites/greenhouse/location-operation.js",
+      "from": "src/contents/sites/greenhouse/location-operation.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "6Nc4c",
+      "manifestPath": "_tilde_contents/sites/greenhouse/resolve-tracking.js",
+      "logical": "contents/sites/greenhouse/resolve-tracking.js",
+      "from": "src/contents/sites/greenhouse/resolve-tracking.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "da2o3",
+      "manifestPath": "_tilde_contents/sites/resolve-trace-tracking.js",
+      "logical": "contents/sites/resolve-trace-tracking.js",
+      "from": "src/contents/sites/resolve-trace-tracking.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "jly3y",
+      "manifestPath": "_tilde_contents/sites/greenhouse/rules.js",
+      "logical": "contents/sites/greenhouse/rules.js",
+      "from": "src/contents/sites/greenhouse/rules.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "ewjev",
+      "manifestPath": "_tilde_contents/sites/greenhouse/snapshot-alignment.js",
+      "logical": "contents/sites/greenhouse/snapshot-alignment.js",
+      "from": "src/contents/sites/greenhouse/snapshot-alignment.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "aVQsr",
+      "manifestPath": "_tilde_contents/sites/greenhouse/validation-tracking.js",
+      "logical": "contents/sites/greenhouse/validation-tracking.js",
+      "from": "src/contents/sites/greenhouse/validation-tracking.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "8W2JT",
+      "manifestPath": "_tilde_contents/sites/runtime-validation-tracking.js",
+      "logical": "contents/sites/runtime-validation-tracking.js",
+      "from": "src/contents/sites/runtime-validation-tracking.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "8dguL",
+      "manifestPath": "src/contents/sites/greenhouse/country.js",
+      "logical": "contents/sites/greenhouse/country.js",
+      "from": "src/contents/sites/greenhouse/country.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "1DkIp",
+      "manifestPath": "src/contents/sites/greenhouse/operations.js",
+      "logical": "contents/sites/greenhouse/operations.js",
+      "from": "src/contents/sites/greenhouse/operations.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "htn4O",
+      "manifestPath": "_tilde_contents/sites/gusto.js",
+      "logical": "contents/sites/gusto.js",
+      "from": "src/contents/sites/gusto.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "FFIyS",
+      "manifestPath": "src/contents/sites/gusto/answer.js",
+      "logical": "contents/sites/gusto/answer.js",
+      "from": "src/contents/sites/gusto/answer.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "bsufU",
+      "manifestPath": "src/contents/sites/gusto/operations.js",
+      "logical": "contents/sites/gusto/operations.js",
+      "from": "src/contents/sites/gusto/operations.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "8bOoA",
+      "manifestPath": "src/contents/sites/gusto/rules.js",
+      "logical": "contents/sites/gusto/rules.js",
+      "from": "src/contents/sites/gusto/rules.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "4guEq",
+      "manifestPath": "_tilde_contents/sites/hiringthing.js",
+      "logical": "contents/sites/hiringthing.js",
+      "from": "src/contents/sites/hiringthing.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "2wcwR",
+      "manifestPath": "src/contents/sites/hiringthing/answer.js",
+      "logical": "contents/sites/hiringthing/answer.js",
+      "from": "src/contents/sites/hiringthing/answer.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "kozjd",
+      "manifestPath": "src/contents/sites/hiringthing/operations.js",
+      "logical": "contents/sites/hiringthing/operations.js",
+      "from": "src/contents/sites/hiringthing/operations.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "fUNlN",
+      "manifestPath": "src/contents/sites/hiringthing/rules.js",
+      "logical": "contents/sites/hiringthing/rules.js",
+      "from": "src/contents/sites/hiringthing/rules.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "8Ikc2",
+      "manifestPath": "_tilde_contents/sites/hrmdirect.js",
+      "logical": "contents/sites/hrmdirect.js",
+      "from": "src/contents/sites/hrmdirect.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "3fn7Y",
+      "manifestPath": "src/contents/sites/hrmdirect/answer.js",
+      "logical": "contents/sites/hrmdirect/answer.js",
+      "from": "src/contents/sites/hrmdirect/answer.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "gqN7c",
+      "manifestPath": "src/contents/sites/hrmdirect/country.js",
+      "logical": "contents/sites/hrmdirect/country.js",
+      "from": "src/contents/sites/hrmdirect/country.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "9yJqz",
+      "manifestPath": "src/contents/sites/hrmdirect/operations.js",
+      "logical": "contents/sites/hrmdirect/operations.js",
+      "from": "src/contents/sites/hrmdirect/operations.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "5Bfch",
+      "manifestPath": "src/contents/sites/hrmdirect/rules.js",
+      "logical": "contents/sites/hrmdirect/rules.js",
+      "from": "src/contents/sites/hrmdirect/rules.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "kqg1H",
+      "manifestPath": "_tilde_contents/sites/hubspot.js",
+      "logical": "contents/sites/hubspot.js",
+      "from": "src/contents/sites/hubspot.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "gFF2N",
+      "manifestPath": "src/contents/sites/hubspot/operations.js",
+      "logical": "contents/sites/hubspot/operations.js",
+      "from": "src/contents/sites/hubspot/operations.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "7kZkl",
+      "manifestPath": "src/contents/sites/hubspot/rules.js",
+      "logical": "contents/sites/hubspot/rules.js",
+      "from": "src/contents/sites/hubspot/rules.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "j70hj",
+      "manifestPath": "_tilde_contents/sites/icims.js",
+      "logical": "contents/sites/icims.js",
+      "from": "src/contents/sites/icims.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "DQtoj",
+      "manifestPath": "src/contents/sites/icims/utils.js",
+      "logical": "contents/sites/icims/utils.js",
+      "from": "src/contents/sites/icims/utils.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "9Ic4b",
+      "manifestPath": "src/contents/sites/icims/answer.js",
+      "logical": "contents/sites/icims/answer.js",
+      "from": "src/contents/sites/icims/answer.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "lYqnX",
+      "manifestPath": "src/contents/sites/icims/operations.js",
+      "logical": "contents/sites/icims/operations.js",
+      "from": "src/contents/sites/icims/operations.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "9LvSK",
+      "manifestPath": "src/contents/sites/icims/rules.js",
+      "logical": "contents/sites/icims/rules.js",
+      "from": "src/contents/sites/icims/rules.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "5kesW",
+      "manifestPath": "src/contents/sites/icims/submit-tracking.js",
+      "logical": "contents/sites/icims/submit-tracking.js",
+      "from": "src/contents/sites/icims/submit-tracking.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "gJ2cP",
+      "manifestPath": "_tilde_contents/sites/intuit.js",
+      "logical": "contents/sites/intuit.js",
+      "from": "src/contents/sites/intuit.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "3Am28",
+      "manifestPath": "src/contents/sites/intuit/operations.js",
+      "logical": "contents/sites/intuit/operations.js",
+      "from": "src/contents/sites/intuit/operations.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "1Rydp",
+      "manifestPath": "src/contents/sites/intuit/rules.js",
+      "logical": "contents/sites/intuit/rules.js",
+      "from": "src/contents/sites/intuit/rules.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "4FaGo",
+      "manifestPath": "src/contents/sites/intuit/answer.js",
+      "logical": "contents/sites/intuit/answer.js",
+      "from": "src/contents/sites/intuit/answer.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "8kaHg",
+      "manifestPath": "_tilde_contents/sites/isolved.js",
+      "logical": "contents/sites/isolved.js",
+      "from": "src/contents/sites/isolved.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "77eiZ",
+      "manifestPath": "src/contents/sites/isolved/answer.js",
+      "logical": "contents/sites/isolved/answer.js",
+      "from": "src/contents/sites/isolved/answer.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "bArT1",
+      "manifestPath": "src/contents/sites/isolved/rules.js",
+      "logical": "contents/sites/isolved/rules.js",
+      "from": "src/contents/sites/isolved/rules.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "4befB",
+      "manifestPath": "_tilde_contents/sites/jacobs.js",
+      "logical": "contents/sites/jacobs.js",
+      "from": "src/contents/sites/jacobs.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "iOFeQ",
+      "manifestPath": "src/contents/sites/jacobs/answer.js",
+      "logical": "contents/sites/jacobs/answer.js",
+      "from": "src/contents/sites/jacobs/answer.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "iWUer",
+      "manifestPath": "src/contents/sites/jacobs/education-client-search.js",
+      "logical": "contents/sites/jacobs/education-client-search.js",
+      "from": "src/contents/sites/jacobs/education-client-search.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "1w32k",
+      "manifestPath": "src/contents/sites/jacobs/operations.js",
+      "logical": "contents/sites/jacobs/operations.js",
+      "from": "src/contents/sites/jacobs/operations.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "iZWxZ",
+      "manifestPath": "src/contents/sites/jacobs/rules.js",
+      "logical": "contents/sites/jacobs/rules.js",
+      "from": "src/contents/sites/jacobs/rules.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "1xsGf",
+      "manifestPath": "_tilde_contents/sites/jazzhr.js",
+      "logical": "contents/sites/jazzhr.js",
+      "from": "src/contents/sites/jazzhr.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "gfSkt",
+      "manifestPath": "src/contents/sites/jazzhr/answer.js",
+      "logical": "contents/sites/jazzhr/answer.js",
+      "from": "src/contents/sites/jazzhr/answer.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "cgRxd",
+      "manifestPath": "src/contents/sites/jazzhr/operations.js",
+      "logical": "contents/sites/jazzhr/operations.js",
+      "from": "src/contents/sites/jazzhr/operations.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "iW69z",
+      "manifestPath": "src/contents/sites/jazzhr/rules.js",
+      "logical": "contents/sites/jazzhr/rules.js",
+      "from": "src/contents/sites/jazzhr/rules.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "9eGoe",
+      "manifestPath": "_tilde_contents/sites/jobdiva.js",
+      "logical": "contents/sites/jobdiva.js",
+      "from": "src/contents/sites/jobdiva.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "9tSwu",
+      "manifestPath": "src/contents/sites/jobdiva/answer.js",
+      "logical": "contents/sites/jobdiva/answer.js",
+      "from": "src/contents/sites/jobdiva/answer.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "aBF8M",
+      "manifestPath": "src/contents/sites/jobdiva/operations.js",
+      "logical": "contents/sites/jobdiva/operations.js",
+      "from": "src/contents/sites/jobdiva/operations.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "bcuXB",
+      "manifestPath": "src/contents/sites/jobdiva/rules.js",
+      "logical": "contents/sites/jobdiva/rules.js",
+      "from": "src/contents/sites/jobdiva/rules.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "d9UPP",
+      "manifestPath": "_tilde_contents/sites/JobScore.js",
+      "logical": "contents/sites/JobScore.js",
+      "from": "src/contents/sites/JobScore.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "iH7NT",
+      "manifestPath": "src/contents/sites/JobScore/country.js",
+      "logical": "contents/sites/JobScore/country.js",
+      "from": "src/contents/sites/JobScore/country.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "jdxtK",
+      "manifestPath": "src/contents/sites/JobScore/operations.js",
+      "logical": "contents/sites/JobScore/operations.js",
+      "from": "src/contents/sites/JobScore/operations.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "4QaIN",
+      "manifestPath": "src/contents/sites/JobScore/rules.js",
+      "logical": "contents/sites/JobScore/rules.js",
+      "from": "src/contents/sites/JobScore/rules.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "6yD7X",
+      "manifestPath": "_tilde_contents/sites/jobvite.js",
+      "logical": "contents/sites/jobvite.js",
+      "from": "src/contents/sites/jobvite.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "92ViD",
+      "manifestPath": "_tilde_contents/sites/jobvite/answer.js",
+      "logical": "contents/sites/jobvite/answer.js",
+      "from": "src/contents/sites/jobvite/answer.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "2W7tx",
+      "manifestPath": "_tilde_contents/sites/jobvite/operations.js",
+      "logical": "contents/sites/jobvite/operations.js",
+      "from": "src/contents/sites/jobvite/operations.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "e00gr",
+      "manifestPath": "_tilde_contents/sites/jobvite/rules.js",
+      "logical": "contents/sites/jobvite/rules.js",
+      "from": "src/contents/sites/jobvite/rules.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "hdblo",
+      "manifestPath": "_tilde_contents/sites/kula.js",
+      "logical": "contents/sites/kula.js",
+      "from": "src/contents/sites/kula.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "hrZcr",
+      "manifestPath": "src/contents/sites/kula/education-client-search.js",
+      "logical": "contents/sites/kula/education-client-search.js",
+      "from": "src/contents/sites/kula/education-client-search.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "6ff0Q",
+      "manifestPath": "src/contents/sites/kula/answer.js",
+      "logical": "contents/sites/kula/answer.js",
+      "from": "src/contents/sites/kula/answer.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "4wVIP",
+      "manifestPath": "src/contents/sites/kula/operations.js",
+      "logical": "contents/sites/kula/operations.js",
+      "from": "src/contents/sites/kula/operations.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "7iog9",
+      "manifestPath": "src/contents/sites/kula/rules.js",
+      "logical": "contents/sites/kula/rules.js",
+      "from": "src/contents/sites/kula/rules.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "j4zKu",
+      "manifestPath": "_tilde_contents/sites/lever.js",
+      "logical": "contents/sites/lever.js",
+      "from": "src/contents/sites/lever.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "8Bisn",
+      "manifestPath": "src/contents/sites/lever/answer.js",
+      "logical": "contents/sites/lever/answer.js",
+      "from": "src/contents/sites/lever/answer.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "iPTYa",
+      "manifestPath": "src/contents/sites/lever/operations.js",
+      "logical": "contents/sites/lever/operations.js",
+      "from": "src/contents/sites/lever/operations.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "745F0",
+      "manifestPath": "src/contents/sites/lever/rules.js",
+      "logical": "contents/sites/lever/rules.js",
+      "from": "src/contents/sites/lever/rules.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "4VdlM",
+      "manifestPath": "_tilde_contents/sites/metacareers.js",
+      "logical": "contents/sites/metacareers.js",
+      "from": "src/contents/sites/metacareers.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "eUOuS",
+      "manifestPath": "src/contents/sites/metacareers/answer.js",
+      "logical": "contents/sites/metacareers/answer.js",
+      "from": "src/contents/sites/metacareers/answer.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "jTGaf",
+      "manifestPath": "src/contents/sites/metacareers/location-operation.js",
+      "logical": "contents/sites/metacareers/location-operation.js",
+      "from": "src/contents/sites/metacareers/location-operation.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "hu0IF",
+      "manifestPath": "src/contents/sites/metacareers/operations.js",
+      "logical": "contents/sites/metacareers/operations.js",
+      "from": "src/contents/sites/metacareers/operations.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "8Fz7V",
+      "manifestPath": "src/contents/sites/metacareers/rules.js",
+      "logical": "contents/sites/metacareers/rules.js",
+      "from": "src/contents/sites/metacareers/rules.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "iAZMN",
+      "manifestPath": "_tilde_contents/crawler/utils/executor.js",
+      "logical": "contents/crawler/utils/executor.js",
+      "from": "src/contents/crawler/utils/executor.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "6Cqo2",
+      "manifestPath": "_tilde_contents/sites/myworkday.js",
+      "logical": "contents/sites/myworkday.js",
+      "from": "src/contents/sites/myworkday.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "eUq3l",
+      "manifestPath": "_tilde_contents/sites/myworkday/answer.js",
+      "logical": "contents/sites/myworkday/answer.js",
+      "from": "src/contents/sites/myworkday/answer.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "aet9i",
+      "manifestPath": "_tilde_contents/sites/myworkday/education-operation.js",
+      "logical": "contents/sites/myworkday/education-operation.js",
+      "from": "src/contents/sites/myworkday/education-operation.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "6KKZk",
+      "manifestPath": "_tilde_contents/sites/myworkday/education-resolve-scheduler.js",
+      "logical": "contents/sites/myworkday/education-resolve-scheduler.js",
+      "from": "src/contents/sites/myworkday/education-resolve-scheduler.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "apMik",
+      "manifestPath": "_tilde_contents/sites/myworkday/operations.js",
+      "logical": "contents/sites/myworkday/operations.js",
+      "from": "src/contents/sites/myworkday/operations.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "aCsiw",
+      "manifestPath": "src/contents/sites/myworkday/agreements.js",
+      "logical": "contents/sites/myworkday/agreements.js",
+      "from": "src/contents/sites/myworkday/agreements.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "1H2ID",
+      "manifestPath": "_tilde_contents/sites/myworkday/rules.js",
+      "logical": "contents/sites/myworkday/rules.js",
+      "from": "src/contents/sites/myworkday/rules.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "25NpF",
+      "manifestPath": "_tilde_contents/sites/myworkday/snapshot-alignment.js",
+      "logical": "contents/sites/myworkday/snapshot-alignment.js",
+      "from": "src/contents/sites/myworkday/snapshot-alignment.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "dMQWN",
+      "manifestPath": "_tilde_contents/crawler/utils.js",
+      "logical": "contents/crawler/utils.js",
+      "from": "src/contents/crawler/utils.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "jywL4",
+      "manifestPath": "_tilde_contents/sites/myworkday/section-results.js",
+      "logical": "contents/sites/myworkday/section-results.js",
+      "from": "src/contents/sites/myworkday/section-results.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "3gFNd",
+      "manifestPath": "_tilde_contents/sites/okta.js",
+      "logical": "contents/sites/okta.js",
+      "from": "src/contents/sites/okta.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "92sgA",
+      "manifestPath": "src/contents/sites/okta/answer.js",
+      "logical": "contents/sites/okta/answer.js",
+      "from": "src/contents/sites/okta/answer.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "4Peux",
+      "manifestPath": "src/contents/sites/okta/operations.js",
+      "logical": "contents/sites/okta/operations.js",
+      "from": "src/contents/sites/okta/operations.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "8A5ca",
+      "manifestPath": "_tilde_contents/sites/oraclecloud.js",
+      "logical": "contents/sites/oraclecloud.js",
+      "from": "src/contents/sites/oraclecloud.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "cEpli",
+      "manifestPath": "_tilde_contents/sites/oraclecloud/address-operation.js",
+      "logical": "contents/sites/oraclecloud/address-operation.js",
+      "from": "src/contents/sites/oraclecloud/address-operation.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "lJw3h",
+      "manifestPath": "_tilde_contents/sites/oraclecloud/education-raw-values.js",
+      "logical": "contents/sites/oraclecloud/education-raw-values.js",
+      "from": "src/contents/sites/oraclecloud/education-raw-values.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "9Ki4d",
+      "manifestPath": "_tilde_contents/sites/oraclecloud/answer.js",
+      "logical": "contents/sites/oraclecloud/answer.js",
+      "from": "src/contents/sites/oraclecloud/answer.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "3iM7P",
+      "manifestPath": "_tilde_constants/phone-country-code.js",
+      "logical": "constants/phone-country-code.js",
+      "from": "src/constants/phone-country-code.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "gduo7",
+      "manifestPath": "_tilde_contents/sites/oraclecloud/operations.js",
+      "logical": "contents/sites/oraclecloud/operations.js",
+      "from": "src/contents/sites/oraclecloud/operations.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "7oftP",
+      "manifestPath": "_tilde_contents/sites/oraclecloud/url.js",
+      "logical": "contents/sites/oraclecloud/url.js",
+      "from": "src/contents/sites/oraclecloud/url.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "883w6",
+      "manifestPath": "_tilde_contents/sites/oraclecloud/education-client-search.js",
+      "logical": "contents/sites/oraclecloud/education-client-search.js",
+      "from": "src/contents/sites/oraclecloud/education-client-search.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "aWY8j",
+      "manifestPath": "_tilde_contents/sites/oraclecloud/education-lov-candidates.js",
+      "logical": "contents/sites/oraclecloud/education-lov-candidates.js",
+      "from": "src/contents/sites/oraclecloud/education-lov-candidates.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "j2pat",
+      "manifestPath": "_tilde_contents/sites/oraclecloud/rules.js",
+      "logical": "contents/sites/oraclecloud/rules.js",
+      "from": "src/contents/sites/oraclecloud/rules.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "9JNPk",
+      "manifestPath": "_tilde_contents/sites/oraclecloud/section-results.js",
+      "logical": "contents/sites/oraclecloud/section-results.js",
+      "from": "src/contents/sites/oraclecloud/section-results.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "gHOdW",
+      "manifestPath": "_tilde_contents/sites/paycomonline-v3.js",
+      "logical": "contents/sites/paycomonline-v3.js",
+      "from": "src/contents/sites/paycomonline-v3.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "hqlCA",
+      "manifestPath": "src/contents/sites/paycomonline-v3/answer.js",
+      "logical": "contents/sites/paycomonline-v3/answer.js",
+      "from": "src/contents/sites/paycomonline-v3/answer.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "kmsj6",
+      "manifestPath": "src/contents/sites/paycomonline-v3/operations.js",
+      "logical": "contents/sites/paycomonline-v3/operations.js",
+      "from": "src/contents/sites/paycomonline-v3/operations.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "i9lUC",
+      "manifestPath": "src/contents/sites/paycomonline-v3/rules.js",
+      "logical": "contents/sites/paycomonline-v3/rules.js",
+      "from": "src/contents/sites/paycomonline-v3/rules.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "8rDpV",
+      "manifestPath": "src/contents/sites/paycomonline-v3/submit-tracking.js",
+      "logical": "contents/sites/paycomonline-v3/submit-tracking.js",
+      "from": "src/contents/sites/paycomonline-v3/submit-tracking.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "4Wyl0",
+      "manifestPath": "_tilde_contents/sites/paylocity.js",
+      "logical": "contents/sites/paylocity.js",
+      "from": "src/contents/sites/paylocity.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "eiV7s",
+      "manifestPath": "_tilde_contents/sites/paylocity/answer.js",
+      "logical": "contents/sites/paylocity/answer.js",
+      "from": "src/contents/sites/paylocity/answer.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "bmU1E",
+      "manifestPath": "_tilde_contents/sites/paylocity/operations.js",
+      "logical": "contents/sites/paylocity/operations.js",
+      "from": "src/contents/sites/paylocity/operations.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "5BvUQ",
+      "manifestPath": "_tilde_contents/sites/paylocity/rules.js",
+      "logical": "contents/sites/paylocity/rules.js",
+      "from": "src/contents/sites/paylocity/rules.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "lockZ",
+      "manifestPath": "src/contents/sites/paylocity/date.js",
+      "logical": "contents/sites/paylocity/date.js",
+      "from": "src/contents/sites/paylocity/date.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "53R5p",
+      "manifestPath": "_tilde_contents/sites/personio.js",
+      "logical": "contents/sites/personio.js",
+      "from": "src/contents/sites/personio.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "dXVbA",
+      "manifestPath": "src/contents/sites/personio/operations.js",
+      "logical": "contents/sites/personio/operations.js",
+      "from": "src/contents/sites/personio/operations.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "3hFfz",
+      "manifestPath": "src/contents/sites/personio/rules.js",
+      "logical": "contents/sites/personio/rules.js",
+      "from": "src/contents/sites/personio/rules.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "2Q4En",
+      "manifestPath": "_tilde_contents/sites/phenom.js",
+      "logical": "contents/sites/phenom.js",
+      "from": "src/contents/sites/phenom.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "hTzPb",
+      "manifestPath": "src/contents/sites/phenom/answer.js",
+      "logical": "contents/sites/phenom/answer.js",
+      "from": "src/contents/sites/phenom/answer.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "7eN6s",
+      "manifestPath": "src/contents/sites/phenom/education-operation.js",
+      "logical": "contents/sites/phenom/education-operation.js",
+      "from": "src/contents/sites/phenom/education-operation.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "hv55d",
+      "manifestPath": "src/contents/sites/phenom/operations.js",
+      "logical": "contents/sites/phenom/operations.js",
+      "from": "src/contents/sites/phenom/operations.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "eZc7r",
+      "manifestPath": "src/contents/sites/phenom/rules.js",
+      "logical": "contents/sites/phenom/rules.js",
+      "from": "src/contents/sites/phenom/rules.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "2T0sW",
+      "manifestPath": "src/contents/sites/phenom/style.js",
+      "logical": "contents/sites/phenom/style.js",
+      "from": "src/contents/sites/phenom/style.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "bacSi",
+      "manifestPath": "_tilde_contents/sites/pinpointhq.js",
+      "logical": "contents/sites/pinpointhq.js",
+      "from": "src/contents/sites/pinpointhq.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "k4CP3",
+      "manifestPath": "src/contents/sites/pinpointhq/country.js",
+      "logical": "contents/sites/pinpointhq/country.js",
+      "from": "src/contents/sites/pinpointhq/country.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "1Owhq",
+      "manifestPath": "src/contents/sites/pinpointhq/answer.js",
+      "logical": "contents/sites/pinpointhq/answer.js",
+      "from": "src/contents/sites/pinpointhq/answer.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "4ZAY1",
+      "manifestPath": "src/contents/sites/pinpointhq/phone-country-code.js",
+      "logical": "contents/sites/pinpointhq/phone-country-code.js",
+      "from": "src/contents/sites/pinpointhq/phone-country-code.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "jFJwr",
+      "manifestPath": "src/contents/sites/pinpointhq/operations.js",
+      "logical": "contents/sites/pinpointhq/operations.js",
+      "from": "src/contents/sites/pinpointhq/operations.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "fRtPj",
+      "manifestPath": "src/contents/sites/pinpointhq/rules.js",
+      "logical": "contents/sites/pinpointhq/rules.js",
+      "from": "src/contents/sites/pinpointhq/rules.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "6GcvC",
+      "manifestPath": "_tilde_contents/sites/polymer.js",
+      "logical": "contents/sites/polymer.js",
+      "from": "src/contents/sites/polymer.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "XfQNt",
+      "manifestPath": "_tilde_contents/sites/polymer/answer.js",
+      "logical": "contents/sites/polymer/answer.js",
+      "from": "src/contents/sites/polymer/answer.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "75HQr",
+      "manifestPath": "_tilde_contents/sites/polymer/operations.js",
+      "logical": "contents/sites/polymer/operations.js",
+      "from": "src/contents/sites/polymer/operations.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "i5Zyz",
+      "manifestPath": "_tilde_contents/sites/polymer/rules.js",
+      "logical": "contents/sites/polymer/rules.js",
+      "from": "src/contents/sites/polymer/rules.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "kQ6A7",
+      "manifestPath": "_tilde_contents/sites/recruitee.js",
+      "logical": "contents/sites/recruitee.js",
+      "from": "src/contents/sites/recruitee.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "dh2wu",
+      "manifestPath": "src/contents/sites/recruitee/answer.js",
+      "logical": "contents/sites/recruitee/answer.js",
+      "from": "src/contents/sites/recruitee/answer.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "5JPg9",
+      "manifestPath": "src/contents/sites/recruitee/operations.js",
+      "logical": "contents/sites/recruitee/operations.js",
+      "from": "src/contents/sites/recruitee/operations.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "jCgho",
+      "manifestPath": "src/contents/sites/recruitee/rules.js",
+      "logical": "contents/sites/recruitee/rules.js",
+      "from": "src/contents/sites/recruitee/rules.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "4QJwa",
+      "manifestPath": "_tilde_contents/sites/recruiterflow.js",
+      "logical": "contents/sites/recruiterflow.js",
+      "from": "src/contents/sites/recruiterflow.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "9ge8X",
+      "manifestPath": "_tilde_contents/sites/recruiterflow/answer.js",
+      "logical": "contents/sites/recruiterflow/answer.js",
+      "from": "src/contents/sites/recruiterflow/answer.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "i18hS",
+      "manifestPath": "_tilde_contents/sites/recruiterflow/operations.js",
+      "logical": "contents/sites/recruiterflow/operations.js",
+      "from": "src/contents/sites/recruiterflow/operations.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "gLFZj",
+      "manifestPath": "_tilde_contents/sites/recruiterflow/phone-country-code.js",
+      "logical": "contents/sites/recruiterflow/phone-country-code.js",
+      "from": "src/contents/sites/recruiterflow/phone-country-code.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "aHzuN",
+      "manifestPath": "_tilde_contents/sites/recruiterflow/rules.js",
+      "logical": "contents/sites/recruiterflow/rules.js",
+      "from": "src/contents/sites/recruiterflow/rules.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "f8QJv",
+      "manifestPath": "_tilde_contents/sites/ripplehire.js",
+      "logical": "contents/sites/ripplehire.js",
+      "from": "src/contents/sites/ripplehire.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "5C5cJ",
+      "manifestPath": "src/contents/sites/ripplehire/location-client-search.js",
+      "logical": "contents/sites/ripplehire/location-client-search.js",
+      "from": "src/contents/sites/ripplehire/location-client-search.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "d6wH2",
+      "manifestPath": "src/contents/sites/ripplehire/operations.js",
+      "logical": "contents/sites/ripplehire/operations.js",
+      "from": "src/contents/sites/ripplehire/operations.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "eL1jL",
+      "manifestPath": "src/contents/sites/ripplehire/phone-country-code.js",
+      "logical": "contents/sites/ripplehire/phone-country-code.js",
+      "from": "src/contents/sites/ripplehire/phone-country-code.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "fGIK4",
+      "manifestPath": "src/contents/sites/ripplehire/rules.js",
+      "logical": "contents/sites/ripplehire/rules.js",
+      "from": "src/contents/sites/ripplehire/rules.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "2PtGF",
+      "manifestPath": "src/contents/sites/ripplehire/skills-operation.js",
+      "logical": "contents/sites/ripplehire/skills-operation.js",
+      "from": "src/contents/sites/ripplehire/skills-operation.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "d5UKD",
+      "manifestPath": "src/contents/sites/ripplehire/submit-tracking.js",
+      "logical": "contents/sites/ripplehire/submit-tracking.js",
+      "from": "src/contents/sites/ripplehire/submit-tracking.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "goL8m",
+      "manifestPath": "_tilde_contents/sites/rippling.js",
+      "logical": "contents/sites/rippling.js",
+      "from": "src/contents/sites/rippling.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "ULrZj",
+      "manifestPath": "src/contents/sites/rippling/answer.js",
+      "logical": "contents/sites/rippling/answer.js",
+      "from": "src/contents/sites/rippling/answer.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "cVp4x",
+      "manifestPath": "src/contents/sites/rippling/phone-value.js",
+      "logical": "contents/sites/rippling/phone-value.js",
+      "from": "src/contents/sites/rippling/phone-value.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "ekE6E",
+      "manifestPath": "src/contents/sites/rippling/location-operation.js",
+      "logical": "contents/sites/rippling/location-operation.js",
+      "from": "src/contents/sites/rippling/location-operation.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "kxC8A",
+      "manifestPath": "src/contents/sites/rippling/operations.js",
+      "logical": "contents/sites/rippling/operations.js",
+      "from": "src/contents/sites/rippling/operations.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "aNlNp",
+      "manifestPath": "src/contents/sites/rippling/rules.js",
+      "logical": "contents/sites/rippling/rules.js",
+      "from": "src/contents/sites/rippling/rules.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "2vRmr",
+      "manifestPath": "src/contents/sites/rippling/submit-tracking.js",
+      "logical": "contents/sites/rippling/submit-tracking.js",
+      "from": "src/contents/sites/rippling/submit-tracking.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "4pApn",
+      "manifestPath": "_tilde_contents/sites/smartrecruiters.js",
+      "logical": "contents/sites/smartrecruiters.js",
+      "from": "src/contents/sites/smartrecruiters.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "lpr2d",
+      "manifestPath": "src/contents/sites/smartrecruiters/operations.js",
+      "logical": "contents/sites/smartrecruiters/operations.js",
+      "from": "src/contents/sites/smartrecruiters/operations.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "ahzUi",
+      "manifestPath": "src/contents/sites/smartrecruiters/answer.js",
+      "logical": "contents/sites/smartrecruiters/answer.js",
+      "from": "src/contents/sites/smartrecruiters/answer.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "fGyHE",
+      "manifestPath": "src/contents/sites/smartrecruiters/rules.js",
+      "logical": "contents/sites/smartrecruiters/rules.js",
+      "from": "src/contents/sites/smartrecruiters/rules.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "8eiSq",
+      "manifestPath": "src/contents/sites/smartrecruiters/location-operation.js",
+      "logical": "contents/sites/smartrecruiters/location-operation.js",
+      "from": "src/contents/sites/smartrecruiters/location-operation.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "7CJrO",
+      "manifestPath": "src/contents/sites/smartrecruiters/education-operation.js",
+      "logical": "contents/sites/smartrecruiters/education-operation.js",
+      "from": "src/contents/sites/smartrecruiters/education-operation.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "gzsfs",
+      "manifestPath": "_tilde_contents/sites/successfactors.js",
+      "logical": "contents/sites/successfactors.js",
+      "from": "src/contents/sites/successfactors.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "lBZzA",
+      "manifestPath": "src/contents/sites/successfactors/answer.js",
+      "logical": "contents/sites/successfactors/answer.js",
+      "from": "src/contents/sites/successfactors/answer.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "eGv5O",
+      "manifestPath": "src/contents/sites/successfactors/operations.js",
+      "logical": "contents/sites/successfactors/operations.js",
+      "from": "src/contents/sites/successfactors/operations.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "6S3gu",
+      "manifestPath": "src/contents/sites/successfactors/rules.js",
+      "logical": "contents/sites/successfactors/rules.js",
+      "from": "src/contents/sites/successfactors/rules.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "bCEw5",
+      "manifestPath": "src/contents/sites/successfactors/signin-credentials.js",
+      "logical": "contents/sites/successfactors/signin-credentials.js",
+      "from": "src/contents/sites/successfactors/signin-credentials.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "4lwWU",
+      "manifestPath": "_tilde_contents/sites/taleo.js",
+      "logical": "contents/sites/taleo.js",
+      "from": "src/contents/sites/taleo.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "7mDe5",
+      "manifestPath": "src/contents/sites/taleo/answer.js",
+      "logical": "contents/sites/taleo/answer.js",
+      "from": "src/contents/sites/taleo/answer.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "eMu8S",
+      "manifestPath": "src/contents/sites/taleo/operations.js",
+      "logical": "contents/sites/taleo/operations.js",
+      "from": "src/contents/sites/taleo/operations.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "IwDjp",
+      "manifestPath": "src/contents/sites/taleo/rules.js",
+      "logical": "contents/sites/taleo/rules.js",
+      "from": "src/contents/sites/taleo/rules.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "hJ857",
+      "manifestPath": "_tilde_contents/sites/teamtailor.js",
+      "logical": "contents/sites/teamtailor.js",
+      "from": "src/contents/sites/teamtailor.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "b9W7c",
+      "manifestPath": "src/contents/sites/teamtailor/operations.js",
+      "logical": "contents/sites/teamtailor/operations.js",
+      "from": "src/contents/sites/teamtailor/operations.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "fLZQx",
+      "manifestPath": "src/contents/sites/teamtailor/answer.js",
+      "logical": "contents/sites/teamtailor/answer.js",
+      "from": "src/contents/sites/teamtailor/answer.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "dGJDg",
+      "manifestPath": "src/contents/sites/teamtailor/rules.js",
+      "logical": "contents/sites/teamtailor/rules.js",
+      "from": "src/contents/sites/teamtailor/rules.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "8f5hc",
+      "manifestPath": "_tilde_contents/sites/tesla.js",
+      "logical": "contents/sites/tesla.js",
+      "from": "src/contents/sites/tesla.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "jrOUu",
+      "manifestPath": "src/contents/sites/tesla/operations.js",
+      "logical": "contents/sites/tesla/operations.js",
+      "from": "src/contents/sites/tesla/operations.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "aUedF",
+      "manifestPath": "src/contents/sites/tesla/date.js",
+      "logical": "contents/sites/tesla/date.js",
+      "from": "src/contents/sites/tesla/date.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "fvMKj",
+      "manifestPath": "src/contents/sites/tesla/rules.js",
+      "logical": "contents/sites/tesla/rules.js",
+      "from": "src/contents/sites/tesla/rules.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "9OkhZ",
+      "manifestPath": "_tilde_contents/sites/tiktok.js",
+      "logical": "contents/sites/tiktok.js",
+      "from": "src/contents/sites/tiktok.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "jM4Cn",
+      "manifestPath": "_tilde_contents/sites/tiktok/answer.js",
+      "logical": "contents/sites/tiktok/answer.js",
+      "from": "src/contents/sites/tiktok/answer.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "3hmvY",
+      "manifestPath": "src/contents/sites/tiktok/operations.js",
+      "logical": "contents/sites/tiktok/operations.js",
+      "from": "src/contents/sites/tiktok/operations.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "52Ram",
+      "manifestPath": "src/contents/sites/tiktok/rules.js",
+      "logical": "contents/sites/tiktok/rules.js",
+      "from": "src/contents/sites/tiktok/rules.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "4fCvO",
+      "manifestPath": "_tilde_contents/sites/trakstar.js",
+      "logical": "contents/sites/trakstar.js",
+      "from": "src/contents/sites/trakstar.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "laDXi",
+      "manifestPath": "src/contents/sites/trakstar/operations.js",
+      "logical": "contents/sites/trakstar/operations.js",
+      "from": "src/contents/sites/trakstar/operations.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "buuka",
+      "manifestPath": "src/contents/sites/trakstar/rules.js",
+      "logical": "contents/sites/trakstar/rules.js",
+      "from": "src/contents/sites/trakstar/rules.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "fPOUf",
+      "manifestPath": "_tilde_contents/sites/trinethire.js",
+      "logical": "contents/sites/trinethire.js",
+      "from": "src/contents/sites/trinethire.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "iDrk3",
+      "manifestPath": "src/contents/sites/trinethire/answer.js",
+      "logical": "contents/sites/trinethire/answer.js",
+      "from": "src/contents/sites/trinethire/answer.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "8GS7z",
+      "manifestPath": "src/contents/sites/trinethire/operations.js",
+      "logical": "contents/sites/trinethire/operations.js",
+      "from": "src/contents/sites/trinethire/operations.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "4dTTq",
+      "manifestPath": "src/contents/sites/trinethire/rules.js",
+      "logical": "contents/sites/trinethire/rules.js",
+      "from": "src/contents/sites/trinethire/rules.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "jpdPu",
+      "manifestPath": "_tilde_contents/sites/uber.js",
+      "logical": "contents/sites/uber.js",
+      "from": "src/contents/sites/uber.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "hjxys",
+      "manifestPath": "src/contents/sites/uber/operations.js",
+      "logical": "contents/sites/uber/operations.js",
+      "from": "src/contents/sites/uber/operations.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "k57Bl",
+      "manifestPath": "src/contents/sites/uber/rules.js",
+      "logical": "contents/sites/uber/rules.js",
+      "from": "src/contents/sites/uber/rules.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "4fNc6",
+      "manifestPath": "src/contents/sites/uber/answer.js",
+      "logical": "contents/sites/uber/answer.js",
+      "from": "src/contents/sites/uber/answer.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "5R3mN",
+      "manifestPath": "_tilde_contents/sites/ultipro.js",
+      "logical": "contents/sites/ultipro.js",
+      "from": "src/contents/sites/ultipro.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "oH3tv",
+      "manifestPath": "src/contents/sites/ultipro/answer.js",
+      "logical": "contents/sites/ultipro/answer.js",
+      "from": "src/contents/sites/ultipro/answer.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "k21zl",
+      "manifestPath": "src/contents/sites/ultipro/operations.js",
+      "logical": "contents/sites/ultipro/operations.js",
+      "from": "src/contents/sites/ultipro/operations.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "e0jMO",
+      "manifestPath": "src/contents/sites/ultipro/rules.js",
+      "logical": "contents/sites/ultipro/rules.js",
+      "from": "src/contents/sites/ultipro/rules.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "2rZII",
+      "manifestPath": "_tilde_contents/sites/workable.js",
+      "logical": "contents/sites/workable.js",
+      "from": "src/contents/sites/workable.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "4X7iu",
+      "manifestPath": "_tilde_contents/sites/workable/answer.js",
+      "logical": "contents/sites/workable/answer.js",
+      "from": "src/contents/sites/workable/answer.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "bQ04a",
+      "manifestPath": "_tilde_contents/sites/workable/operations.js",
+      "logical": "contents/sites/workable/operations.js",
+      "from": "src/contents/sites/workable/operations.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "7FMtF",
+      "manifestPath": "_tilde_contents/sites/workable/rules.js",
+      "logical": "contents/sites/workable/rules.js",
+      "from": "src/contents/sites/workable/rules.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "5lsEB",
+      "manifestPath": "_tilde_contents/sites/workable/phone-country-code.js",
+      "logical": "contents/sites/workable/phone-country-code.js",
+      "from": "src/contents/sites/workable/phone-country-code.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "47Efl",
+      "manifestPath": "_tilde_contents/sites/xcompany.js",
+      "logical": "contents/sites/xcompany.js",
+      "from": "src/contents/sites/xcompany.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "2NWAX",
+      "manifestPath": "src/contents/sites/xcompany/answer.js",
+      "logical": "contents/sites/xcompany/answer.js",
+      "from": "src/contents/sites/xcompany/answer.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "4yhys",
+      "manifestPath": "src/contents/sites/xcompany/operations.js",
+      "logical": "contents/sites/xcompany/operations.js",
+      "from": "src/contents/sites/xcompany/operations.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "i3znd",
+      "manifestPath": "src/contents/sites/xcompany/rules.js",
+      "logical": "contents/sites/xcompany/rules.js",
+      "from": "src/contents/sites/xcompany/rules.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "dUXAd",
+      "manifestPath": "_tilde_contents/sites/ycombinator.js",
+      "logical": "contents/sites/ycombinator.js",
+      "from": "src/contents/sites/ycombinator.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "foT7A",
+      "manifestPath": "src/contents/sites/ycombinator/operations.js",
+      "logical": "contents/sites/ycombinator/operations.js",
+      "from": "src/contents/sites/ycombinator/operations.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "lCWmd",
+      "manifestPath": "src/contents/sites/ycombinator/rules.js",
+      "logical": "contents/sites/ycombinator/rules.js",
+      "from": "src/contents/sites/ycombinator/rules.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "5ec9e",
+      "manifestPath": "src/contents/sites/ycombinator/submit-tracking.js",
+      "logical": "contents/sites/ycombinator/submit-tracking.js",
+      "from": "src/contents/sites/ycombinator/submit-tracking.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "fVVzT",
+      "manifestPath": "_tilde_contents/sites/zohorecruit.js",
+      "logical": "contents/sites/zohorecruit.js",
+      "from": "src/contents/sites/zohorecruit.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "9TR3h",
+      "manifestPath": "_tilde_contents/sites/zohorecruit/answer.js",
+      "logical": "contents/sites/zohorecruit/answer.js",
+      "from": "src/contents/sites/zohorecruit/answer.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "joTPk",
+      "manifestPath": "_tilde_contents/sites/zohorecruit/location-operation.js",
+      "logical": "contents/sites/zohorecruit/location-operation.js",
+      "from": "src/contents/sites/zohorecruit/location-operation.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "ayFdv",
+      "manifestPath": "_tilde_contents/sites/zohorecruit/operations.js",
+      "logical": "contents/sites/zohorecruit/operations.js",
+      "from": "src/contents/sites/zohorecruit/operations.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "h69qT",
+      "manifestPath": "src/contents/sites/zohorecruit/phone-country-code.js",
+      "logical": "contents/sites/zohorecruit/phone-country-code.js",
+      "from": "src/contents/sites/zohorecruit/phone-country-code.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "gn723",
+      "manifestPath": "_tilde_contents/sites/zohorecruit/progress.js",
+      "logical": "contents/sites/zohorecruit/progress.js",
+      "from": "src/contents/sites/zohorecruit/progress.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "6kRQQ",
+      "manifestPath": "_tilde_contents/sites/zohorecruit/rules.js",
+      "logical": "contents/sites/zohorecruit/rules.js",
+      "from": "src/contents/sites/zohorecruit/rules.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "1A34s",
+      "manifestPath": "_tilde_contents/sites/zohorecruit/section-results.js",
+      "logical": "contents/sites/zohorecruit/section-results.js",
+      "from": "src/contents/sites/zohorecruit/section-results.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "4sEbH",
+      "manifestPath": "_tilde_contents/sites/zohorecruit-v2.js",
+      "logical": "contents/sites/zohorecruit-v2.js",
+      "from": "src/contents/sites/zohorecruit-v2.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "jmQw3",
+      "manifestPath": "_tilde_contents/sites/zohorecruit-v2/answer.js",
+      "logical": "contents/sites/zohorecruit-v2/answer.js",
+      "from": "src/contents/sites/zohorecruit-v2/answer.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "98qwB",
+      "manifestPath": "_tilde_contents/sites/zohorecruit-v2/operations.js",
+      "logical": "contents/sites/zohorecruit-v2/operations.js",
+      "from": "src/contents/sites/zohorecruit-v2/operations.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "aNfWC",
+      "manifestPath": "_tilde_contents/sites/zohorecruit-v2/rules.js",
+      "logical": "contents/sites/zohorecruit-v2/rules.js",
+      "from": "src/contents/sites/zohorecruit-v2/rules.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "ekS98",
+      "manifestPath": "_tilde_contents/shared/autofill-instance-lifecycle.js",
+      "logical": "contents/shared/autofill-instance-lifecycle.js",
+      "from": "src/contents/shared/autofill-instance-lifecycle.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "fu3wC",
+      "manifestPath": "_tilde_contents/shared/click-jr-injector.js",
+      "logical": "contents/shared/click-jr-injector.js",
+      "from": "src/contents/shared/click-jr-injector.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "5Q00I",
+      "manifestPath": "_tilde_contents/shared/css-assets.js",
+      "logical": "contents/shared/css-assets.js",
+      "from": "src/contents/shared/css-assets.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "lDfqE",
+      "manifestPath": "_tilde_contents/shared/helper-host-stacking.js",
+      "logical": "contents/shared/helper-host-stacking.js",
+      "from": "src/contents/shared/helper-host-stacking.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "3WQu4",
+      "manifestPath": "_tilde_core/iframeEventHandle.js",
+      "logical": "core/iframeEventHandle.js",
+      "from": "src/core/iframeEventHandle.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "jbRXW",
+      "manifestPath": "_tilde_hooks/useOpenNewTab.js",
+      "logical": "hooks/useOpenNewTab.js",
+      "from": "src/hooks/useOpenNewTab.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "7sm2G",
+      "manifestPath": "_tilde_hooks/useSubscribeTabUrl.js",
+      "logical": "hooks/useSubscribeTabUrl.js",
+      "from": "src/hooks/useSubscribeTabUrl.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": "dSL5Z",
+      "manifestPath": "_tilde_hooks/useTrackAutofillStuck.js",
+      "logical": "hooks/useTrackAutofillStuck.js",
+      "from": "src/hooks/useTrackAutofillStuck.js",
+      "status": "copied"
+    },
+    {
+      "parcelId": null,
+      "manifestPath": "operation.js",
+      "logical": "_root/operation.js",
+      "from": "operation.js",
+      "status": "copied_root"
+    },
+    {
+      "parcelId": null,
+      "manifestPath": "operations.js",
+      "logical": "_root/operations.js",
+      "from": "operations.js",
+      "status": "copied_root"
+    },
+    {
+      "parcelId": null,
+      "manifestPath": "Operations.js",
+      "logical": "_root/Operations.js",
+      "from": "Operations.js",
+      "status": "copied_root"
+    },
+    {
+      "parcelId": null,
+      "manifestPath": "rules.js",
+      "logical": "_root/rules.js",
+      "from": "rules.js",
+      "status": "copied_root"
+    },
+    {
+      "parcelId": null,
+      "manifestPath": "zustand.js",
+      "logical": "_root/zustand.js",
+      "from": "zustand.js",
+      "status": "copied_root"
+    },
+    {
+      "parcelId": null,
+      "manifestPath": "WaveEffect.js",
+      "logical": "_root/WaveEffect.js",
+      "from": "WaveEffect.js",
+      "status": "copied_root"
+    }
+  ]
+}

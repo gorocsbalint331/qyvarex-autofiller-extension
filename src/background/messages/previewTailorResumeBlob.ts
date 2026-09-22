@@ -1,13 +1,11 @@
 ﻿import type { PlasmoMessaging } from "@plasmohq/messaging"
 
-/** Stub — port from engine/background/src/background/messages/previewTailorResumeBlob.js */
-const handler: PlasmoMessaging.MessageHandler = async (_req, res) => {
-  res.send({
-    ok: false,
-    stub: true,
-    handler: "previewTailorResumeBlob",
-    message: "Not implemented yet in the team fork"
-  })
+import { resolveResumeBlobResponse } from "~background/lib/resume-blob"
+
+const handler: PlasmoMessaging.MessageHandler = async (req, res) => {
+  const resumeId =
+    typeof req.body?.resumeId === "string" ? req.body.resumeId : null
+  res.send(await resolveResumeBlobResponse({ resumeId }))
 }
 
 export default handler

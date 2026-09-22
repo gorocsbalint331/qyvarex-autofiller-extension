@@ -1,0 +1,329 @@
+{
+  "generatedAt": "2026-09-22T11:22:44.351Z",
+  "summary": {
+    "modules": 1074,
+    "first-party": 544,
+    "npm-dump": 228,
+    "unknown": 302,
+    "bytesNpm": 4116421,
+    "bytesFirst": 4534215,
+    "kbNpm": 4020,
+    "kbFirstParty": 4428
+  },
+  "replaceWithNodeModules": [
+    {
+      "name": "antd-ecosystem",
+      "moduleCount": 39,
+      "bytes": 1808647,
+      "kb": 1766,
+      "samples": [
+        "@ant-design/cssinjs.js",
+        "antd.js",
+        "_dotdot_/createUpdateEffect.js",
+        "_dotdot_/_dotdot_/_dotdot_/useCreation.js",
+        "_dotdot_/utils/depsAreSame.js"
+      ]
+    },
+    {
+      "name": "react-dom",
+      "moduleCount": 3,
+      "bytes": 231521,
+      "kb": 226,
+      "samples": [
+        "react-dom/client.js",
+        "react-dom-reexport.js",
+        "react-dom.js"
+      ]
+    },
+    {
+      "name": "libphonenumber-js",
+      "moduleCount": 2,
+      "bytes": 86563,
+      "kb": 85,
+      "samples": [
+        "libphonenumber-js/core.js",
+        "libphonenumber-js/min/metadata.js"
+      ]
+    },
+    {
+      "name": "react",
+      "moduleCount": 4,
+      "bytes": 50863,
+      "kb": 50,
+      "samples": [
+        "react/jsx-runtime.js",
+        "react-reexport.js",
+        "react.js",
+        "intl-tel-input/react.js"
+      ]
+    },
+    {
+      "name": "dayjs",
+      "moduleCount": 9,
+      "bytes": 34874,
+      "kb": 34,
+      "samples": [
+        "rc-picker/es/generate/dayjs.js",
+        "_tilde_node_modules/dayjs.js",
+        "dayjs/plugin/weekday.js",
+        "dayjs/plugin/localeData.js",
+        "dayjs/plugin/weekOfYear.js"
+      ]
+    },
+    {
+      "name": "fuse.js",
+      "moduleCount": 1,
+      "bytes": 18274,
+      "kb": 18,
+      "samples": [
+        "fuse.js"
+      ]
+    },
+    {
+      "name": "@plasmohq/*",
+      "moduleCount": 3,
+      "bytes": 13726,
+      "kb": 13,
+      "samples": [
+        "@plasmohq/messaging.js",
+        "@plasmohq/storage/hook.js",
+        "@plasmohq/storage.js"
+      ]
+    },
+    {
+      "name": "numeral",
+      "moduleCount": 1,
+      "bytes": 11401,
+      "kb": 11,
+      "samples": [
+        "numeral.js"
+      ]
+    },
+    {
+      "name": "ahooks",
+      "moduleCount": 1,
+      "bytes": 7415,
+      "kb": 7,
+      "samples": [
+        "ahooks.js"
+      ]
+    },
+    {
+      "name": "intl-tel-input",
+      "moduleCount": 2,
+      "bytes": 5404,
+      "kb": 5,
+      "samples": [
+        "intl-tel-input/data.js",
+        "intl-tel-input/i18n/en.js"
+      ]
+    },
+    {
+      "name": "zustand",
+      "moduleCount": 3,
+      "bytes": 4789,
+      "kb": 5,
+      "samples": [
+        "zustand.js",
+        "zustand-vanilla.js",
+        "zustand-react.js"
+      ]
+    },
+    {
+      "name": "classnames",
+      "moduleCount": 1,
+      "bytes": 2201,
+      "kb": 2,
+      "samples": [
+        "classnames.js"
+      ]
+    },
+    {
+      "name": "crypto-js",
+      "moduleCount": 1,
+      "bytes": 1656,
+      "kb": 2,
+      "samples": [
+        "crypto-js.js"
+      ]
+    },
+    {
+      "name": "lodash",
+      "moduleCount": 1,
+      "bytes": 1573,
+      "kb": 2,
+      "samples": [
+        "_tilde_theme.js"
+      ]
+    },
+    {
+      "name": "nanoid",
+      "moduleCount": 1,
+      "bytes": 900,
+      "kb": 1,
+      "samples": [
+        "nanoid.js"
+      ]
+    }
+  ],
+  "unknownVendor": [
+    {
+      "name": "unknown-vendor",
+      "moduleCount": 156,
+      "bytes": 1836614,
+      "kb": 1794,
+      "samples": [
+        "vendor-6haDs.js",
+        "vendor-amLA4.js",
+        "vendor-cGAOp.js",
+        "vendor-7bs1J.js",
+        "vendor-96jhN.js"
+      ]
+    }
+  ],
+  "importSpecsFromManifest": [
+    {
+      "name": "react",
+      "count": 171
+    },
+    {
+      "name": "data-base64:~assets",
+      "count": 75
+    },
+    {
+      "name": "@plasmohq/messaging",
+      "count": 74
+    },
+    {
+      "name": "antd",
+      "count": 65
+    },
+    {
+      "name": "dayjs",
+      "count": 55
+    },
+    {
+      "name": "lodash-es",
+      "count": 15
+    },
+    {
+      "name": "zustand",
+      "count": 12
+    },
+    {
+      "name": "clsx",
+      "count": 11
+    },
+    {
+      "name": "@plasmohq/storage",
+      "count": 11
+    },
+    {
+      "name": "tslib",
+      "count": 10
+    },
+    {
+      "name": "ahooks",
+      "count": 8
+    },
+    {
+      "name": "@ant-design/icons",
+      "count": 6
+    },
+    {
+      "name": "react-dom",
+      "count": 5
+    },
+    {
+      "name": "intl-tel-input",
+      "count": 3
+    },
+    {
+      "name": "pify",
+      "count": 2
+    },
+    {
+      "name": "@ant-design/cssinjs",
+      "count": 2
+    },
+    {
+      "name": "classnames",
+      "count": 2
+    },
+    {
+      "name": "lodash",
+      "count": 2
+    },
+    {
+      "name": "@webext-core/match-patterns",
+      "count": 2
+    },
+    {
+      "name": "zustand-vanilla",
+      "count": 2
+    },
+    {
+      "name": "libphonenumber-js",
+      "count": 2
+    },
+    {
+      "name": "dataurl-to-blob",
+      "count": 2
+    },
+    {
+      "name": "data-base64:~",
+      "count": 2
+    },
+    {
+      "name": "react-jsx-runtime",
+      "count": 1
+    },
+    {
+      "name": "react-dom-reexport",
+      "count": 1
+    },
+    {
+      "name": "nanoid",
+      "count": 1
+    },
+    {
+      "name": "react-draggable",
+      "count": 1
+    },
+    {
+      "name": "rc-util",
+      "count": 1
+    },
+    {
+      "name": "zustand-react",
+      "count": 1
+    },
+    {
+      "name": "react-lottie",
+      "count": 1
+    },
+    {
+      "name": "numeral",
+      "count": 1
+    },
+    {
+      "name": "crypto-js",
+      "count": 1
+    },
+    {
+      "name": "fuse.js",
+      "count": 1
+    },
+    {
+      "name": "console",
+      "count": 1
+    }
+  ],
+  "nextSteps": [
+    "npm install in engine/ (see package.json)",
+    "Delete helper-app/vendor/lodash/ after switching imports to 'lodash' / 'lodash-es'",
+    "Delete _dotdot_/ and antd megafiles after switching to 'antd' from node_modules",
+    "Keep helper-app/src/** as first-party source of truth",
+    "Do not deobfuscate npm dumps — replace them"
+  ]
+}

@@ -1,0 +1,178 @@
+/**
+ * Restore first-party helper-app modules into a parallel readable tree:
+ *   engine/helper-app-src/{contents,core,utils,components,api,...}
+ *
+ * Sources (in order):
+ *   1. engine/helper-app/src/...  (already restored tilde layout)
+ *   2. Disk file for _tilde_* manifest paths
+ *   3. Root basename fallback
+ *
+ * Does NOT rewrite live helper-app or break bundle:helper.
+ * Writes engine/helper-app-src/_restore-map.json
+ *
+ * Usage: node extension/scripts/restore-tilde-layout.mjs
+ */
+import fs from "node:fs"
+import path from "node:path"
+import { fileURLToPath } from "node:url"
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url))
+const REPO_ROOT = path.resolve(__dirname, "../..")
+const HELPER = path.join(REPO_ROOT, "engine", "helper-app")
+const OUT_ROOT = path.join(REPO_ROOT, "engine", "helper-app-src")
+const MANIFEST = path.join(HELPER, "_manifest.json")
+
+function logicalPathFromManifest(manifestPath) {
+  const p = manifestPath.replace(/\\/g, "/")
+  if (p.startsWith("_tilde_node_modules/")) return null
+  if (p.startsWith("_tilde_")) {
+    return p.slice("_tilde_".length) // contents/methods/dom.js
+  }
+  if (p.startsWith("src/")) return p.slice("src/".length)
+  return null
+}
+
+function findSource(manifestPath, logical) {
+  const candidates = []
+  if (logical) {
+    candidates.push(path.join(HELPER, "src", logical))
+  }
+  candidates.push(path.join(HELPER, manifestPath))
+  if (logical) {
+    candidates.push(path.join(HELPER, logical))
+  }
+  candidates.push(path.join(HELPER, path.basename(manifestPath)))
+  for (const c of candidates) {
+    if (fs.existsSync(c) && fs.statSync(c).isFile()) return c
+  }
+  return null
+}
+
+function ensureDir(filePath) {
+  fs.mkdirSync(path.dirname(filePath), { recursive: true })
+}
+
+function stripParcelHeader(source) {
+  return source.replace(/^\/\*\*[\s\S]*?\*\/\s*/, "")
+}
+
+function rewriteHeaderPaths(source, logical) {
+  // Annotate with restored logical path; keep deps for oracle readability.
+  if (!source.startsWith("/**")) {
+    return (
+      `/**\n * Restored oracle path: ${logical}\n * (copied from helper-app; Parcel runtime unchanged in live tree)\n */\n\n` +
+      source
+    )
+  }
+  return source.replace(
+    /Resolved path:\s*.+/,
+    `Resolved path: ${logical} (oracle restore)`
+  )
+}
+
+function main() {
+  const man = JSON.parse(fs.readFileSync(MANIFEST, "utf8"))
+  const map = []
+  let copied = 0
+  let skipped = 0
+
+  if (fs.existsSync(OUT_ROOT)) {
+    fs.rmSync(OUT_ROOT, { recursive: true, force: true })
+  }
+  fs.mkdirSync(OUT_ROOT, { recursive: true })
+
+  for (const [parcelId, mod] of Object.entries(man.modules || {})) {
+    const manifestPath = (mod.path || "").replace(/\\/g, "/")
+    const logical = logicalPathFromManifest(manifestPath)
+    if (!logical) {
+      skipped += 1
+      continue
+    }
+    // Skip node_modules under tilde
+    if (logical.startsWith("node_modules/")) {
+      skipped += 1
+      continue
+    }
+
+    const srcFile = findSource(manifestPath, logical)
+    if (!srcFile) {
+      map.push({ parcelId, manifestPath, logical, status: "missing" })
+      continue
+    }
+
+    const dest = path.join(OUT_ROOT, logical)
+    ensureDir(dest)
+    let body = fs.readFileSync(srcFile, "utf8")
+    body = rewriteHeaderPaths(body, logical)
+    fs.writeFileSync(dest, body, "utf8")
+    copied += 1
+    map.push({
+      parcelId,
+      manifestPath,
+      logical,
+      from: path.relative(HELPER, srcFile).replace(/\\/g, "/"),
+      status: "copied"
+    })
+  }
+
+  // Also copy first-party root ops that aren't tilde (operation.js, etc.) into sites/_root/
+  const rootOps = [
+    "operation.js",
+    "operations.js",
+    "Operations.js",
+    "rules.js",
+    "zustand.js",
+    "WaveEffect.js"
+  ]
+  for (const name of rootOps) {
+    const from = path.join(HELPER, name)
+    if (!fs.existsSync(from)) continue
+    const dest = path.join(OUT_ROOT, "_root", name)
+    ensureDir(dest)
+    fs.writeFileSync(dest, fs.readFileSync(from, "utf8"), "utf8")
+    copied += 1
+    map.push({
+      parcelId: null,
+      manifestPath: name,
+      logical: `_root/${name}`,
+      from: name,
+      status: "copied_root"
+    })
+  }
+
+  const report = {
+    generatedAt: new Date().toISOString(),
+    outRoot: "engine/helper-app-src",
+    copied,
+    skipped,
+    entries: map
+  }
+  fs.writeFileSync(
+    path.join(OUT_ROOT, "_restore-map.json"),
+    JSON.stringify(report, null, 2)
+  )
+
+  // README for humans
+  fs.writeFileSync(
+    path.join(OUT_ROOT, "README.md"),
+    [
+      `# helper-app-src (oracle tree)`,
+      ``,
+      `Readable parallel copy of first-party Parcel modules restored from`,
+      `\`engine/helper-app\` (\`src/\` + \`_tilde_*\` manifest paths).`,
+      ``,
+      `- **Do not** load this tree from \`bundle:helper\` yet — live runtime stays in \`helper-app/\`.`,
+      `- Use as deobfuscation / clean-TS port oracle.`,
+      `- Generated by \`extension/scripts/restore-tilde-layout.mjs\`.`,
+      ``,
+      `Copied: ${copied} files.`,
+      ``
+    ].join("\n")
+  )
+
+  console.log(
+    `[restore-tilde] copied=${copied} skipped=${skipped} → ${path.relative(REPO_ROOT, OUT_ROOT)}`
+  )
+}
+
+main()

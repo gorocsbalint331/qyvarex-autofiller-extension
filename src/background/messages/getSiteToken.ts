@@ -1,13 +1,10 @@
 ﻿import type { PlasmoMessaging } from "@plasmohq/messaging"
 
-/** Stub — port from engine/background/src/background/messages/getSiteToken.js */
+/**
+ * Site CSRF / session token — unused by team hub local fill path.
+ */
 const handler: PlasmoMessaging.MessageHandler = async (_req, res) => {
-  res.send({
-    ok: false,
-    stub: true,
-    handler: "getSiteToken",
-    message: "Not implemented yet in the team fork"
-  })
+  res.send("")
 }
 
 export default handler

@@ -20,6 +20,20 @@ async function injectHelperDirectly(tabId: number) {
     files: [HELPER_BUNDLE],
     world: "ISOLATED"
   })
+  // Bundle auto-boots; call again if the page already had a partial load.
+  await chrome.scripting.executeScript({
+    target: { tabId, allFrames: true },
+    world: "ISOLATED",
+    func: () => {
+      const g = globalThis as typeof globalThis & {
+        bootstrapJobrightHelperRuntime?: () => void | Promise<void>
+        openJobrightHelperFromExtensionIcon?: () => void | Promise<void>
+      }
+      const boot =
+        g.bootstrapJobrightHelperRuntime || g.openJobrightHelperFromExtensionIcon
+      if (typeof boot === "function") void boot()
+    }
+  })
 }
 
 function isRestrictedUrl(url?: string) {

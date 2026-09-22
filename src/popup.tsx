@@ -20,32 +20,39 @@ function IndexPopup() {
   const [userLabel, setUserLabel] = useState("")
   const [activating, setActivating] = useState(false)
   const [busy, setBusy] = useState(false)
+  const [sessionReady, setSessionReady] = useState(false)
 
-  async function refreshSession() {
-    const settings = await getTeamSettings()
-    setSelectedId(settings.selectedProfileId)
-    if (!settings.apiToken) {
-      setSignedIn(false)
-      setProfiles([])
-      setUserLabel("")
-      return
-    }
+  async function refreshSession(_opts?: { quiet?: boolean }) {
     try {
-      const list = await listProfiles()
-      setProfiles(list)
+      const settings = await getTeamSettings()
+      setSelectedId(settings.selectedProfileId)
+      if (!settings.apiToken) {
+        setSignedIn(false)
+        setProfiles([])
+        setUserLabel("")
+        return
+      }
+      // Token present → show signed-in shell immediately (avoid Sign-in flash)
       setSignedIn(true)
       setUserLabel(
         settings.userName
           ? `${settings.userName}${settings.userEmail ? ` (${settings.userEmail})` : ""}`
           : settings.userEmail || "Signed in"
       )
-      if (!settings.selectedProfileId && list[0]) {
-        await saveTeamSettings({ selectedProfileId: list[0].id })
-        setSelectedId(list[0].id)
+      setSessionReady(true)
+      try {
+        const list = await listProfiles()
+        setProfiles(list)
+        if (!settings.selectedProfileId && list[0]) {
+          await saveTeamSettings({ selectedProfileId: list[0].id })
+          setSelectedId(list[0].id)
+        }
+      } catch {
+        // Keep signed-in UI; profile list may be empty until hub is reachable
+        setProfiles([])
       }
-    } catch {
-      setSignedIn(false)
-      setProfiles([])
+    } finally {
+      setSessionReady(true)
     }
   }
 
@@ -54,7 +61,7 @@ function IndexPopup() {
       setTabUrl(tab?.url ?? "")
     })
     void refreshSession()
-    const onFocus = () => void refreshSession()
+    const onFocus = () => void refreshSession({ quiet: true })
     window.addEventListener("focus", onFocus)
     return () => window.removeEventListener("focus", onFocus)
   }, [])
@@ -112,6 +119,39 @@ function IndexPopup() {
     }
   }
 
+  async function runCleanFill() {
+    const [tab] = await chrome.tabs.query({ active: true, currentWindow: true })
+    if (!tab?.id) {
+      setStatus("No active tab")
+      return
+    }
+    if (!signedIn || !selectedId) {
+      setStatus("Sign in and select a profile first")
+      return
+    }
+    setActivating(true)
+    setStatus("Clean-TS fill…")
+    try {
+      const result = await chrome.tabs.sendMessage(tab.id, {
+        name: "runCleanTsFill"
+      })
+      if (!result?.ok) {
+        setStatus(result?.message || "Clean fill failed — reload the page")
+        return
+      }
+      const r = result.report
+      setStatus(
+        `Filled ${r?.filled ?? 0}/${r?.discovered ?? 0} (${r?.site})${
+          r?.resumeUploaded ? " · resume" : ""
+        }${r?.coverLetterUploaded ? " · cover" : ""}`
+      )
+    } catch {
+      setStatus("Clean fill unavailable — reload the application page")
+    } finally {
+      setActivating(false)
+    }
+  }
+
   async function onSelectProfile(id: string) {
     setSelectedId(id)
     await saveTeamSettings({ selectedProfileId: id })
@@ -143,7 +183,11 @@ function IndexPopup() {
         <h2 style={{ margin: 0, fontSize: 16 }}>Qyvarex Autofill</h2>
       </div>
 
-      {signedIn ? (
+      {!sessionReady ? (
+        <p style={{ margin: "8px 0 0", fontSize: 12, opacity: 0.75 }}>
+          Loading…
+        </p>
+      ) : signedIn ? (
         <>
           <p style={{ margin: "0 0 12px", fontSize: 12, opacity: 0.85 }}>
             {userLabel || "Signed in to team hub"}
@@ -202,7 +246,25 @@ function IndexPopup() {
               marginBottom: 8,
               opacity: activating ? 0.7 : 1
             }}>
-            {activating ? "Activating…" : "Activate helper on this tab"}
+            {activating ? "Working…" : "Activate helper on this tab"}
+          </button>
+
+          <button
+            onClick={() => void runCleanFill()}
+            disabled={activating || !signedIn}
+            style={{
+              width: "100%",
+              padding: "10px 12px",
+              border: 0,
+              borderRadius: 8,
+              background: "#102a43",
+              color: "white",
+              fontWeight: 600,
+              cursor: activating ? "wait" : "pointer",
+              marginBottom: 8,
+              opacity: activating || !signedIn ? 0.7 : 1
+            }}>
+            Clean-TS fill (Personio / Greenhouse / Lever)
           </button>
 
           <button

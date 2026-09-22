@@ -1,0 +1,145 @@
+{
+  "moves": [
+    {
+      "id": "3rdkr",
+      "from": "_dotdot_/_dotdot_/constants.js",
+      "to": "src/forms/constants.js",
+      "diskFrom": "C:\\Users\\Administrator\\jobright-fork\\engine\\helper-app\\_dotdot_\\_dotdot_\\constants.js",
+      "diskTo": "C:\\Users\\Administrator\\jobright-fork\\engine\\helper-app\\src\\forms\\constants.js",
+      "importerCount": 6
+    },
+    {
+      "id": "4u8XV",
+      "from": "_dotdot_/model.js",
+      "to": "src/model.js",
+      "diskFrom": "C:\\Users\\Administrator\\jobright-fork\\engine\\helper-app\\_dotdot_\\model.js",
+      "diskTo": "C:\\Users\\Administrator\\jobright-fork\\engine\\helper-app\\src\\model.js",
+      "importerCount": 2
+    },
+    {
+      "id": "3nEVv",
+      "from": "_dotdot_/_dotdot_/_dotdot_/Editor/utils/date-format.js",
+      "to": "src/components/Editor/utils/date-format.js",
+      "diskFrom": "C:\\Users\\Administrator\\jobright-fork\\engine\\helper-app\\_dotdot_\\_dotdot_\\_dotdot_\\Editor\\utils\\date-format.js",
+      "diskTo": "C:\\Users\\Administrator\\jobright-fork\\engine\\helper-app\\src\\components\\Editor\\utils\\date-format.js",
+      "importerCount": 3
+    },
+    {
+      "id": "g3URx",
+      "from": "_dotdot_/_dotdot_/_dotdot_/FormFactory.js",
+      "to": "src/FormFactory.js",
+      "diskFrom": "C:\\Users\\Administrator\\jobright-fork\\engine\\helper-app\\_dotdot_\\_dotdot_\\_dotdot_\\FormFactory.js",
+      "diskTo": "C:\\Users\\Administrator\\jobright-fork\\engine\\helper-app\\src\\FormFactory.js",
+      "importerCount": 6
+    },
+    {
+      "id": "9D95f",
+      "from": "_dotdot_/_dotdot_/_dotdot_/utils/isBrowser.js",
+      "to": "src/utils/isBrowser.js",
+      "diskFrom": "C:\\Users\\Administrator\\jobright-fork\\engine\\helper-app\\_dotdot_\\_dotdot_\\_dotdot_\\utils\\isBrowser.js",
+      "diskTo": "C:\\Users\\Administrator\\jobright-fork\\engine\\helper-app\\src\\utils\\isBrowser.js",
+      "importerCount": 1
+    },
+    {
+      "id": "aYcyt",
+      "from": "_dotdot_/_dotdot_/utils.js",
+      "to": "src/utils/predicates.js",
+      "diskFrom": "C:\\Users\\Administrator\\jobright-fork\\engine\\helper-app\\_dotdot_\\_dotdot_\\utils.js",
+      "diskTo": "C:\\Users\\Administrator\\jobright-fork\\engine\\helper-app\\src\\utils\\predicates.js",
+      "importerCount": 1
+    },
+    {
+      "id": "j5kd9",
+      "from": "_dotdot_/_dotdot_/utils/address-lookup.js",
+      "to": "src/utils/address-lookup.js",
+      "diskFrom": "C:\\Users\\Administrator\\jobright-fork\\engine\\helper-app\\_dotdot_\\_dotdot_\\utils\\address-lookup.js",
+      "diskTo": "C:\\Users\\Administrator\\jobright-fork\\engine\\helper-app\\src\\utils\\address-lookup.js",
+      "importerCount": 3
+    },
+    {
+      "id": "7VqIV",
+      "from": "_dotdot_/_dotdot_/utils/autofill-install-attribution.js",
+      "to": "src/utils/autofill-install-attribution.js",
+      "diskFrom": "C:\\Users\\Administrator\\jobright-fork\\engine\\helper-app\\_dotdot_\\_dotdot_\\utils\\autofill-install-attribution.js",
+      "diskTo": "C:\\Users\\Administrator\\jobright-fork\\engine\\helper-app\\src\\utils\\autofill-install-attribution.js",
+      "importerCount": 2
+    },
+    {
+      "id": "2dOam",
+      "from": "_dotdot_/_dotdot_/utils/location-normalizer.js",
+      "to": "src/utils/location-normalizer.js",
+      "diskFrom": "C:\\Users\\Administrator\\jobright-fork\\engine\\helper-app\\_dotdot_\\_dotdot_\\utils\\location-normalizer.js",
+      "diskTo": "C:\\Users\\Administrator\\jobright-fork\\engine\\helper-app\\src\\utils\\location-normalizer.js",
+      "importerCount": 3
+    },
+    {
+      "id": "b8ARY",
+      "from": "_dotdot_/_dotdot_/utils/phone-country-code.js",
+      "to": "src/utils/phone-country-code.js",
+      "diskFrom": "C:\\Users\\Administrator\\jobright-fork\\engine\\helper-app\\_dotdot_\\_dotdot_\\utils\\phone-country-code.js",
+      "diskTo": "C:\\Users\\Administrator\\jobright-fork\\engine\\helper-app\\src\\utils\\phone-country-code.js",
+      "importerCount": 5
+    },
+    {
+      "id": "kwH9q",
+      "from": "_dotdot_/_dotdot_/option-resolve-rollout.js",
+      "to": "src/contents/option-resolve-rollout.js",
+      "diskFrom": "C:\\Users\\Administrator\\jobright-fork\\engine\\helper-app\\_dotdot_\\_dotdot_\\option-resolve-rollout.js",
+      "diskTo": "C:\\Users\\Administrator\\jobright-fork\\engine\\helper-app\\src\\contents\\option-resolve-rollout.js",
+      "importerCount": 4
+    },
+    {
+      "id": "dBzh2",
+      "from": "_dotdot_/adp-workforcenow/country.js",
+      "to": "src/contents/sites/adp-workforcenow/country.js",
+      "diskFrom": "C:\\Users\\Administrator\\jobright-fork\\engine\\helper-app\\_dotdot_\\adp-workforcenow\\country.js",
+      "diskTo": "C:\\Users\\Administrator\\jobright-fork\\engine\\helper-app\\src\\contents\\sites\\adp-workforcenow\\country.js",
+      "importerCount": 2
+    },
+    {
+      "id": "0548q",
+      "from": "_dotdot_/answer.js",
+      "to": "src/contents/sites/eightfold/answer.js",
+      "diskFrom": "C:\\Users\\Administrator\\jobright-fork\\engine\\helper-app\\_dotdot_\\answer.js",
+      "diskTo": "C:\\Users\\Administrator\\jobright-fork\\engine\\helper-app\\src\\contents\\sites\\eightfold\\answer.js",
+      "importerCount": 3
+    },
+    {
+      "id": "6MF9I",
+      "from": "_dotdot_/rules.js",
+      "to": "src/contents/sites/eightfold/form-rules.js",
+      "diskFrom": "C:\\Users\\Administrator\\jobright-fork\\engine\\helper-app\\_dotdot_\\rules.js",
+      "diskTo": "C:\\Users\\Administrator\\jobright-fork\\engine\\helper-app\\src\\contents\\sites\\eightfold\\form-rules.js",
+      "importerCount": 2
+    },
+    {
+      "id": "8LSMY",
+      "from": "_dotdot_/background/version-lifecycle.js",
+      "to": "src/background/version-lifecycle.js",
+      "diskFrom": "C:\\Users\\Administrator\\jobright-fork\\engine\\helper-app\\_dotdot_\\background\\version-lifecycle.js",
+      "diskTo": "C:\\Users\\Administrator\\jobright-fork\\engine\\helper-app\\src\\background\\version-lifecycle.js",
+      "importerCount": 2
+    },
+    {
+      "id": "5w47u",
+      "from": "_dotdot_/education-snapshot-tracking.js",
+      "to": "src/contents/sites/education-snapshot-tracking.js",
+      "diskFrom": "C:\\Users\\Administrator\\jobright-fork\\engine\\helper-app\\_dotdot_\\education-snapshot-tracking.js",
+      "diskTo": "C:\\Users\\Administrator\\jobright-fork\\engine\\helper-app\\src\\contents\\sites\\education-snapshot-tracking.js",
+      "importerCount": 3
+    }
+  ],
+  "archives": [
+    {
+      "id": "50RZ9",
+      "from": "_dotdot_/_dotdot_/useUpdate.js",
+      "diskFrom": "C:\\Users\\Administrator\\jobright-fork\\engine\\helper-app\\_dotdot_\\_dotdot_\\useUpdate.js"
+    },
+    {
+      "id": "5flln",
+      "from": "_dotdot_/_dotdot_/utils/isDev.js",
+      "diskFrom": "C:\\Users\\Administrator\\jobright-fork\\engine\\helper-app\\_dotdot_\\_dotdot_\\utils\\isDev.js"
+    }
+  ],
+  "skip": []
+}

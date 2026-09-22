@@ -1,0 +1,8 @@
+/**
+ * Parcel module id: icEuV
+ * Resolved path: src/assets/inline/images/star_b.svg.js
+ * Asset: src/assets/images/star_b.svg
+ * Dependencies:
+ */
+
+t.exports="data:image/svg+xml,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%3Cg%20clip-path%3D%22url%28%27%23clip0_16692_159697%27%29%22%3E%3Cpath%20d%3D%22M7.6%201.865a.425.425%200%200%201%20.8%200L9.575%205.08c.224.61.799%201.021%201.448%201.034l3.476.067c.408.008.572.53.24.77l-2.683%201.933a1.575%201.575%200%200%200-.58%201.756l.993%203.12a.425.425%200%200%201-.639.483l-2.963-1.959a1.575%201.575%200%200%200-1.736%200l-2.963%201.959a.425.425%200%200%201-.639-.484l.993-3.119a1.575%201.575%200%200%200-.58-1.756L1.26%206.951a.425.425%200%200%201%20.24-.77l3.476-.067A1.575%201.575%200%200%200%206.424%205.08L7.6%201.865Z%22%20fill%3D%22%23000%22%20stroke%3D%22%23000%22%20stroke-width%3D%221.15%22%20stroke-linejoin%3D%22round%22%2F%3E%3C%2Fg%3E%3Cdefs%3E%3CclipPath%20id%3D%22clip0_16692_159697%22%3E%3Cpath%20fill%3D%22%23fff%22%20d%3D%22M0%200h16v16H0z%22%2F%3E%3C%2FclipPath%3E%3C%2Fdefs%3E%3C%2Fsvg%3E"

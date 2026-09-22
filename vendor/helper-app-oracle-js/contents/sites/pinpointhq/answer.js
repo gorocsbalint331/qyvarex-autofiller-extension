@@ -1,0 +1,9 @@
+/**
+ * Parcel module id: 1Owhq
+ * Resolved path: contents/sites/pinpointhq/answer.js (oracle restore)
+ * Dependencies:
+ *   ./phone-country-code -> 4ZAY1  =>  src/contents/sites/pinpointhq/phone-country-code.js
+ *   @parcel/transformer-js/src/esmodule-helpers.js -> cHUbl  =>  @parcel/transformer-js/src/esmodule-helpers.js
+ */
+
+var n=e("@parcel/transformer-js/src/esmodule-helpers.js");n.defineInteropFlag(r),n.export(r,"getPinpointCountryFillValue",()=>a),n.export(r,"formatAnswer",()=>c);var o=e("./phone-country-code");function i(e){if("string"==typeof e)return e;if(Array.isArray(e)){let t=e.find(e=>"string"==typeof e&&e.trim());return t||null}if(e&&"object"==typeof e){let t=e,r=t.value??t.label??t.name;return"string"==typeof r?r:null}return null}function a(e){let t=i(e)?.trim();if(!t)return null;let r=t.toLowerCase();return["us","usa","united states of america"].includes(r)?"United States":["uk","gb","great britain"].includes(r)?"United Kingdom":t}function l(e){for(let t of e){let e=a(t);if(e)return e}return null}function s(e){let t=e.replace(/\D/g,"");if(11===t.length&&t.startsWith("1")){let e=t.substring(1,4),r=t.substring(4,7),n=t.substring(7,11);return`(${e}) ${r}-${n}`}if(10===t.length){let e=t.substring(0,3),r=t.substring(3,6),n=t.substring(6,10);return`(${e}) ${r}-${n}`}return e}function u(e){let t=Array.isArray(e)?e.find(e=>"string"==typeof e&&e.trim()):e;if("string"!=typeof t)return!0;let r=t.match(/\+\s*(\d{1,4})/)?.[1];return!r||"1"===r}function c(e){if(e.regular){let t=l([e.profileData?.country,e.profile_data?.country,e.country,e.regular.Country]);t&&(e.regular.Country=t);let r=u(e.regular[o.PINPOINT_PHONE_COUNTRY_CODE_LABEL]),n=["Phone"];for(let t of n)if(e.regular[t]){let n=Array.isArray(e.regular[t])?e.regular[t][0]:e.regular[t];n&&"string"==typeof n&&(e.regular[t]=r?s(n):n)}}return e}

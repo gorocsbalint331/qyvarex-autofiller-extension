@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head><meta charset="utf-8" /><title>Greenhouse fixture</title></head>
+  <body>
+    <form id="application_form">
+      <div class="field">
+        <label for="first_name">First Name*</label>
+        <input id="first_name" name="job_application[first_name]" required />
+      </div>
+      <div class="field">
+        <label for="last_name">Last Name*</label>
+        <input id="last_name" name="job_application[last_name]" required />
+      </div>
+      <div class="field">
+        <label for="email">Email*</label>
+        <input id="email" name="job_application[email]" type="email" required />
+      </div>
+      <div class="field">
+        <label for="phone">Phone</label>
+        <input id="phone" name="job_application[phone]" />
+      </div>
+      <div class="field">
+        <label for="location">Location (City)</label>
+        <input id="location" name="job_application[location]" />
+      </div>
+      <div class="field">
+        <label for="linkedin">LinkedIn Profile</label>
+        <input id="linkedin" name="job_application[urls][LinkedIn]" />
+      </div>
+      <div class="field">
+        <label for="gender">Gender</label>
+        <select id="gender" name="job_application[gender]">
+          <option value="">Please select</option>
+          <option>Male</option>
+          <option>Female</option>
+          <option>Decline to self-identify</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="cover">Cover Letter</label>
+        <textarea id="cover" name="job_application[cover_letter]"></textarea>
+      </div>
+      <button type="submit">Submit Application</button>
+    </form>
+  </body>
+</html>

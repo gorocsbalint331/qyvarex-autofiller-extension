@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Personio apply fixture</title>
+  </head>
+  <body>
+    <form class="application-form" action="/apply" method="post">
+      <div class="form-field">
+        <label for="name">Name*</label>
+        <input id="name" name="name" type="text" required />
+      </div>
+      <div class="form-field">
+        <label for="email">Email*</label>
+        <input id="email" name="email" type="email" required />
+      </div>
+      <div class="form-field">
+        <label for="phone">Phone</label>
+        <input id="phone" name="phone" type="tel" />
+      </div>
+      <div class="form-field">
+        <label for="birthday">Birthday</label>
+        <input id="birthday" name="birthday" type="text" placeholder="MM/DD/YYYY" />
+      </div>
+      <div class="form-field">
+        <label for="years">Years of Experience</label>
+        <select id="years" name="years">
+          <option value="">Please select</option>
+          <option value="0-1">0-1 years</option>
+          <option value="1-3">1-3 years</option>
+          <option value="3-5">3-5 years</option>
+          <option value="5-7">5-7 years</option>
+          <option value="7-10">7-10 years</option>
+          <option value="10+">10+ years</option>
+        </select>
+      </div>
+      <div class="form-field">
+        <label for="available">Available from</label>
+        <input id="available" name="available" type="date" />
+      </div>
+      <div class="form-field">
+        <label for="salary">Expected salary</label>
+        <input id="salary" name="salary" type="text" />
+      </div>
+      <div class="form-field">
+        <label for="planned">Planned work location*</label>
+        <select id="planned" name="planned" required>
+          <option value="">Please select</option>
+          <option>My current location</option>
+          <option>Remote</option>
+          <option>Hybrid</option>
+          <option>On-site / office</option>
+          <option>Willing to relocate</option>
+        </select>
+      </div>
+      <div class="form-field">
+        <label for="location">Current location*</label>
+        <textarea id="location" name="location" required></textarea>
+      </div>
+      <div class="form-field">
+        <label for="auth">
+          Are you currently authorized to work in the planned work location without
+          employer sponsorship?
+        </label>
+        <textarea id="auth" name="auth"></textarea>
+      </div>
+      <div class="form-field">
+        <label for="sponsor">
+          Will you require employer sponsorship now or in the future?
+        </label>
+        <textarea id="sponsor" name="sponsor"></textarea>
+      </div>
+      <div class="form-field">
+        <label for="source">Source / job portal</label>
+        <input id="source" name="source" type="text" />
+      </div>
+      <button class="career-submit-application-btn" type="submit">Submit application</button>
+    </form>
+  </body>
+</html>

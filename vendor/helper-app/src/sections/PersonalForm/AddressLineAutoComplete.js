@@ -1,0 +1,14 @@
+/**
+ * Parcel module id: 8QLiE
+ * Resolved path: src/sections/PersonalForm/AddressLineAutoComplete.js
+ * Dependencies:
+ *   ./address-suggestion -> iiBo5  =>  address-suggestion.js
+ *   @parcel/transformer-js/src/esmodule-helpers.js -> cHUbl  =>  @parcel/transformer-js/src/esmodule-helpers.js
+ *   @plasmohq/messaging -> 92GyB  =>  @plasmohq/messaging.js
+ *   ahooks -> 9sqtS  =>  ahooks.js
+ *   antd -> 9tniX  =>  antd.js
+ *   react -> 329PG  =>  react-reexport.js
+ *   react/jsx-runtime -> 8iOxN  =>  react/jsx-runtime.js
+ */
+
+var n=e("@parcel/transformer-js/src/esmodule-helpers.js");n.defineInteropFlag(r),n.export(r,"AddressLineAutoComplete",()=>c);var o=e("react/jsx-runtime"),i=e("ahooks"),a=e("antd"),l=e("react"),s=e("@plasmohq/messaging"),u=e("./address-suggestion");let c=({value:e,personal:t,placeholder:r,className:n,popupClassName:c,onFocus:d,onChange:f,onResolvedAddress:p})=>{let m=(0,l.useRef)((0,u.createAddressSuggestionSession)()),h=(0,l.useRef)(""),g=(0,l.useRef)(null),b=(0,l.useRef)(""),y=(0,l.useRef)(e),v=(0,l.useRef)(!1),[w,S]=(0,l.useState)([]),[E,x]=(0,l.useState)(!1),C=(0,l.useMemo)(()=>w,[w]);(0,l.useEffect)(()=>{y.current=e},[e]);let A=()=>{x(!1),S([])},{run:k,cancel:T}=(0,i.useRequest)(async(e,t)=>{let r=m.current.startRequest(e);return r?await (0,s.sendToBackground)({name:"getAddressSuggestions",body:(0,u.getAddressSuggestionRequestParams)(r.input,r.sessionToken,t)}):null},{manual:!0,debounceWait:u.ADDRESS_SUGGESTION_DEBOUNCE_WAIT,onSuccess:(e,t)=>{if(null===e)return;let[r]=t;if(!v.current||!(0,u.shouldApplyAddressSuggestionResponse)(r,h.current))return;let n=(0,u.getAddressSuggestionOptions)(Array.isArray(e)?e:[]);S(n),x(n.length>0)},onError:()=>{A()}}),{runAsync:F}=(0,i.useRequest)(async(e,t)=>await (0,s.sendToBackground)({name:"resolveAddressSuggestion",body:{placeId:e,sessionToken:t}}),{manual:!0}),I=e=>{let r=e.trim();if(T(),h.current=r,!(0,u.isAddressSuggestionQueryEligible)(r)){A();return}k(r,t.country)},j=e=>{C.some(t=>t.value===e)||(y.current=e,g.current=null,b.current="",A(),h.current=e.trim(),f(e),I(e))},D=async(e,r)=>{let{placeId:n,displayAddress:o}=r.originData;if(!n)return;let i=n,a=m.current.getToken();m.current.completeSession(a),g.current=i,b.current=o??"",T(),h.current="",A(),o&&(y.current=o,f(o));try{let e=await F(i,a),r=g.current===i,n=b.current.trim()===y.current.trim();if(!r||!n)return;let o=(0,u.getResolvedAddressPersonalPatch)(t,e);Object.keys(o).length>0&&p(o)}catch(e){console.warn("[AutofillInfoModal] address suggestion resolve failed",e)}},P=e=>{v.current=!0,d(e)},_=()=>{v.current=!1,T(),A()},L=e=>{if(!e||!v.current){A();return}x(C.length>0)};return(0,o.jsx)(a.AutoComplete,{allowClear:!1,defaultActiveFirstOption:!1,value:e,options:C,open:E,placeholder:r,className:n,popupClassName:c,filterOption:!1,onChange:j,onSelect:D,onFocus:P,onBlur:_,onDropdownVisibleChange:L})}

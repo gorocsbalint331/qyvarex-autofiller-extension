@@ -1,0 +1,108 @@
+{
+  "generatedAt": "2026-09-22T11:47:30.667Z",
+  "apply": true,
+  "count": 11,
+  "moveIntoSrc": 11,
+  "archiveDup": 0,
+  "collapses": [
+    {
+      "parcelId": "47pZH",
+      "stem": "date",
+      "action": "move_into_src",
+      "loser": "date__47pZH.js",
+      "canonical": "src/contents/sites/walmart/date.js",
+      "via": "src/contents/sites/walmart/operations.js",
+      "spec": "./date"
+    },
+    {
+      "parcelId": "gqA5z",
+      "stem": "answer",
+      "action": "move_into_src",
+      "loser": "answer__gqA5z.js",
+      "canonical": "src/contents/sites/careers-toasttab/answer.js",
+      "via": "src/contents/sites/careers-toasttab/operations.js",
+      "spec": "./answer"
+    },
+    {
+      "parcelId": "dAtaS",
+      "stem": "answer",
+      "action": "move_into_src",
+      "loser": "answer__dAtaS.js",
+      "canonical": "src/contents/sites/comeet/answer.js",
+      "via": "src/contents/sites/comeet/operations.js",
+      "spec": "./answer"
+    },
+    {
+      "parcelId": "6TJ1n",
+      "stem": "answer",
+      "action": "move_into_src",
+      "loser": "answer__6TJ1n.js",
+      "canonical": "src/contents/sites/freshteam/answer.js",
+      "via": "src/contents/sites/freshteam/operations.js",
+      "spec": "./answer"
+    },
+    {
+      "parcelId": "fRM2B",
+      "stem": "phone-country-code",
+      "action": "move_into_src",
+      "loser": "phone-country-code__fRM2B.js",
+      "canonical": "src/contents/sites/kula/phone-country-code.js",
+      "via": "src/contents/sites/kula/operations.js",
+      "spec": "./phone-country-code"
+    },
+    {
+      "parcelId": "aK1rx",
+      "stem": "answer",
+      "action": "move_into_src",
+      "loser": "answer__aK1rx.js",
+      "canonical": "src/contents/sites/personio/answer.js",
+      "via": "src/contents/sites/personio/operations.js",
+      "spec": "./answer"
+    },
+    {
+      "parcelId": "ch2m6",
+      "stem": "phone-country-code",
+      "action": "move_into_src",
+      "loser": "phone-country-code__ch2m6.js",
+      "canonical": "src/contents/sites/recruitee/phone-country-code.js",
+      "via": "src/contents/sites/recruitee/answer.js",
+      "spec": "./phone-country-code"
+    },
+    {
+      "parcelId": "lBWM0",
+      "stem": "phone-country-code",
+      "action": "move_into_src",
+      "loser": "phone-country-code__lBWM0.js",
+      "canonical": "src/contents/sites/rippling/phone-country-code.js",
+      "via": "src/contents/sites/rippling/operations.js",
+      "spec": "./phone-country-code"
+    },
+    {
+      "parcelId": "fTSIG",
+      "stem": "phone-country-code",
+      "action": "move_into_src",
+      "loser": "phone-country-code__fTSIG.js",
+      "canonical": "src/contents/sites/teamtailor/phone-country-code.js",
+      "via": "src/contents/sites/teamtailor/operations.js",
+      "spec": "./phone-country-code"
+    },
+    {
+      "parcelId": "bOWgq",
+      "stem": "phone-value",
+      "action": "move_into_src",
+      "loser": "phone-value__bOWgq.js",
+      "canonical": "src/contents/sites/tesla/phone-value.js",
+      "via": "src/contents/sites/tesla/operations.js",
+      "spec": "./phone-value"
+    },
+    {
+      "parcelId": "eLt1Y",
+      "stem": "phone-value",
+      "action": "move_into_src",
+      "loser": "phone-value__eLt1Y.js",
+      "canonical": "src/contents/sites/ycombinator/phone-value.js",
+      "via": "src/contents/sites/ycombinator/operations.js",
+      "spec": "./phone-value"
+    }
+  ]
+}

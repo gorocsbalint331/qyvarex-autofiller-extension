@@ -297,7 +297,7 @@ export const SITE_REGISTRY = {
   freshteam: { patterns: ["*://*.freshteam.com/jobs/*"] },
   pinpointhq: {
     patterns: ["*://*.pinpointhq.com/*/postings/*", "*://*.pinpointhq.com/postings/*"],
-    pageSourceKeyword: n,
+    pageSourceKeyword: "pinpointhq",
     pageSourceDomain: "pinpointhq.com"
   },
   recruitee: {

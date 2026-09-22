@@ -1,0 +1,9 @@
+/**
+ * Parcel module id: fTSIG
+ * Resolved path: src/contents/sites/teamtailor/phone-country-code.js
+ * Dependencies:
+ *   @parcel/transformer-js/src/esmodule-helpers.js -> cHUbl  =>  @parcel/transformer-js/src/esmodule-helpers.js
+ *   ~core/phone-country-code -> 8nENw  =>  _tilde_core/phone-country-code.js
+ */
+
+var n=e("@parcel/transformer-js/src/esmodule-helpers.js");n.defineInteropFlag(r),n.export(r,"getTeamtailorPhoneCountryOptionLabel",()=>s),n.export(r,"getTeamtailorPhoneCountryOptionElements",()=>u),n.export(r,"getTeamtailorPhoneCountryOptions",()=>c),n.export(r,"findTeamtailorPhoneCountryOption",()=>d),n.export(r,"getSelectedTeamtailorPhoneCountryLabel",()=>f);var o=e("~core/phone-country-code");let i='li[role="option"], li.iti__country';function a(e){return e.replace(/\s+/g," ").trim()}function l(e){let t=e.replace(/\D/g,"");return t?`+${t}`:a(e)}function s(e){let t=a(e.querySelector(".iti__country-name")?.textContent||""),r=l(e.querySelector(".iti__dial-code")?.textContent||e.getAttribute("data-dial-code")||"");if(t&&r)return`${t} ${r}`;let n=e.querySelector("div");return a(n?.textContent||e.textContent||"")}function u(e){if(!e)return[];let t=Array.from(e.querySelectorAll(i));return t.length>0?t:Array.from(e.querySelectorAll("button")).filter(e=>!e.classList?.contains("iti__search-clear")).filter(e=>s(e))}function c(e){return Array.from(new Set(u(e).map(s).filter(Boolean)))}function d(e,t){let r=u(e);if(!r.length)return null;let n=(0,o.findPhoneCountryOption)(t,r.map(e=>(0,o.parsePhoneCountryOptionLabel)(s(e),e)),{bareDialPolicy:"reject-shared"});return n?.element??null}function f(e){let t=e.nextElementSibling,r=t?.querySelector('li[role="option"][aria-selected="true"], li.iti__country.iti__active, button[aria-selected="true"], button.selected'),n=r?s(r):"";if(n)return n;let o=e.getAttribute?.("aria-label")||"",i=o.match(/selected\s+(.+)$/i)?.[1]||"";return i?a(i).replace(/\s*\((\+\d+)\)$/," $1"):a(e.textContent||"")}

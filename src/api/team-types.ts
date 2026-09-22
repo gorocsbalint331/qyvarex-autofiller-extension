@@ -63,4 +63,13 @@ export type AutofillInfoPayload = {
     downloadPath: string
   }>
   defaultResumeId: string | null
+  coverLetters?: Array<{
+    id: string
+    displayName: string
+    fileName: string
+    mimeType: string
+    isDefault: boolean
+    downloadPath: string
+  }>
+  defaultCoverLetterId?: string | null
 }

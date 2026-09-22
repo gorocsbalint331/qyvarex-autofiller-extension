@@ -1,0 +1,378 @@
+{
+  "moves": [
+    {
+      "parcelId": "fiDTv",
+      "action": "move_into_src",
+      "loser": {
+        "manifestPath": "dirty-state.js",
+        "diskPath": "C:\\Users\\Administrator\\jobright-fork\\engine\\helper-app\\dirty-state.js"
+      },
+      "canonical": {
+        "diskPath": "C:\\Users\\Administrator\\jobright-fork\\engine\\helper-app\\src\\components\\dirty-state.js",
+        "diskRel": "src/components/dirty-state.js",
+        "via": "src/components/Editor.js",
+        "spec": "./dirty-state",
+        "exists": false
+      }
+    },
+    {
+      "parcelId": "2iJL1",
+      "action": "move_into_src",
+      "loser": {
+        "manifestPath": "country-name-variants.js",
+        "diskPath": "C:\\Users\\Administrator\\jobright-fork\\engine\\helper-app\\country-name-variants.js"
+      },
+      "canonical": {
+        "diskPath": "C:\\Users\\Administrator\\jobright-fork\\engine\\helper-app\\src\\core\\country-name-variants.js",
+        "diskRel": "src/core/country-name-variants.js",
+        "via": "src/core/match.js",
+        "spec": "./country-name-variants",
+        "exists": false
+      }
+    },
+    {
+      "parcelId": "idvls",
+      "action": "move_into_src",
+      "loser": {
+        "manifestPath": "site-names.js",
+        "diskPath": "C:\\Users\\Administrator\\jobright-fork\\engine\\helper-app\\site-names.js"
+      },
+      "canonical": {
+        "diskPath": "C:\\Users\\Administrator\\jobright-fork\\engine\\helper-app\\src\\core\\site-names.js",
+        "diskRel": "src/core/site-names.js",
+        "via": "src/core/match.js",
+        "spec": "./site-names",
+        "exists": false
+      }
+    },
+    {
+      "parcelId": "0w80a",
+      "action": "move_into_src",
+      "loser": {
+        "manifestPath": "error-navigation.js",
+        "diskPath": "C:\\Users\\Administrator\\jobright-fork\\engine\\helper-app\\error-navigation.js"
+      },
+      "canonical": {
+        "diskPath": "C:\\Users\\Administrator\\jobright-fork\\engine\\helper-app\\src\\components\\error-navigation.js",
+        "diskRel": "src/components/error-navigation.js",
+        "via": "src/components/Editor.js",
+        "spec": "./error-navigation",
+        "exists": false
+      }
+    },
+    {
+      "parcelId": "bSnxB",
+      "action": "move_into_src",
+      "loser": {
+        "manifestPath": "config.js",
+        "diskPath": "C:\\Users\\Administrator\\jobright-fork\\engine\\helper-app\\config.js"
+      },
+      "canonical": {
+        "diskPath": "C:\\Users\\Administrator\\jobright-fork\\engine\\helper-app\\src\\sections\\EducationForm\\config.js",
+        "diskRel": "src/sections/EducationForm/config.js",
+        "via": "sections/EducationForm.js",
+        "spec": "./config",
+        "exists": false
+      }
+    },
+    {
+      "parcelId": "lSSAx",
+      "action": "move_into_src",
+      "loser": {
+        "manifestPath": "config__lSSAx.js",
+        "diskPath": "C:\\Users\\Administrator\\jobright-fork\\engine\\helper-app\\config__lSSAx.js"
+      },
+      "canonical": {
+        "diskPath": "C:\\Users\\Administrator\\jobright-fork\\engine\\helper-app\\src\\sections\\EqualEmploymentForm\\config.js",
+        "diskRel": "src/sections/EqualEmploymentForm/config.js",
+        "via": "sections/EqualEmploymentForm.js",
+        "spec": "./config",
+        "exists": false
+      }
+    },
+    {
+      "parcelId": "8QLiE",
+      "action": "move_into_src",
+      "loser": {
+        "manifestPath": "AddressLineAutoComplete.js",
+        "diskPath": "C:\\Users\\Administrator\\jobright-fork\\engine\\helper-app\\AddressLineAutoComplete.js"
+      },
+      "canonical": {
+        "diskPath": "C:\\Users\\Administrator\\jobright-fork\\engine\\helper-app\\src\\sections\\PersonalForm\\AddressLineAutoComplete.js",
+        "diskRel": "src/sections/PersonalForm/AddressLineAutoComplete.js",
+        "via": "sections/PersonalForm.js",
+        "spec": "./AddressLineAutoComplete",
+        "exists": false
+      }
+    },
+    {
+      "parcelId": "2Tr6O",
+      "action": "move_into_src",
+      "loser": {
+        "manifestPath": "config__2Tr6O.js",
+        "diskPath": "C:\\Users\\Administrator\\jobright-fork\\engine\\helper-app\\config__2Tr6O.js"
+      },
+      "canonical": {
+        "diskPath": "C:\\Users\\Administrator\\jobright-fork\\engine\\helper-app\\src\\sections\\PersonalForm\\config.js",
+        "diskRel": "src/sections/PersonalForm/config.js",
+        "via": "sections/PersonalForm.js",
+        "spec": "./config",
+        "exists": false
+      }
+    },
+    {
+      "parcelId": "8FS7N",
+      "action": "move_into_src",
+      "loser": {
+        "manifestPath": "PhoneNumberField.js",
+        "diskPath": "C:\\Users\\Administrator\\jobright-fork\\engine\\helper-app\\PhoneNumberField.js"
+      },
+      "canonical": {
+        "diskPath": "C:\\Users\\Administrator\\jobright-fork\\engine\\helper-app\\src\\sections\\PersonalForm\\PhoneNumberField.js",
+        "diskRel": "src/sections/PersonalForm/PhoneNumberField.js",
+        "via": "sections/PersonalForm.js",
+        "spec": "./PhoneNumberField",
+        "exists": false
+      }
+    },
+    {
+      "parcelId": "3nMIS",
+      "action": "move_into_src",
+      "loser": {
+        "manifestPath": "config__3nMIS.js",
+        "diskPath": "C:\\Users\\Administrator\\jobright-fork\\engine\\helper-app\\config__3nMIS.js"
+      },
+      "canonical": {
+        "diskPath": "C:\\Users\\Administrator\\jobright-fork\\engine\\helper-app\\src\\sections\\PreferenceForm\\config.js",
+        "diskRel": "src/sections/PreferenceForm/config.js",
+        "via": "sections/PreferenceForm.js",
+        "spec": "./config",
+        "exists": false
+      }
+    },
+    {
+      "parcelId": "9McrK",
+      "action": "move_into_src",
+      "loser": {
+        "manifestPath": "WorkdaySignupPasswordField.js",
+        "diskPath": "C:\\Users\\Administrator\\jobright-fork\\engine\\helper-app\\WorkdaySignupPasswordField.js"
+      },
+      "canonical": {
+        "diskPath": "C:\\Users\\Administrator\\jobright-fork\\engine\\helper-app\\src\\sections\\SignupInformationForm\\WorkdaySignupPasswordField.js",
+        "diskRel": "src/sections/SignupInformationForm/WorkdaySignupPasswordField.js",
+        "via": "sections/SignupInformationForm.js",
+        "spec": "./WorkdaySignupPasswordField",
+        "exists": false
+      }
+    },
+    {
+      "parcelId": "44Z9L",
+      "action": "move_into_src",
+      "loser": {
+        "manifestPath": "skill-input.js",
+        "diskPath": "C:\\Users\\Administrator\\jobright-fork\\engine\\helper-app\\skill-input.js"
+      },
+      "canonical": {
+        "diskPath": "C:\\Users\\Administrator\\jobright-fork\\engine\\helper-app\\src\\sections\\SkillForm\\skill-input.js",
+        "diskRel": "src/sections/SkillForm/skill-input.js",
+        "via": "sections/SkillForm.js",
+        "spec": "./skill-input",
+        "exists": false
+      }
+    },
+    {
+      "parcelId": "5Jklc",
+      "action": "move_into_src",
+      "loser": {
+        "manifestPath": "config__5Jklc.js",
+        "diskPath": "C:\\Users\\Administrator\\jobright-fork\\engine\\helper-app\\config__5Jklc.js"
+      },
+      "canonical": {
+        "diskPath": "C:\\Users\\Administrator\\jobright-fork\\engine\\helper-app\\src\\sections\\WorkExperienceForm\\config.js",
+        "diskRel": "src/sections/WorkExperienceForm/config.js",
+        "via": "sections/WorkExperienceForm.js",
+        "spec": "./config",
+        "exists": false
+      }
+    },
+    {
+      "parcelId": "lNYnj",
+      "action": "move_into_src",
+      "loser": {
+        "manifestPath": "validation.js",
+        "diskPath": "C:\\Users\\Administrator\\jobright-fork\\engine\\helper-app\\validation.js"
+      },
+      "canonical": {
+        "diskPath": "C:\\Users\\Administrator\\jobright-fork\\engine\\helper-app\\src\\components\\validation.js",
+        "diskRel": "src/components/validation.js",
+        "via": "src/components/Editor.js",
+        "spec": "./validation",
+        "exists": false
+      }
+    },
+    {
+      "parcelId": "cL87T",
+      "action": "move_into_src",
+      "loser": {
+        "manifestPath": "view-model.js",
+        "diskPath": "C:\\Users\\Administrator\\jobright-fork\\engine\\helper-app\\view-model.js"
+      },
+      "canonical": {
+        "diskPath": "C:\\Users\\Administrator\\jobright-fork\\engine\\helper-app\\src\\components\\CoverLetterPreview\\view-model.js",
+        "diskRel": "src/components/CoverLetterPreview/view-model.js",
+        "via": "components/CoverLetterPreview.js",
+        "spec": "./view-model",
+        "exists": false
+      }
+    },
+    {
+      "parcelId": "9hRQY",
+      "action": "move_into_src",
+      "loser": {
+        "manifestPath": "storage.js",
+        "diskPath": "C:\\Users\\Administrator\\jobright-fork\\engine\\helper-app\\storage.js"
+      },
+      "canonical": {
+        "diskPath": "C:\\Users\\Administrator\\jobright-fork\\engine\\helper-app\\src\\storage.js",
+        "diskRel": "src/storage.js",
+        "via": "src/utils.js",
+        "spec": "./storage",
+        "exists": false
+      }
+    },
+    {
+      "parcelId": "nRmsw",
+      "action": "move_into_src",
+      "loser": {
+        "manifestPath": "lenCalculation.js",
+        "diskPath": "C:\\Users\\Administrator\\jobright-fork\\engine\\helper-app\\lenCalculation.js"
+      },
+      "canonical": {
+        "diskPath": "C:\\Users\\Administrator\\jobright-fork\\engine\\helper-app\\src\\lenCalculation.js",
+        "diskRel": "src/lenCalculation.js",
+        "via": "src/utils.js",
+        "spec": "./lenCalculation",
+        "exists": false
+      }
+    },
+    {
+      "parcelId": "kklEO",
+      "action": "move_into_src",
+      "loser": {
+        "manifestPath": "fieldFilter.js",
+        "diskPath": "C:\\Users\\Administrator\\jobright-fork\\engine\\helper-app\\fieldFilter.js"
+      },
+      "canonical": {
+        "diskPath": "C:\\Users\\Administrator\\jobright-fork\\engine\\helper-app\\src\\components\\fieldFilter.js",
+        "diskRel": "src/components/fieldFilter.js",
+        "via": "src/components/useGenerateField.js",
+        "spec": "./fieldFilter",
+        "exists": false
+      }
+    },
+    {
+      "parcelId": "5DftU",
+      "action": "move_into_src",
+      "loser": {
+        "manifestPath": "labelExtraction.js",
+        "diskPath": "C:\\Users\\Administrator\\jobright-fork\\engine\\helper-app\\labelExtraction.js"
+      },
+      "canonical": {
+        "diskPath": "C:\\Users\\Administrator\\jobright-fork\\engine\\helper-app\\src\\components\\labelExtraction.js",
+        "diskRel": "src/components/labelExtraction.js",
+        "via": "src/components/useGenerateField.js",
+        "spec": "./labelExtraction",
+        "exists": false
+      }
+    },
+    {
+      "parcelId": "5f7QQ",
+      "action": "move_into_src",
+      "loser": {
+        "manifestPath": "policy-link.js",
+        "diskPath": "C:\\Users\\Administrator\\jobright-fork\\engine\\helper-app\\policy-link.js"
+      },
+      "canonical": {
+        "diskPath": "C:\\Users\\Administrator\\jobright-fork\\engine\\helper-app\\src\\contents\\sites\\dayforce\\policy-link.js",
+        "diskRel": "src/contents/sites/dayforce/policy-link.js",
+        "via": "src/contents/sites/dayforce/agreements.js",
+        "spec": "./policy-link",
+        "exists": false
+      }
+    },
+    {
+      "parcelId": "6JbwN",
+      "action": "move_into_src",
+      "loser": {
+        "manifestPath": "dover-country.js",
+        "diskPath": "C:\\Users\\Administrator\\jobright-fork\\engine\\helper-app\\dover-country.js"
+      },
+      "canonical": {
+        "diskPath": "C:\\Users\\Administrator\\jobright-fork\\engine\\helper-app\\src\\contents\\crawler\\dover-country.js",
+        "diskRel": "src/contents/crawler/dover-country.js",
+        "via": "src/contents/crawler/dover.js",
+        "spec": "./dover-country",
+        "exists": false
+      }
+    },
+    {
+      "parcelId": "bayUu",
+      "action": "move_into_src",
+      "loser": {
+        "manifestPath": "dover-phone.js",
+        "diskPath": "C:\\Users\\Administrator\\jobright-fork\\engine\\helper-app\\dover-phone.js"
+      },
+      "canonical": {
+        "diskPath": "C:\\Users\\Administrator\\jobright-fork\\engine\\helper-app\\src\\contents\\crawler\\dover-phone.js",
+        "diskRel": "src/contents/crawler/dover-phone.js",
+        "via": "src/contents/crawler/dover.js",
+        "spec": "./dover-phone",
+        "exists": false
+      }
+    },
+    {
+      "parcelId": "ifrOd",
+      "action": "move_into_src",
+      "loser": {
+        "manifestPath": "newBase.js",
+        "diskPath": "C:\\Users\\Administrator\\jobright-fork\\engine\\helper-app\\newBase.js"
+      },
+      "canonical": {
+        "diskPath": "C:\\Users\\Administrator\\jobright-fork\\engine\\helper-app\\src\\contents\\crawler\\newBase.js",
+        "diskRel": "src/contents/crawler/newBase.js",
+        "via": "src/contents/crawler/dover.js",
+        "spec": "./newBase",
+        "exists": false
+      }
+    }
+  ],
+  "skip": [
+    {
+      "parcelId": "kh8I9",
+      "path": "isOnline.js",
+      "reason": "no-canonical"
+    },
+    {
+      "parcelId": "1hPeR",
+      "path": "Fetch.js",
+      "reason": "no-canonical"
+    },
+    {
+      "parcelId": "iiBo5",
+      "path": "address-suggestion.js",
+      "reason": "no-canonical"
+    },
+    {
+      "parcelId": "9hp0S",
+      "path": "operations.js",
+      "reason": "missing-on-disk",
+      "want": "src/contents/sites/google/operations.js"
+    },
+    {
+      "parcelId": "llTaO",
+      "path": "steps.js",
+      "reason": "missing-on-disk",
+      "want": "src/contents/sites/eightfold/steps.js"
+    }
+  ]
+}

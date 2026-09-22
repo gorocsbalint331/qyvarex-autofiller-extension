@@ -1,27 +1,47 @@
 {
   "name": "jobright-fork-extension",
   "displayName": "Qyvarex Autofill",
-  "version": "0.1.8",
+  "version": "0.4.0",
   "description": "Autofill job applications from your Qyvarex team profiles, resumes, and saved answers.",
   "author": "Qyvarex",
   "homepage": "https://jobright-team-site.vercel.app",
   "scripts": {
     "dev": "plasmo dev",
+    "predev": "node scripts/bundle-engine-helper.mjs",
+    "prebuild": "node scripts/bundle-engine-helper.mjs",
     "build": "plasmo build",
-    "package": "plasmo package"
+    "postbuild": "node scripts/bundle-engine-helper.mjs --runtime=ts",
+    "package": "plasmo package",
+    "bundle:helper": "node scripts/bundle-engine-helper.mjs",
+    "bundle:helper:ts": "node scripts/bundle-engine-helper.mjs --runtime=ts",
+    "bundle:helper:parcel": "node scripts/bundle-engine-helper.mjs --runtime=parcel",
+    "bundle:helper:phase1": "node scripts/bundle-engine-helper.mjs --runtime=phase1",
+    "port:vendor-helper": "node scripts/port-vendor-helper-to-src.mjs",
+    "check:engine-independent": "node scripts/check-engine-independent.mjs",
+    "helper:inventory": "node scripts/helper-app-inventory.mjs",
+    "helper:restore-oracle": "node scripts/restore-tilde-layout.mjs",
+    "helper:collapse-dups": "node scripts/collapse-parcel-dups.mjs",
+    "helper:collapse-dups:apply": "node scripts/collapse-parcel-dups.mjs --apply",
+    "helper:deob": "node scripts/deobfuscate-parcel-module.mjs",
+    "helper:deob:methods": "node scripts/deobfuscate-parcel-module.mjs --batch methods --write",
+    "test": "tsx --test tests/**/*.test.ts"
   },
   "dependencies": {
     "@plasmohq/messaging": "^0.7.1",
     "@plasmohq/storage": "^1.13.0",
     "react": "18.2.0",
-    "react-dom": "18.2.0"
+    "react-dom": "18.2.0",
+    "svgo": "^3.3.5"
   },
   "devDependencies": {
     "@types/chrome": "0.0.258",
     "@types/node": "20.11.5",
     "@types/react": "18.2.48",
     "@types/react-dom": "18.2.18",
+    "esbuild": "^0.25.12",
+    "linkedom": "^0.18.13",
     "plasmo": "0.90.5",
+    "tsx": "^4.23.15",
     "typescript": "5.3.3"
   },
   "manifest": {

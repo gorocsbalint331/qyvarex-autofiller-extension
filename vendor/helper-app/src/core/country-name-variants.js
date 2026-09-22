@@ -1,0 +1,9 @@
+/**
+ * Parcel module id: 2iJL1
+ * Resolved path: src/core/country-name-variants.js
+ * Dependencies:
+ *   ./parse -> 6zjmU  =>  src/core/parse.js
+ *   @parcel/transformer-js/src/esmodule-helpers.js -> cHUbl  =>  @parcel/transformer-js/src/esmodule-helpers.js
+ */
+
+var n=e("@parcel/transformer-js/src/esmodule-helpers.js");n.defineInteropFlag(r),n.export(r,"countryNameVariants",()=>m),n.export(r,"buildCountryNameVariantIndex",()=>g),n.export(r,"lookupCountryNameVariant",()=>b);var o=e("./parse");function i(e){return e.normalize("NFD").replace(/[\u0300-\u036f]/g,"")}function a(e){return e.replace(/\([^)]*\)/g," ")}function l(e){let t=e.split(",");if(2!==t.length)return e;let[r,n]=t.map(e=>e.trim());return r&&n?`${n} ${r}`:e}let s=/^(?:the\s+)?(?:federated\s+|islamic\s+|democratic\s+|people'?s\s+|united\s+|socialist\s+|bolivarian\s+|plurinational\s+|co-?operative\s+|independent\s+|federal\s+)*(?:democratic\s+)?(?:republics?|states?|kingdom|commonwealth|union)\s+of\s+(?:the\s+)?/i;function u(e){return e.replace(s,"")}function c(e){let t=e.replace(/\bst\.?\b/gi,"Saint"),r=e.replace(/\bsaint\b/gi,"St.");return[t,r]}let d=new Set(["and","the"]);function f(e){return e.split(" ").filter(e=>!d.has(e)).join(" ")}let p=[e=>[i(e)],e=>[a(e)],e=>[l(e)],e=>[u(e)],c];function m(e){let t=String(e??"").trim();if(!t)return[];let r=new Set([t]);for(let e of p){let t=new Set(r);for(let n of r)for(let r of e(n))r.trim()&&t.add(r.trim());r=t}let n=new Set;for(let e of r){let t=(0,o.normalizePhoneCountryText)(e);if(!t)continue;n.add(t);let r=f(t);r&&n.add(r)}return[...n]}let h="\x00ambiguous";function g(e){let t=new Map;for(let{name:r,iso2:n}of e)if(r&&n)for(let e of m(r)){let r=t.get(e);void 0===r?t.set(e,n):r!==n&&t.set(e,h)}return t}function b(e,t){let r=new Set;for(let n of m(t)){let t=e.get(n);if(t){if(t===h)return"";r.add(t)}}return 1===r.size?[...r][0]:""}

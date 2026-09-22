@@ -1,0 +1,192 @@
+/**
+ * Parcel module id: 2Kr5V
+ * Resolved path: src/components/CompanyAutoComplete.js
+ * Dependencies:
+ *   ./match -> jzS4E  =>  src/components/match.js
+ *   @parcel/transformer-js/src/esmodule-helpers.js -> cHUbl  =>  @parcel/transformer-js/src/esmodule-helpers.js
+ *   @plasmohq/messaging -> 92GyB  =>  @plasmohq/messaging.js
+ *   ahooks -> 9sqtS  =>  ahooks.js
+ *   antd -> 9tniX  =>  antd.js
+ *   react -> 329PG  =>  react-reexport.js
+ *   react/jsx-runtime -> 8iOxN  =>  react/jsx-runtime.js
+ *   ~api/env-resolver -> 45ABC  =>  src/api/env-resolver.js
+ *   ~store/container -> cKIaQ  =>  src/store/container.js
+ *   ~store/externalJob -> 1YpU3  =>  src/store/externalJob.js
+ *   ~ui/Image -> 4wCrP  =>  src/ui/Image.js
+ *   ~utils/checkLinkedin -> 5xJv6  =>  src/utils/checkLinkedin.js
+ */
+
+var n = e("@parcel/transformer-js/src/esmodule-helpers.js");
+n.defineInteropFlag(r), n.export(r, "CompanyLogo", () => b);
+var o = e("react/jsx-runtime"),
+  i = e("ahooks"),
+  a = e("antd"),
+  l = e("react"),
+  s = e("@plasmohq/messaging"),
+  u = e("~api/env-resolver"),
+  c = e("~store/container"),
+  d = e("~store/externalJob"),
+  f = e("~ui/Image"),
+  p = n.interopDefault(f),
+  m = e("~utils/checkLinkedin"),
+  h = e("./match");
+let g = e => {
+    let {
+      errorSrc: t,
+      style: r,
+      ...n
+    } = e, [i, a] = (0, l.useState)(e.src);
+    return (0, o.jsx)("div", {
+      style: {
+        minWidth: e.width || e.height || 72,
+        minHeight: e.width || e.height || 72,
+        width: e.width || e.height || 72,
+        height: e.width || e.height || 72,
+        display: "block",
+        position: "relative",
+        boxShadow: "0px 1px 2px rgba(0, 0, 0, 0.1)",
+        borderRadius: "6px",
+        marginRight: "2px",
+        ...r
+      },
+      children: (0, o.jsx)(p.default, {
+        ...n,
+        preview: !1,
+        src: i,
+        alt: e.alt || "image",
+        height: e.height,
+        style: {
+          borderRadius: "6px",
+          ...e.style
+        },
+        placeholder: (0, o.jsxs)("svg", {
+          width: e.width || 72,
+          height: e.height || 72,
+          viewBox: "0 0 80 80",
+          fill: "none",
+          xmlns: "http://www.w3.org/2000/svg",
+          children: [(0, o.jsx)("rect", {
+            width: "80",
+            height: "80",
+            fill: "#FBFCFC"
+          }), (0, o.jsx)("path", {
+            fillRule: "evenodd",
+            clipRule: "evenodd",
+            d: "M42.6924 26.1941C42.6924 25.5156 42.1424 24.9656 41.4639 24.9656H35.8481C35.3574 24.9656 34.8883 25.1675 34.5511 25.5239L29.181 31.1991C28.8672 31.5307 28.6924 31.9698 28.6924 32.4263V34.0663H35.077C35.6293 34.0663 36.077 34.514 36.077 35.0663C36.077 35.6186 35.6293 36.0663 35.077 36.0663H28.6924V40.2334H35.077C35.6293 40.2334 36.077 40.6811 36.077 41.2334C36.077 41.7857 35.6293 42.2334 35.077 42.2334H28.6924V46.4005H35.077C35.6293 46.4005 36.077 46.8482 36.077 47.4005C36.077 47.9528 35.6293 48.4005 35.077 48.4005H28.6924V55.0344H42.461H42.6924V26.1941ZM26.6924 47.4023V55.0344H25.2308C24.6786 55.0344 24.2308 55.4821 24.2308 56.0344C24.2308 56.5867 24.6786 57.0344 25.2308 57.0344H27.6924H42.461H43.6924H52.3072H54.7693C55.3216 57.0344 55.7693 56.5867 55.7693 56.0344C55.7693 55.4821 55.3216 55.0344 54.7693 55.0344H53.3072V37.9606C53.3072 37.0063 52.9467 36.0872 52.2981 35.3873L51.0542 34.0452C50.3378 33.2722 49.3316 32.8329 48.2777 32.8329H44.6924V26.1941C44.6924 24.411 43.2469 22.9656 41.4639 22.9656H35.8481C34.8078 22.9656 33.8133 23.3937 33.0983 24.1493L27.7283 29.8245C27.0631 30.5274 26.6924 31.4585 26.6924 32.4263V35.0645L26.6924 35.0663L26.6924 35.0682V41.2316L26.6924 41.2334L26.6924 41.2353V47.3986C26.6924 47.3993 26.6924 47.3999 26.6924 47.4005C26.6924 47.4011 26.6924 47.4017 26.6924 47.4023ZM51.3072 37.9606V55.0344H44.6924V34.8329H48.2777C48.7748 34.8329 49.2494 35.0401 49.5873 35.4047L50.8312 36.7468C51.1372 37.077 51.3072 37.5105 51.3072 37.9606Z",
+            fill: "#828CA0",
+            fillOpacity: "0.15"
+          })]
+        }),
+        onError: t => {
+          e.errorSrc && a(e.errorSrc)
+        }
+      })
+    })
+  },
+  b = e => (0, o.jsx)("div", {
+    className: "company-logo",
+    onClick: e.onClick,
+    children: (0, o.jsx)(g, {
+      className: "company-logo-img",
+      src: e?.logoSrc ?? u.HOST_DOMAIN + "/newimages/public/img_none.svg",
+      errorSrc: u.HOST_DOMAIN + "/newimages/public/img_none.svg",
+      alt: "company-logo",
+      width: e.width || 72,
+      height: e.height || 72
+    })
+  }),
+  y = ({
+    form: e
+  }) => {
+    let t = (0, d.useExternalJobStore)(e => e.formValues),
+      [r, n] = (0, l.useState)(t.companyName || void 0),
+      [u, f] = (0, l.useState)(void 0),
+      p = (0, c.useContainerStore)(e => e.containerDom),
+      [g, y] = (0, l.useState)([]);
+    (0, l.useEffect)(() => {
+      let e = t.companyName || void 0;
+      e !== r && n(e)
+    }, [t.companyName]);
+    let {
+      run: v
+    } = (0, i.useRequest)(async (e, t) => await (0, s.sendToBackground)({
+      name: "getCompanyNameList",
+      body: {
+        input: e,
+        linkedinCompanyId: t
+      }
+    }), {
+      manual: !0,
+      debounceWait: 200,
+      onSuccess: (t, n) => {
+        if (n[0] !== r || !t || !r) {
+          y([]);
+          return
+        }
+        y((t || []).map(e => ({
+          label: e.companyName,
+          logo: e.llogoUrl,
+          companyId: e.linkedin_company_id,
+          value: e.linkedin_company_id,
+          originData: e
+        })));
+        let o = n[1],
+          i = (0, h.findCompanyMatch)(t, r, o);
+        i ? (e.setFieldValue("companyId", i.linkedin_company_id), f(i.llogoUrl)) : (f(void 0),
+          o || e.setFieldValue("companyId", void 0))
+      },
+      onError: e => {
+        y([])
+      }
+    }), w = () => {
+      try {
+        if (!(0, m.isLinkedinDomain)(window.top.location.href)) return
+      } catch {
+        return
+      }
+      let t = e.getFieldValue("companyId");
+      return t ? String(t) : void 0
+    };
+    return (0, l.useEffect)(() => {
+      r && v(r, w())
+    }, [r]), (0, o.jsx)(a.AutoComplete, {
+      getPopupContainer: () => p,
+      value: r,
+      onChange: t => {
+        let r = g.some(e => e.value === t);
+        r || (n(t), e.setFieldValue("companyName", t), e.setFieldValue("companyId", void 0),
+          f(void 0))
+      },
+      onSelect: (t, r) => {
+        e.setFieldValue("companyId", t), e.setFieldValue("companyName", r?.originData
+          ?.companyName), n(r?.originData?.companyName), f(r?.originData?.llogoUrl)
+      },
+      options: g,
+      optionRender: e => (0, o.jsxs)("div", {
+        style: {
+          display: "flex",
+          alignItems: "center",
+          gap: 8
+        },
+        children: [(0, o.jsx)(b, {
+          width: 20,
+          height: 20,
+          logoSrc: e?.data?.logo
+        }), e?.data?.label]
+      }),
+      children: (0, o.jsx)(a.Input, {
+        classNames: {
+          input: "company-icon-input"
+        },
+        size: "small",
+        prefix: (0, o.jsx)(b, {
+          width: 20,
+          height: 20,
+          logoSrc: u
+        }, u),
+        placeholder: "Enter the company name"
+      })
+    })
+  };
+r.default = y
+

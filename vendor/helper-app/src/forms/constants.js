@@ -1,0 +1,8 @@
+/**
+ * Parcel module id: 3rdkr
+ * Resolved path: src/forms/constants.js
+ * Dependencies:
+ *   @parcel/transformer-js/src/esmodule-helpers.js -> cHUbl  =>  @parcel/transformer-js/src/esmodule-helpers.js
+ */
+
+var n=e("@parcel/transformer-js/src/esmodule-helpers.js");n.defineInteropFlag(r),n.export(r,"COUNTRY_CODE_MAP",()=>o),n.export(r,"ADDITIONAL_APPLICATION_INFO_MAX_LENGTH",()=>i),n.export(r,"AUTOFILL_INFO_POPUP_CLASS_NAME",()=>a),n.export(r,"PHONE_TYPE_OPTIONS",()=>l),n.export(r,"GENDER_OPTIONS",()=>s),n.export(r,"ETHNICITY_OPTIONS",()=>u),n.export(r,"YES_NO_OPTIONS",()=>c),n.export(r,"PRONOUNS_OPTIONS",()=>d),n.export(r,"SEXUAL_ORIENTATION_OPTIONS",()=>f),n.export(r,"SECTION_LABELS",()=>p),n.export(r,"isSectionKey",()=>m);let o={"united states":"US",us:"US",usa:"US",canada:"CA","united kingdom":"GB",uk:"GB",gb:"GB","great britain":"GB"},i=1e3,a="autofill-info-modal-popup",l=["Mobile","Home","Work","Other"],s=["Female","Male","Non-binary","Decline to state"],u=["American Indian or Alaskan Native","Asian","Black or African American","Hispanic or Latino","White","Native Hawaiian or Other Pacific Islander","Two or More Races","Decline to state"],c=["Yes","No","Decline to state"],d=["He/Him","She/Her","They/Them","Other","Prefer not to say"],f=["Asexual","Bisexual","Gay","Heterosexual","Lesbian","Pansexual","Queer","I prefer to self-describe","Decline to state"],p=[{key:"personal",label:"Personal"},{key:"education",label:"Education"},{key:"workExperience",label:"Work Experience"},{key:"skill",label:"Skill"},{key:"equalEmployment",label:"Equal Employment"},{key:"preference",label:"Preference"},{key:"signupInformation",label:"Sign-up Information"}];function m(e){return p.some(t=>t.key===e)}

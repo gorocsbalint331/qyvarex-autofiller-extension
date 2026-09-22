@@ -188,6 +188,33 @@ export async function fetchResumeBlob(
   }
 }
 
+export async function fetchCoverLetterBlob(
+  coverLetterId: string
+): Promise<{ blob: Blob; fileName: string; mimeType: string } | null> {
+  const settings = await getTeamSettings()
+  if (!settings.apiToken) return null
+
+  const res = await fetch(
+    joinUrl(
+      settings.siteUrl,
+      `/api/v1/cover-letters/${encodeURIComponent(coverLetterId)}/download`
+    ),
+    {
+      headers: { Authorization: `Bearer ${settings.apiToken}` }
+    }
+  )
+  if (!res.ok) return null
+
+  const blob = await res.blob()
+  const disposition = res.headers.get("content-disposition") || ""
+  const match = /filename="([^"]+)"/i.exec(disposition)
+  return {
+    blob,
+    fileName: match?.[1] || "cover-letter.pdf",
+    mimeType: res.headers.get("content-type") || blob.type || "application/pdf"
+  }
+}
+
 /** Merge learned Q→A into the selected profile on the hub (global + optional site/step). */
 export async function mergeProfileAnswers(
   answers: Record<string, string>,
@@ -232,6 +259,45 @@ export async function mergeProfileAnswers(
     return { ok: false, error: data.error || "save_failed" }
   }
   return { ok: true, answers: data.answers, extras: data.extras }
+}
+
+/** Log a successful job application to the hub Google Sheet. */
+export async function logApplication(row: {
+  profileId?: string | null
+  country?: string
+  resume?: string
+  title: string
+  link: string
+  company?: string
+  cost?: string
+  status?: string
+  other?: string
+  tabName?: string
+}): Promise<{ ok: boolean; error?: string; message?: string; tabName?: string }> {
+  const settings = await getTeamSettings()
+  const profileId = row.profileId || settings.selectedProfileId
+  const { ok, data } = await teamFetch<{
+    ok: boolean
+    error?: string
+    message?: string
+    tabName?: string
+  }>("/api/v1/applications/log", {
+    method: "POST",
+    body: JSON.stringify({
+      ...row,
+      profileId: profileId || undefined,
+      status: row.status || "applied"
+    })
+  })
+  if (!ok || !data.ok) {
+    return {
+      ok: false,
+      error: data.error || "log_failed",
+      message: data.message,
+      tabName: data.tabName
+    }
+  }
+  return { ok: true, tabName: data.tabName }
 }
 
 export async function verifyTeamConnection(): Promise<{
