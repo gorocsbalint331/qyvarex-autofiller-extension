@@ -1,194 +1,266 @@
 // @ts-nocheck
 /**
- * Readable TypeScript converted from Parcel dump (helper-runtime/src/contents/sites/autofill-answer-pair-tracking.js).
- * Bundled directly by scripts/bundle-engine-helper.mjs.
+ * Autofill ↔ submit answer-pair tracking payloads (including Falcon snapshots).
  */
-import * as i from "../../utils/autofill-answer-pair.js"
-import * as a from "../../utils/autofill-install-attribution-client.js"
-import * as l from "./falcon-answer-tracking.js"
 
-let n;function s(e) {
-  return n = e, () => {
-    n === e && (n = undefined)
+import * as autofillAnswerPair from "../../utils/autofill-answer-pair.js"
+import * as attributionClient from "../../utils/autofill-install-attribution-client.js"
+import * as falconAnswerTracking from "./falcon-answer-tracking.ts"
+
+// Re-export falcon markers (Parcel module did this for site convenience).
+export {
+  beginFalconResponseAnswerRequest,
+  hasCurrentFalconResponseAnswer,
+  inheritFalconResponseAnswerMarker,
+  isCurrentFalconResponseAnswer,
+  isFalconResponseAnswer,
+  markFalconResponseAnswer,
+} from "./falcon-answer-tracking.ts"
+
+let answerProvider
+
+export function registerAutofillAnswerPairAnswerProvider(provider) {
+  answerProvider = provider
+  return () => {
+    if (answerProvider === provider) answerProvider = undefined
   }
 }
 
-function u() {
+function readRegisteredAnswer() {
   try {
-    return n?.()
+    return answerProvider?.()
   } catch {
     return
   }
 }
-let c = [{
-    sourceKey: "education",
-    targetKey: "education"
-  }, {
-    sourceKey: "Education",
-    targetKey: "education"
-  }, {
-    sourceKey: "employment",
-    targetKey: "employment"
-  }, {
-    sourceKey: "Employment",
-    targetKey: "employment"
-  }, {
-    sourceKey: "experience",
-    targetKey: "employment"
-  }, {
-    sourceKey: "Experience",
-    targetKey: "employment"
-  }],
-  d = ["education", "Education", "EDUCATION"],
-  f = ["Employment", "employment", "EMPLOYMENT", "workExperience", "work_experience",
-    "Work Experience", "experience", "Experience"
-  ];
 
-function p(e) {
-  return !e || "object" != typeof e || Array.isArray(e) ? {} : Object.fromEntries(Object.entries(e)
-    .filter(([, e]) => undefined !== e))
+const SECTION_KEY_MOVES = [
+  { sourceKey: "education", targetKey: "education" },
+  { sourceKey: "Education", targetKey: "education" },
+  { sourceKey: "employment", targetKey: "employment" },
+  { sourceKey: "Employment", targetKey: "employment" },
+  { sourceKey: "experience", targetKey: "employment" },
+  { sourceKey: "Experience", targetKey: "employment" },
+]
+
+const EDUCATION_PROFILE_KEYS = ["education", "Education", "EDUCATION"]
+const EMPLOYMENT_PROFILE_KEYS = [
+  "Employment",
+  "employment",
+  "EMPLOYMENT",
+  "workExperience",
+  "work_experience",
+  "Work Experience",
+  "experience",
+  "Experience",
+]
+
+function omitUndefinedEntries(obj) {
+  if (!obj || typeof obj !== "object" || Array.isArray(obj)) return {}
+  return Object.fromEntries(
+    Object.entries(obj).filter(([, value]) => value !== undefined),
+  )
 }
 
-function m(e) {
-  return e && "object" == typeof e && !Array.isArray(e) ? e : {}
+function asPlainObject(value) {
+  return value && typeof value === "object" && !Array.isArray(value) ? value : {}
 }
 
-function h(e, t) {
-  for (let r of t)
-    if (Array.isArray(e[r])) return e[r];
+function firstArrayField(obj, keys) {
+  for (const key of keys) {
+    if (Array.isArray(obj[key])) return obj[key]
+  }
   return []
 }
 
-function g(e) {
-  return Array.isArray(e) ? e.filter(e => !!e && "object" == typeof e && !Array.isArray(e)).map(p) :
-    []
+function normalizeRecordRows(rows) {
+  return Array.isArray(rows)
+    ? rows
+        .filter(
+          (row) => !!row && typeof row === "object" && !Array.isArray(row),
+        )
+        .map(omitUndefinedEntries)
+    : []
 }
 
-function b(e) {
-  return Array.isArray(e) && e.length > 0 && e.every(e => "string" == typeof e) ? e.join(", ") : e
+function stringifyListValue(value) {
+  return Array.isArray(value) &&
+    value.length > 0 &&
+    value.every((item) => typeof item === "string")
+    ? value.join(", ")
+    : value
 }
 
-function y(e) {
-  let t = {
-      ...m(e?.profile_data),
-      ...m(e?.profileData)
-    },
-    r = Object.fromEntries((Array.isArray(e?.fillDataList) ? e.fillDataList : []).filter(e =>
-      "string" == typeof e?.name && "" !== e.name.trim() && undefined !== e.value).map(e => [e.name,
-      b(e.value)
-    ]));
-  undefined !== t.greenhouseLocation && (r.greenhouseLocation = t.greenhouseLocation);
-  let n = i.filterAutofillAnswerPairNormalSnapshot(r),
-    o = g(h(t, f).length > 0 ? h(t, f) : e?.workExperience),
-    a = g(h(t, d).length > 0 ? h(t, d) : e?.education),
-    s = p({
-      normal: n,
-      employment: o,
-      education: a
-    });
-  return l.isFalconResponseAnswer(e) || Object.keys(s.normal).length || s.employment.length ||
-    s.education.length ? s : undefined
+/** Build the Falcon-shaped answer-pair payload from a marked Falcon answer. */
+export function buildFalconAutofillAnswerPairData(answer) {
+  const profile = {
+    ...asPlainObject(answer?.profile_data),
+    ...asPlainObject(answer?.profileData),
+  }
+
+  const fromFillData = Object.fromEntries(
+    (Array.isArray(answer?.fillDataList) ? answer.fillDataList : [])
+      .filter(
+        (row) =>
+          typeof row?.name === "string" &&
+          row.name.trim() !== "" &&
+          row.value !== undefined,
+      )
+      .map((row) => [row.name, stringifyListValue(row.value)]),
+  )
+
+  if (profile.greenhouseLocation !== undefined) {
+    fromFillData.greenhouseLocation = profile.greenhouseLocation
+  }
+
+  const normal =
+    autofillAnswerPair.filterAutofillAnswerPairNormalSnapshot(fromFillData)
+  const employmentSource =
+    firstArrayField(profile, EMPLOYMENT_PROFILE_KEYS).length > 0
+      ? firstArrayField(profile, EMPLOYMENT_PROFILE_KEYS)
+      : answer?.workExperience
+  const educationSource =
+    firstArrayField(profile, EDUCATION_PROFILE_KEYS).length > 0
+      ? firstArrayField(profile, EDUCATION_PROFILE_KEYS)
+      : answer?.education
+
+  const payload = omitUndefinedEntries({
+    normal,
+    employment: normalizeRecordRows(employmentSource),
+    education: normalizeRecordRows(educationSource),
+  })
+
+  if (
+    falconAnswerTracking.isFalconResponseAnswer(answer) ||
+    Object.keys(payload.normal).length ||
+    payload.employment.length ||
+    payload.education.length
+  ) {
+    return payload
+  }
+  return undefined
 }
 
-function v(e, t) {
-  let r = {
-      ...m(e)
-    },
-    n = {
-      ...p(t)
-    };
-  for (let {
-      sourceKey: e,
-      targetKey: t
+function splitSnapshotSections(snapshot, additionalData) {
+  const nextSnapshot = { ...asPlainObject(snapshot) }
+  const nextAdditional = { ...omitUndefinedEntries(additionalData) }
+
+  for (const { sourceKey, targetKey } of SECTION_KEY_MOVES) {
+    const value = nextSnapshot[sourceKey]
+    if (Array.isArray(value)) {
+      if (nextAdditional[targetKey] === undefined) {
+        nextAdditional[targetKey] = value
+      }
+      delete nextSnapshot[sourceKey]
     }
-    of c) {
-    let o = r[e];
-    Array.isArray(o) && (undefined === n[t] && (n[t] = o), delete r[e])
   }
-  return {
-    snapshot: r,
-    additionalData: n
-  }
+
+  return { snapshot: nextSnapshot, additionalData: nextAdditional }
 }
 
-function w({
-  formUrl: e,
-  autofillSnapshot: t,
-  submitSnapshot: r,
-  additionalAutofillData: n = {},
-  additionalSubmitData: o = {},
-  extraData: a = {},
-  source: l
+export function buildAutofillAnswerPairEventPayload({
+  formUrl,
+  autofillSnapshot,
+  submitSnapshot,
+  additionalAutofillData = {},
+  additionalSubmitData = {},
+  extraData = {},
+  source,
 }) {
-  let s = v(t, n),
-    u = v(r, o);
-  return i.sanitizeAutofillAnswerPairPayload({
-    formUrl: e,
+  const autofill = splitSnapshotSections(
+    autofillSnapshot,
+    additionalAutofillData,
+  )
+  const submit = splitSnapshotSections(submitSnapshot, additionalSubmitData)
+
+  return autofillAnswerPair.sanitizeAutofillAnswerPairPayload({
+    formUrl,
     autofill: {
-      normal: i.filterAutofillAnswerPairNormalSnapshot(s.snapshot),
-      ...s.additionalData
+      normal: autofillAnswerPair.filterAutofillAnswerPairNormalSnapshot(
+        autofill.snapshot,
+      ),
+      ...autofill.additionalData,
     },
     submit: {
-      normal: i.filterAutofillAnswerPairNormalSnapshot(u.snapshot),
-      ...u.additionalData
+      normal: autofillAnswerPair.filterAutofillAnswerPairNormalSnapshot(
+        submit.snapshot,
+      ),
+      ...submit.additionalData,
     },
-    ...p(a),
-    source: l
+    ...omitUndefinedEntries(extraData),
+    source,
   })
 }
-let S = "jobright:debugAutofillAnswerPair";
 
-function E() {
+const DEBUG_STORAGE_KEY = "jobright:debugAutofillAnswerPair"
+
+function isAutofillAnswerPairDebugEnabled() {
   try {
-    let e = globalThis.location?.search || "";
-    if (e.includes("jr_debug_autofill_answer_pair=1") || e.includes(
-        "jobright_debug_autofill_answer_pair=1")) return true;
-    return globalThis.localStorage?.getItem(S) === "1" || true === globalThis
-      .__JOBRIGHT_DEBUG_AUTOFILL_ANSWER_PAIR__
+    const search = globalThis.location?.search || ""
+    if (
+      search.includes("jr_debug_autofill_answer_pair=1") ||
+      search.includes("jobright_debug_autofill_answer_pair=1")
+    ) {
+      return true
+    }
+    return (
+      globalThis.localStorage?.getItem(DEBUG_STORAGE_KEY) === "1" ||
+      globalThis.__JOBRIGHT_DEBUG_AUTOFILL_ANSWER_PAIR__ === true
+    )
   } catch {
     return false
   }
 }
 
-function x(e) {
-  if (E()) try {
-    console.info("[Jobright][autofill_answer_pair]", JSON.stringify(e))
-  } catch (t) {
-    console.info("[Jobright][autofill_answer_pair]", e)
-  }
-}
-async function C(e, t, r = a.sendAutofillAnswerPairWithAttribution) {
-  let n = e.extraData || {},
-    o = n;
-  if (undefined === n.falcon) {
-    let e = u();
-    if (e && l.isCurrentFalconResponseAnswer(e)) {
-      let t = y(e) ?? {
-        normal: {},
-        employment: [],
-        education: []
-      };
-      t && (o = {
-        ...n,
-        falcon: t
-      })
-    }
-  }
-  let i = w({
-    ...e,
-    extraData: o
-  });
-  if (x(i), t) {
-    t("autofill_answer_pair", i);
-    return
-  }
+function debugAutofillAnswerPair(payload) {
+  if (!isAutofillAnswerPairDebugEnabled()) return
   try {
-    await r(i)
+    console.info("[Jobright][autofill_answer_pair]", JSON.stringify(payload))
   } catch {
-    console.warn("[AutofillInstallAttribution] answer pair upload failed", {
-      reason: "event_upload_failed"
-    })
+    console.info("[Jobright][autofill_answer_pair]", payload)
   }
 }
 
-export { s as registerAutofillAnswerPairAnswerProvider, w as buildAutofillAnswerPairEventPayload, C as sendAutofillAnswerPairEvent }
+export async function sendAutofillAnswerPairEvent(
+  event,
+  trackFn,
+  uploadFn = attributionClient.sendAutofillAnswerPairWithAttribution,
+) {
+  let extraData = event.extraData || {}
+  if (extraData.falcon === undefined) {
+    const registered = readRegisteredAnswer()
+    if (
+      registered &&
+      falconAnswerTracking.isCurrentFalconResponseAnswer(registered)
+    ) {
+      const falcon =
+        buildFalconAutofillAnswerPairData(registered) ?? {
+          normal: {},
+          employment: [],
+          education: [],
+        }
+      if (falcon) {
+        extraData = { ...extraData, falcon }
+      }
+    }
+  }
+
+  const payload = buildAutofillAnswerPairEventPayload({
+    ...event,
+    extraData,
+  })
+  debugAutofillAnswerPair(payload)
+
+  if (trackFn) {
+    trackFn("autofill_answer_pair", payload)
+    return
+  }
+
+  try {
+    await uploadFn(payload)
+  } catch {
+    console.warn("[AutofillInstallAttribution] answer pair upload failed", {
+      reason: "event_upload_failed",
+    })
+  }
+}

@@ -1,81 +1,114 @@
 // @ts-nocheck
 /**
- * Readable TypeScript converted from Parcel dump (helper-runtime/src/contents/sites/falcon-response-accumulator.js).
- * Bundled directly by scripts/bundle-engine-helper.mjs.
+ * Merge Falcon fill responses across combo / deferred answer rounds.
  */
-import * as o from "./falcon-answer-tracking.ts"
-import * as i from "../../utils/fieldLabel.js"
 
-function a(e) {
-  return !!e && "object" == typeof e && !Array.isArray(e)
+import * as falconAnswerTracking from "./falcon-answer-tracking.ts"
+import * as fieldLabel from "../../utils/fieldLabel.js"
+
+function isPlainObject(value) {
+  return !!value && typeof value === "object" && !Array.isArray(value)
 }
 
-function l(e) {
+function collectProfileData(answer) {
   return {
-    ...a(e?.profile_data) ? e.profile_data : {},
-    ...a(e?.profileData) ? e.profileData : {}
+    ...(isPlainObject(answer?.profile_data) ? answer.profile_data : {}),
+    ...(isPlainObject(answer?.profileData) ? answer.profileData : {}),
   }
 }
 
-function s(e, t) {
-  let r = [...Array.isArray(e?.fillDataList) ? e.fillDataList : [], ...Array.isArray(t
-      .fillDataList) ? t.fillDataList : []
-    ],
-    n = new Map,
-    o = [];
-  for (let e of r) {
-    let t = i.normalizeFieldLabel(e?.name);
-    if (!t) continue;
-    let r = n.get(t);
-    undefined === r ? (n.set(t, o.length), o.push(e)) : o[r] = e
+function mergeFillDataList(left, right) {
+  const rows = [
+    ...(Array.isArray(left?.fillDataList) ? left.fillDataList : []),
+    ...(Array.isArray(right.fillDataList) ? right.fillDataList : []),
+  ]
+  const indexByLabel = new Map()
+  const merged = []
+  for (const row of rows) {
+    const label = fieldLabel.normalizeFieldLabel(row?.name)
+    if (!label) continue
+    const existing = indexByLabel.get(label)
+    if (existing === undefined) {
+      indexByLabel.set(label, merged.length)
+      merged.push(row)
+    } else {
+      merged[existing] = row
+    }
   }
-  return o.length ? o : undefined
+  return merged.length ? merged : undefined
 }
 
-function u(e, t) {
-  return Array.isArray(t) && t.length > 0 ? [...t] : Array.isArray(e) && e.length > 0 ? [...e] : []
+function pickNonEmptyArray(left, right) {
+  if (Array.isArray(right) && right.length > 0) return [...right]
+  if (Array.isArray(left) && left.length > 0) return [...left]
+  return []
 }
 
-function c(e, t) {
-  let r = {
-      ...l(e),
-      ...l(t)
+export function mergeFalconResponseAnswers(existing, incoming) {
+  const profileData = {
+    ...collectProfileData(existing),
+    ...collectProfileData(incoming),
+  }
+
+  const merged = {
+    ...existing,
+    ...incoming,
+    profileData,
+    profile_data: profileData,
+    education: pickNonEmptyArray(existing?.education, incoming.education),
+    workExperience: pickNonEmptyArray(
+      existing?.workExperience,
+      incoming.workExperience,
+    ),
+    skills: pickNonEmptyArray(existing?.skills, incoming.skills),
+    regular: {
+      ...(isPlainObject(existing?.regular) ? existing.regular : {}),
+      ...(isPlainObject(incoming.regular) ? incoming.regular : {}),
     },
-    n = {
-      ...e,
-      ...t,
-      profileData: r,
-      profile_data: r,
-      education: u(e?.education, t.education),
-      workExperience: u(e?.workExperience, t.workExperience),
-      skills: u(e?.skills, t.skills),
-      regular: {
-        ...a(e?.regular) ? e.regular : {},
-        ...a(t.regular) ? t.regular : {}
-      },
-      fillDataList: s(e, t)
-    };
-  return undefined === t.state && e?.state !== undefined && (n.state = e.state), undefined === t.country && e
-    ?.country !== undefined && (n.country = e.country), o.inheritFalconResponseAnswerMarker(n, t,
-      e)
-}
-class d {
-  reset() {
-    this.epoch += 1, this.answer = undefined
+    fillDataList: mergeFillDataList(existing, incoming),
   }
+
+  if (incoming.state === undefined && existing?.state !== undefined) {
+    merged.state = existing.state
+  }
+  if (incoming.country === undefined && existing?.country !== undefined) {
+    merged.country = existing.country
+  }
+
+  return falconAnswerTracking.inheritFalconResponseAnswerMarker(
+    merged,
+    incoming,
+    existing,
+  )
+}
+
+export class FalconResponseAccumulator {
+  constructor() {
+    this.epoch = 0
+    this.answer = undefined
+  }
+
+  reset() {
+    this.epoch += 1
+    this.answer = undefined
+  }
+
   captureEpoch() {
     return this.epoch
   }
-  record(e, t) {
-    t === this.epoch && o.isCurrentFalconResponseAnswer(e) && (this.answer = c(this.answer,
-      e))
+
+  record(response, epoch) {
+    if (
+      epoch === this.epoch &&
+      falconAnswerTracking.isCurrentFalconResponseAnswer(response)
+    ) {
+      this.answer = mergeFalconResponseAnswers(this.answer, response)
+    }
   }
+
   current() {
-    return o.isCurrentFalconResponseAnswer(this.answer) ? this.answer : undefined
-  }
-  constructor() {
-    this.epoch = 0
+    return falconAnswerTracking.isCurrentFalconResponseAnswer(this.answer)
+      ? this.answer
+      : undefined
   }
 }
-
-export { c as mergeFalconResponseAnswers, d as FalconResponseAccumulator }

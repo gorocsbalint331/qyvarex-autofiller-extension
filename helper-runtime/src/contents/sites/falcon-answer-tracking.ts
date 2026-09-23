@@ -1,47 +1,66 @@
 // @ts-nocheck
 /**
- * Readable TypeScript converted from Parcel dump (helper-runtime/src/contents/sites/falcon-answer-tracking.js).
- * Bundled directly by scripts/bundle-engine-helper.mjs.
+ * Falcon response answer markers — tag answers from the current fill run so
+ * tracking can ignore stale / overlapping responses.
  */
-let n;let i = Symbol.for("jobright.falcon-response-answer"),a = 0;
-function l() {
-  return a += 1, n = undefined, a
+
+const FALCON_RESPONSE_ANSWER_MARKER = Symbol.for(
+  "jobright.falcon-response-answer",
+)
+
+let currentEpochId = 0
+let markedEpochId
+
+export function beginFalconResponseAnswerRequest() {
+  currentEpochId += 1
+  markedEpochId = undefined
+  return currentEpochId
 }
 
-function s() {
-  return n === a
+export function hasCurrentFalconResponseAnswer() {
+  return markedEpochId === currentEpochId
 }
 
-function u(e, t = a) {
-  return t !== a || (n = t, c(e, t)), e
-}
-
-function c(e, t) {
-  Object.defineProperty(e, i, {
+function stampFalconResponseAnswer(answer, epochId) {
+  Object.defineProperty(answer, FALCON_RESPONSE_ANSWER_MARKER, {
     configurable: true,
     enumerable: true,
-    value: t
+    value: epochId,
   })
 }
 
-function d(e) {
-  if (!e || "object" != typeof e) return;
-  let t = e[i];
-  return "number" == typeof t ? t : undefined
+export function markFalconResponseAnswer(answer, epochId = currentEpochId) {
+  if (epochId === currentEpochId) {
+    markedEpochId = epochId
+    stampFalconResponseAnswer(answer, epochId)
+  }
+  return answer
 }
 
-function f(e) {
-  return undefined !== d(e)
+function getFalconResponseAnswerEpoch(answer) {
+  if (!answer || typeof answer !== "object") return
+  const epoch = answer[FALCON_RESPONSE_ANSWER_MARKER]
+  return typeof epoch === "number" ? epoch : undefined
 }
 
-function p(e) {
-  return s() && d(e) === a
+export function isFalconResponseAnswer(answer) {
+  return getFalconResponseAnswerEpoch(answer) !== undefined
 }
 
-function m(e, ...t) {
-  let r = t.map(d).filter(e => undefined !== e),
-    n = r.find(e => e === a) ?? r[0];
-  return undefined !== n && c(e, n), e
+export function isCurrentFalconResponseAnswer(answer) {
+  return (
+    hasCurrentFalconResponseAnswer() &&
+    getFalconResponseAnswerEpoch(answer) === currentEpochId
+  )
 }
 
-export { l as beginFalconResponseAnswerRequest, s as hasCurrentFalconResponseAnswer, u as markFalconResponseAnswer, f as isFalconResponseAnswer, p as isCurrentFalconResponseAnswer, m as inheritFalconResponseAnswerMarker }
+/** Copy a falcon epoch marker onto `target` from the first marked source. */
+export function inheritFalconResponseAnswerMarker(target, ...sources) {
+  const epochs = sources
+    .map((source) => getFalconResponseAnswerEpoch(source))
+    .filter((epoch) => epoch !== undefined)
+  const epoch =
+    epochs.find((value) => value === currentEpochId) ?? epochs[0]
+  if (epoch !== undefined) stampFalconResponseAnswer(target, epoch)
+  return target
+}

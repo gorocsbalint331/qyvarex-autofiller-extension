@@ -133,7 +133,27 @@ function resolveParcelSpec(spec, fromFile = "") {
     "avature",
     "bamboohr",
     "brassring",
+    "breezy",
+    "bytedance",
+    "careerplug",
+    "careers-page",
+    "careers-toasttab",
+    "careers-withwaymo",
+    "catsone",
+    "cisco",
+    "comeet",
+    "dayforce",
+    "eightfold",
+    "freshteam",
+    "gem",
+    "gohire",
+    "google",
     "greenhouse",
+    "gusto",
+    "hiringthing",
+    "hrmdirect",
+    "hubspot",
+    "icims",
   ])
   const sharedRoot = new Set([
     "falcon-response-accumulator",
@@ -189,14 +209,14 @@ function resolveParcelSpec(spec, fromFile = "") {
     ) {
       // Map ../adp-workforcenow/country from another site folder
       const cross = noExt.match(
-        /^\.\.\/(adobe|adp-myjobs|adp-recruiting|adp-workforcenow|amazon|apple|ashby|avature|bamboohr|brassring|greenhouse)(\/.+)?$/,
+        /^\.\.\/(adobe|adp-myjobs|adp-recruiting|adp-workforcenow|amazon|apple|ashby|avature|bamboohr|brassring|breezy|bytedance|careerplug|careers-page|careers-toasttab|careers-withwaymo|catsone|cisco|comeet|dayforce|eightfold|freshteam|gem|gohire|google|greenhouse|gusto|hiringthing|hrmdirect|hubspot|icims)(\/.+)?$/,
       )
       if (cross) {
         return `~contents/sites/${cross[1]}${cross[2] || ""}`
       }
       // From sites/ashby.ts importing ./ashby/answer
       const nested = noExt.match(
-        /^\.\/(adobe|adp-myjobs|adp-recruiting|adp-workforcenow|amazon|apple|ashby|avature|bamboohr|brassring|greenhouse)(\/.+)$/,
+        /^\.\/(adobe|adp-myjobs|adp-recruiting|adp-workforcenow|amazon|apple|ashby|avature|bamboohr|brassring|breezy|bytedance|careerplug|careers-page|careers-toasttab|careers-withwaymo|catsone|cisco|comeet|dayforce|eightfold|freshteam|gem|gohire|google|greenhouse|gusto|hiringthing|hrmdirect|hubspot|icims)(\/.+)$/,
       )
       if (nested) {
         return `~contents/sites/${nested[1]}${nested[2]}`
