@@ -1,39 +1,587 @@
 // @ts-nocheck
 /**
- * Readable TypeScript converted from Parcel dump (helper-runtime/src/components/ResumeSwitcher.js).
+ * Autofill dashboard rows for autofill info, resume upload/tailor, and cover letter.
  */
-import * as o from "react/jsx-runtime"
-import * as i from "antd"
-import * as a from "../assets/inline/images/aistar_c.svg.js"
-import * as s from "../assets/inline/images/arr_go.svg.js"
-import * as c from "../assets/inline/images/file.svg.js"
-import * as f from "../assets/inline/images/folder.svg.js"
-import * as m from "../assets/inline/images/mail.svg.js"
-import * as g from "react"
-import * as b from "@plasmohq/messaging"
-import * as y from "../api/env-resolver.ts"
-import * as v from "./Popups/AddJobFirstPopup.ts"
-import * as S from "../contents.ts"
-import * as E from "../contents/shared/constants.js"
-import * as x from "../core/enums.ts"
-import * as C from "../store/autofillInfo.ts"
-import * as A from "../store/cover-letter-state.ts"
-import * as k from "../store/externalJob.ts"
-import * as T from "../store/profile.ts"
-import * as F from "../store/resume.ts"
-import * as I from "../ui/Image.ts"
-import * as D from "../utils/job-id.ts"
-import * as P from "../utils/trace.ts"
-import * as _ from "./resume-init-gate.ts"
-import * as L from "./resume-target-job.ts"
 
-const l = { default: a }
-const u = { default: s }
-const d = { default: c }
-const p = { default: f }
-const h = { default: m }
-const w = { default: v }
-const j = { default: I }
-function ResumeSwitcher({currentTabJob: e,jobContextLoading: t = false,fallbackJobId: r = null,onRequestAddJob: n}) {let [a, s] = g.useState(false), c = () => {n && s(true)}, f = F.useResumeStore(e => e.initResume), m = F.useResumeStore(e => e.disableUploadResume), v = F.useResumeStore(e => e.resumeCollection), I = (0, F.useResumeStore)(e => e.lastUsedResume), R = F.useResumeStore(e => e.tailorResumeName),O = F.useResumeStore(e => e.setOpenResumeSelector), M = F.useResumeStore(e => e.tailorResume), N = F.useResumeStore(e => e.setOpenAutofillInfo), $ = (0, F.useResumeStore)(e => e.setOpenCoverLetterPreview), B = F.useResumeStore(e => e.autofillChangedFields), q = F.useResumeStore(e => e.agentCoverLetter), U = (0, F.useResumeStore)(e => e.currentJobCoverLetter), H = F.useResumeStore(e => e.coverLetterDetectionStatus), Y = F.useResumeStore(e => e.setAgentCoverLetter), z = (0, F.useResumeStore)(e => e.setCurrentJobCoverLetter), V = F.useResumeStore(e => e.setCoverLetterDetectionStatus), W = C.useAutofillInfoStore(e => e.fetchAutofillInfo),G = k.useExternalJobStore(e => e.jobId), K = T.useProfileStore(e => e.userStage), X =T.useProfileStore(e => e.userProfile), J = k.useExternalJobStore(e => e.jobInfo), Q =r?.trim() || null, Z = g.useMemo(() => L.resolveResumeTargetJob(e, J), [e, J]), ee = (0, g.useMemo)(() => Z || (Q ? {jobResult: {jobId: Q}} : null), [Q, Z]), et = g.useMemo(() => _.resolveResumeInitializationJobId({resumeTargetJob: Z,fallbackJobId: Q,jobContextLoading: t}), [Z, Q, t]), er = Z?.jobResult?.jobId || Q, en = Z?.jobResult?.jobTitle, eo = g.useMemo(() => v.find(e => e?.resumeId === I), [v, I]), ei = g.useMemo(() => (0, D.resolveTailorSourceResumeId)({disableUploadResume: m,lastUsedResume: I,resumeCollection: v}), [m, I, v]), ea = g.useMemo(() => A.resolveCoverLetterState({detectionStatus: H,agentCoverLetter: q,currentJobCoverLetter: U}), [H, q, U]), el = g.useMemo(() => {let e = X?.profile?.personalInfo,t = [e?.firstName, e?.lastName].filter(Boolean).join(" ");return A.buildDefaultCoverLetterName(t, en)}, [en, X]), es = g.useRef(false), eu = g.useRef(K), ec = g.useRef(ee), ed = (0, g.useRef)(null), ef = g.useRef(null), ep = g.useMemo(() => ea.activeCoverLetter ? A.getCoverLetterDisplayName(ea.activeCoverLetter.coverLetterName, el) : "", [ea.activeCoverLetter, el]);eu.current = K, ec.current = ee, g.useEffect(() => {let e = (t, r, n) => {ed.current = null, es.current = true, f(t, r, n).finally(() => {if (ed.current) {let t = ed.current;e(false, t.userStage, t.resumeTargetJob)} else es.current = false})},t = (t, r) => {let n = eu.current,o = ec.current;if (n?.logined && (t || et)) {if (es.current && !t) {ed.current = {userStage: n,resumeTargetJob: o};return}e(t, n, o)}},r = (e, r, n) => {if ("refreshResume" === e.name) {t(true, "Received 'refreshResume' message");let e = ec.current;e?.jobResult?.jobId && P.trackEvent("autofill_tailor_complete", {jobId: e.jobResult.jobId,scene: "Autofill"})}};return chrome.runtime.onMessage.addListener(r), t(false, "Component mounted"), () => {ed.current = null, chrome.runtime.onMessage.removeListener(r)}}, [f, et]), g.useEffect(() => {W()}, []), g.useEffect(() => {let e = e => {e.detail?.action === x.MESSAGE_EVENTS.agentCheckCoverLetter && V(e.detail?.status || "")};return document.addEventListener("FromExtension", e), () => {document.removeEventListener("FromExtension", e)}}, [V]), g.useEffect(() => {if (Y(null), z(null), V(""), er) {if (y.agentDomains.includes(new URL(window.location.href).hostname)) {document.dispatchEvent(new CustomEvent("CheckAgentCoverLetter"));return}S.getAutofillInstance()?.checkCoverLetter?.()}}, [er, Y, z, V]), g.useEffect(() => {er && ea.showModule && ef.current !== er && (P.trackEvent("autofill_cover_letter_section_exposure", {}), ef.current = er)}, [ea.showModule, er]);let em = async () => {if (!er) {c();return}Z && P.trackEvent("autofill_tailor_click", {jobId: er,scene: "Autofill"}), J && G && P.trackEvent("autofill_tailor_click", {userId: K?.userId,jobId: J?.jobResult?.jobId,currentUrl: window.location.href}), await b.sendToBackground({name: "getTabContext",body: {command: "initListener"}}), await b.sendToBackground({name: "getTabContext",body: {command: "openTailorTab",url: D.buildJobrightTailorUrl(y.HOST_DOMAIN, er, {resumeId: ei})}})}, eh = async () => {if (!er) {c();return}P.trackEvent("autofill_cover_letter_generate_click", {has_existing: ea.hasExistingCoverLetter}), await b.sendToBackground({name: "getTabContext",body: {command: "initListener"}}), await b.sendToBackground({name: "getTabContext",body: {command: "openTailorTab",url: `${y.HOST_DOMAIN}/jobs/info/${er}?plugin_cover_letter=1`}})}, eg = () => {s(false), n?.()};return o.jsxs(i.Flex, {className: "application-dashboard-base-resume",vertical: true,gap: 12,children: [o.jsx(i.Flex, {vertical: true,gap: 0,className: "application-dashboard-base-resume-section application-dashboard-base-resume-section--autofill",children: o.jsxs(i.Button, {className: "application-dashboard-row-action application-dashboard-resume-header",onClick: () => {P.trackEvent("autofill_info_view_click", {}), N(true)},children: [o.jsxs(i.Flex, {gap: 4,align: "center",className: "application-dashboard-resume-title",children: [o.jsx(j.default, {src: p.default,width: 16,height: 16,preview: false,draggable: false}), o.jsx("span", {children: "Your Autofill Information"})]}), o.jsxs(i.Flex, {gap: 4,align: "center",className: "application-dashboard-resume-action",children: [B.length > 0 && o.jsx("span", {className: "application-dashboard-autofill-dot"}), o.jsx(j.default, {src: u.default,width: 16,height: 16,preview: false,draggable: false})]})]})}), o.jsx("div", {className: "application-dashboard-resume-divider"}), o.jsxs(i.Flex, {vertical: true,gap: 8,className: "application-dashboard-base-resume-section application-dashboard-base-resume-section--resume",children: [o.jsxs(i.Button, {className: "application-dashboard-row-action application-dashboard-upload-row",onClick: () => O(true),children: [o.jsxs(i.Flex, {gap: 4,align: "center",className: "application-dashboard-upload-header",children: [o.jsx(j.default, {src: d.default,width: 16,height: 16,preview: false,draggable: false}), o.jsx("span", {className: "application-dashboard-upload-title",children: "Upload Resume"})]}), o.jsx(i.Flex, {gap: 4,align: "center",className: "application-dashboard-resume-action",children: o.jsx(j.default, {src: u.default,width: 16,height: 16,preview: false,draggable: false})})]}), (() => {let e = !!M?.tailorId && eo?.resumeId === E.TAILOR_RESUME_ID_PREFIX + M.tailorId,t = m ? "Apply without resume" : e ? R : eo?.resumeName;return o.jsxs(i.Flex, {align: "center",gap: 4,children: [e && o.jsx("span", {className: "application-dashboard-customized-tag",children: "Customized"}), o.jsx(i.Typography.Text, {ellipsis: true,className: "application-dashboard-base-resume-name",children: t})]})})(), (er || n) && o.jsxs(i.Button, {className: "application-dashboard-tailor-resume",onClick: em,children: [o.jsx(j.default, {src: l.default,width: 16,height: 16,preview: false,draggable: false}), o.jsx("span", {children: "Generate Custom Resume"})]})]}), (ea.showModule || n) && o.jsxs(o.Fragment, {children: [o.jsx("div", {className: "application-dashboard-resume-divider"}), o.jsxs(i.Flex, {vertical: true,gap: 8,className: "application-dashboard-base-resume-section application-dashboard-base-resume-section--cover-letter",children: [o.jsxs(i.Flex, {gap: 4,justify: "space-between",align: "center",style: {cursor: ea.hasExistingCoverLetter ? "pointer" : "default"},onClick: () => {ea.hasExistingCoverLetter && (P.trackEvent("autofill_cover_letter_view_click", {}), $(true))},children: [o.jsxs(i.Flex, {gap: 4,align: "center",className: "application-dashboard-upload-header",children: [o.jsx(j.default, {src: h.default,width: 16,height: 16,preview: false,draggable: false}), o.jsx("span", {className: "application-dashboard-upload-title",children: "Upload Cover Letter"})]}), ea.hasExistingCoverLetter && o.jsx(i.Flex, {gap: 4,align: "center",className: "application-dashboard-resume-action",children: o.jsx(j.default, {src: u.default,width: 16,height: 16,preview: false,draggable: false})})]}), ea.activeCoverLetter && o.jsx(i.Flex, {align: "center",justify: "space-between",gap: 8,className: "application-dashboard-file-row",children: o.jsx(i.Typography.Text, {ellipsis: true,className: "application-dashboard-base-resume-name application-dashboard-file-name",children: ep})}), o.jsxs(i.Button, {className: "application-dashboard-tailor-resume",onClick: eh,children: [o.jsx(j.default, {src: l.default,width: 16,height: 16,preview: false,draggable: false}), o.jsx("span", {children: "Generate Cover Letter"})]})]})]}), o.jsx(w.default, {open: a,onConfirm: eg,onCancel: () => s(false)})]})}
+import { jsx, jsxs, Fragment } from "react/jsx-runtime"
+import { Button, Flex, Typography } from "antd"
+import * as aistarSvg from "../assets/inline/images/aistar_c.svg.js"
+import * as arrGoSvg from "../assets/inline/images/arr_go.svg.js"
+import * as fileSvg from "../assets/inline/images/file.svg.js"
+import * as folderSvg from "../assets/inline/images/folder.svg.js"
+import * as mailSvg from "../assets/inline/images/mail.svg.js"
+import { useEffect, useMemo, useRef, useState } from "react"
+import { sendToBackground } from "@plasmohq/messaging"
+import { agentDomains, HOST_DOMAIN } from "../api/env-resolver.ts"
+import AddJobFirstPopup from "./Popups/AddJobFirstPopup.ts"
+import { getAutofillInstance } from "../contents.ts"
+import { TAILOR_RESUME_ID_PREFIX } from "../contents/shared/constants.js"
+import { MESSAGE_EVENTS } from "../core/enums.ts"
+import { useAutofillInfoStore } from "../store/autofillInfo.ts"
+import {
+  buildDefaultCoverLetterName,
+  getCoverLetterDisplayName,
+  resolveCoverLetterState,
+} from "../store/cover-letter-state.ts"
+import { useExternalJobStore } from "../store/externalJob.ts"
+import { useProfileStore } from "../store/profile.ts"
+import { useResumeStore } from "../store/resume.ts"
+import Image from "../ui/Image.ts"
+import {
+  buildJobrightTailorUrl,
+  resolveTailorSourceResumeId,
+} from "../utils/job-id.ts"
+import { trackEvent } from "../utils/trace.ts"
+import { resolveResumeInitializationJobId } from "./resume-init-gate.ts"
+import { resolveResumeTargetJob } from "./resume-target-job.ts"
 
-export default ResumeSwitcher
+function assetUrl(mod) {
+  return mod?.default ?? mod
+}
+
+export default function ResumeSwitcher({
+  currentTabJob,
+  jobContextLoading = false,
+  fallbackJobId = null,
+  onRequestAddJob,
+}) {
+  const [addJobPopupOpen, setAddJobPopupOpen] = useState(false)
+
+  const openAddJobPopup = () => {
+    if (onRequestAddJob) setAddJobPopupOpen(true)
+  }
+
+  const initResume = useResumeStore((state) => state.initResume)
+  const disableUploadResume = useResumeStore((state) => state.disableUploadResume)
+  const resumeCollection = useResumeStore((state) => state.resumeCollection)
+  const lastUsedResume = useResumeStore((state) => state.lastUsedResume)
+  const tailorResumeName = useResumeStore((state) => state.tailorResumeName)
+  const setOpenResumeSelector = useResumeStore(
+    (state) => state.setOpenResumeSelector,
+  )
+  const tailorResume = useResumeStore((state) => state.tailorResume)
+  const setOpenAutofillInfo = useResumeStore((state) => state.setOpenAutofillInfo)
+  const setOpenCoverLetterPreview = useResumeStore(
+    (state) => state.setOpenCoverLetterPreview,
+  )
+  const autofillChangedFields = useResumeStore(
+    (state) => state.autofillChangedFields,
+  )
+  const agentCoverLetter = useResumeStore((state) => state.agentCoverLetter)
+  const currentJobCoverLetter = useResumeStore(
+    (state) => state.currentJobCoverLetter,
+  )
+  const coverLetterDetectionStatus = useResumeStore(
+    (state) => state.coverLetterDetectionStatus,
+  )
+  const setAgentCoverLetter = useResumeStore((state) => state.setAgentCoverLetter)
+  const setCurrentJobCoverLetter = useResumeStore(
+    (state) => state.setCurrentJobCoverLetter,
+  )
+  const setCoverLetterDetectionStatus = useResumeStore(
+    (state) => state.setCoverLetterDetectionStatus,
+  )
+
+  const fetchAutofillInfo = useAutofillInfoStore(
+    (state) => state.fetchAutofillInfo,
+  )
+  const externalJobId = useExternalJobStore((state) => state.jobId)
+  const userStage = useProfileStore((state) => state.userStage)
+  const userProfile = useProfileStore((state) => state.userProfile)
+  const externalJobInfo = useExternalJobStore((state) => state.jobInfo)
+
+  const normalizedFallbackJobId = fallbackJobId?.trim() || null
+
+  const resumeTargetJob = useMemo(
+    () => resolveResumeTargetJob(currentTabJob, externalJobInfo),
+    [currentTabJob, externalJobInfo],
+  )
+
+  const resumeTargetJobOrFallback = useMemo(
+    () =>
+      resumeTargetJob ||
+      (normalizedFallbackJobId
+        ? {
+            jobResult: {
+              jobId: normalizedFallbackJobId,
+            },
+          }
+        : null),
+    [normalizedFallbackJobId, resumeTargetJob],
+  )
+
+  const resumeInitializationJobId = useMemo(
+    () =>
+      resolveResumeInitializationJobId({
+        resumeTargetJob,
+        fallbackJobId: normalizedFallbackJobId,
+        jobContextLoading,
+      }),
+    [resumeTargetJob, normalizedFallbackJobId, jobContextLoading],
+  )
+
+  const activeJobId =
+    resumeTargetJob?.jobResult?.jobId || normalizedFallbackJobId
+  const activeJobTitle = resumeTargetJob?.jobResult?.jobTitle
+
+  const lastUsedResumeEntry = useMemo(
+    () => resumeCollection.find((resume) => resume?.resumeId === lastUsedResume),
+    [resumeCollection, lastUsedResume],
+  )
+
+  const tailorSourceResumeId = useMemo(
+    () =>
+      resolveTailorSourceResumeId({
+        disableUploadResume,
+        lastUsedResume,
+        resumeCollection,
+      }),
+    [disableUploadResume, lastUsedResume, resumeCollection],
+  )
+
+  const coverLetterState = useMemo(
+    () =>
+      resolveCoverLetterState({
+        detectionStatus: coverLetterDetectionStatus,
+        agentCoverLetter,
+        currentJobCoverLetter,
+      }),
+    [coverLetterDetectionStatus, agentCoverLetter, currentJobCoverLetter],
+  )
+
+  const defaultCoverLetterName = useMemo(() => {
+    const personalInfo = userProfile?.profile?.personalInfo
+    const fullName = [personalInfo?.firstName, personalInfo?.lastName]
+      .filter(Boolean)
+      .join(" ")
+    return buildDefaultCoverLetterName(fullName, activeJobTitle)
+  }, [activeJobTitle, userProfile])
+
+  const initInFlightRef = useRef(false)
+  const userStageRef = useRef(userStage)
+  const resumeTargetJobOrFallbackRef = useRef(resumeTargetJobOrFallback)
+  const pendingInitRef = useRef(null)
+  const coverLetterExposureJobIdRef = useRef(null)
+
+  const coverLetterDisplayName = useMemo(
+    () =>
+      coverLetterState.activeCoverLetter
+        ? getCoverLetterDisplayName(
+            coverLetterState.activeCoverLetter.coverLetterName,
+            defaultCoverLetterName,
+          )
+        : "",
+    [coverLetterState.activeCoverLetter, defaultCoverLetterName],
+  )
+
+  userStageRef.current = userStage
+  resumeTargetJobOrFallbackRef.current = resumeTargetJobOrFallback
+
+  useEffect(() => {
+    const runInit = (forceRefresh, stage, targetJob) => {
+      pendingInitRef.current = null
+      initInFlightRef.current = true
+      initResume(forceRefresh, stage, targetJob).finally(() => {
+        if (pendingInitRef.current) {
+          const pending = pendingInitRef.current
+          runInit(false, pending.userStage, pending.resumeTargetJob)
+        } else {
+          initInFlightRef.current = false
+        }
+      })
+    }
+
+    const maybeInit = (forceRefresh, _reason) => {
+      const stage = userStageRef.current
+      const targetJob = resumeTargetJobOrFallbackRef.current
+      if (stage?.logined && (forceRefresh || resumeInitializationJobId)) {
+        if (initInFlightRef.current && !forceRefresh) {
+          pendingInitRef.current = {
+            userStage: stage,
+            resumeTargetJob: targetJob,
+          }
+          return
+        }
+        runInit(forceRefresh, stage, targetJob)
+      }
+    }
+
+    const onRuntimeMessage = (message, _sender, _sendResponse) => {
+      if (message.name === "refreshResume") {
+        maybeInit(true, "Received 'refreshResume' message")
+        const targetJob = resumeTargetJobOrFallbackRef.current
+        if (targetJob?.jobResult?.jobId) {
+          trackEvent("autofill_tailor_complete", {
+            jobId: targetJob.jobResult.jobId,
+            scene: "Autofill",
+          })
+        }
+      }
+    }
+
+    chrome.runtime.onMessage.addListener(onRuntimeMessage)
+    maybeInit(false, "Component mounted")
+    return () => {
+      pendingInitRef.current = null
+      chrome.runtime.onMessage.removeListener(onRuntimeMessage)
+    }
+  }, [initResume, resumeInitializationJobId])
+
+  useEffect(() => {
+    fetchAutofillInfo()
+  }, [])
+
+  useEffect(() => {
+    const onFromExtension = (event) => {
+      if (event.detail?.action === MESSAGE_EVENTS.agentCheckCoverLetter) {
+        setCoverLetterDetectionStatus(event.detail?.status || "")
+      }
+    }
+    document.addEventListener("FromExtension", onFromExtension)
+    return () => {
+      document.removeEventListener("FromExtension", onFromExtension)
+    }
+  }, [setCoverLetterDetectionStatus])
+
+  useEffect(() => {
+    setAgentCoverLetter(null)
+    setCurrentJobCoverLetter(null)
+    setCoverLetterDetectionStatus("")
+    if (activeJobId) {
+      if (agentDomains.includes(new URL(window.location.href).hostname)) {
+        document.dispatchEvent(new CustomEvent("CheckAgentCoverLetter"))
+        return
+      }
+      getAutofillInstance()?.checkCoverLetter?.()
+    }
+  }, [
+    activeJobId,
+    setAgentCoverLetter,
+    setCurrentJobCoverLetter,
+    setCoverLetterDetectionStatus,
+  ])
+
+  useEffect(() => {
+    if (
+      activeJobId &&
+      coverLetterState.showModule &&
+      coverLetterExposureJobIdRef.current !== activeJobId
+    ) {
+      trackEvent("autofill_cover_letter_section_exposure", {})
+      coverLetterExposureJobIdRef.current = activeJobId
+    }
+  }, [coverLetterState.showModule, activeJobId])
+
+  const handleGenerateCustomResume = async () => {
+    if (!activeJobId) {
+      openAddJobPopup()
+      return
+    }
+    if (resumeTargetJob) {
+      trackEvent("autofill_tailor_click", {
+        jobId: activeJobId,
+        scene: "Autofill",
+      })
+    }
+    if (externalJobInfo && externalJobId) {
+      trackEvent("autofill_tailor_click", {
+        userId: userStage?.userId,
+        jobId: externalJobInfo?.jobResult?.jobId,
+        currentUrl: window.location.href,
+      })
+    }
+    await sendToBackground({
+      name: "getTabContext",
+      body: {
+        command: "initListener",
+      },
+    })
+    await sendToBackground({
+      name: "getTabContext",
+      body: {
+        command: "openTailorTab",
+        url: buildJobrightTailorUrl(HOST_DOMAIN, activeJobId, {
+          resumeId: tailorSourceResumeId,
+        }),
+      },
+    })
+  }
+
+  const handleGenerateCoverLetter = async () => {
+    if (!activeJobId) {
+      openAddJobPopup()
+      return
+    }
+    trackEvent("autofill_cover_letter_generate_click", {
+      has_existing: coverLetterState.hasExistingCoverLetter,
+    })
+    await sendToBackground({
+      name: "getTabContext",
+      body: {
+        command: "initListener",
+      },
+    })
+    await sendToBackground({
+      name: "getTabContext",
+      body: {
+        command: "openTailorTab",
+        url: `${HOST_DOMAIN}/jobs/info/${activeJobId}?plugin_cover_letter=1`,
+      },
+    })
+  }
+
+  const handleConfirmAddJob = () => {
+    setAddJobPopupOpen(false)
+    onRequestAddJob?.()
+  }
+
+  const isCustomizedTailorResume =
+    !!tailorResume?.tailorId &&
+    lastUsedResumeEntry?.resumeId ===
+      TAILOR_RESUME_ID_PREFIX + tailorResume.tailorId
+
+  const resumeDisplayName = disableUploadResume
+    ? "Apply without resume"
+    : isCustomizedTailorResume
+      ? tailorResumeName
+      : lastUsedResumeEntry?.resumeName
+
+  return jsxs(Flex, {
+    className: "application-dashboard-base-resume",
+    vertical: true,
+    gap: 12,
+    children: [
+      jsx(Flex, {
+        vertical: true,
+        gap: 0,
+        className:
+          "application-dashboard-base-resume-section application-dashboard-base-resume-section--autofill",
+        children: jsxs(Button, {
+          className:
+            "application-dashboard-row-action application-dashboard-resume-header",
+          onClick: () => {
+            trackEvent("autofill_info_view_click", {})
+            setOpenAutofillInfo(true)
+          },
+          children: [
+            jsxs(Flex, {
+              gap: 4,
+              align: "center",
+              className: "application-dashboard-resume-title",
+              children: [
+                jsx(Image, {
+                  src: assetUrl(folderSvg),
+                  width: 16,
+                  height: 16,
+                  preview: false,
+                  draggable: false,
+                }),
+                jsx("span", {
+                  children: "Your Autofill Information",
+                }),
+              ],
+            }),
+            jsxs(Flex, {
+              gap: 4,
+              align: "center",
+              className: "application-dashboard-resume-action",
+              children: [
+                autofillChangedFields.length > 0 &&
+                  jsx("span", {
+                    className: "application-dashboard-autofill-dot",
+                  }),
+                jsx(Image, {
+                  src: assetUrl(arrGoSvg),
+                  width: 16,
+                  height: 16,
+                  preview: false,
+                  draggable: false,
+                }),
+              ],
+            }),
+          ],
+        }),
+      }),
+      jsx("div", {
+        className: "application-dashboard-resume-divider",
+      }),
+      jsxs(Flex, {
+        vertical: true,
+        gap: 8,
+        className:
+          "application-dashboard-base-resume-section application-dashboard-base-resume-section--resume",
+        children: [
+          jsxs(Button, {
+            className:
+              "application-dashboard-row-action application-dashboard-upload-row",
+            onClick: () => setOpenResumeSelector(true),
+            children: [
+              jsxs(Flex, {
+                gap: 4,
+                align: "center",
+                className: "application-dashboard-upload-header",
+                children: [
+                  jsx(Image, {
+                    src: assetUrl(fileSvg),
+                    width: 16,
+                    height: 16,
+                    preview: false,
+                    draggable: false,
+                  }),
+                  jsx("span", {
+                    className: "application-dashboard-upload-title",
+                    children: "Upload Resume",
+                  }),
+                ],
+              }),
+              jsx(Flex, {
+                gap: 4,
+                align: "center",
+                className: "application-dashboard-resume-action",
+                children: jsx(Image, {
+                  src: assetUrl(arrGoSvg),
+                  width: 16,
+                  height: 16,
+                  preview: false,
+                  draggable: false,
+                }),
+              }),
+            ],
+          }),
+          jsxs(Flex, {
+            align: "center",
+            gap: 4,
+            children: [
+              isCustomizedTailorResume &&
+                jsx("span", {
+                  className: "application-dashboard-customized-tag",
+                  children: "Customized",
+                }),
+              jsx(Typography.Text, {
+                ellipsis: true,
+                className: "application-dashboard-base-resume-name",
+                children: resumeDisplayName,
+              }),
+            ],
+          }),
+          (activeJobId || onRequestAddJob) &&
+            jsxs(Button, {
+              className: "application-dashboard-tailor-resume",
+              onClick: handleGenerateCustomResume,
+              children: [
+                jsx(Image, {
+                  src: assetUrl(aistarSvg),
+                  width: 16,
+                  height: 16,
+                  preview: false,
+                  draggable: false,
+                }),
+                jsx("span", {
+                  children: "Generate Custom Resume",
+                }),
+              ],
+            }),
+        ],
+      }),
+      (coverLetterState.showModule || onRequestAddJob) &&
+        jsxs(Fragment, {
+          children: [
+            jsx("div", {
+              className: "application-dashboard-resume-divider",
+            }),
+            jsxs(Flex, {
+              vertical: true,
+              gap: 8,
+              className:
+                "application-dashboard-base-resume-section application-dashboard-base-resume-section--cover-letter",
+              children: [
+                jsxs(Flex, {
+                  gap: 4,
+                  justify: "space-between",
+                  align: "center",
+                  style: {
+                    cursor: coverLetterState.hasExistingCoverLetter
+                      ? "pointer"
+                      : "default",
+                  },
+                  onClick: () => {
+                    if (coverLetterState.hasExistingCoverLetter) {
+                      trackEvent("autofill_cover_letter_view_click", {})
+                      setOpenCoverLetterPreview(true)
+                    }
+                  },
+                  children: [
+                    jsxs(Flex, {
+                      gap: 4,
+                      align: "center",
+                      className: "application-dashboard-upload-header",
+                      children: [
+                        jsx(Image, {
+                          src: assetUrl(mailSvg),
+                          width: 16,
+                          height: 16,
+                          preview: false,
+                          draggable: false,
+                        }),
+                        jsx("span", {
+                          className: "application-dashboard-upload-title",
+                          children: "Upload Cover Letter",
+                        }),
+                      ],
+                    }),
+                    coverLetterState.hasExistingCoverLetter &&
+                      jsx(Flex, {
+                        gap: 4,
+                        align: "center",
+                        className: "application-dashboard-resume-action",
+                        children: jsx(Image, {
+                          src: assetUrl(arrGoSvg),
+                          width: 16,
+                          height: 16,
+                          preview: false,
+                          draggable: false,
+                        }),
+                      }),
+                  ],
+                }),
+                coverLetterState.activeCoverLetter &&
+                  jsx(Flex, {
+                    align: "center",
+                    justify: "space-between",
+                    gap: 8,
+                    className: "application-dashboard-file-row",
+                    children: jsx(Typography.Text, {
+                      ellipsis: true,
+                      className:
+                        "application-dashboard-base-resume-name application-dashboard-file-name",
+                      children: coverLetterDisplayName,
+                    }),
+                  }),
+                jsxs(Button, {
+                  className: "application-dashboard-tailor-resume",
+                  onClick: handleGenerateCoverLetter,
+                  children: [
+                    jsx(Image, {
+                      src: assetUrl(aistarSvg),
+                      width: 16,
+                      height: 16,
+                      preview: false,
+                      draggable: false,
+                    }),
+                    jsx("span", {
+                      children: "Generate Cover Letter",
+                    }),
+                  ],
+                }),
+              ],
+            }),
+          ],
+        }),
+      jsx(AddJobFirstPopup, {
+        open: addJobPopupOpen,
+        onConfirm: handleConfirmAddJob,
+        onCancel: () => setAddJobPopupOpen(false),
+      }),
+    ],
+  })
+}

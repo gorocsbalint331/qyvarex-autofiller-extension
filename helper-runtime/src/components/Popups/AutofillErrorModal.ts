@@ -1,12 +1,87 @@
 // @ts-nocheck
 /**
- * Readable TypeScript converted from Parcel dump (helper-runtime/src/components/Popups/AutofillErrorModal.js).
+ * Autofill failure / extension-update error modal.
  */
-import * as n from "react/jsx-runtime"
-import * as o from "antd"
-import * as i from "../../store/container.ts"
-import * as a from "../../store/profile.ts"
 
-let l = ({onRetry: e}) => {let t = a.useProfileStore(e => e.showErrorPopup),r = a.useProfileStore(e => e.autofillErrorReason),l = a.useProfileStore(e => e.setShowErrorPopup),s = i.useContainerStore(e => e.containerDom),u = "extension_updated" === r,c = "no_fillable_form" === r,d = () => {l(false);try {(window.top ?? window).location.reload()} catch {window.location.reload()}};return n.jsxs(o.Modal, {open: t,wrapClassName: "popup-modal-wrap jobright-helper-centered-popup-wrap",className: u ? "popup-modal extension-update-modal" : "popup-modal",mask: false,title: null,closable: false,getContainer: () => s,footer: null,width: 320,children: [n.jsx("div", {className: u ? "extension-update-modal-message" : undefined,children: u ?"Jobright extension has been updated. Please refresh this page to reload the extension." :c ? "No fillable application form was found on this page." :"Autofill failed, please try it later. If the issue persists, contact us at support@jobright.ai"}), n.jsxs(o.Flex, {justify: "space-between",align: "center",gap: 12,className: u ? "popup-modal-actions extension-update-modal-actions" :"popup-modal-actions",children: [n.jsx(o.Button, {type: "default",onClick: () => {l(false)},children: "Cancel"}), u ? n.jsx(o.Button, {type: "primary",onClick: d,children: "Refresh Page"}) : n.jsx(o.Button, {type: "primary",onClick: () => {e(), l(false)},children: "Try Again"})]})]})};
+import { jsx, jsxs } from "react/jsx-runtime"
+import { Button, Flex, Modal } from "antd"
+import { useContainerStore } from "../../store/container.ts"
+import { useProfileStore } from "../../store/profile.ts"
 
-export default l
+export default function AutofillErrorModal({ onRetry }) {
+  const showErrorPopup = useProfileStore((state) => state.showErrorPopup)
+  const autofillErrorReason = useProfileStore(
+    (state) => state.autofillErrorReason,
+  )
+  const setShowErrorPopup = useProfileStore((state) => state.setShowErrorPopup)
+  const containerDom = useContainerStore((state) => state.containerDom)
+
+  const isExtensionUpdated = autofillErrorReason === "extension_updated"
+  const isNoFillableForm = autofillErrorReason === "no_fillable_form"
+
+  const handleRefreshPage = () => {
+    setShowErrorPopup(false)
+    try {
+      ;(window.top ?? window).location.reload()
+    } catch {
+      window.location.reload()
+    }
+  }
+
+  const message = isExtensionUpdated
+    ? "Jobright extension has been updated. Please refresh this page to reload the extension."
+    : isNoFillableForm
+      ? "No fillable application form was found on this page."
+      : "Autofill failed, please try it later. If the issue persists, contact us at support@jobright.ai"
+
+  return jsxs(Modal, {
+    open: showErrorPopup,
+    wrapClassName: "popup-modal-wrap jobright-helper-centered-popup-wrap",
+    className: isExtensionUpdated
+      ? "popup-modal extension-update-modal"
+      : "popup-modal",
+    mask: false,
+    title: null,
+    closable: false,
+    getContainer: () => containerDom,
+    footer: null,
+    width: 320,
+    children: [
+      jsx("div", {
+        className: isExtensionUpdated
+          ? "extension-update-modal-message"
+          : undefined,
+        children: message,
+      }),
+      jsxs(Flex, {
+        justify: "space-between",
+        align: "center",
+        gap: 12,
+        className: isExtensionUpdated
+          ? "popup-modal-actions extension-update-modal-actions"
+          : "popup-modal-actions",
+        children: [
+          jsx(Button, {
+            type: "default",
+            onClick: () => setShowErrorPopup(false),
+            children: "Cancel",
+          }),
+          isExtensionUpdated
+            ? jsx(Button, {
+                type: "primary",
+                onClick: handleRefreshPage,
+                children: "Refresh Page",
+              })
+            : jsx(Button, {
+                type: "primary",
+                onClick: () => {
+                  onRetry()
+                  setShowErrorPopup(false)
+                },
+                children: "Try Again",
+              }),
+        ],
+      }),
+    ],
+  })
+}

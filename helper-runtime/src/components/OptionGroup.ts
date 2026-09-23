@@ -1,10 +1,29 @@
 // @ts-nocheck
 /**
- * Readable TypeScript converted from Parcel dump (helper-runtime/src/components/OptionGroup.js).
+ * Selectable option chips for autofill info modals.
  */
-import * as o from "react/jsx-runtime"
-import * as i from "antd"
 
-let a=({options:e,value:t,onChange:r})=>o.jsx(i.Flex,{gap:8,align:"center",justify:"center",wrap:"wrap",children:e.map(e=>o.jsx("div",{className:`autofill-info-modal-option-btn${t===e?" is-selected":""}`,onClick:()=>r(e),children:e},e))})
+import { jsx } from "react/jsx-runtime"
+import { Flex } from "antd"
 
-export { a as OptionGroup }
+export function OptionGroup({ options, value, onChange }) {
+  return jsx(Flex, {
+    gap: 8,
+    align: "center",
+    justify: "center",
+    wrap: "wrap",
+    children: options.map((option) =>
+      jsx(
+        "div",
+        {
+          className: `autofill-info-modal-option-btn${
+            value === option ? " is-selected" : ""
+          }`,
+          onClick: () => onChange(option),
+          children: option,
+        },
+        option,
+      ),
+    ),
+  })
+}

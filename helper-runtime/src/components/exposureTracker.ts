@@ -1,7 +1,12 @@
 // @ts-nocheck
 /**
- * Readable TypeScript converted from Parcel dump (helper-runtime/src/components/exposureTracker.js).
+ * One-shot page exposure claims (WeakSet so the same page object is only claimed once).
  */
-let o=new WeakSet;function i(e){return!o.has(e)&&(o.add(e),true)}
 
-export { i as claimPageExposure }
+const claimedPages = new WeakSet()
+
+export function claimPageExposure(page) {
+  if (claimedPages.has(page)) return false
+  claimedPages.add(page)
+  return true
+}

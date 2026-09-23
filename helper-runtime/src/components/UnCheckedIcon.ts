@@ -1,13 +1,28 @@
 // @ts-nocheck
 /**
- * Readable TypeScript converted from Parcel dump (helper-runtime/src/components/UnCheckedIcon.js).
+ * Unchecked / missing-field icon for autofill field lists.
  */
-import * as o from "react/jsx-runtime"
-import * as i from "../ui/Image.ts"
-import * as l from "../assets/inline/images/line.svg.js"
 
-const a = { default: i }
-const s = { default: l }
-let u = () => o.jsx("div", {className: "unchecked-icon",children: o.jsx(a.default, {preview: false,src: s.default,height: 12,width: 12,style: {minWidth: 12,minHeight: 12}})});
+import { jsx } from "react/jsx-runtime"
+import * as lineSvg from "../assets/inline/images/line.svg.js"
+import Image from "../ui/Image.ts"
 
-export default u
+function assetUrl(mod) {
+  return mod?.default ?? mod
+}
+
+export default function UnCheckedIcon() {
+  return jsx("div", {
+    className: "unchecked-icon",
+    children: jsx(Image, {
+      preview: false,
+      src: assetUrl(lineSvg),
+      height: 12,
+      width: 12,
+      style: {
+        minWidth: 12,
+        minHeight: 12,
+      },
+    }),
+  })
+}

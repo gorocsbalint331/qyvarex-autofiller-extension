@@ -1,7 +1,40 @@
 // @ts-nocheck
 /**
- * Readable TypeScript converted from Parcel dump (helper-runtime/src/components/Resume/view-model.js).
+ * Build sidebar list items for the resume review picker.
  */
-let o=7;function i(e){return e.replace(/\.[^/.]+$/,"")}function a({resumes:e,tailorResumeId:t,tailorResumeName:r,lastUsedResumeId:n}){let a=e.slice(0,o).map(e=>{let o=!!t&&e.resumeId===t;return{type:"resume",value:e.resumeId,label:o?r||e.resumeName||i(e.resumeNameWithSuffix):e.resumeName||i(e.resumeNameWithSuffix),primary:!!e.primary,customized:o,lastUsed:e.resumeId===n,targetJobTitle:e.targetJobTitle?.trim()||null}});return a.push({type:"apply-without-resume",value:"NO_RESUME",label:"Apply without resume"}),a}
 
-export { a as buildResumeReviewItems }
+const MAX_VISIBLE_RESUMES = 7
+
+function stripExtension(filename) {
+  return filename.replace(/\.[^/.]+$/, "")
+}
+
+export function buildResumeReviewItems({
+  resumes,
+  tailorResumeId,
+  tailorResumeName,
+  lastUsedResumeId,
+}) {
+  const items = resumes.slice(0, MAX_VISIBLE_RESUMES).map((resume) => {
+    const isCustomized = !!tailorResumeId && resume.resumeId === tailorResumeId
+    return {
+      type: "resume",
+      value: resume.resumeId,
+      label: isCustomized
+        ? tailorResumeName ||
+          resume.resumeName ||
+          stripExtension(resume.resumeNameWithSuffix)
+        : resume.resumeName || stripExtension(resume.resumeNameWithSuffix),
+      primary: !!resume.primary,
+      customized: isCustomized,
+      lastUsed: resume.resumeId === lastUsedResumeId,
+      targetJobTitle: resume.targetJobTitle?.trim() || null,
+    }
+  })
+  items.push({
+    type: "apply-without-resume",
+    value: "NO_RESUME",
+    label: "Apply without resume",
+  })
+  return items
+}

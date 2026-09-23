@@ -1,7 +1,8 @@
 // @ts-nocheck
 /**
- * Readable TypeScript converted from Parcel dump (helper-runtime/src/components/resume-target-job.js).
+ * Prefer external job info, then the current-tab job, for resume targeting.
  */
-let o = (e, t) => t || e || null
 
-export { o as resolveResumeTargetJob }
+export function resolveResumeTargetJob(currentTabJob, externalJobInfo) {
+  return externalJobInfo || currentTabJob || null
+}

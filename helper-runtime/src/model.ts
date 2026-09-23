@@ -3,13 +3,13 @@
  * Autofill info model factories and API-payload → editor-shape mapping.
  */
 
-import { resolveSignupRegistrationEmail } from "./api/autofill-signup-information.js"
-import { extractSkillList } from "./utils/skill-list.ts"
-import { COUNTRY_CODE_MAP } from "./constants.ts"
+import { resolveSignupRegistrationEmail } from "./api/autofill-signup-information.ts"
+import { formatAutofillInfoDate } from "./components/Editor/utils/date-format.ts"
+import { COUNTRY_CODE_MAP } from "./forms/constants.ts"
 import { normalizeCountryInput } from "./utils/address-lookup.ts"
-import { formatAutofillInfoDate } from "./utils/date-format.ts"
 import { normalizeAutofillLocation } from "./utils/location-normalizer.ts"
 import { normalizePhoneCountryCodeWithName } from "./utils/phone-country-code.ts"
+import { extractSkillList } from "./utils/skill-list.ts"
 
 let nextAutofillInfoId = 0
 

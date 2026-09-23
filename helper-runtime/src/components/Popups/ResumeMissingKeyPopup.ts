@@ -1,14 +1,75 @@
 // @ts-nocheck
 /**
- * Readable TypeScript converted from Parcel dump (helper-runtime/src/components/Popups/ResumeMissingKeyPopup.js).
+ * Prompt to complete missing Work Experience / Education on the resume.
  */
-import * as n from "react/jsx-runtime"
-import * as o from "antd"
-import * as i from "../../api/env-resolver.ts"
-import * as a from "../../store/container.ts"
-import * as l from "../../store/profile.ts"
-import * as s from "../../store/resume.ts"
 
-let u = () => {let e = l.useProfileStore(e => e.showResumeMissingKeyPopup),t = l.useProfileStore(e => e.setShowResumeMissingKeyPopup),r = s.useResumeStore(e => e.resumeMap),u = s.useResumeStore(e => e.lastUsedResume),c = a.useContainerStore(e => e.containerDom);return n.jsxs(o.Modal, {open: e,wrapClassName: "popup-modal-wrap jobright-helper-centered-popup-wrap",className: "popup-modal",mask: false,title: null,closable: false,getContainer: () => c,footer: null,width: 320,children: [n.jsxs("div", {style: {textAlign: "left"},children: ["Your resume is missing key info in ", n.jsx("b", {children: "Work Experience"}), " or", " ", n.jsx("b", {children: "Education"}), ". Please complete it before using Autofill."]}), n.jsxs(o.Flex, {justify: "space-between",align: "center",gap: 12,className: "popup-modal-actions resume-missing-modal-actions",children: [n.jsx(o.Button, {type: "default",className: "resume-missing-key-model-button-cancel",onClick: () => {t(false)},children: "Cancel"}), n.jsx(o.Button, {type: "primary",className: "resume-missing-key-model-button-edit",onClick: () => {window.open(i.HOST_DOMAIN + `/jobs/resume/edit/${r[u].diagnoseId}`,"_blank"), t(false)},children: "Edit Resume"})]})]})};
+import { jsx, jsxs } from "react/jsx-runtime"
+import { Button, Flex, Modal } from "antd"
+import { HOST_DOMAIN } from "../../api/env-resolver.ts"
+import { useContainerStore } from "../../store/container.ts"
+import { useProfileStore } from "../../store/profile.ts"
+import { useResumeStore } from "../../store/resume.ts"
 
-export default u
+export default function ResumeMissingKeyPopup() {
+  const showResumeMissingKeyPopup = useProfileStore(
+    (state) => state.showResumeMissingKeyPopup,
+  )
+  const setShowResumeMissingKeyPopup = useProfileStore(
+    (state) => state.setShowResumeMissingKeyPopup,
+  )
+  const resumeMap = useResumeStore((state) => state.resumeMap)
+  const lastUsedResume = useResumeStore((state) => state.lastUsedResume)
+  const containerDom = useContainerStore((state) => state.containerDom)
+
+  return jsxs(Modal, {
+    open: showResumeMissingKeyPopup,
+    wrapClassName: "popup-modal-wrap jobright-helper-centered-popup-wrap",
+    className: "popup-modal",
+    mask: false,
+    title: null,
+    closable: false,
+    getContainer: () => containerDom,
+    footer: null,
+    width: 320,
+    children: [
+      jsxs("div", {
+        style: { textAlign: "left" },
+        children: [
+          "Your resume is missing key info in ",
+          jsx("b", { children: "Work Experience" }),
+          " or",
+          " ",
+          jsx("b", { children: "Education" }),
+          ". Please complete it before using Autofill.",
+        ],
+      }),
+      jsxs(Flex, {
+        justify: "space-between",
+        align: "center",
+        gap: 12,
+        className: "popup-modal-actions resume-missing-modal-actions",
+        children: [
+          jsx(Button, {
+            type: "default",
+            className: "resume-missing-key-model-button-cancel",
+            onClick: () => setShowResumeMissingKeyPopup(false),
+            children: "Cancel",
+          }),
+          jsx(Button, {
+            type: "primary",
+            className: "resume-missing-key-model-button-edit",
+            onClick: () => {
+              window.open(
+                HOST_DOMAIN +
+                  `/jobs/resume/edit/${resumeMap[lastUsedResume].diagnoseId}`,
+                "_blank",
+              )
+              setShowResumeMissingKeyPopup(false)
+            },
+            children: "Edit Resume",
+          }),
+        ],
+      }),
+    ],
+  })
+}

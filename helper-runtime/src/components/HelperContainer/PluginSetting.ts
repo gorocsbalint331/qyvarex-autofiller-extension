@@ -1,21 +1,257 @@
 // @ts-nocheck
 /**
- * Readable TypeScript converted from Parcel dump (helper-runtime/src/components/HelperContainer/PluginSetting.js).
+ * Plugin settings panel: page-turn autofill + default view preferences.
  */
-import * as o from "react/jsx-runtime"
-import * as i from "antd"
-import * as a from "clsx"
-import * as s from "../../assets/inline/images/question_mark.svg.js"
-import * as c from "react"
-import * as d from "../ExternalJob/BackHomeButton.ts"
-import * as p from "../../store/container.ts"
-import * as m from "../../store/setting.ts"
-import * as g from "../../utils/trace.ts"
 
-const l = { default: a }
-const u = { default: s }
-const f = { default: d }
-const h = { default: m }
-function b({closeSetting: e}) {let t = h.default(e => e.automaticallyTurnPage),r = h.default(e => e.setAutomaticallyTurnPage),n = h.default(e => e.defaultView),a = h.default(e => e.setDefaultView),[l, s] = c.useState(t),[u, d] = c.useState(n);c.useEffect(() => {g.trackEvent("autofill_setting_exposure");let t = t => {"Escape" === t.key && e()};return document.addEventListener("keydown", t), () => {document.removeEventListener("keydown", t)}}, []), c.useEffect(() => {s(t)}, [t]), c.useEffect(() => {d(n)}, [n]);let p = async () => {let o = [];l !== t && (g.trackEvent("autofill_setting_pageturn_change", {from_value: t,to_value: l}), o.push(Promise.resolve(r(l)))), u !== n && (g.trackEvent("autofill_setting_defaultview_change", {from_value: n,to_value: u}), o.push(Promise.resolve(a(u)))), o.length > 0 && await Promise.all(o), e()};return o.jsxs(i.Flex, {vertical: true,className: "plugin-setting-container",children: [o.jsxs("div", {className: "plugin-setting-header",children: [o.jsx(f.default, {backFunction: e}), o.jsx(i.Typography.Text, {className: "plugin-setting-header-title",children: "Settings"})]}), o.jsxs(i.Flex, {vertical: true,className: "plugin-setting-body",gap: 24,children: [o.jsxs(i.Flex, {vertical: true,gap: 8,children: [o.jsx(y, {title: "Autofill After Page Turn",tooltipText: "On multi-page ATSs like MyWorkday, choose whether to continue autofilling automatically after each page turn, or to do it manually.",activeOption: l,optionSettingLeft: {option: "Automatically",onClickOption: () => {s("Automatically")}},optionSettingRight: {option: "Manually",onClickOption: () => {s("Manually")}}}), o.jsx(i.Typography.Text, {className: "plugin-setting-credits-tip",children: "Only 1 credit is used per job application and turning pages does not use extra credits."})]}), o.jsx("div", {className: "plugin-setting-question-divider"}), o.jsx(y, {title: "Default Plugin View",tooltipText: "Set the plugin to open expanded (full panel visible) or minimized (just a clickable icon) on supported ATS pages not opened from Jobright.",activeOption: u,optionSettingLeft: {option: "Expanded",onClickOption: () => {d("Expanded")}},optionSettingRight: {option: "Minimized",onClickOption: () => {d("Minimized")}}})]}), o.jsx("div", {className: "plugin-setting-footer",children: o.jsx("button", {type: "button",className: "plugin-setting-save-button",onClick: p,children: o.jsx("span", {className: "plugin-setting-save-button-text",children: "Save"})})})]})}let y = ({title: e,tooltipText: t,description: r,activeOption: n,optionSettingLeft: a,optionSettingRight: l}) => o.jsxs(i.Flex, {vertical: true,gap: 8,className: "plugin-setting-item",children: [o.jsxs(i.Flex, {justify: "start",align: "center",gap: 4,children: [o.jsx(i.Typography.Text, {className: "setting-title",children: e}), o.jsx(w, {text: t})]}), o.jsx(v, {activeItem: n,leftItem: a,rightItem: l}), r && o.jsx(i.Typography.Text, {className: "setting-description",children: r})]}),v = ({activeItem: e,leftItem: t,rightItem: r}) => o.jsxs(i.Flex, {vertical: true,gap: 4,className: "plugin-setting-option-list",children: [o.jsxs("button", {type: "button",className: l.default("plugin-setting-item-option", e === t.option ?"plugin-setting-item-selected" : "plugin-setting-item-unselected"),onClick: () => {t.onClickOption()},children: [o.jsx("span", {className: "plugin-setting-item-radio","aria-hidden": "true",children: o.jsx("span", {className: "plugin-setting-item-radio-inner"})}), o.jsx(i.Typography.Text, {className: "setting-option-text",children: t.option})]}), o.jsxs("button", {type: "button",className: l.default("plugin-setting-item-option", e === r.option ?"plugin-setting-item-selected" : "plugin-setting-item-unselected"),onClick: () => {r.onClickOption()},children: [o.jsx("span", {className: "plugin-setting-item-radio","aria-hidden": "true",children: o.jsx("span", {className: "plugin-setting-item-radio-inner"})}), o.jsx(i.Typography.Text, {className: "setting-option-text",children: r.option})]})]}),w = ({text: e}) => {let t = p.useContainerStore(e => e.containerDom);return o.jsx(i.Tooltip, {title: e,zIndex: 1001,className: "setting-tooltip",getTooltipContainer: () => t,children: o.jsx(i.Image, {src: u.default,width: 12,height: 12,alt: "logo-image",preview: false})})}
+import { useEffect, useState } from "react"
+import { jsx, jsxs } from "react/jsx-runtime"
+import { Flex, Image, Tooltip, Typography } from "antd"
+import clsx from "clsx"
+import * as questionMarkSvg from "../../assets/inline/images/question_mark.svg.js"
+import { useContainerStore } from "../../store/container.ts"
+import useSettingStore from "../../store/setting.ts"
+import { trackEvent } from "../../utils/trace.ts"
+import BackHomeButton from "../ExternalJob/BackHomeButton.ts"
 
-export default b
+function assetUrl(mod) {
+  return mod?.default ?? mod
+}
+
+function SettingTooltip({ text }) {
+  const containerDom = useContainerStore((state) => state.containerDom)
+  return jsx(Tooltip, {
+    title: text,
+    zIndex: 1001,
+    className: "setting-tooltip",
+    getTooltipContainer: () => containerDom,
+    children: jsx(Image, {
+      src: assetUrl(questionMarkSvg),
+      width: 12,
+      height: 12,
+      alt: "logo-image",
+      preview: false,
+    }),
+  })
+}
+
+function SettingOptionList({ activeItem, leftItem, rightItem }) {
+  return jsxs(Flex, {
+    vertical: true,
+    gap: 4,
+    className: "plugin-setting-option-list",
+    children: [
+      jsxs("button", {
+        type: "button",
+        className: clsx(
+          "plugin-setting-item-option",
+          activeItem === leftItem.option
+            ? "plugin-setting-item-selected"
+            : "plugin-setting-item-unselected",
+        ),
+        onClick: () => leftItem.onClickOption(),
+        children: [
+          jsx("span", {
+            className: "plugin-setting-item-radio",
+            "aria-hidden": "true",
+            children: jsx("span", {
+              className: "plugin-setting-item-radio-inner",
+            }),
+          }),
+          jsx(Typography.Text, {
+            className: "setting-option-text",
+            children: leftItem.option,
+          }),
+        ],
+      }),
+      jsxs("button", {
+        type: "button",
+        className: clsx(
+          "plugin-setting-item-option",
+          activeItem === rightItem.option
+            ? "plugin-setting-item-selected"
+            : "plugin-setting-item-unselected",
+        ),
+        onClick: () => rightItem.onClickOption(),
+        children: [
+          jsx("span", {
+            className: "plugin-setting-item-radio",
+            "aria-hidden": "true",
+            children: jsx("span", {
+              className: "plugin-setting-item-radio-inner",
+            }),
+          }),
+          jsx(Typography.Text, {
+            className: "setting-option-text",
+            children: rightItem.option,
+          }),
+        ],
+      }),
+    ],
+  })
+}
+
+function SettingItem({
+  title,
+  tooltipText,
+  description,
+  activeOption,
+  optionSettingLeft,
+  optionSettingRight,
+}) {
+  return jsxs(Flex, {
+    vertical: true,
+    gap: 8,
+    className: "plugin-setting-item",
+    children: [
+      jsxs(Flex, {
+        justify: "start",
+        align: "center",
+        gap: 4,
+        children: [
+          jsx(Typography.Text, {
+            className: "setting-title",
+            children: title,
+          }),
+          jsx(SettingTooltip, { text: tooltipText }),
+        ],
+      }),
+      jsx(SettingOptionList, {
+        activeItem: activeOption,
+        leftItem: optionSettingLeft,
+        rightItem: optionSettingRight,
+      }),
+      description &&
+        jsx(Typography.Text, {
+          className: "setting-description",
+          children: description,
+        }),
+    ],
+  })
+}
+
+export default function PluginSetting({ closeSetting }) {
+  const automaticallyTurnPage = useSettingStore(
+    (state) => state.automaticallyTurnPage,
+  )
+  const setAutomaticallyTurnPage = useSettingStore(
+    (state) => state.setAutomaticallyTurnPage,
+  )
+  const defaultView = useSettingStore((state) => state.defaultView)
+  const setDefaultView = useSettingStore((state) => state.setDefaultView)
+
+  const [pageTurnDraft, setPageTurnDraft] = useState(automaticallyTurnPage)
+  const [defaultViewDraft, setDefaultViewDraft] = useState(defaultView)
+
+  useEffect(() => {
+    trackEvent("autofill_setting_exposure")
+    const onKeyDown = (event) => {
+      if (event.key === "Escape") closeSetting()
+    }
+    document.addEventListener("keydown", onKeyDown)
+    return () => document.removeEventListener("keydown", onKeyDown)
+  }, [])
+
+  useEffect(() => {
+    setPageTurnDraft(automaticallyTurnPage)
+  }, [automaticallyTurnPage])
+
+  useEffect(() => {
+    setDefaultViewDraft(defaultView)
+  }, [defaultView])
+
+  const handleSave = async () => {
+    const saves = []
+    if (pageTurnDraft !== automaticallyTurnPage) {
+      trackEvent("autofill_setting_pageturn_change", {
+        from_value: automaticallyTurnPage,
+        to_value: pageTurnDraft,
+      })
+      saves.push(Promise.resolve(setAutomaticallyTurnPage(pageTurnDraft)))
+    }
+    if (defaultViewDraft !== defaultView) {
+      trackEvent("autofill_setting_defaultview_change", {
+        from_value: defaultView,
+        to_value: defaultViewDraft,
+      })
+      saves.push(Promise.resolve(setDefaultView(defaultViewDraft)))
+    }
+    if (saves.length > 0) await Promise.all(saves)
+    closeSetting()
+  }
+
+  return jsxs(Flex, {
+    vertical: true,
+    className: "plugin-setting-container",
+    children: [
+      jsxs("div", {
+        className: "plugin-setting-header",
+        children: [
+          jsx(BackHomeButton, { backFunction: closeSetting }),
+          jsx(Typography.Text, {
+            className: "plugin-setting-header-title",
+            children: "Settings",
+          }),
+        ],
+      }),
+      jsxs(Flex, {
+        vertical: true,
+        className: "plugin-setting-body",
+        gap: 24,
+        children: [
+          jsxs(Flex, {
+            vertical: true,
+            gap: 8,
+            children: [
+              jsx(SettingItem, {
+                title: "Autofill After Page Turn",
+                tooltipText:
+                  "On multi-page ATSs like MyWorkday, choose whether to continue autofilling automatically after each page turn, or to do it manually.",
+                activeOption: pageTurnDraft,
+                optionSettingLeft: {
+                  option: "Automatically",
+                  onClickOption: () => setPageTurnDraft("Automatically"),
+                },
+                optionSettingRight: {
+                  option: "Manually",
+                  onClickOption: () => setPageTurnDraft("Manually"),
+                },
+              }),
+              jsx(Typography.Text, {
+                className: "plugin-setting-credits-tip",
+                children:
+                  "Only 1 credit is used per job application and turning pages does not use extra credits.",
+              }),
+            ],
+          }),
+          jsx("div", { className: "plugin-setting-question-divider" }),
+          jsx(SettingItem, {
+            title: "Default Plugin View",
+            tooltipText:
+              "Set the plugin to open expanded (full panel visible) or minimized (just a clickable icon) on supported ATS pages not opened from Jobright.",
+            activeOption: defaultViewDraft,
+            optionSettingLeft: {
+              option: "Expanded",
+              onClickOption: () => setDefaultViewDraft("Expanded"),
+            },
+            optionSettingRight: {
+              option: "Minimized",
+              onClickOption: () => setDefaultViewDraft("Minimized"),
+            },
+          }),
+        ],
+      }),
+      jsx("div", {
+        className: "plugin-setting-footer",
+        children: jsx("button", {
+          type: "button",
+          className: "plugin-setting-save-button",
+          onClick: handleSave,
+          children: jsx("span", {
+            className: "plugin-setting-save-button-text",
+            children: "Save",
+          }),
+        }),
+      }),
+    ],
+  })
+}

@@ -1,7 +1,19 @@
 // @ts-nocheck
 /**
- * Readable TypeScript converted from Parcel dump (helper-runtime/src/components/Resume/ResumeReview/download-menu.js).
+ * PDF / Word download menu items for resume review footer.
  */
-function o(e, t) {return [{key: "pdf",label: "Download by PDF",onClick: e}, {key: "word",label: "Download by Word(.docx)",onClick: t}]}
 
-export { o as buildResumeDownloadMenuItems }
+export function buildResumeDownloadMenuItems(downloadPdf, downloadWord) {
+  return [
+    {
+      key: "pdf",
+      label: "Download by PDF",
+      onClick: downloadPdf,
+    },
+    {
+      key: "word",
+      label: "Download by Word(.docx)",
+      onClick: downloadWord,
+    },
+  ]
+}

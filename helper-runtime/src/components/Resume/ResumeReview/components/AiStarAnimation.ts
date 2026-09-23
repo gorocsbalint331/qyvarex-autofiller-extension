@@ -1,13 +1,24 @@
 // @ts-nocheck
 /**
- * Readable TypeScript converted from Parcel dump (helper-runtime/src/components/Resume/ResumeReview/components/AiStarAnimation.js).
+ * Lottie AI-star animation used by resume loading states.
  */
-import * as o from "react/jsx-runtime"
-import * as i from "react-lottie"
-import * as l from "../../../../assets/lottie/aistar.json.js"
 
-const a = { default: i }
-const s = { default: l }
-let u=()=>o.jsx(a.default,{width:40,height:40,options:{animationData:s.default,loop:true,autoplay:true}});
+import { jsx } from "react/jsx-runtime"
+import Lottie from "react-lottie"
+import * as aiStarLottie from "../../../../assets/lottie/aistar.json.js"
 
-export default u
+function assetData(mod) {
+  return mod?.default ?? mod
+}
+
+export default function AiStarAnimation() {
+  return jsx(Lottie, {
+    width: 40,
+    height: 40,
+    options: {
+      animationData: assetData(aiStarLottie),
+      loop: true,
+      autoplay: true,
+    },
+  })
+}

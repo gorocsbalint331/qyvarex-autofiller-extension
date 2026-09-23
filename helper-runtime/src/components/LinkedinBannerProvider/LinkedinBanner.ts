@@ -1,19 +1,224 @@
 // @ts-nocheck
 /**
- * Readable TypeScript converted from Parcel dump (helper-runtime/src/components/LinkedinBannerProvider/LinkedinBanner.js).
+ * LinkedIn match-score banner card (portal body).
  */
-import * as o from "react/jsx-runtime"
-import * as i from "react"
-import * as a from "./BirdBanner.ts"
-import * as s from "./copy.ts"
-import * as u from "./JumpArrow.ts"
-import * as d from "./Ring.js"
-import * as p from "../../store/externalJob.ts"
-import * as m from "../../utils/trace.ts"
 
-const l = { default: a }
-const c = { default: u }
-const f = { default: d }
-function h({currentTabUrl: e,isJobDetailPage: t,darkMode: r,handleBannerClick: n,handleIframeBannerClick: a}) {let u = p.useExternalJobStore(e => e.matchedSkillCount),h = p.useExternalJobStore(e => e.totalSkillCount),b = p.useExternalJobStore(e => e.matchedScore),y = p.useExternalJobStore(e => e.missingJobSkills),v = d.getScoreLevel(b),w = t ? {} : {marginTop: "32px",marginBottom: "32px"};return i.useEffect(() => {m.trackEvent("autofill_linkedin_banner_exposed", {currentUrl: window.location.href})}, [e]), o.jsxs("div", {style: {width: "100%",height: "140px",cursor: "pointer",display: "flex",flexDirection: "column",justifyContent: "center",alignItems: "center",backgroundColor: r ? "rgba(29, 47, 35, 1)" : "#FFFFFF",borderRadius: "12px",...w,overflow: "hidden",border: "none",boxShadow: r ? "0px 0px 0px 1px rgba(255, 255, 255, 0.04)" :"0px 0px 0px 1px rgba(201, 223, 190, 0.5)",userSelect: "none"},onClick: () => {window.top !== window.self ? a() : n()},children: [o.jsxs("div", {style: {display: "flex",flexDirection: "row",justifyContent: "space-between",alignItems: "center",gap: "12px",padding: "16px",width: "100%",height: "104px",border: "none",boxShadow: r ? "inset 0px -1px 0px rgba(255, 255, 255, 0.04)" :"inset 0px -1px 0px rgba(201, 223, 190, 0.5)",background: r ? "linear-gradient(90deg, #2A4427 60%, #30592E 80%)" :"linear-gradient(90deg, #DDFFC3 60%, #FFFFFF 80%)"},children: [o.jsxs("div", {style: {display: "flex",flexDirection: "column",justifyContent: "center",alignItems: "start",gap: "4px"},children: [o.jsx("h1", {style: {fontFamily: "Inter",fontWeight: 700,fontStyle: "Bold",fontSize: "18px",lineHeight: "20px",letterSpacing: "0%",verticalAlign: "middle",color: r ? "#ffffff" : "#000000"},children: y ? s.MISSING_JOB_MESSAGE : s.getMatchMessage(v)}), !y && o.jsx(g, {matchedSkillCount: u,totalSkillCount: h,scoreLevel: v,darkMode: r})]}), o.jsx("div", {style: {paddingLeft: "12px"},children: o.jsx(f.default, {missing: y,score: b,max: 10,unit: "",darkMode: r})})]}), o.jsxs("div", {style: {display: "flex",flexDirection: "row",justifyContent: "space-between",alignItems: "center",padding: "0px 8px",width: "100%",height: 36,border: "none"},children: [o.jsx(l.default, {darkMode: r}), o.jsx(c.default, {darkMode: r})]})]})}function g({matchedSkillCount: e,totalSkillCount: t,scoreLevel: r,darkMode: n}) {if (0 === t) return o.jsx("h2", {style: {fontFamily: "Inter",fontWeight: 400,fontStyle: "Regular",fontSize: "14px",lineHeight: "18px",letterSpacing: "0%",verticalAlign: "middle",color: n ? "#ffffff" : "#000000"},children: "A quick update can make your resume relevant for this job."});switch (r) {case d.REPORT_SCORE_LEVEL.EXCELLENT:return o.jsxs("h2", {style: {fontFamily: "Inter",fontWeight: 400,fontStyle: "Regular",fontSize: "14px",lineHeight: "18px",letterSpacing: "0%",verticalAlign: "middle",color: n ? "#ffffff" : "#000000"},children: [o.jsxs("span", {style: {fontWeight: 700},children: [e, " out of ", t]}), " ", "keywords match! a quick update can make your resume stand out.."]});case d.REPORT_SCORE_LEVEL.FAIR:return o.jsxs("h2", {style: {fontFamily: "Inter",fontWeight: 400,fontStyle: "Regular",fontSize: "14px",lineHeight: "18px",letterSpacing: "0%",verticalAlign: "middle",color: n ? "#ffffff" : "#000000"},children: [o.jsx("span", {style: {fontWeight: 700},children: e}), " keywords are present, let's perfect your resume."]});case d.REPORT_SCORE_LEVEL.POOR:default: {let r = s.getPoorMatchDescription(e, t);return o.jsxs("h2", {style: {fontFamily: "Inter",fontWeight: 400,fontStyle: "Regular",fontSize: "14px",lineHeight: "18px",letterSpacing: "0%",verticalAlign: "middle",color: n ? "#ffffff" : "#000000"},children: [o.jsx("span", {style: {fontWeight: 700},children: r.emphasis}), " ", r.text]})}}}
+import { useEffect } from "react"
+import { jsx, jsxs } from "react/jsx-runtime"
+import { useExternalJobStore } from "../../store/externalJob.ts"
+import { trackEvent } from "../../utils/trace.ts"
+import BirdBanner from "./BirdBanner.ts"
+import {
+  MISSING_JOB_MESSAGE,
+  getMatchMessage,
+  getPoorMatchDescription,
+} from "./copy.ts"
+import JumpArrow from "./JumpArrow.ts"
+import Ring, { REPORT_SCORE_LEVEL, getScoreLevel } from "./Ring.ts"
 
-export default h
+function MatchDescription({
+  matchedSkillCount,
+  totalSkillCount,
+  scoreLevel,
+  darkMode,
+}) {
+  const textStyle = {
+    fontFamily: "Inter",
+    fontWeight: 400,
+    fontStyle: "Regular",
+    fontSize: "14px",
+    lineHeight: "18px",
+    letterSpacing: "0%",
+    verticalAlign: "middle",
+    color: darkMode ? "#ffffff" : "#000000",
+  }
+
+  if (totalSkillCount === 0) {
+    return jsx("h2", {
+      style: textStyle,
+      children:
+        "A quick update can make your resume relevant for this job.",
+    })
+  }
+
+  switch (scoreLevel) {
+    case REPORT_SCORE_LEVEL.EXCELLENT:
+      return jsxs("h2", {
+        style: textStyle,
+        children: [
+          jsxs("span", {
+            style: { fontWeight: 700 },
+            children: [matchedSkillCount, " out of ", totalSkillCount],
+          }),
+          " ",
+          "keywords match! a quick update can make your resume stand out..",
+        ],
+      })
+    case REPORT_SCORE_LEVEL.FAIR:
+      return jsxs("h2", {
+        style: textStyle,
+        children: [
+          jsx("span", {
+            style: { fontWeight: 700 },
+            children: matchedSkillCount,
+          }),
+          " keywords are present, let's perfect your resume.",
+        ],
+      })
+    case REPORT_SCORE_LEVEL.POOR:
+    default: {
+      const description = getPoorMatchDescription(
+        matchedSkillCount,
+        totalSkillCount,
+      )
+      return jsxs("h2", {
+        style: textStyle,
+        children: [
+          jsx("span", {
+            style: { fontWeight: 700 },
+            children: description.emphasis,
+          }),
+          " ",
+          description.text,
+        ],
+      })
+    }
+  }
+}
+
+export default function LinkedinBanner({
+  currentTabUrl,
+  isJobDetailPage,
+  darkMode,
+  handleBannerClick,
+  handleIframeBannerClick,
+}) {
+  const matchedSkillCount = useExternalJobStore(
+    (state) => state.matchedSkillCount,
+  )
+  const totalSkillCount = useExternalJobStore((state) => state.totalSkillCount)
+  const matchedScore = useExternalJobStore((state) => state.matchedScore)
+  const missingJobSkills = useExternalJobStore(
+    (state) => state.missingJobSkills,
+  )
+  const scoreLevel = getScoreLevel(matchedScore)
+  const listPageMargin = isJobDetailPage
+    ? {}
+    : { marginTop: "32px", marginBottom: "32px" }
+
+  useEffect(() => {
+    trackEvent("autofill_linkedin_banner_exposed", {
+      currentUrl: window.location.href,
+    })
+  }, [currentTabUrl])
+
+  return jsxs("div", {
+    style: {
+      width: "100%",
+      height: "140px",
+      cursor: "pointer",
+      display: "flex",
+      flexDirection: "column",
+      justifyContent: "center",
+      alignItems: "center",
+      backgroundColor: darkMode ? "rgba(29, 47, 35, 1)" : "#FFFFFF",
+      borderRadius: "12px",
+      ...listPageMargin,
+      overflow: "hidden",
+      border: "none",
+      boxShadow: darkMode
+        ? "0px 0px 0px 1px rgba(255, 255, 255, 0.04)"
+        : "0px 0px 0px 1px rgba(201, 223, 190, 0.5)",
+      userSelect: "none",
+    },
+    onClick: () => {
+      if (window.top !== window.self) {
+        handleIframeBannerClick()
+      } else {
+        handleBannerClick()
+      }
+    },
+    children: [
+      jsxs("div", {
+        style: {
+          display: "flex",
+          flexDirection: "row",
+          justifyContent: "space-between",
+          alignItems: "center",
+          gap: "12px",
+          padding: "16px",
+          width: "100%",
+          height: "104px",
+          border: "none",
+          boxShadow: darkMode
+            ? "inset 0px -1px 0px rgba(255, 255, 255, 0.04)"
+            : "inset 0px -1px 0px rgba(201, 223, 190, 0.5)",
+          background: darkMode
+            ? "linear-gradient(90deg, #2A4427 60%, #30592E 80%)"
+            : "linear-gradient(90deg, #DDFFC3 60%, #FFFFFF 80%)",
+        },
+        children: [
+          jsxs("div", {
+            style: {
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "center",
+              alignItems: "start",
+              gap: "4px",
+            },
+            children: [
+              jsx("h1", {
+                style: {
+                  fontFamily: "Inter",
+                  fontWeight: 700,
+                  fontStyle: "Bold",
+                  fontSize: "18px",
+                  lineHeight: "20px",
+                  letterSpacing: "0%",
+                  verticalAlign: "middle",
+                  color: darkMode ? "#ffffff" : "#000000",
+                },
+                children: missingJobSkills
+                  ? MISSING_JOB_MESSAGE
+                  : getMatchMessage(scoreLevel),
+              }),
+              !missingJobSkills &&
+                jsx(MatchDescription, {
+                  matchedSkillCount,
+                  totalSkillCount,
+                  scoreLevel,
+                  darkMode,
+                }),
+            ],
+          }),
+          jsx("div", {
+            style: { paddingLeft: "12px" },
+            children: jsx(Ring, {
+              missing: missingJobSkills,
+              score: matchedScore,
+              max: 10,
+              unit: "",
+              darkMode,
+            }),
+          }),
+        ],
+      }),
+      jsxs("div", {
+        style: {
+          display: "flex",
+          flexDirection: "row",
+          justifyContent: "space-between",
+          alignItems: "center",
+          padding: "0px 8px",
+          width: "100%",
+          height: 36,
+          border: "none",
+        },
+        children: [
+          jsx(BirdBanner, { darkMode }),
+          jsx(JumpArrow, { darkMode }),
+        ],
+      }),
+    ],
+  })
+}

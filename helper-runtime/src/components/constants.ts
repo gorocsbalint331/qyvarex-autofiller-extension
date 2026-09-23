@@ -1,7 +1,6 @@
 // @ts-nocheck
 /**
- * Readable TypeScript converted from Parcel dump (helper-runtime/src/components/constants.js).
+ * Shared class names for helper-runtime editor chrome.
  */
-let o="jr-edit-ai-host"
 
-export { o as JR_EDIT_AI_HOST_CLASS }
+export const JR_EDIT_AI_HOST_CLASS = "jr-edit-ai-host"

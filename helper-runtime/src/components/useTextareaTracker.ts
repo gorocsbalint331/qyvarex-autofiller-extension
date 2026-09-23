@@ -1,13 +1,186 @@
 // @ts-nocheck
 /**
- * Readable TypeScript converted from Parcel dump (helper-runtime/src/components/useTextareaTracker.js).
+ * Track AI-relevant textareas in the page (and shadow roots) for floating buttons.
  */
-import * as o from "react"
-import * as i from "../contents.ts"
-import * as a from "../utils/trace.ts"
-import * as l from "./constants.ts"
-import * as s from "./fieldFilter.ts"
 
-function u(){let[e,t]=o.useState(()=>new Map),r=o.useRef(new Set),n=o.useRef(new WeakSet),u=o.useRef(null),c=o.useRef(null),d=o.useCallback(()=>{let e=new Map;for(let t of r.current){if(!t.isConnected){r.current.delete(t),n.current.delete(t),u.current?.unobserve(t);continue}let o=t.getBoundingClientRect();o.width<=0||o.height<=0||e.set(t,{top:o.top,left:o.left,width:o.width,height:o.height})}t(t=>{if(t.size!==e.size)return e;for(let[r,n]of e){let o=t.get(r);if(!o||o.top!==n.top||o.left!==n.left||o.width!==n.width||o.height!==n.height)return e}return t})},[]),f=o.useCallback(()=>{null==c.current&&(c.current=requestAnimationFrame(()=>{c.current=null,d()}))},[d]),p=o.useCallback(e=>{if(r.current.has(e)||n.current.has(e))return;n.current.add(e);let t=s.readTextareaSignals(e),o=s.isAiRelevantTextarea(t);if(!o.relevant){a.trackEvent("autofill_ai_regenerate_entry_filtered",{label:t.label||null,autocomplete:t.autocomplete||null,name:t.name||null,reason:o.reason||null});return}r.current.add(e),u.current?.observe(e),d()},[d]);return o.useEffect(()=>{u.current=new ResizeObserver(f);let e=new WeakSet,t=e=>e.id===i.HOST_ID||e.classList.contains(l.JR_EDIT_AI_HOST_CLASS),o=e=>{let r=e.getRootNode();for(;r instanceof ShadowRoot;){if(t(r.host))return true;r=r.host.getRootNode()}return false},a=e=>{o(e)||e.disabled||e.readOnly||"true"===e.getAttribute("aria-hidden")||e.tabIndex<0||p(e)},s=t=>{e.has(t)||(e.add(t),h.observe(t,{childList:true,subtree:true}))},d=e=>{"TEXTAREA"===e.tagName&&a(e);let r=e.shadowRoot;r&&!t(e)&&(s(r),m(r))},m=e=>{e.nodeType===Node.ELEMENT_NODE&&d(e);let t=document.createTreeWalker(e,NodeFilter.SHOW_ELEMENT),r=t.nextNode();for(;r;)d(r),r=t.nextNode()},h=new MutationObserver(e=>{for(let e of r.current)e.isConnected||(r.current.delete(e),n.current.delete(e),u.current?.unobserve(e));for(let t of e)for(let e of t.addedNodes)e.nodeType===Node.ELEMENT_NODE&&m(e);f()});return h.observe(document.body,{childList:true,subtree:true}),m(document),window.addEventListener("resize",f,{passive:true}),()=>{h.disconnect(),u.current?.disconnect(),window.removeEventListener("resize",f),null!=c.current&&(cancelAnimationFrame(c.current),c.current=null)}},[]),e}
+import { useCallback, useEffect, useRef, useState } from "react"
+import { HOST_ID } from "../contents.ts"
+import { trackEvent } from "../utils/trace.ts"
+import { JR_EDIT_AI_HOST_CLASS } from "./constants.ts"
+import { isAiRelevantTextarea, readTextareaSignals } from "./fieldFilter.ts"
 
-export { u as useTextareaTracker }
+export function useTextareaTracker() {
+  const [rects, setRects] = useState(() => new Map())
+  const trackedElements = useRef(new Set())
+  const consideredElements = useRef(new WeakSet())
+  const resizeObserverRef = useRef(null)
+  const rafRef = useRef(null)
+
+  const refreshRects = useCallback(() => {
+    const next = new Map()
+    for (const element of trackedElements.current) {
+      if (!element.isConnected) {
+        trackedElements.current.delete(element)
+        consideredElements.current.delete(element)
+        resizeObserverRef.current?.unobserve(element)
+        continue
+      }
+      const rect = element.getBoundingClientRect()
+      if (rect.width <= 0 || rect.height <= 0) continue
+      next.set(element, {
+        top: rect.top,
+        left: rect.left,
+        width: rect.width,
+        height: rect.height,
+      })
+    }
+
+    setRects((prev) => {
+      if (prev.size !== next.size) return next
+      for (const [element, rect] of next) {
+        const previous = prev.get(element)
+        if (
+          !previous ||
+          previous.top !== rect.top ||
+          previous.left !== rect.left ||
+          previous.width !== rect.width ||
+          previous.height !== rect.height
+        ) {
+          return next
+        }
+      }
+      return prev
+    })
+  }, [])
+
+  const scheduleRefresh = useCallback(() => {
+    if (rafRef.current == null) {
+      rafRef.current = requestAnimationFrame(() => {
+        rafRef.current = null
+        refreshRects()
+      })
+    }
+  }, [refreshRects])
+
+  const tryTrackTextarea = useCallback(
+    (element) => {
+      if (
+        trackedElements.current.has(element) ||
+        consideredElements.current.has(element)
+      ) {
+        return
+      }
+
+      consideredElements.current.add(element)
+      const signals = readTextareaSignals(element)
+      const relevance = isAiRelevantTextarea(signals)
+      if (!relevance.relevant) {
+        trackEvent("autofill_ai_regenerate_entry_filtered", {
+          label: signals.label || null,
+          autocomplete: signals.autocomplete || null,
+          name: signals.name || null,
+          reason: relevance.reason || null,
+        })
+        return
+      }
+
+      trackedElements.current.add(element)
+      resizeObserverRef.current?.observe(element)
+      refreshRects()
+    },
+    [refreshRects],
+  )
+
+  useEffect(() => {
+    resizeObserverRef.current = new ResizeObserver(scheduleRefresh)
+
+    const observedRoots = new WeakSet()
+
+    function isHelperHost(element) {
+      return (
+        element.id === HOST_ID ||
+        element.classList.contains(JR_EDIT_AI_HOST_CLASS)
+      )
+    }
+
+    function isInsideHelperShadow(node) {
+      let root = node.getRootNode()
+      while (root instanceof ShadowRoot) {
+        if (isHelperHost(root.host)) return true
+        root = root.host.getRootNode()
+      }
+      return false
+    }
+
+    function considerTextarea(element) {
+      if (isInsideHelperShadow(element)) return
+      if (element.disabled || element.readOnly) return
+      if (element.getAttribute("aria-hidden") === "true") return
+      if (element.tabIndex < 0) return
+      tryTrackTextarea(element)
+    }
+
+    function observeRoot(root) {
+      if (observedRoots.has(root)) return
+      observedRoots.add(root)
+      mutationObserver.observe(root, {
+        childList: true,
+        subtree: true,
+      })
+    }
+
+    function visitElement(element) {
+      if (element.tagName === "TEXTAREA") considerTextarea(element)
+      const shadowRoot = element.shadowRoot
+      if (shadowRoot && !isHelperHost(element)) {
+        observeRoot(shadowRoot)
+        walkTree(shadowRoot)
+      }
+    }
+
+    function walkTree(root) {
+      if (root.nodeType === Node.ELEMENT_NODE) visitElement(root)
+      const walker = document.createTreeWalker(root, NodeFilter.SHOW_ELEMENT)
+      let node = walker.nextNode()
+      while (node) {
+        visitElement(node)
+        node = walker.nextNode()
+      }
+    }
+
+    const mutationObserver = new MutationObserver((mutations) => {
+      for (const element of trackedElements.current) {
+        if (!element.isConnected) {
+          trackedElements.current.delete(element)
+          consideredElements.current.delete(element)
+          resizeObserverRef.current?.unobserve(element)
+        }
+      }
+      for (const mutation of mutations) {
+        for (const node of mutation.addedNodes) {
+          if (node.nodeType === Node.ELEMENT_NODE) walkTree(node)
+        }
+      }
+      scheduleRefresh()
+    })
+
+    mutationObserver.observe(document.body, {
+      childList: true,
+      subtree: true,
+    })
+    walkTree(document)
+    window.addEventListener("resize", scheduleRefresh, { passive: true })
+
+    return () => {
+      mutationObserver.disconnect()
+      resizeObserverRef.current?.disconnect()
+      window.removeEventListener("resize", scheduleRefresh)
+      if (rafRef.current != null) {
+        cancelAnimationFrame(rafRef.current)
+        rafRef.current = null
+      }
+    }
+  }, [])
+
+  return rects
+}

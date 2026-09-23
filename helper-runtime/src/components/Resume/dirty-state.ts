@@ -1,7 +1,55 @@
 // @ts-nocheck
 /**
- * Readable TypeScript converted from Parcel dump (helper-runtime/src/components/Resume/dirty-state.js).
+ * Resume picker dirty-state / tracking helpers.
  */
-let o="tailor-resume-";function i({disableUploadResume:e,selectResume:t}){return e?"none":t?.startsWith(o)?"tailor":"base"}function a({disableUploadResume:e,selectResume:t,useOriginalResume:r}){return e||t?.startsWith(o)?"none":"true"===r?"original":"jobright"}let l=({initial:e,current:t})=>{let r=[];return e.disableUploadResume!==t.disableUploadResume&&r.push("disableUploadResume"),e.selectResume!==t.selectResume&&r.push("selectResume"),e.useOriginalResume!==t.useOriginalResume&&r.push("useOriginalResume"),{hasChanges:r.length>0,changedFields:r}},s=({hasChanges:e})=>!e,u=({disableUploadResume:e,selectResume:t,useOriginalResume:r})=>{let n={disableUploadResume:e,selectResume:t,useOriginalResume:r};return{selected_resume_type:i(n),selected_template_type:a(n)}}
 
-export { l as getResumePickerChangeSummary, s as isResumePickerContinueDisabled, u as getResumePickerTrackingSnapshot }
+const TAILOR_RESUME_PREFIX = "tailor-resume-"
+
+function getSelectedResumeType({ disableUploadResume, selectResume }) {
+  if (disableUploadResume) return "none"
+  return selectResume?.startsWith(TAILOR_RESUME_PREFIX) ? "tailor" : "base"
+}
+
+function getSelectedTemplateType({
+  disableUploadResume,
+  selectResume,
+  useOriginalResume,
+}) {
+  if (disableUploadResume || selectResume?.startsWith(TAILOR_RESUME_PREFIX)) {
+    return "none"
+  }
+  return useOriginalResume === "true" ? "original" : "jobright"
+}
+
+export function getResumePickerChangeSummary({ initial, current }) {
+  const changedFields = []
+  if (initial.disableUploadResume !== current.disableUploadResume) {
+    changedFields.push("disableUploadResume")
+  }
+  if (initial.selectResume !== current.selectResume) {
+    changedFields.push("selectResume")
+  }
+  if (initial.useOriginalResume !== current.useOriginalResume) {
+    changedFields.push("useOriginalResume")
+  }
+  return {
+    hasChanges: changedFields.length > 0,
+    changedFields,
+  }
+}
+
+export function isResumePickerContinueDisabled({ hasChanges }) {
+  return !hasChanges
+}
+
+export function getResumePickerTrackingSnapshot({
+  disableUploadResume,
+  selectResume,
+  useOriginalResume,
+}) {
+  const snapshot = { disableUploadResume, selectResume, useOriginalResume }
+  return {
+    selected_resume_type: getSelectedResumeType(snapshot),
+    selected_template_type: getSelectedTemplateType(snapshot),
+  }
+}

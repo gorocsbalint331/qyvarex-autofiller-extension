@@ -1,7 +1,21 @@
 // @ts-nocheck
 /**
- * Readable TypeScript converted from Parcel dump (helper-runtime/src/components/match.js).
+ * Find a company match by LinkedIn company id, then by company name.
  */
-function o(e,t,r){if(r){let t=e.find(e=>e?.linkedin_company_id!=null&&String(e.linkedin_company_id)===String(r));if(t)return t}if(t)return e.find(e=>e?.companyName?.toLowerCase()===t.toLowerCase())}
 
-export { o as findCompanyMatch }
+export function findCompanyMatch(companies, companyName, linkedinCompanyId) {
+  if (linkedinCompanyId) {
+    const byLinkedinId = companies.find(
+      (company) =>
+        company?.linkedin_company_id != null &&
+        String(company.linkedin_company_id) === String(linkedinCompanyId),
+    )
+    if (byLinkedinId) return byLinkedinId
+  }
+  if (companyName) {
+    return companies.find(
+      (company) =>
+        company?.companyName?.toLowerCase() === companyName.toLowerCase(),
+    )
+  }
+}

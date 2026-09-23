@@ -1,19 +1,138 @@
 // @ts-nocheck
 /**
- * Readable TypeScript converted from Parcel dump (helper-runtime/src/components/useGenerateField.js).
+ * Generate / regenerate answers for AI-relevant textareas (and cover letters).
  */
-import * as o from "react"
-import * as i from "@plasmohq/messaging"
-import * as a from "../contents/shared/constants.js"
-import * as l from "../contents/crawler/utils/input.js"
-import * as s from "../contents/methods/cover-letter.js"
-import * as u from "../store/cover-letter-state.ts"
-import * as c from "../store/resume.ts"
-import * as d from "../store/url.ts"
-import * as f from "../utils/job-id.ts"
-import * as p from "./fieldFilter.ts"
-import * as m from "./labelExtraction.ts"
 
-function h(){let[e,t]=o.useState(()=>new Map),r=o.useRef(new Map),n=(e,r)=>{t(t=>{let n=new Map(t);return n.set(e,r),n})},h=o.useRef(e);h.current=e;let g=o.useCallback(async(e,t=[])=>{let o=h.current.get(e);if("loading"===o)return;let g=m.extractVisibleLabel(e),b=s.getCurrentAutofillJobId(),y=!!b&&p.isCoverLetterTextarea({label:g,name:e.name||"",id:e.id||""}),v=g||e.name||"";if(!y&&!v)return;let w=m.extractDescription(e),S=w?[`Question context: ${w}`,...t]:t;n(e,"loading");try{if(y){let t=c.useResumeStore.getState(),r=u.resolveEditWithAiCoverLetterSeedId(t.editWithAiCoverLetterSeed,b),n=t.lastUsedResume,o={};n&&(n.startsWith(a.TAILOR_RESUME_ID_PREFIX)?o.tailorId=n.slice(a.TAILOR_RESUME_ID_PREFIX.length):o.resumeId=n);let d=S.join("\n").trim()||s.DEFAULT_AUTOFILL_COVER_LETTER_PROMPT,f=await i.sendToBackground({name:"generateAutofillCoverLetter",body:{jobId:b,userPrompt:d,...o,...r?{coverLetterId:r}:{},...e.value?{currentCoverLetter:e.value}:{}}});if(f?.error?.HTTP_STATUS)throw Error(String(f.error.HTTP_STATUS));let p=f?.data,m=s.formatCoverLetterMarkdownAsText(p?.markdown);m&&await l.fillDefaultInputField(e,m);let h=u.buildEditWithAiCoverLetterSeed(p);h&&c.useResumeStore.getState().setEditWithAiCoverLetterSeed(h)}else{let t=f.extractJobIdFromUrl(d.useUrlStore.getState().currentTabUrl||window.location.href),n=await i.sendToBackground({name:"regenerateAnswer",body:{jobId:t??null,question:v,promptList:S,uniqueId:r.current.get(e)??null,fieldInput:e.value||null}});if(n?.data?.HTTP_STATUS)throw Error(n.data.HTTP_STATUS);let o=n?.data?.answer,a=n?.data?.uniqueId;o&&await l.fillDefaultInputField(e,o),a&&r.current.set(e,a)}n(e,"idle")}catch(t){console.warn("[TextareaGenerateButton] generate error",t),n(e,"error"),setTimeout(()=>n(e,"idle"),2e3)}},[]);return{statusMap:e,generate:g}}
+import { useCallback, useRef, useState } from "react"
+import { sendToBackground } from "@plasmohq/messaging"
+import { TAILOR_RESUME_ID_PREFIX } from "../contents/shared/constants.js"
+import { fillDefaultInputField } from "../contents/crawler/utils/input.js"
+import {
+  DEFAULT_AUTOFILL_COVER_LETTER_PROMPT,
+  formatCoverLetterMarkdownAsText,
+  getCurrentAutofillJobId,
+} from "../contents/methods/cover-letter.js"
+import {
+  buildEditWithAiCoverLetterSeed,
+  resolveEditWithAiCoverLetterSeedId,
+} from "../store/cover-letter-state.ts"
+import { useResumeStore } from "../store/resume.ts"
+import { useUrlStore } from "../store/url.ts"
+import { extractJobIdFromUrl } from "../utils/job-id.ts"
+import { isCoverLetterTextarea } from "./fieldFilter.ts"
+import { extractDescription, extractVisibleLabel } from "./labelExtraction.ts"
 
-export { h as useGenerateField }
+export function useGenerateField() {
+  const [statusMap, setStatusMap] = useState(() => new Map())
+  const uniqueIdByElement = useRef(new Map())
+
+  function setStatus(element, status) {
+    setStatusMap((prev) => {
+      const next = new Map(prev)
+      next.set(element, status)
+      return next
+    })
+  }
+
+  const statusMapRef = useRef(statusMap)
+  statusMapRef.current = statusMap
+
+  const generate = useCallback(async (element, promptList = []) => {
+    const currentStatus = statusMapRef.current.get(element)
+    if (currentStatus === "loading") return
+
+    const label = extractVisibleLabel(element)
+    const autofillJobId = getCurrentAutofillJobId()
+    const isCoverLetter =
+      !!autofillJobId &&
+      isCoverLetterTextarea({
+        label,
+        name: element.name || "",
+        id: element.id || "",
+      })
+    const question = label || element.name || ""
+    if (!isCoverLetter && !question) return
+
+    const description = extractDescription(element)
+    const prompts = description
+      ? [`Question context: ${description}`, ...promptList]
+      : promptList
+
+    setStatus(element, "loading")
+    try {
+      if (isCoverLetter) {
+        const resumeState = useResumeStore.getState()
+        const coverLetterSeedId = resolveEditWithAiCoverLetterSeedId(
+          resumeState.editWithAiCoverLetterSeed,
+          autofillJobId,
+        )
+        const lastUsedResume = resumeState.lastUsedResume
+        const resumeBody = {}
+        if (lastUsedResume) {
+          if (lastUsedResume.startsWith(TAILOR_RESUME_ID_PREFIX)) {
+            resumeBody.tailorId = lastUsedResume.slice(
+              TAILOR_RESUME_ID_PREFIX.length,
+            )
+          } else {
+            resumeBody.resumeId = lastUsedResume
+          }
+        }
+
+        const userPrompt =
+          prompts.join("\n").trim() || DEFAULT_AUTOFILL_COVER_LETTER_PROMPT
+        const response = await sendToBackground({
+          name: "generateAutofillCoverLetter",
+          body: {
+            jobId: autofillJobId,
+            userPrompt,
+            ...resumeBody,
+            ...(coverLetterSeedId ? { coverLetterId: coverLetterSeedId } : {}),
+            ...(element.value ? { currentCoverLetter: element.value } : {}),
+          },
+        })
+
+        if (response?.error?.HTTP_STATUS) {
+          throw Error(String(response.error.HTTP_STATUS))
+        }
+
+        const data = response?.data
+        const text = formatCoverLetterMarkdownAsText(data?.markdown)
+        if (text) await fillDefaultInputField(element, text)
+
+        const seed = buildEditWithAiCoverLetterSeed(data)
+        if (seed) useResumeStore.getState().setEditWithAiCoverLetterSeed(seed)
+      } else {
+        const jobId = extractJobIdFromUrl(
+          useUrlStore.getState().currentTabUrl || window.location.href,
+        )
+        const response = await sendToBackground({
+          name: "regenerateAnswer",
+          body: {
+            jobId: jobId ?? null,
+            question,
+            promptList: prompts,
+            uniqueId: uniqueIdByElement.current.get(element) ?? null,
+            fieldInput: element.value || null,
+          },
+        })
+
+        if (response?.data?.HTTP_STATUS) {
+          throw Error(response.data.HTTP_STATUS)
+        }
+
+        const answer = response?.data?.answer
+        const uniqueId = response?.data?.uniqueId
+        if (answer) await fillDefaultInputField(element, answer)
+        if (uniqueId) uniqueIdByElement.current.set(element, uniqueId)
+      }
+
+      setStatus(element, "idle")
+    } catch (error) {
+      console.warn("[TextareaGenerateButton] generate error", error)
+      setStatus(element, "error")
+      setTimeout(() => setStatus(element, "idle"), 2000)
+    }
+  }, [])
+
+  return { statusMap, generate }
+}

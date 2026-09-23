@@ -1,14 +1,49 @@
 // @ts-nocheck
 /**
- * Readable TypeScript converted from Parcel dump (helper-runtime/src/components/WorkdayToast.js).
+ * Workday stay-on-page toast shown in the helper header.
  */
-import * as o from "react/jsx-runtime"
-import * as i from "antd"
-import * as a from "../assets/inline/images/workday_alert.svg.js"
-import * as s from "../assets/inline/images/workday_close.svg.js"
 
-const l = { default: a }
-const u = { default: s }
-let c = ({onClose: e}) => o.jsxs(i.Flex, {gap: 8,align: "flex-start",className: "workday-toast",children: [o.jsx("div", {className: "workday-toast-badge",children: o.jsx("img", {src: l.default,alt: "",width: 16,height: 16})}), o.jsx(i.Typography.Text, {className: "workday-toast-text",children: "Please stay on the Workday page while Autofill fills out the form."}), o.jsx("span", {role: "button",tabIndex: 0,className: "workday-toast-close",onClick: e,children: o.jsx("img", {src: u.default,alt: "",width: 16,height: 16})})]});
+import { jsx, jsxs } from "react/jsx-runtime"
+import { Flex, Typography } from "antd"
+import * as workdayAlertSvg from "../assets/inline/images/workday_alert.svg.js"
+import * as workdayCloseSvg from "../assets/inline/images/workday_close.svg.js"
 
-export default c
+function assetUrl(mod) {
+  return mod?.default ?? mod
+}
+
+export default function WorkdayToast({ onClose }) {
+  return jsxs(Flex, {
+    gap: 8,
+    align: "flex-start",
+    className: "workday-toast",
+    children: [
+      jsx("div", {
+        className: "workday-toast-badge",
+        children: jsx("img", {
+          src: assetUrl(workdayAlertSvg),
+          alt: "",
+          width: 16,
+          height: 16,
+        }),
+      }),
+      jsx(Typography.Text, {
+        className: "workday-toast-text",
+        children:
+          "Please stay on the Workday page while Autofill fills out the form.",
+      }),
+      jsx("span", {
+        role: "button",
+        tabIndex: 0,
+        className: "workday-toast-close",
+        onClick: onClose,
+        children: jsx("img", {
+          src: assetUrl(workdayCloseSvg),
+          alt: "",
+          width: 16,
+          height: 16,
+        }),
+      }),
+    ],
+  })
+}

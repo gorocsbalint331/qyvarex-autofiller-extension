@@ -1,49 +1,920 @@
 // @ts-nocheck
 /**
- * Readable TypeScript converted from Parcel dump (helper-runtime/src/components/Editor.js).
+ * Autofill information editor modal: sectioned profile form + save/reload.
  */
-import * as o from "react/jsx-runtime"
-import * as i from "@ant-design/icons"
-import * as a from "antd"
-import * as l from "../assets/inline/images/close.svg.js"
-import * as u from "react"
-import * as c from "@plasmohq/messaging"
-import * as d from "../api/autofill-info.ts"
-import * as f from "../api/autofill-signup-information.ts"
-import * as p from "./Popups/PageConfirmPopup.js"
-import * as h from "../constants.ts"
-import * as g from "../contents.ts"
-import * as b from "../contents/pre-autofill-flow/account-flow.js"
-import * as y from "../contents/sites/autofill-answer-pair-tracking.ts"
-import * as v from "../store/autofillInfo.ts"
-import * as w from "../store/profile.ts"
-import * as S from "../store/resume.ts"
-import * as E from "../store/url.ts"
-import * as x from "../store/workday-signup-info.ts"
-import * as C from "../ui/Image.ts"
-import * as k from "../utils/trace.ts"
-import * as T from "../utils/workday-signup-password.ts"
-import * as F from "./constants.ts"
-import * as I from "./dirty-state.ts"
-import * as j from "./error-navigation.js"
-import * as D from "./hooks/useAddressLocation.ts"
-import * as P from "./hooks/useSignupPassword.ts"
-import * as _ from "./mappers/save-payload.ts"
-import * as L from "./mappers/tracking-snapshot.ts"
-import * as R from "./model.ts"
-import * as O from "./sections/EducationForm.ts"
-import * as M from "./sections/EqualEmploymentForm.ts"
-import * as N from "./sections/PersonalForm.ts"
-import * as $ from "./sections/PersonalForm/phone-number.ts"
-import * as B from "./sections/PreferenceForm.ts"
-import * as q from "./sections/SignupInformationForm.ts"
-import * as U from "./sections/SkillForm.ts"
-import * as H from "./sections/WorkExperienceForm.ts"
-import * as Y from "./validation.js"
 
-const s = { default: l }
-const m = { default: p }
-const A = { default: C }
-function z(){let e=S.useResumeStore(e=>e.openAutofillInfo),t=S.useResumeStore(e=>e.autofillInfoInitialSection),r=S.useResumeStore(e=>e.setOpenAutofillInfo),n=v.useAutofillInfoStore(e=>e.autofillInfo),l=v.useAutofillInfoStore(e=>e.revision),p=u.useRef(null),C=u.useRef(false),z=u.useRef(0),[V,W]=u.useState(false),[G,K]=u.useState(true),[X,J]=u.useState(false),[Q,Z]=u.useState(false),ee=v.useAutofillInfoStore(e=>e.fetchAutofillInfo),et=v.useAutofillInfoStore(e=>e.saveSnapshotToStorage),er=S.useResumeStore(e=>e.autofillChangedFields),en=S.useResumeStore(e=>e.clearAutofillChangedField),eo=S.useResumeStore(e=>e.setAutofillChangedFields),[ei,ea]=u.useState("personal"),[el,es]=u.useState(new Set),[eu,ec]=u.useState(null),[ed,ef]=u.useState(()=>R.buildAutofillInfoData()),[ep,em]=u.useState(null),[eh,eg]=u.useState(""),[eb,ey]=u.useState(false),ev=v.useAutofillInfoStore(e=>e.autoUpdate),[ew,eS]=u.useState(true),[eE,ex]=u.useState(false),[eC,eA]=u.useState(false),[ek,eT]=u.useState(null),eF=u.useRef(null);u.useEffect(()=>{eu&&(j.scrollValidationFieldIntoView(eF.current,eu),ec(null))},[eu]);let eI=D.useAddressLocation({personal:ed.personal,setAutofillInfo:ef}),ej=P.useSignupPassword({open:e,activeSection:ei}),eD=u.useMemo(()=>I.getAutofillInfoChangeSummary({current:ed,initial:ek,signupPassword:ej.signupPassword,initialSignupPassword:ej.initialSignupPassword,isSignupPasswordLoaded:ej.isSignupPasswordLoaded,isSignupPasswordTouched:ej.isSignupPasswordTouched}),[ed,ek,ej.initialSignupPassword,ej.isSignupPasswordLoaded,ej.isSignupPasswordTouched,ej.signupPassword]);u.useEffect(()=>{if(z.current+=1,!e){p.current=null,eT(null),K(true),J(false),Z(false);return}let r=false;return K(true),ee(true).finally(()=>{r||K(false)}),ea(F.isSectionKey(t)?t:"personal"),k.trackEvent("autofill_info_modal_exposure",{}),()=>{r=true}},[t,e]),u.useEffect(()=>{e&&!eE&&eS(ev)},[e,ev,eE]),u.useEffect(()=>{if(!e||G||!n||p.current)return;p.current={data:structuredClone(n),revision:l,usesRevision:d.isAutofillInfoRevision(l)};let t=R.buildAutofillInfoData(n);ef(t),eg(""),eT(t)},[e,n,l,G]);let eP=async()=>{let e=z.current;Z(false),K(true);let t=await ee(true);e===z.current&&(t?(p.current=null,J(false),es(new Set)):a.message.error("Couldn't load the latest information. Your edits are still here."),K(false))},e_=u.useMemo(()=>({hasSectionDot:e=>er.some(t=>t.startsWith(e)),hasItemDot:e=>er.includes(e),hasFieldDot:(e,t)=>er.includes(`${e}.${t}`),clearItemDot:en,clearPrefixDots:e=>{er.filter(t=>t.startsWith(`${e}.`)).forEach(e=>en(e))},forSection:e=>({hasDot:t=>er.includes(`${e}.${t}`),clearDot:t=>en(`${e}.${t}`)})}),[er,en]),eL=e=>{let t=_.isAutofillInfoSnapshot(e)?e:undefined;z.current+=1,r(false),eo([]),et(t)},eR=()=>{if(!C.current){if(!eD.hasChanges){eL();return}ey(true)}},eO=()=>{ey(false),eL()},eM=async()=>{ey(false),await eQ()},eN=(e,t)=>{ef(r=>({...r,personal:{...r.personal,[e]:t}}))},e$=(e,t,r)=>{ef(n=>({...n,education:n.education.map(n=>n.id===e?{...n,[t]:r}:n)}))},eB=(e,t,r)=>{ef(n=>({...n,workExperience:n.workExperience.map(n=>n.id===e?{...n,[t]:r}:n)}))},eq=(e,t)=>{ef(r=>({...r,equalEmployment:{...r.equalEmployment,[e]:t}}))},eU=(e,t)=>{ef(r=>({...r,preference:{...r.preference,[e]:t}}))},eH=e=>{ef(t=>({...t,signupInformation:{...t.signupInformation,registrationEmail:e}}))},eY=(e,t)=>{ef(r=>({...r,workExperience:r.workExperience.map(r=>r.id===e?{...r,descriptions:t}:r)}))},ez=e=>{ef(t=>({...t,education:t.education.filter(t=>t.id!==e)}))},eV=e=>{ef(t=>({...t,workExperience:t.workExperience.filter(t=>t.id!==e)}))},eW=e=>el.has(e),eG=e=>{el.has(e)&&es(t=>{let r=new Set(t);return r.delete(e),r})},eK=async e=>{let t;let r=ew;ex(true),eS(e);try{let r=await c.sendToBackground({name:"saveAutofillInfo",body:{autoUpdate:e}});if(r?.success===true&&r?.result===true){v.useAutofillInfoStore.setState({autoUpdate:e}),a.message.success(e?"Autofill will update automatically":"Autofill will use saved information only"),k.trackEvent("autofill_info_auto_update_setting_result",{setting_value:e?"on":"off",result:"success"});return}t="response_not_success"}catch{t="request_failed"}finally{ex(false)}eS(r),a.message.error("Couldn't update this setting. Try again."),k.trackEvent("autofill_info_auto_update_setting_result",{setting_value:e?"on":"off",result:"fail",fail_reason:t})},eX=e=>{if(!e){eK(false);return}eA(true)},eJ=e=>{k.trackEvent("autofill_info_auto_update_confirmation_click",{user_id:w.useProfileStore.getState().userStage?.userId,action:e,current_state:"off"}),eA(false),"turn_on"===e&&eK(true)},eQ=async()=>{if(eD.hasChanges&&p.current&&!C.current&&!G&&!X){if(eD.hasRegularAutofillChanges&&p.current.usesRevision&&!d.isAutofillInfoRevision(p.current?.revision)){a.message.error("Please reload the latest information before saving.");return}C.current=true,W(true);try{k.trackEvent("autofill_info_modal_update_click",{activeSection:ei}),"signupInformation"===ei&&k.trackEvent("autofill_signup_information_update",{uid:w.useProfileStore.getState().userStage?.userId});let e=Y.collectValidationErrors(ed);if(e.size>0){es(e);let t=Y.getFirstErrorField(e);t&&ec(t);let r=Y.getFirstErrorSection(e);r&&ea(r);return}es(new Set);let t=eD.signupPasswordAction,r="save"===t,n=T.validateWorkdayPassword(ej.signupPassword);if(r&&!n.isValid){ea("signupInformation"),ej.setShowSignupPasswordErrors(true);return}let o=_.buildAutofillInfoSaveBody(ed,p.current?.data??{},p.current?.revision??undefined),i=eD.hasRegularAutofillChanges,l=f.buildSignupRegistrationEmailUpdateBody(ed.signupInformation.registrationEmail),s=eD.hasRegistrationEmailChanges,u=ek?.preference.additionalApplicationInfo??"";if(u!==ed.preference.additionalApplicationInfo&&k.trackEvent("autofill_custom_question_updated",{}),i){let e=L.buildAutofillInfoTrackingSnapshot(ed),t=ek?L.buildAutofillInfoTrackingSnapshot(ek):e;y.sendAutofillAnswerPairEvent({formUrl:E.useUrlStore.getState().currentTabUrl,autofillSnapshot:t.normal,submitSnapshot:e.normal,additionalAutofillData:{education:t.education,employment:t.employment},additionalSubmitData:{education:e.education,employment:e.employment},source:"apply"})}try{let e;if(i?e=await c.sendToBackground({name:"saveAutofillInfo",body:o}):s&&(e=await c.sendToBackground({name:"updateAutofillSection",body:l})),(i||s)&&!d.isAutofillInfoSaveSuccess(e)){console.warn("[AutofillInfo] Editor save failed",{reason:d.isAutofillInfoConflict(e)?"revision_conflict":"save_failed",expectedRevision:o.expectedRevision}),d.isAutofillInfoConflict(e)?(J(true),await ee(true)):a.message.error("Failed to update autofill information. Please try again.");return}}catch{a.message.error("Failed to update autofill information. Please try again.");return}(i||s)&&(await ee(true),eT(ed),p.current={data:o.structuredData,revision:null,usesRevision:p.current.usesRevision});try{let e=s;r?(await x.saveWorkdaySignupInformation({password:ej.signupPassword}),e=true):"clear"===t&&await x.clearWorkdaySignupInformation(),e&&document.dispatchEvent(new CustomEvent(b.PRE_AUTOFILL_ACCOUNT_CREDENTIALS_CHANGED_EVENT))}catch{a.message.error("Autofill information saved, but password was not saved.");return}a.message.success("Autofill information updated."),eL(i?o.structuredData:undefined)}finally{C.current=false,W(false)}}},eZ=()=>{ef(e=>({...e,education:[...e.education,R.createEducationItem()]}))},e0=()=>{ef(e=>({...e,workExperience:[...e.workExperience,R.createWorkItem()]}))},e2=e=>{ef(t=>({...t,skill:"function"==typeof e?e(t.skill):e}))},e1=e=>{ef(t=>({...t,pronouns:e}))},e3=document.getElementById(g.HOST_ID)?.shadowRoot,e4=e3,e5=$.resolvePhoneDropdownParent(e3),e6=()=>{switch(ei){case"personal":return o.jsx(N.PersonalForm,{personal:ed.personal,regionOptions:eI.regionOptions,cityOptions:eI.cityOptions,popupContainer:e5,dotChecker:e_,hasError:eW,clearError:eG,updatePersonalField:eN,handleCountryChange:eI.handleCountryChange,handleCountryBlur:eI.handleCountryBlur,handleRegionChange:eI.handleRegionChange,handleRegionBlur:eI.handleRegionBlur});case"education":return o.jsx(O.EducationForm,{education:ed.education,confirmingDeleteId:ep,setConfirmingDeleteId:em,dotChecker:e_,hasError:eW,clearError:eG,updateEducationField:e$,removeEducation:ez,addEducation:eZ});case"workExperience":return o.jsx(H.WorkExperienceForm,{workExperience:ed.workExperience,confirmingDeleteId:ep,setConfirmingDeleteId:em,dotChecker:e_,hasError:eW,clearError:eG,updateWorkField:eB,updateWorkDescriptions:eY,removeWork:eV,addWork:e0});case"skill":return o.jsx(U.SkillForm,{skills:ed.skill,skillInputValue:eh,setSkillInputValue:eg,setSkills:e2,dotChecker:e_});case"equalEmployment":return o.jsx(M.EqualEmploymentForm,{equalEmployment:ed.equalEmployment,pronouns:ed.pronouns,dotChecker:e_,hasError:eW,clearError:eG,updateEqualEmploymentField:eq,updatePronouns:e1});case"preference":return o.jsx(B.PreferenceForm,{preference:ed.preference,dotChecker:e_,updatePreferenceField:eU});case"signupInformation":return o.jsx(q.SignupInformationForm,{registrationEmail:ed.signupInformation.registrationEmail,dotChecker:e_,updateSignupRegistrationEmail:eH,passwordFieldProps:ej.passwordFieldProps});default:return null}};return o.jsxs(a.ConfigProvider,{getPopupContainer:()=>e4||document.body,children:[o.jsxs(a.Modal,{open:e,width:1056,footer:null,title:null,zIndex:h.HELPER_MODAL_Z_INDEX,centered:true,destroyOnClose:false,className:"autofill-info-modal",wrapClassName:"jobright-scroll-lock-modal-wrap",onCancel:eR,closeIcon:o.jsx(A.default,{preview:false,src:s.default,width:16,height:16,alt:"close"}),getContainer:()=>e4,children:[o.jsx("div",{className:"autofill-info-modal-header",children:o.jsx(a.Typography.Text,{className:"autofill-info-modal-title",children:"Your Autofill information"})}),o.jsxs(a.Spin,{spinning:G||V,children:[X&&o.jsx(a.Alert,{type:"warning",showIcon:true,message:"Your information changed elsewhere",description:o.jsxs(o.Fragment,{children:["Your edits are still here. Reload the latest information to review and edit again.",o.jsx("br",{}),o.jsx(a.Button,{type:"link",onClick:()=>Z(true),children:"Reload latest information"})]})}),!X&&!G&&p.current?.usesRevision&&!d.isAutofillInfoRevision(p.current?.revision)&&o.jsx(a.Alert,{type:"warning",className:"autofill-info-modal-revision-alert",message:o.jsxs(a.Flex,{align:"center",gap:8,wrap:true,children:[o.jsx("span",{children:"Refresh information before saving changes."}),o.jsx(a.Button,{type:"link",onClick:()=>eD.hasChanges?Z(true):void eP(),children:"Refresh"})]})}),o.jsxs(a.Flex,{align:"center",gap:8,className:"autofill-info-modal-auto-update",children:[o.jsx(a.Flex,{align:"center",justify:"center",className:"autofill-info-modal-auto-update-icon",children:o.jsx(i.InfoCircleFilled,{style:{fontSize:16,color:"#000"}})}),o.jsxs("div",{className:"autofill-info-modal-auto-update-text",children:[o.jsx(a.Typography.Text,{className:"autofill-info-modal-auto-update-title",children:"Automatically update Autofill information"}),o.jsx(a.Typography.Text,{className:"autofill-info-modal-auto-update-desc",children:ew?o.jsxs(o.Fragment,{children:["Your autofill information updates automatically when you"," ",o.jsx("strong",{children:"change your upload resume"})," or"," ",o.jsx("strong",{children:"update information"})," in an application form."]}):"Your autofill information will stay as saved here. Changes to your uploaded resume or application forms won't update it."})]}),o.jsx(a.Switch,{checked:ew,disabled:eE,onChange:eX})]}),o.jsxs(a.Flex,{className:"autofill-info-modal-content",children:[o.jsx(a.Flex,{vertical:true,gap:2,className:"autofill-info-modal-sidebar",children:F.SECTION_LABELS.map(e=>o.jsxs(a.Button,{className:`autofill-info-modal-nav-item${ei===e.key?" is-active":""}`,onClick:()=>{ea(e.key),"skill"===e.key&&e_.clearItemDot("skill")},children:[o.jsx("span",{children:e.label}),e_.hasSectionDot(e.key)?o.jsx("span",{className:"autofill-info-modal-nav-dot"}):null]},e.key))}),o.jsx("div",{ref:eF,className:"autofill-info-modal-main",children:e6()})]}),o.jsx(a.Flex,{justify:"center",className:"autofill-info-modal-footer",children:o.jsx(a.Button,{className:"autofill-info-modal-submit",loading:V,disabled:!eD.hasChanges||!p.current||G||X,onClick:eQ,children:"Update"})})]})]}),o.jsx(m.default,{open:Q,title:"Reload latest information?",content:"This replaces your unsaved profile edits with the latest saved information. Your password edits will be kept.",confirmText:"Reload",cancelText:"Keep editing",zIndex:h.HELPER_MODAL_Z_INDEX+1,getContainer:()=>e4||document.body,onConfirm:eP,onCancel:()=>Z(false)}),o.jsx(m.default,{open:eC,title:"Turn on automatic updates?",content:"Future changes to your profile, selected resume, or application forms may update the information saved here.",confirmText:"Turn On",cancelText:"Cancel",zIndex:h.HELPER_MODAL_Z_INDEX+1,getContainer:()=>e4||document.body,onConfirm:()=>eJ("turn_on"),onCancel:()=>eJ("cancel")}),o.jsx(m.default,{open:eb,title:"You have unsaved changes",content:"Do you want to save your changes before you leave?",confirmText:"Save",cancelText:"Close",zIndex:h.HELPER_MODAL_Z_INDEX+1,getContainer:()=>e4||document.body,onConfirm:eM,onCancel:eO})]})}
+import { useEffect, useMemo, useRef, useState } from "react"
+import { Fragment, jsx, jsxs } from "react/jsx-runtime"
+import { InfoCircleFilled } from "@ant-design/icons"
+import {
+  Alert,
+  Button,
+  ConfigProvider,
+  Flex,
+  Modal,
+  Spin,
+  Switch,
+  Typography,
+  message,
+} from "antd"
+import { sendToBackground } from "@plasmohq/messaging"
+import * as closeSvg from "../assets/inline/images/close.svg.js"
+import {
+  isAutofillInfoConflict,
+  isAutofillInfoRevision,
+  isAutofillInfoSaveSuccess,
+} from "../api/autofill-info.ts"
+import { buildSignupRegistrationEmailUpdateBody } from "../api/autofill-signup-information.ts"
+import { HELPER_MODAL_Z_INDEX } from "../constants.ts"
+import { HOST_ID } from "../contents.ts"
+import * as accountFlowState from "../contents/pre-autofill-flow/account-flow-state.js"
+import { sendAutofillAnswerPairEvent } from "../contents/sites/autofill-answer-pair-tracking.ts"
+import { SECTION_LABELS, isSectionKey } from "../forms/constants.ts"
+import { useAddressLocation } from "../hooks/useAddressLocation.ts"
+import { useSignupPassword } from "../hooks/useSignupPassword.ts"
+import {
+  buildAutofillInfoSaveBody,
+  isAutofillInfoSnapshot,
+} from "../mappers/save-payload.ts"
+import { buildAutofillInfoTrackingSnapshot } from "../mappers/tracking-snapshot.ts"
+import {
+  buildAutofillInfoData,
+  createEducationItem,
+  createWorkItem,
+} from "../model.ts"
+import { EducationForm } from "../sections/EducationForm.ts"
+import { EqualEmploymentForm } from "../sections/EqualEmploymentForm.ts"
+import { PersonalForm } from "../sections/PersonalForm.ts"
+import { resolvePhoneDropdownParent } from "../sections/PersonalForm/phone-number.ts"
+import { PreferenceForm } from "../sections/PreferenceForm.ts"
+import { SignupInformationForm } from "../sections/SignupInformationForm.ts"
+import { SkillForm } from "../sections/SkillForm.ts"
+import { WorkExperienceForm } from "../sections/WorkExperienceForm.ts"
+import { useAutofillInfoStore } from "../store/autofillInfo.ts"
+import { useProfileStore } from "../store/profile.ts"
+import { useResumeStore } from "../store/resume.ts"
+import { useUrlStore } from "../store/url.ts"
+import {
+  clearWorkdaySignupInformation,
+  saveWorkdaySignupInformation,
+} from "../store/workday-signup-info.ts"
+import Image from "../ui/Image.ts"
+import { trackEvent } from "../utils/trace.ts"
+import { validateWorkdayPassword } from "../utils/workday-signup-password.ts"
+import PageConfirmPopup from "./Popups/PageConfirmPopup.ts"
+import { getAutofillInfoChangeSummary } from "./dirty-state.ts"
+import { scrollValidationFieldIntoView } from "./error-navigation.ts"
+import {
+  collectValidationErrors,
+  getFirstErrorField,
+  getFirstErrorSection,
+} from "./validation.ts"
 
-export default z
+function assetUrl(mod) {
+  return mod?.default ?? mod
+}
+
+export default function Editor() {
+  const open = useResumeStore((state) => state.openAutofillInfo)
+  const autofillInfoInitialSection = useResumeStore(
+    (state) => state.autofillInfoInitialSection,
+  )
+  const setOpenAutofillInfo = useResumeStore(
+    (state) => state.setOpenAutofillInfo,
+  )
+  const autofillInfo = useAutofillInfoStore((state) => state.autofillInfo)
+  const revision = useAutofillInfoStore((state) => state.revision)
+  const fetchAutofillInfo = useAutofillInfoStore(
+    (state) => state.fetchAutofillInfo,
+  )
+  const saveSnapshotToStorage = useAutofillInfoStore(
+    (state) => state.saveSnapshotToStorage,
+  )
+  const autoUpdate = useAutofillInfoStore((state) => state.autoUpdate)
+  const autofillChangedFields = useResumeStore(
+    (state) => state.autofillChangedFields,
+  )
+  const clearAutofillChangedField = useResumeStore(
+    (state) => state.clearAutofillChangedField,
+  )
+  const setAutofillChangedFields = useResumeStore(
+    (state) => state.setAutofillChangedFields,
+  )
+
+  const baselineRef = useRef(null)
+  const isSavingRef = useRef(false)
+  const loadGenerationRef = useRef(0)
+  const mainContentRef = useRef(null)
+
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [isLoading, setIsLoading] = useState(true)
+  const [hasConflict, setHasConflict] = useState(false)
+  const [reloadConfirmOpen, setReloadConfirmOpen] = useState(false)
+  const [activeSection, setActiveSection] = useState("personal")
+  const [errorFields, setErrorFields] = useState(new Set())
+  const [scrollToField, setScrollToField] = useState(null)
+  const [data, setAutofillInfo] = useState(() => buildAutofillInfoData())
+  const [confirmingDeleteId, setConfirmingDeleteId] = useState(null)
+  const [skillInputValue, setSkillInputValue] = useState("")
+  const [unsavedConfirmOpen, setUnsavedConfirmOpen] = useState(false)
+  const [autoUpdateChecked, setAutoUpdateChecked] = useState(true)
+  const [isAutoUpdateSaving, setIsAutoUpdateSaving] = useState(false)
+  const [autoUpdateConfirmOpen, setAutoUpdateConfirmOpen] = useState(false)
+  const [initialData, setInitialData] = useState(null)
+
+  useEffect(() => {
+    if (!scrollToField) return
+    scrollValidationFieldIntoView(mainContentRef.current, scrollToField)
+    setScrollToField(null)
+  }, [scrollToField])
+
+  const addressLocation = useAddressLocation({
+    personal: data.personal,
+    setAutofillInfo,
+  })
+  const signupPassword = useSignupPassword({
+    open,
+    activeSection,
+  })
+
+  const changeSummary = useMemo(
+    () =>
+      getAutofillInfoChangeSummary({
+        current: data,
+        initial: initialData,
+        signupPassword: signupPassword.signupPassword,
+        initialSignupPassword: signupPassword.initialSignupPassword,
+        isSignupPasswordLoaded: signupPassword.isSignupPasswordLoaded,
+        isSignupPasswordTouched: signupPassword.isSignupPasswordTouched,
+      }),
+    [
+      data,
+      initialData,
+      signupPassword.initialSignupPassword,
+      signupPassword.isSignupPasswordLoaded,
+      signupPassword.isSignupPasswordTouched,
+      signupPassword.signupPassword,
+    ],
+  )
+
+  useEffect(() => {
+    loadGenerationRef.current += 1
+    if (!open) {
+      baselineRef.current = null
+      setInitialData(null)
+      setIsLoading(true)
+      setHasConflict(false)
+      setReloadConfirmOpen(false)
+      return
+    }
+    let cancelled = false
+    setIsLoading(true)
+    fetchAutofillInfo(true).finally(() => {
+      if (!cancelled) setIsLoading(false)
+    })
+    setActiveSection(
+      isSectionKey(autofillInfoInitialSection)
+        ? autofillInfoInitialSection
+        : "personal",
+    )
+    trackEvent("autofill_info_modal_exposure", {})
+    return () => {
+      cancelled = true
+    }
+  }, [autofillInfoInitialSection, open])
+
+  useEffect(() => {
+    if (open && !isAutoUpdateSaving) {
+      setAutoUpdateChecked(autoUpdate)
+    }
+  }, [open, autoUpdate, isAutoUpdateSaving])
+
+  useEffect(() => {
+    if (!open || isLoading || !autofillInfo || baselineRef.current) return
+    baselineRef.current = {
+      data: structuredClone(autofillInfo),
+      revision,
+      usesRevision: isAutofillInfoRevision(revision),
+    }
+    const next = buildAutofillInfoData(autofillInfo)
+    setAutofillInfo(next)
+    setSkillInputValue("")
+    setInitialData(next)
+  }, [open, autofillInfo, revision, isLoading])
+
+  const handleReloadLatest = async () => {
+    const generation = loadGenerationRef.current
+    setReloadConfirmOpen(false)
+    setIsLoading(true)
+    const loaded = await fetchAutofillInfo(true)
+    if (generation !== loadGenerationRef.current) return
+    if (loaded) {
+      baselineRef.current = null
+      setHasConflict(false)
+      setErrorFields(new Set())
+    } else {
+      message.error(
+        "Couldn't load the latest information. Your edits are still here.",
+      )
+    }
+    setIsLoading(false)
+  }
+
+  const dotChecker = useMemo(
+    () => ({
+      hasSectionDot: (sectionKey) =>
+        autofillChangedFields.some((field) => field.startsWith(sectionKey)),
+      hasItemDot: (itemKey) => autofillChangedFields.includes(itemKey),
+      hasFieldDot: (sectionKey, fieldKey) =>
+        autofillChangedFields.includes(`${sectionKey}.${fieldKey}`),
+      clearItemDot: clearAutofillChangedField,
+      clearPrefixDots: (prefix) => {
+        autofillChangedFields
+          .filter((field) => field.startsWith(`${prefix}.`))
+          .forEach((field) => clearAutofillChangedField(field))
+      },
+      forSection: (sectionKey) => ({
+        hasDot: (fieldKey) =>
+          autofillChangedFields.includes(`${sectionKey}.${fieldKey}`),
+        clearDot: (fieldKey) =>
+          clearAutofillChangedField(`${sectionKey}.${fieldKey}`),
+      }),
+    }),
+    [autofillChangedFields, clearAutofillChangedField],
+  )
+
+  const closeModal = (snapshot) => {
+    const nextSnapshot = isAutofillInfoSnapshot(snapshot)
+      ? snapshot
+      : undefined
+    loadGenerationRef.current += 1
+    setOpenAutofillInfo(false)
+    setAutofillChangedFields([])
+    saveSnapshotToStorage(nextSnapshot)
+  }
+
+  const handleCancel = () => {
+    if (isSavingRef.current) return
+    if (!changeSummary.hasChanges) {
+      closeModal()
+      return
+    }
+    setUnsavedConfirmOpen(true)
+  }
+
+  const discardAndClose = () => {
+    setUnsavedConfirmOpen(false)
+    closeModal()
+  }
+
+  const saveAndClose = async () => {
+    setUnsavedConfirmOpen(false)
+    await handleUpdate()
+  }
+
+  const updatePersonalField = (field, value) => {
+    setAutofillInfo((prev) => ({
+      ...prev,
+      personal: { ...prev.personal, [field]: value },
+    }))
+  }
+
+  const updateEducationField = (id, field, value) => {
+    setAutofillInfo((prev) => ({
+      ...prev,
+      education: prev.education.map((item) =>
+        item.id === id ? { ...item, [field]: value } : item,
+      ),
+    }))
+  }
+
+  const updateWorkField = (id, field, value) => {
+    setAutofillInfo((prev) => ({
+      ...prev,
+      workExperience: prev.workExperience.map((item) =>
+        item.id === id ? { ...item, [field]: value } : item,
+      ),
+    }))
+  }
+
+  const updateEqualEmploymentField = (field, value) => {
+    setAutofillInfo((prev) => ({
+      ...prev,
+      equalEmployment: { ...prev.equalEmployment, [field]: value },
+    }))
+  }
+
+  const updatePreferenceField = (field, value) => {
+    setAutofillInfo((prev) => ({
+      ...prev,
+      preference: { ...prev.preference, [field]: value },
+    }))
+  }
+
+  const updateSignupRegistrationEmail = (email) => {
+    setAutofillInfo((prev) => ({
+      ...prev,
+      signupInformation: {
+        ...prev.signupInformation,
+        registrationEmail: email,
+      },
+    }))
+  }
+
+  const updateWorkDescriptions = (id, descriptions) => {
+    setAutofillInfo((prev) => ({
+      ...prev,
+      workExperience: prev.workExperience.map((item) =>
+        item.id === id ? { ...item, descriptions } : item,
+      ),
+    }))
+  }
+
+  const removeEducation = (id) => {
+    setAutofillInfo((prev) => ({
+      ...prev,
+      education: prev.education.filter((item) => item.id !== id),
+    }))
+  }
+
+  const removeWork = (id) => {
+    setAutofillInfo((prev) => ({
+      ...prev,
+      workExperience: prev.workExperience.filter((item) => item.id !== id),
+    }))
+  }
+
+  const hasError = (fieldKey) => errorFields.has(fieldKey)
+
+  const clearError = (fieldKey) => {
+    if (!errorFields.has(fieldKey)) return
+    setErrorFields((prev) => {
+      const next = new Set(prev)
+      next.delete(fieldKey)
+      return next
+    })
+  }
+
+  const saveAutoUpdateSetting = async (enabled) => {
+    let failReason
+    const previous = autoUpdateChecked
+    setIsAutoUpdateSaving(true)
+    setAutoUpdateChecked(enabled)
+    try {
+      const response = await sendToBackground({
+        name: "saveAutofillInfo",
+        body: { autoUpdate: enabled },
+      })
+      if (response?.success === true && response?.result === true) {
+        useAutofillInfoStore.setState({ autoUpdate: enabled })
+        message.success(
+          enabled
+            ? "Autofill will update automatically"
+            : "Autofill will use saved information only",
+        )
+        trackEvent("autofill_info_auto_update_setting_result", {
+          setting_value: enabled ? "on" : "off",
+          result: "success",
+        })
+        return
+      }
+      failReason = "response_not_success"
+    } catch {
+      failReason = "request_failed"
+    } finally {
+      setIsAutoUpdateSaving(false)
+    }
+    setAutoUpdateChecked(previous)
+    message.error("Couldn't update this setting. Try again.")
+    trackEvent("autofill_info_auto_update_setting_result", {
+      setting_value: enabled ? "on" : "off",
+      result: "fail",
+      fail_reason: failReason,
+    })
+  }
+
+  const handleAutoUpdateChange = (enabled) => {
+    if (!enabled) {
+      saveAutoUpdateSetting(false)
+      return
+    }
+    setAutoUpdateConfirmOpen(true)
+  }
+
+  const handleAutoUpdateConfirm = (action) => {
+    trackEvent("autofill_info_auto_update_confirmation_click", {
+      user_id: useProfileStore.getState().userStage?.userId,
+      action,
+      current_state: "off",
+    })
+    setAutoUpdateConfirmOpen(false)
+    if (action === "turn_on") {
+      saveAutoUpdateSetting(true)
+    }
+  }
+
+  const handleUpdate = async () => {
+    if (
+      !changeSummary.hasChanges ||
+      !baselineRef.current ||
+      isSavingRef.current ||
+      isLoading ||
+      hasConflict
+    ) {
+      return
+    }
+
+    if (
+      changeSummary.hasRegularAutofillChanges &&
+      baselineRef.current.usesRevision &&
+      !isAutofillInfoRevision(baselineRef.current?.revision)
+    ) {
+      message.error("Please reload the latest information before saving.")
+      return
+    }
+
+    isSavingRef.current = true
+    setIsSubmitting(true)
+    try {
+      trackEvent("autofill_info_modal_update_click", {
+        activeSection,
+      })
+      if (activeSection === "signupInformation") {
+        trackEvent("autofill_signup_information_update", {
+          uid: useProfileStore.getState().userStage?.userId,
+        })
+      }
+
+      const errors = collectValidationErrors(data)
+      if (errors.size > 0) {
+        setErrorFields(errors)
+        const firstField = getFirstErrorField(errors)
+        if (firstField) setScrollToField(firstField)
+        const firstSection = getFirstErrorSection(errors)
+        if (firstSection) setActiveSection(firstSection)
+        return
+      }
+      setErrorFields(new Set())
+
+      const signupPasswordAction = changeSummary.signupPasswordAction
+      const shouldSavePassword = signupPasswordAction === "save"
+      const passwordValidation = validateWorkdayPassword(
+        signupPassword.signupPassword,
+      )
+      if (shouldSavePassword && !passwordValidation.isValid) {
+        setActiveSection("signupInformation")
+        signupPassword.setShowSignupPasswordErrors(true)
+        return
+      }
+
+      const saveBody = buildAutofillInfoSaveBody(
+        data,
+        baselineRef.current?.data ?? {},
+        baselineRef.current?.revision ?? undefined,
+      )
+      const hasRegularChanges = changeSummary.hasRegularAutofillChanges
+      const registrationEmailBody = buildSignupRegistrationEmailUpdateBody(
+        data.signupInformation.registrationEmail,
+      )
+      const hasRegistrationEmailChanges =
+        changeSummary.hasRegistrationEmailChanges
+      const previousAdditionalInfo =
+        initialData?.preference.additionalApplicationInfo ?? ""
+      if (
+        previousAdditionalInfo !== data.preference.additionalApplicationInfo
+      ) {
+        trackEvent("autofill_custom_question_updated", {})
+      }
+
+      if (hasRegularChanges) {
+        const submitSnapshot = buildAutofillInfoTrackingSnapshot(data)
+        const autofillSnapshot = initialData
+          ? buildAutofillInfoTrackingSnapshot(initialData)
+          : submitSnapshot
+        sendAutofillAnswerPairEvent({
+          formUrl: useUrlStore.getState().currentTabUrl,
+          autofillSnapshot: autofillSnapshot.normal,
+          submitSnapshot: submitSnapshot.normal,
+          additionalAutofillData: {
+            education: autofillSnapshot.education,
+            employment: autofillSnapshot.employment,
+          },
+          additionalSubmitData: {
+            education: submitSnapshot.education,
+            employment: submitSnapshot.employment,
+          },
+          source: "apply",
+        })
+      }
+
+      try {
+        let response
+        if (hasRegularChanges) {
+          response = await sendToBackground({
+            name: "saveAutofillInfo",
+            body: saveBody,
+          })
+        } else if (hasRegistrationEmailChanges) {
+          response = await sendToBackground({
+            name: "updateAutofillSection",
+            body: registrationEmailBody,
+          })
+        }
+        if (
+          (hasRegularChanges || hasRegistrationEmailChanges) &&
+          !isAutofillInfoSaveSuccess(response)
+        ) {
+          console.warn("[AutofillInfo] Editor save failed", {
+            reason: isAutofillInfoConflict(response)
+              ? "revision_conflict"
+              : "save_failed",
+            expectedRevision: saveBody.expectedRevision,
+          })
+          if (isAutofillInfoConflict(response)) {
+            setHasConflict(true)
+            await fetchAutofillInfo(true)
+          } else {
+            message.error(
+              "Failed to update autofill information. Please try again.",
+            )
+          }
+          return
+        }
+      } catch {
+        message.error(
+          "Failed to update autofill information. Please try again.",
+        )
+        return
+      }
+
+      if (hasRegularChanges || hasRegistrationEmailChanges) {
+        await fetchAutofillInfo(true)
+        setInitialData(data)
+        baselineRef.current = {
+          data: saveBody.structuredData,
+          revision: null,
+          usesRevision: baselineRef.current.usesRevision,
+        }
+      }
+
+      try {
+        let credentialsChanged = hasRegistrationEmailChanges
+        if (shouldSavePassword) {
+          await saveWorkdaySignupInformation({
+            password: signupPassword.signupPassword,
+          })
+          credentialsChanged = true
+        } else if (signupPasswordAction === "clear") {
+          await clearWorkdaySignupInformation()
+        }
+        if (credentialsChanged) {
+          document.dispatchEvent(
+            new CustomEvent(
+              accountFlowState.PRE_AUTOFILL_ACCOUNT_CREDENTIALS_CHANGED_EVENT,
+            ),
+          )
+        }
+      } catch {
+        message.error(
+          "Autofill information saved, but password was not saved.",
+        )
+        return
+      }
+
+      message.success("Autofill information updated.")
+      closeModal(hasRegularChanges ? saveBody.structuredData : undefined)
+    } finally {
+      isSavingRef.current = false
+      setIsSubmitting(false)
+    }
+  }
+
+  const addEducation = () => {
+    setAutofillInfo((prev) => ({
+      ...prev,
+      education: [...prev.education, createEducationItem()],
+    }))
+  }
+
+  const addWork = () => {
+    setAutofillInfo((prev) => ({
+      ...prev,
+      workExperience: [...prev.workExperience, createWorkItem()],
+    }))
+  }
+
+  const setSkills = (next) => {
+    setAutofillInfo((prev) => ({
+      ...prev,
+      skill: typeof next === "function" ? next(prev.skill) : next,
+    }))
+  }
+
+  const updatePronouns = (value) => {
+    setAutofillInfo((prev) => ({ ...prev, pronouns: value }))
+  }
+
+  const shadowRoot = document.getElementById(HOST_ID)?.shadowRoot
+  const popupContainer = shadowRoot
+  const phoneDropdownParent = resolvePhoneDropdownParent(shadowRoot)
+
+  const renderActiveSection = () => {
+    switch (activeSection) {
+      case "personal":
+        return jsx(PersonalForm, {
+          personal: data.personal,
+          regionOptions: addressLocation.regionOptions,
+          cityOptions: addressLocation.cityOptions,
+          popupContainer: phoneDropdownParent,
+          dotChecker,
+          hasError,
+          clearError,
+          updatePersonalField,
+          handleCountryChange: addressLocation.handleCountryChange,
+          handleCountryBlur: addressLocation.handleCountryBlur,
+          handleRegionChange: addressLocation.handleRegionChange,
+          handleRegionBlur: addressLocation.handleRegionBlur,
+        })
+      case "education":
+        return jsx(EducationForm, {
+          education: data.education,
+          confirmingDeleteId,
+          setConfirmingDeleteId,
+          dotChecker,
+          hasError,
+          clearError,
+          updateEducationField,
+          removeEducation,
+          addEducation,
+        })
+      case "workExperience":
+        return jsx(WorkExperienceForm, {
+          workExperience: data.workExperience,
+          confirmingDeleteId,
+          setConfirmingDeleteId,
+          dotChecker,
+          hasError,
+          clearError,
+          updateWorkField,
+          updateWorkDescriptions,
+          removeWork,
+          addWork,
+        })
+      case "skill":
+        return jsx(SkillForm, {
+          skills: data.skill,
+          skillInputValue,
+          setSkillInputValue,
+          setSkills,
+          dotChecker,
+        })
+      case "equalEmployment":
+        return jsx(EqualEmploymentForm, {
+          equalEmployment: data.equalEmployment,
+          pronouns: data.pronouns,
+          dotChecker,
+          hasError,
+          clearError,
+          updateEqualEmploymentField,
+          updatePronouns,
+        })
+      case "preference":
+        return jsx(PreferenceForm, {
+          preference: data.preference,
+          dotChecker,
+          updatePreferenceField,
+        })
+      case "signupInformation":
+        return jsx(SignupInformationForm, {
+          registrationEmail: data.signupInformation.registrationEmail,
+          dotChecker,
+          updateSignupRegistrationEmail,
+          passwordFieldProps: signupPassword.passwordFieldProps,
+        })
+      default:
+        return null
+    }
+  }
+
+  return jsxs(ConfigProvider, {
+    getPopupContainer: () => popupContainer || document.body,
+    children: [
+      jsxs(Modal, {
+        open,
+        width: 1056,
+        footer: null,
+        title: null,
+        zIndex: HELPER_MODAL_Z_INDEX,
+        centered: true,
+        destroyOnClose: false,
+        className: "autofill-info-modal",
+        wrapClassName: "jobright-scroll-lock-modal-wrap",
+        onCancel: handleCancel,
+        closeIcon: jsx(Image, {
+          preview: false,
+          src: assetUrl(closeSvg),
+          width: 16,
+          height: 16,
+          alt: "close",
+        }),
+        getContainer: () => popupContainer,
+        children: [
+          jsx("div", {
+            className: "autofill-info-modal-header",
+            children: jsx(Typography.Text, {
+              className: "autofill-info-modal-title",
+              children: "Your Autofill information",
+            }),
+          }),
+          jsxs(Spin, {
+            spinning: isLoading || isSubmitting,
+            children: [
+              hasConflict &&
+                jsx(Alert, {
+                  type: "warning",
+                  showIcon: true,
+                  message: "Your information changed elsewhere",
+                  description: jsxs(Fragment, {
+                    children: [
+                      "Your edits are still here. Reload the latest information to review and edit again.",
+                      jsx("br", {}),
+                      jsx(Button, {
+                        type: "link",
+                        onClick: () => setReloadConfirmOpen(true),
+                        children: "Reload latest information",
+                      }),
+                    ],
+                  }),
+                }),
+              !hasConflict &&
+                !isLoading &&
+                baselineRef.current?.usesRevision &&
+                !isAutofillInfoRevision(baselineRef.current?.revision) &&
+                jsx(Alert, {
+                  type: "warning",
+                  className: "autofill-info-modal-revision-alert",
+                  message: jsxs(Flex, {
+                    align: "center",
+                    gap: 8,
+                    wrap: true,
+                    children: [
+                      jsx("span", {
+                        children: "Refresh information before saving changes.",
+                      }),
+                      jsx(Button, {
+                        type: "link",
+                        onClick: () =>
+                          changeSummary.hasChanges
+                            ? setReloadConfirmOpen(true)
+                            : void handleReloadLatest(),
+                        children: "Refresh",
+                      }),
+                    ],
+                  }),
+                }),
+              jsxs(Flex, {
+                align: "center",
+                gap: 8,
+                className: "autofill-info-modal-auto-update",
+                children: [
+                  jsx(Flex, {
+                    align: "center",
+                    justify: "center",
+                    className: "autofill-info-modal-auto-update-icon",
+                    children: jsx(InfoCircleFilled, {
+                      style: { fontSize: 16, color: "#000" },
+                    }),
+                  }),
+                  jsxs("div", {
+                    className: "autofill-info-modal-auto-update-text",
+                    children: [
+                      jsx(Typography.Text, {
+                        className: "autofill-info-modal-auto-update-title",
+                        children: "Automatically update Autofill information",
+                      }),
+                      jsx(Typography.Text, {
+                        className: "autofill-info-modal-auto-update-desc",
+                        children: autoUpdateChecked
+                          ? jsxs(Fragment, {
+                              children: [
+                                "Your autofill information updates automatically when you",
+                                " ",
+                                jsx("strong", {
+                                  children: "change your upload resume",
+                                }),
+                                " or",
+                                " ",
+                                jsx("strong", {
+                                  children: "update information",
+                                }),
+                                " in an application form.",
+                              ],
+                            })
+                          : "Your autofill information will stay as saved here. Changes to your uploaded resume or application forms won't update it.",
+                      }),
+                    ],
+                  }),
+                  jsx(Switch, {
+                    checked: autoUpdateChecked,
+                    disabled: isAutoUpdateSaving,
+                    onChange: handleAutoUpdateChange,
+                  }),
+                ],
+              }),
+              jsxs(Flex, {
+                className: "autofill-info-modal-content",
+                children: [
+                  jsx(Flex, {
+                    vertical: true,
+                    gap: 2,
+                    className: "autofill-info-modal-sidebar",
+                    children: SECTION_LABELS.map((section) =>
+                      jsxs(
+                        Button,
+                        {
+                          className: `autofill-info-modal-nav-item${
+                            activeSection === section.key ? " is-active" : ""
+                          }`,
+                          onClick: () => {
+                            setActiveSection(section.key)
+                            if (section.key === "skill") {
+                              dotChecker.clearItemDot("skill")
+                            }
+                          },
+                          children: [
+                            jsx("span", { children: section.label }),
+                            dotChecker.hasSectionDot(section.key)
+                              ? jsx("span", {
+                                  className: "autofill-info-modal-nav-dot",
+                                })
+                              : null,
+                          ],
+                        },
+                        section.key,
+                      ),
+                    ),
+                  }),
+                  jsx("div", {
+                    ref: mainContentRef,
+                    className: "autofill-info-modal-main",
+                    children: renderActiveSection(),
+                  }),
+                ],
+              }),
+              jsx(Flex, {
+                justify: "center",
+                className: "autofill-info-modal-footer",
+                children: jsx(Button, {
+                  className: "autofill-info-modal-submit",
+                  loading: isSubmitting,
+                  disabled:
+                    !changeSummary.hasChanges ||
+                    !baselineRef.current ||
+                    isLoading ||
+                    hasConflict,
+                  onClick: handleUpdate,
+                  children: "Update",
+                }),
+              }),
+            ],
+          }),
+        ],
+      }),
+      jsx(PageConfirmPopup, {
+        open: reloadConfirmOpen,
+        title: "Reload latest information?",
+        content:
+          "This replaces your unsaved profile edits with the latest saved information. Your password edits will be kept.",
+        confirmText: "Reload",
+        cancelText: "Keep editing",
+        zIndex: HELPER_MODAL_Z_INDEX + 1,
+        getContainer: () => popupContainer || document.body,
+        onConfirm: handleReloadLatest,
+        onCancel: () => setReloadConfirmOpen(false),
+      }),
+      jsx(PageConfirmPopup, {
+        open: autoUpdateConfirmOpen,
+        title: "Turn on automatic updates?",
+        content:
+          "Future changes to your profile, selected resume, or application forms may update the information saved here.",
+        confirmText: "Turn On",
+        cancelText: "Cancel",
+        zIndex: HELPER_MODAL_Z_INDEX + 1,
+        getContainer: () => popupContainer || document.body,
+        onConfirm: () => handleAutoUpdateConfirm("turn_on"),
+        onCancel: () => handleAutoUpdateConfirm("cancel"),
+      }),
+      jsx(PageConfirmPopup, {
+        open: unsavedConfirmOpen,
+        title: "You have unsaved changes",
+        content: "Do you want to save your changes before you leave?",
+        confirmText: "Save",
+        cancelText: "Close",
+        zIndex: HELPER_MODAL_Z_INDEX + 1,
+        getContainer: () => popupContainer || document.body,
+        onConfirm: saveAndClose,
+        onCancel: discardAndClose,
+      }),
+    ],
+  })
+}

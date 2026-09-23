@@ -1,24 +1,412 @@
 // @ts-nocheck
 /**
- * Readable TypeScript converted from Parcel dump (helper-runtime/src/components/AutoFillRuleGroup.js).
+ * Autofill progress field groups (required / optional) with partial + section details.
  */
-import * as o from "react/jsx-runtime"
-import * as i from "antd"
-import * as a from "../assets/inline/images/arr_down.svg.js"
-import * as s from "react"
-import * as u from "./CheckedIcon.js"
-import * as d from "./FillProgress/progress-state.js"
-import * as f from "./LoadingIcon.js"
-import * as m from "./UnCheckedIcon.js"
-import * as g from "../core/dom.ts"
-import * as b from "../hooks/useSkipTimer.ts"
-import * as y from "../utils/fieldLabel.ts"
-import * as v from "../utils/trace.ts"
 
-const l = { default: a }
-const c = { default: u }
-const p = { default: f }
-const h = { default: m }
-let w = new Set(["education", "employment", "experience"]);function S(e) {v.trackEvent("autofill_skip_click", {current_field_name: e}), document.dispatchEvent(new CustomEvent("SkipAutoFill"))}function E({groups: e,partialDetailsId: t,expanded: r}) {return o.jsx("div", {id: t,className: "auto-fill-field-item-partial-details",hidden: !r,children: e.map(e => o.jsxs("div", {className: "auto-fill-field-item-result-group",children: [o.jsx("span", {className: "auto-fill-field-item-result-group-title",children: e.title}), e.items.map((t, r) => o.jsxs("div", {className: "auto-fill-field-item-result-value",children: ["filled" === e.status ? o.jsx(c.default, {}) : o.jsx(h.default, {}), o.jsx("span", {children: t})]}, `${t}-${r}`))]}, e.title))})}function x(e, t) {let r = y.normalizeFieldLabel(t);return e?.find(e => y.normalizeFieldLabel(e.label) === r)}function C({result: e,detailsId: t,expanded: r}) {return o.jsx("div", {id: t,className: "auto-fill-section-result-details",hidden: !r,children: e.rows.map(t => o.jsxs("div", {className: "auto-fill-section-result-row",children: [o.jsx("button", {className: "auto-fill-section-result-row-title",type: "button","aria-label": `Go to ${e.label} ${t.index+1}`,onClick: () => g.focusSectionResultRow(e.type, t.index),children: t.title || `${e.label} ${t.index+1}`}), o.jsx("div", {className: "auto-fill-section-result-fields",children: t.fields.map(r => o.jsxs("button", {className: "auto-fill-section-result-field",type: "button","aria-label": `Go to ${e.label} ${t.index+1} ${r.label}`,onClick: () => g.focusSectionResultRow(e.type, t.index, r.label),children: [o.jsx("span", {className: `auto-fill-section-result-status auto-fill-section-result-status--${r.status}`}), o.jsx("span", {className: "auto-fill-section-result-field-label",children: r.label})]}, `${t.index}-${r.label}`))})]}, t.index))})}let AutoFillRuleGroup = ({autoFillResult: e,isFilling: t}) => {let r = e?.currentField ?? null,n = b.useSkipTimer(t ? r : null),a = s.useRef(null),[u, f] = s.useState(new Set),[m, v] = s.useState(() => new Set(w)),A = s.useRef(t);s.useEffect(() => {t && !A.current && (f(new Set), v(new Set(w))), A.current = t}, [t]), s.useEffect(() => {if (!t || !r) return;let e = a.current;e && e.scrollIntoView({block: "nearest",behavior: "smooth"})}, [r, t]);let k = s.useMemo(() => {let s = y.buildNormalizedFieldLabelSet(e?.filledFields || []),b = y.buildNormalizedFieldLabelSet(e?.missingFields || []),w = [],A = [],k = [],T = [];return e?.fieldRequiredStatus?.forEach((F, I) => {let j = y.normalizeFieldLabel(F?.label),D = s.has(j),P = b.has(j),_ = d.getFieldItemResult(e?.fieldItemResults, F?.label),L = "partial" === d.getFieldItemDisplayState(_),R = L && !u.has(j),O = d.getFieldItemProgressSummary(_),M = d.getFieldItemResultGroups(_),N = L && O && M.length > 0,$ =`auto-fill-field-item-partial-details-${j.replace(/[^a-z0-9_-]+/g,"-")||"field"}-${I}`,B = x(e?.sectionResults, F?.label),q = (B?.rows.length ?? 0) > 0,U = q && m.has(j),H =`auto-fill-section-result-details-${j.replace(/[^a-z0-9_-]+/g,"-")||"field"}-${I}`,Y = t && F?.label === r,z = D && !Y,V = P && !Y,W = t && n && F?.label === n && F?.label === r && !D,G = o.jsxs(i.Flex, {gap: 4,ref: Y ? a : undefined,className: "auto-fill-field-item",onClick: () => {g.focusLabelElement(F?.label)},children: [z ? o.jsx(c.default, {}) : V || !t && e ? o.jsx(h.default, {}) : o.jsx(p.default, {}), o.jsx("span", {className: "auto-fill-field-item-text-label",children: F?.label}), N && o.jsxs("button", {type: "button",className: "auto-fill-field-item-partial-toggle","aria-expanded": R,"aria-label": `${F.label}: ${O} autofill details`,"aria-controls": $,onClick: e => {e.stopPropagation(), f(e => {let t = new Set(e);return t.has(j) ? t.delete(j) : t.add(j), t})},children: [o.jsx("span", {children: O}), o.jsx("img", {src: l.default,alt: "",width: 12,height: 12,className: `auto-fill-field-item-partial-chevron${R?"":" auto-fill-field-item-partial-chevron--collapsed"}`})]}), q && B && o.jsx("button", {type: "button",className: "auto-fill-section-toggle","aria-expanded": U,"aria-label": `${F.label} autofill details`,"aria-controls": H,onClick: e => {e.stopPropagation(), v(e => {let t = new Set(e);return t.has(j) ? t.delete(j) : t.add(j), t})},children: o.jsx("img", {src: l.default,alt: "",width: 14,height: 14,className: `auto-fill-section-chevron${U?"":" auto-fill-section-chevron--collapsed"}`})}), W && o.jsx("button", {type: "button",className: "auto-fill-field-item-skip-btn",onClick: e => {e.stopPropagation(), S(F.label)},children: "Skip"})]}, I),K = N || q ? o.jsxs("div", {className: "auto-fill-field-item-details-wrapper",children: [G, q && B && o.jsx(C, {result: B,detailsId: H,expanded: U}), N && _ && o.jsx(E, {groups: M,partialDetailsId: $,expanded: R})]}, I) : G;F.required ? (w.push(K), D && k.push(K)) : (A.push(K), D && T.push(K))}), {requiredFields: w,optionalFields: A,filledRequiredFields: k,filledOptionalFields: T}}, [e, u, m, t, r, n]);return o.jsx(i.Flex, {className: "auto-fill-field-group",vertical: true,children: o.jsxs(i.Flex, {gap: 12,vertical: true,children: [k.requiredFields.length > 0 && o.jsxs(o.Fragment, {children: [o.jsx(i.Typography.Title, {level: 4,className: "auto-fill-field-group-title",children: "Required"}), k.requiredFields]}), k.optionalFields.length > 0 && o.jsxs(o.Fragment, {children: [k.requiredFields.length > 0 && o.jsx(i.Divider, {className: "auto-fill-divider"}), o.jsx(i.Typography.Title, {level: 4,className: "auto-fill-field-group-title",children: "Optional"}), k.optionalFields]})]})})};
+import { Fragment, jsx, jsxs } from "react/jsx-runtime"
+import { Divider, Flex, Typography } from "antd"
+import * as arrDownSvg from "../assets/inline/images/arr_down.svg.js"
+import { useEffect, useMemo, useRef, useState } from "react"
+import CheckedIcon from "./CheckedIcon.ts"
+import {
+  getFieldItemDisplayState,
+  getFieldItemProgressSummary,
+  getFieldItemResult,
+  getFieldItemResultGroups,
+} from "./FillProgress/progress-state.ts"
+import LoadingIcon from "./LoadingIcon.ts"
+import UnCheckedIcon from "./UnCheckedIcon.ts"
+import { focusLabelElement, focusSectionResultRow } from "../core/dom.ts"
+import { useSkipTimer } from "../hooks/useSkipTimer.ts"
+import {
+  buildNormalizedFieldLabelSet,
+  normalizeFieldLabel,
+} from "../utils/fieldLabel.ts"
+import { trackEvent } from "../utils/trace.ts"
 
-export default AutoFillRuleGroup
+function assetUrl(mod) {
+  return mod?.default ?? mod
+}
+
+const DEFAULT_EXPANDED_SECTIONS = new Set([
+  "education",
+  "employment",
+  "experience",
+])
+
+function handleSkipClick(fieldName) {
+  trackEvent("autofill_skip_click", {
+    current_field_name: fieldName,
+  })
+  document.dispatchEvent(new CustomEvent("SkipAutoFill"))
+}
+
+function detailsIdSlug(normalizedLabel, index, prefix) {
+  const slug = normalizedLabel.replace(/[^a-z0-9_-]+/g, "-") || "field"
+  return `${prefix}-${slug}-${index}`
+}
+
+function PartialFieldDetails({ groups, partialDetailsId, expanded }) {
+  return jsx("div", {
+    id: partialDetailsId,
+    className: "auto-fill-field-item-partial-details",
+    hidden: !expanded,
+    children: groups.map((group) =>
+      jsxs(
+        "div",
+        {
+          className: "auto-fill-field-item-result-group",
+          children: [
+            jsx("span", {
+              className: "auto-fill-field-item-result-group-title",
+              children: group.title,
+            }),
+            group.items.map((item, index) =>
+              jsxs(
+                "div",
+                {
+                  className: "auto-fill-field-item-result-value",
+                  children: [
+                    group.status === "filled"
+                      ? jsx(CheckedIcon, {})
+                      : jsx(UnCheckedIcon, {}),
+                    jsx("span", { children: item }),
+                  ],
+                },
+                `${item}-${index}`,
+              ),
+            ),
+          ],
+        },
+        group.title,
+      ),
+    ),
+  })
+}
+
+function findSectionResult(sectionResults, label) {
+  const normalized = normalizeFieldLabel(label)
+  return sectionResults?.find(
+    (result) => normalizeFieldLabel(result.label) === normalized,
+  )
+}
+
+function SectionResultDetails({ result, detailsId, expanded }) {
+  return jsx("div", {
+    id: detailsId,
+    className: "auto-fill-section-result-details",
+    hidden: !expanded,
+    children: result.rows.map((row) =>
+      jsxs(
+        "div",
+        {
+          className: "auto-fill-section-result-row",
+          children: [
+            jsx("button", {
+              className: "auto-fill-section-result-row-title",
+              type: "button",
+              "aria-label": `Go to ${result.label} ${row.index + 1}`,
+              onClick: () => focusSectionResultRow(result.type, row.index),
+              children: row.title || `${result.label} ${row.index + 1}`,
+            }),
+            jsx("div", {
+              className: "auto-fill-section-result-fields",
+              children: row.fields.map((field) =>
+                jsxs(
+                  "button",
+                  {
+                    className: "auto-fill-section-result-field",
+                    type: "button",
+                    "aria-label": `Go to ${result.label} ${row.index + 1} ${field.label}`,
+                    onClick: () =>
+                      focusSectionResultRow(result.type, row.index, field.label),
+                    children: [
+                      jsx("span", {
+                        className: `auto-fill-section-result-status auto-fill-section-result-status--${field.status}`,
+                      }),
+                      jsx("span", {
+                        className: "auto-fill-section-result-field-label",
+                        children: field.label,
+                      }),
+                    ],
+                  },
+                  `${row.index}-${field.label}`,
+                ),
+              ),
+            }),
+          ],
+        },
+        row.index,
+      ),
+    ),
+  })
+}
+
+function toggleSetMembership(set, key) {
+  const next = new Set(set)
+  if (next.has(key)) next.delete(key)
+  else next.add(key)
+  return next
+}
+
+export default function AutoFillRuleGroup({ autoFillResult, isFilling }) {
+  const currentField = autoFillResult?.currentField ?? null
+  const skipField = useSkipTimer(isFilling ? currentField : null)
+  const currentFieldRef = useRef(null)
+  const [collapsedPartialLabels, setCollapsedPartialLabels] = useState(
+    () => new Set(),
+  )
+  const [expandedSectionLabels, setExpandedSectionLabels] = useState(
+    () => new Set(DEFAULT_EXPANDED_SECTIONS),
+  )
+  const wasFillingRef = useRef(isFilling)
+
+  useEffect(() => {
+    if (isFilling && !wasFillingRef.current) {
+      setCollapsedPartialLabels(new Set())
+      setExpandedSectionLabels(new Set(DEFAULT_EXPANDED_SECTIONS))
+    }
+    wasFillingRef.current = isFilling
+  }, [isFilling])
+
+  useEffect(() => {
+    if (!isFilling || !currentField) return
+    const node = currentFieldRef.current
+    node?.scrollIntoView({
+      block: "nearest",
+      behavior: "smooth",
+    })
+  }, [currentField, isFilling])
+
+  const fieldLists = useMemo(() => {
+    const filledLabels = buildNormalizedFieldLabelSet(
+      autoFillResult?.filledFields || [],
+    )
+    const missingLabels = buildNormalizedFieldLabelSet(
+      autoFillResult?.missingFields || [],
+    )
+    const requiredFields = []
+    const optionalFields = []
+    const filledRequiredFields = []
+    const filledOptionalFields = []
+
+    autoFillResult?.fieldRequiredStatus?.forEach((fieldStatus, index) => {
+      const normalizedLabel = normalizeFieldLabel(fieldStatus?.label)
+      const isFilled = filledLabels.has(normalizedLabel)
+      const isMissing = missingLabels.has(normalizedLabel)
+      const fieldItemResult = getFieldItemResult(
+        autoFillResult?.fieldItemResults,
+        fieldStatus?.label,
+      )
+      const isPartial =
+        getFieldItemDisplayState(fieldItemResult) === "partial"
+      const partialExpanded =
+        isPartial && !collapsedPartialLabels.has(normalizedLabel)
+      const progressSummary = getFieldItemProgressSummary(fieldItemResult)
+      const resultGroups = getFieldItemResultGroups(fieldItemResult)
+      const showPartialDetails =
+        isPartial && progressSummary && resultGroups.length > 0
+      const partialDetailsId = detailsIdSlug(
+        normalizedLabel,
+        index,
+        "auto-fill-field-item-partial-details",
+      )
+      const sectionResult = findSectionResult(
+        autoFillResult?.sectionResults,
+        fieldStatus?.label,
+      )
+      const hasSectionRows = (sectionResult?.rows.length ?? 0) > 0
+      const sectionExpanded =
+        hasSectionRows && expandedSectionLabels.has(normalizedLabel)
+      const sectionDetailsId = detailsIdSlug(
+        normalizedLabel,
+        index,
+        "auto-fill-section-result-details",
+      )
+      const isCurrent = isFilling && fieldStatus?.label === currentField
+      const showChecked = isFilled && !isCurrent
+      const showUnchecked = isMissing && !isCurrent
+      const showSkip =
+        isFilling &&
+        skipField &&
+        fieldStatus?.label === skipField &&
+        fieldStatus?.label === currentField &&
+        !isFilled
+
+      const row = jsxs(
+        Flex,
+        {
+          gap: 4,
+          ref: isCurrent ? currentFieldRef : undefined,
+          className: "auto-fill-field-item",
+          onClick: () => {
+            focusLabelElement(fieldStatus?.label)
+          },
+          children: [
+            showChecked
+              ? jsx(CheckedIcon, {})
+              : showUnchecked || (!isFilling && autoFillResult)
+                ? jsx(UnCheckedIcon, {})
+                : jsx(LoadingIcon, {}),
+            jsx("span", {
+              className: "auto-fill-field-item-text-label",
+              children: fieldStatus?.label,
+            }),
+            showPartialDetails &&
+              jsxs("button", {
+                type: "button",
+                className: "auto-fill-field-item-partial-toggle",
+                "aria-expanded": partialExpanded,
+                "aria-label": `${fieldStatus.label}: ${progressSummary} autofill details`,
+                "aria-controls": partialDetailsId,
+                onClick: (event) => {
+                  event.stopPropagation()
+                  setCollapsedPartialLabels((prev) =>
+                    toggleSetMembership(prev, normalizedLabel),
+                  )
+                },
+                children: [
+                  jsx("span", { children: progressSummary }),
+                  jsx("img", {
+                    src: assetUrl(arrDownSvg),
+                    alt: "",
+                    width: 12,
+                    height: 12,
+                    className: `auto-fill-field-item-partial-chevron${
+                      partialExpanded
+                        ? ""
+                        : " auto-fill-field-item-partial-chevron--collapsed"
+                    }`,
+                  }),
+                ],
+              }),
+            hasSectionRows &&
+              sectionResult &&
+              jsx("button", {
+                type: "button",
+                className: "auto-fill-section-toggle",
+                "aria-expanded": sectionExpanded,
+                "aria-label": `${fieldStatus.label} autofill details`,
+                "aria-controls": sectionDetailsId,
+                onClick: (event) => {
+                  event.stopPropagation()
+                  setExpandedSectionLabels((prev) =>
+                    toggleSetMembership(prev, normalizedLabel),
+                  )
+                },
+                children: jsx("img", {
+                  src: assetUrl(arrDownSvg),
+                  alt: "",
+                  width: 14,
+                  height: 14,
+                  className: `auto-fill-section-chevron${
+                    sectionExpanded
+                      ? ""
+                      : " auto-fill-section-chevron--collapsed"
+                  }`,
+                }),
+              }),
+            showSkip &&
+              jsx("button", {
+                type: "button",
+                className: "auto-fill-field-item-skip-btn",
+                onClick: (event) => {
+                  event.stopPropagation()
+                  handleSkipClick(fieldStatus.label)
+                },
+                children: "Skip",
+              }),
+          ],
+        },
+        index,
+      )
+
+      const item =
+        showPartialDetails || hasSectionRows
+          ? jsxs(
+              "div",
+              {
+                className: "auto-fill-field-item-details-wrapper",
+                children: [
+                  row,
+                  hasSectionRows &&
+                    sectionResult &&
+                    jsx(SectionResultDetails, {
+                      result: sectionResult,
+                      detailsId: sectionDetailsId,
+                      expanded: sectionExpanded,
+                    }),
+                  showPartialDetails &&
+                    fieldItemResult &&
+                    jsx(PartialFieldDetails, {
+                      groups: resultGroups,
+                      partialDetailsId,
+                      expanded: partialExpanded,
+                    }),
+                ],
+              },
+              index,
+            )
+          : row
+
+      if (fieldStatus.required) {
+        requiredFields.push(item)
+        if (isFilled) filledRequiredFields.push(item)
+      } else {
+        optionalFields.push(item)
+        if (isFilled) filledOptionalFields.push(item)
+      }
+    })
+
+    return {
+      requiredFields,
+      optionalFields,
+      filledRequiredFields,
+      filledOptionalFields,
+    }
+  }, [
+    autoFillResult,
+    collapsedPartialLabels,
+    expandedSectionLabels,
+    isFilling,
+    currentField,
+    skipField,
+  ])
+
+  return jsx(Flex, {
+    className: "auto-fill-field-group",
+    vertical: true,
+    children: jsxs(Flex, {
+      gap: 12,
+      vertical: true,
+      children: [
+        fieldLists.requiredFields.length > 0 &&
+          jsxs(Fragment, {
+            children: [
+              jsx(Typography.Title, {
+                level: 4,
+                className: "auto-fill-field-group-title",
+                children: "Required",
+              }),
+              fieldLists.requiredFields,
+            ],
+          }),
+        fieldLists.optionalFields.length > 0 &&
+          jsxs(Fragment, {
+            children: [
+              fieldLists.requiredFields.length > 0 &&
+                jsx(Divider, {
+                  className: "auto-fill-divider",
+                }),
+              jsx(Typography.Title, {
+                level: 4,
+                className: "auto-fill-field-group-title",
+                children: "Optional",
+              }),
+              fieldLists.optionalFields,
+            ],
+          }),
+      ],
+    }),
+  })
+}

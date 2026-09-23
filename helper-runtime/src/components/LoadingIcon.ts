@@ -1,13 +1,29 @@
 // @ts-nocheck
 /**
- * Readable TypeScript converted from Parcel dump (helper-runtime/src/components/LoadingIcon.js).
+ * Spinning loading indicator for autofill field lists.
  */
-import * as o from "react/jsx-runtime"
-import * as i from "../ui/Image.ts"
-import * as l from "../assets/inline/images/loading.png.js"
 
-const a = { default: i }
-const s = { default: l }
-let u = () => o.jsx("div", {className: "loading-icon",children: o.jsx(a.default, {className: "spin-loading",src: s.default,height: 12,width: 12,style: {minWidth: 12,minHeight: 12},preview: false})});
+import { jsx } from "react/jsx-runtime"
+import * as loadingPng from "../assets/inline/images/loading.png.js"
+import Image from "../ui/Image.ts"
 
-export default u
+function assetUrl(mod) {
+  return mod?.default ?? mod
+}
+
+export default function LoadingIcon() {
+  return jsx("div", {
+    className: "loading-icon",
+    children: jsx(Image, {
+      className: "spin-loading",
+      src: assetUrl(loadingPng),
+      height: 12,
+      width: 12,
+      style: {
+        minWidth: 12,
+        minHeight: 12,
+      },
+      preview: false,
+    }),
+  })
+}

@@ -1,16 +1,326 @@
 // @ts-nocheck
 /**
- * Readable TypeScript converted from Parcel dump (helper-runtime/src/components/DateFields.js).
+ * Education / employment date pickers and shared validation helpers.
  */
-import * as o from "react/jsx-runtime"
-import * as i from "antd"
-import * as a from "dayjs"
-import * as s from "dayjs/plugin/customParseFormat"
-import * as c from "./Editor/utils/date-format.ts"
-import * as d from "./FormField.ts"
 
-const l = { default: a }
-const u = { default: s }
-;l.default.extend(u.default);let f=({value:e,onChange:t,disabledDate:r})=>{let n=e?l.default(e,c.AUTOFILL_INFO_DATE_FORMAT,true):null;return o.jsx(i.DatePicker,{picker:"month",value:n?.isValid()?n:null,format:c.AUTOFILL_INFO_DATE_FORMAT,placeholder:"Start Date",className:"autofill-info-modal-control",style:{width:"100%"},disabledDate:r,onChange:e=>t(e?e.format(c.AUTOFILL_INFO_DATE_FORMAT):"")})},p=({value:e,currentChecked:t,allowEndDateWithCurrent:r})=>{let n="Present"===e,o=t??n;return{checked:o,dateValue:n?"":e,disabled:o&&!r}},m=e=>{if(!e||"Present"===e)return null;let t=l.default(e,c.AUTOFILL_INFO_DATE_FORMAT,true);return t.isValid()?t.startOf("month"):null},h=e=>{let t=e?l.default(e):l.default();return(t.isValid()?t:l.default()).startOf("month")},g=(e,t)=>e.isAfter(t,"month")?t:e,b=(e,t)=>e.isAfter(t,"month")?e:t,y=({picker:e,candidate:t,startDate:r,endDate:n,isCurrent:o,today:i})=>{if(!t?.isValid())return false;let a=t.startOf("month"),l=m(r),s=m(n),u=h(i);if("start"===e){let e=s;return o&&(e=s?g(u,s):u),!!e&&a.isAfter(e,"month")}let c=l;return o&&(c=l?b(l,u):u),!!c&&a.isBefore(c,"month")},v=({endMonth:e,isCurrent:t,currentMonth:r})=>t?e&&e.isBefore(r,"month")?e:r:e,w=({field:e,startDate:t,endDate:r,isCurrent:n,today:o})=>{let i=h(o),a=m(t),l=m(r);if("endDate"===e&&n&&l?.isBefore(i,"month"))return"End date cannot be earlier than today";let s=v({endMonth:l,isCurrent:n,currentMonth:i});if(a&&s?.isBefore(a,"month"))return"End date cannot be earlier than start date"},S=({checked:e,onChange:t,onCurrentChange:r})=>{if(r){r(e);return}t(e?"Present":"")},E=({errorPrefix:e,field:t,error:r,hasError:n})=>{if(e&&r&&n)return n(`${e}.${t}`)?r:undefined},x=({errorPrefix:e,field:t,fields:r,clearAllDateErrorsOnChange:n})=>{if(!e)return[];let o=n?r.map(e=>e.field):[t];return o.map(t=>`${e}.${t}`)},C=({value:e,onChange:t,checkboxText:r="I currently study here",currentChecked:n,onCurrentChange:a,allowEndDateWithCurrent:s,disabledDate:u})=>{let d=p({value:e,currentChecked:n,allowEndDateWithCurrent:s}),f=d.dateValue?l.default(d.dateValue,c.AUTOFILL_INFO_DATE_FORMAT,true):null;return o.jsxs(i.Flex,{vertical:true,gap:4,children:[o.jsx(i.DatePicker,{picker:"month",value:f?.isValid()?f:null,format:c.AUTOFILL_INFO_DATE_FORMAT,placeholder:"End Date",disabled:d.disabled,className:"autofill-info-modal-control",style:{width:"100%"},disabledDate:u,onChange:e=>t(e?e.format(c.AUTOFILL_INFO_DATE_FORMAT):"")}),o.jsx(i.Checkbox,{checked:d.checked,onChange:e=>S({checked:e.target.checked,onChange:t,onCurrentChange:a}),children:r})]})},A=({fields:e,values:t,fieldDot:r,updateField:n,errorPrefix:a,hasError:l,clearError:s,currentChecked:u,onCurrentChange:c,allowEndDateWithCurrent:p,clearAllDateErrorsOnChange:m,constrainDateRange:h})=>{let g=t=>{x({errorPrefix:a,field:t,fields:e,clearAllDateErrorsOnChange:m}).forEach(e=>s?.(e))};return o.jsx(i.Flex,{gap:8,children:e.map(s=>{let m=a?`${a}.${s.field}`:undefined,b=E({errorPrefix:a,field:s.field,error:s.error,hasError:l}),v=h?w({field:s.field,startDate:t.startDate,endDate:t.endDate,isCurrent:u}):undefined,S=v??b;return o.jsxs(i.Flex,{vertical:true,gap:8,flex:1,"data-autofill-info-field":m,children:[d.fieldLabel(s.label,{required:false,showDot:r(s.field)}),"start"===s.picker?o.jsx(f,{value:t[s.field],disabledDate:e=>!!h&&y({picker:"start",candidate:e,startDate:t.startDate,endDate:t.endDate,isCurrent:u}),onChange:e=>{n(s.field,e),g(s.field)}}):o.jsx(C,{value:t[s.field],checkboxText:s.checkboxText,currentChecked:u,onCurrentChange:c?t=>{c(t),e.forEach(({field:e})=>g(e))}:undefined,allowEndDateWithCurrent:p,disabledDate:e=>!!h&&y({picker:"end",candidate:e,startDate:t.startDate,endDate:t.endDate,isCurrent:u}),onChange:e=>{n(s.field,e),g(s.field)}}),S&&o.jsx("span",{className:"autofill-info-modal-error",children:S})]},s.field)})})}
+import { jsx, jsxs } from "react/jsx-runtime"
+import { Checkbox, DatePicker, Flex } from "antd"
+import dayjs from "dayjs"
+import customParseFormat from "dayjs/plugin/customParseFormat"
+import { AUTOFILL_INFO_DATE_FORMAT } from "./Editor/utils/date-format.ts"
+import { fieldLabel } from "./FormField.ts"
 
-export { f as EducationStartDatePicker, p as getEducationEndDatePickerModel, y as isEducationDatePickerDateDisabled, w as getEducationDateFieldLiveError, S as handleEducationEndDateCurrentToggle, E as getDateFieldValidationError, x as getDateFieldErrorKeysToClear, C as EducationEndDatePicker, A as renderDateFieldRow }
+dayjs.extend(customParseFormat)
+
+export function EducationStartDatePicker({ value, onChange, disabledDate }) {
+  const parsed = value
+    ? dayjs(value, AUTOFILL_INFO_DATE_FORMAT, true)
+    : null
+
+  return jsx(DatePicker, {
+    picker: "month",
+    value: parsed?.isValid() ? parsed : null,
+    format: AUTOFILL_INFO_DATE_FORMAT,
+    placeholder: "Start Date",
+    className: "autofill-info-modal-control",
+    style: { width: "100%" },
+    disabledDate,
+    onChange: (next) =>
+      onChange(next ? next.format(AUTOFILL_INFO_DATE_FORMAT) : ""),
+  })
+}
+
+export function getEducationEndDatePickerModel({
+  value,
+  currentChecked,
+  allowEndDateWithCurrent,
+}) {
+  const isPresent = value === "Present"
+  const checked = currentChecked ?? isPresent
+  return {
+    checked,
+    dateValue: isPresent ? "" : value,
+    disabled: checked && !allowEndDateWithCurrent,
+  }
+}
+
+function parseMonthValue(value) {
+  if (!value || value === "Present") return null
+  const parsed = dayjs(value, AUTOFILL_INFO_DATE_FORMAT, true)
+  return parsed.isValid() ? parsed.startOf("month") : null
+}
+
+function startOfMonthToday(today) {
+  const parsed = today ? dayjs(today) : dayjs()
+  return (parsed.isValid() ? parsed : dayjs()).startOf("month")
+}
+
+function earlierMonth(a, b) {
+  return a.isAfter(b, "month") ? b : a
+}
+
+function laterMonth(a, b) {
+  return a.isAfter(b, "month") ? a : b
+}
+
+export function isEducationDatePickerDateDisabled({
+  picker,
+  candidate,
+  startDate,
+  endDate,
+  isCurrent,
+  today,
+}) {
+  if (!candidate?.isValid()) return false
+
+  const month = candidate.startOf("month")
+  const startMonth = parseMonthValue(startDate)
+  const endMonth = parseMonthValue(endDate)
+  const currentMonth = startOfMonthToday(today)
+
+  if (picker === "start") {
+    let maxMonth = endMonth
+    if (isCurrent) {
+      maxMonth = endMonth ? earlierMonth(currentMonth, endMonth) : currentMonth
+    }
+    return !!maxMonth && month.isAfter(maxMonth, "month")
+  }
+
+  let minMonth = startMonth
+  if (isCurrent) {
+    minMonth = startMonth ? laterMonth(startMonth, currentMonth) : currentMonth
+  }
+  return !!minMonth && month.isBefore(minMonth, "month")
+}
+
+function resolveEffectiveEndMonth({ endMonth, isCurrent, currentMonth }) {
+  if (!isCurrent) return endMonth
+  if (endMonth && endMonth.isBefore(currentMonth, "month")) return endMonth
+  return currentMonth
+}
+
+export function getEducationDateFieldLiveError({
+  field,
+  startDate,
+  endDate,
+  isCurrent,
+  today,
+}) {
+  const currentMonth = startOfMonthToday(today)
+  const startMonth = parseMonthValue(startDate)
+  const endMonth = parseMonthValue(endDate)
+
+  if (
+    field === "endDate" &&
+    isCurrent &&
+    endMonth?.isBefore(currentMonth, "month")
+  ) {
+    return "End date cannot be earlier than today"
+  }
+
+  const effectiveEnd = resolveEffectiveEndMonth({
+    endMonth,
+    isCurrent,
+    currentMonth,
+  })
+
+  if (startMonth && effectiveEnd?.isBefore(startMonth, "month")) {
+    return "End date cannot be earlier than start date"
+  }
+}
+
+export function handleEducationEndDateCurrentToggle({
+  checked,
+  onChange,
+  onCurrentChange,
+}) {
+  if (onCurrentChange) {
+    onCurrentChange(checked)
+    return
+  }
+  onChange(checked ? "Present" : "")
+}
+
+export function getDateFieldValidationError({
+  errorPrefix,
+  field,
+  error,
+  hasError,
+}) {
+  if (errorPrefix && error && hasError) {
+    return hasError(`${errorPrefix}.${field}`) ? error : undefined
+  }
+}
+
+export function getDateFieldErrorKeysToClear({
+  errorPrefix,
+  field,
+  fields,
+  clearAllDateErrorsOnChange,
+}) {
+  if (!errorPrefix) return []
+  const keys = clearAllDateErrorsOnChange
+    ? fields.map((item) => item.field)
+    : [field]
+  return keys.map((key) => `${errorPrefix}.${key}`)
+}
+
+export function EducationEndDatePicker({
+  value,
+  onChange,
+  checkboxText = "I currently study here",
+  currentChecked,
+  onCurrentChange,
+  allowEndDateWithCurrent,
+  disabledDate,
+}) {
+  const model = getEducationEndDatePickerModel({
+    value,
+    currentChecked,
+    allowEndDateWithCurrent,
+  })
+  const parsed = model.dateValue
+    ? dayjs(model.dateValue, AUTOFILL_INFO_DATE_FORMAT, true)
+    : null
+
+  return jsxs(Flex, {
+    vertical: true,
+    gap: 4,
+    children: [
+      jsx(DatePicker, {
+        picker: "month",
+        value: parsed?.isValid() ? parsed : null,
+        format: AUTOFILL_INFO_DATE_FORMAT,
+        placeholder: "End Date",
+        disabled: model.disabled,
+        className: "autofill-info-modal-control",
+        style: { width: "100%" },
+        disabledDate,
+        onChange: (next) =>
+          onChange(next ? next.format(AUTOFILL_INFO_DATE_FORMAT) : ""),
+      }),
+      jsx(Checkbox, {
+        checked: model.checked,
+        onChange: (event) =>
+          handleEducationEndDateCurrentToggle({
+            checked: event.target.checked,
+            onChange,
+            onCurrentChange,
+          }),
+        children: checkboxText,
+      }),
+    ],
+  })
+}
+
+export function renderDateFieldRow({
+  fields,
+  values,
+  fieldDot,
+  updateField,
+  errorPrefix,
+  hasError,
+  clearError,
+  currentChecked,
+  onCurrentChange,
+  allowEndDateWithCurrent,
+  clearAllDateErrorsOnChange,
+  constrainDateRange,
+}) {
+  function clearErrorsForField(field) {
+    getDateFieldErrorKeysToClear({
+      errorPrefix,
+      field,
+      fields,
+      clearAllDateErrorsOnChange,
+    }).forEach((key) => clearError?.(key))
+  }
+
+  return jsx(Flex, {
+    gap: 8,
+    children: fields.map((fieldConfig) => {
+      const fieldKey = errorPrefix
+        ? `${errorPrefix}.${fieldConfig.field}`
+        : undefined
+      const storedError = getDateFieldValidationError({
+        errorPrefix,
+        field: fieldConfig.field,
+        error: fieldConfig.error,
+        hasError,
+      })
+      const liveError = constrainDateRange
+        ? getEducationDateFieldLiveError({
+            field: fieldConfig.field,
+            startDate: values.startDate,
+            endDate: values.endDate,
+            isCurrent: currentChecked,
+          })
+        : undefined
+      const errorMessage = liveError ?? storedError
+
+      return jsxs(
+        Flex,
+        {
+          vertical: true,
+          gap: 8,
+          flex: 1,
+          "data-autofill-info-field": fieldKey,
+          children: [
+            fieldLabel(fieldConfig.label, {
+              required: false,
+              showDot: fieldDot(fieldConfig.field),
+            }),
+            fieldConfig.picker === "start"
+              ? jsx(EducationStartDatePicker, {
+                  value: values[fieldConfig.field],
+                  disabledDate: (candidate) =>
+                    !!constrainDateRange &&
+                    isEducationDatePickerDateDisabled({
+                      picker: "start",
+                      candidate,
+                      startDate: values.startDate,
+                      endDate: values.endDate,
+                      isCurrent: currentChecked,
+                    }),
+                  onChange: (next) => {
+                    updateField(fieldConfig.field, next)
+                    clearErrorsForField(fieldConfig.field)
+                  },
+                })
+              : jsx(EducationEndDatePicker, {
+                  value: values[fieldConfig.field],
+                  checkboxText: fieldConfig.checkboxText,
+                  currentChecked,
+                  onCurrentChange: onCurrentChange
+                    ? (checked) => {
+                        onCurrentChange(checked)
+                        fields.forEach(({ field }) => clearErrorsForField(field))
+                      }
+                    : undefined,
+                  allowEndDateWithCurrent,
+                  disabledDate: (candidate) =>
+                    !!constrainDateRange &&
+                    isEducationDatePickerDateDisabled({
+                      picker: "end",
+                      candidate,
+                      startDate: values.startDate,
+                      endDate: values.endDate,
+                      isCurrent: currentChecked,
+                    }),
+                  onChange: (next) => {
+                    updateField(fieldConfig.field, next)
+                    clearErrorsForField(fieldConfig.field)
+                  },
+                }),
+            errorMessage &&
+              jsx("span", {
+                className: "autofill-info-modal-error",
+                children: errorMessage,
+              }),
+          ],
+        },
+        fieldConfig.field,
+      )
+    }),
+  })
+}

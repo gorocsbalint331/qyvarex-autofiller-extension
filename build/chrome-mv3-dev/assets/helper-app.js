@@ -77197,6 +77197,7 @@ var shouldValidateWorkdayPasswordOnUpdate = _imp_up_utils_workday_signup_passwor
 var validateWorkdayPassword = _imp_up_utils_workday_signup_password_ts.validateWorkdayPassword;
 helpers.export(r, "WORKDAY_SIGNUP_INFORMATION_STORAGE_KEY", () => WORKDAY_SIGNUP_INFORMATION_STORAGE_KEY);
 helpers.export(r, "WORKDAY_SIGNUP_PASSWORD_REQUIREMENTS_ERROR", () => WORKDAY_SIGNUP_PASSWORD_REQUIREMENTS_ERROR);
+helpers.export(r, "clearWorkdaySignupInformation", () => clearWorkdaySignupInformation);
 helpers.export(r, "getWorkdaySignupInformation", () => getWorkdaySignupInformation);
 helpers.export(r, "getWorkdaySignupPasswordLocalUpdateAction", () => getWorkdaySignupPasswordLocalUpdateAction);
 helpers.export(r, "hasValidWorkdaySignupInformation", () => hasValidWorkdaySignupInformation);
@@ -77228,6 +77229,9 @@ async function saveWorkdaySignupInformation({ password }, options = {}) {
     password,
     updatedAt: now()
   });
+}
+async function clearWorkdaySignupInformation(storage = defaultStorage) {
+  await storage.remove(WORKDAY_SIGNUP_INFORMATION_STORAGE_KEY);
 }
 function getWorkdaySignupPasswordLocalUpdateAction({
   password,

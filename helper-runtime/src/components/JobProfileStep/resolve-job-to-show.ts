@@ -1,7 +1,18 @@
 // @ts-nocheck
 /**
- * Readable TypeScript converted from Parcel dump (helper-runtime/src/components/JobProfileStep/resolve-job-to-show.js).
+ * Pick which job payload to show in the profile step (tab vs external override).
  */
-function o({currentTabJob: e,externalJobInfo: t,manualOverrideJobId: r}) {let n = !!r && !!t && e?.jobResult?.jobId === r;return n ? t : e ?? t ?? null}
 
-export { o as resolveJobToShow }
+export function resolveJobToShow({
+  currentTabJob,
+  externalJobInfo,
+  manualOverrideJobId,
+}) {
+  const useExternalOverride =
+    !!manualOverrideJobId &&
+    !!externalJobInfo &&
+    currentTabJob?.jobResult?.jobId === manualOverrideJobId
+  return useExternalOverride
+    ? externalJobInfo
+    : (currentTabJob ?? externalJobInfo ?? null)
+}

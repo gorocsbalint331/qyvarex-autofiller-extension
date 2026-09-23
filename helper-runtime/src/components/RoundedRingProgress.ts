@@ -1,10 +1,149 @@
 // @ts-nocheck
 /**
- * Readable TypeScript converted from Parcel dump (helper-runtime/src/components/RoundedRingProgress.js).
+ * Capsule-shaped SVG ring progress with optional percent label.
  */
-import * as o from "react/jsx-runtime"
-import * as i from "react"
 
-n.interopDefault(i);let a=({progress:e,width:t=56,height:r=32,strokeWidth:n=2,gradient:a=["#50FABE","#A0FA96"],progressText:l})=>{let s=i.useId().replace(/:/g,""),u=Math.max(0,Math.min(1,e||0)),c=n/2,d=t-n,f=r-n,p=f/2,m=Math.max(d-f,0),h={left:13,top:9,width:30,height:16},{trackPath:g,trackLength:b}=i.useMemo(()=>{let e=`M ${t/2} ${r-c} H ${c+p} A ${p} ${p} 0 0 1 ${c+p} ${c} H ${t-c-p} A ${p} ${p} 0 0 1 ${t-c-p} ${r-c} H ${t/2}`;return{trackPath:e,trackLength:2*m+2*Math.PI*p}},[r,c,p,m,t]),y=b*(1-u);return o.jsxs("div",{style:{position:"relative",width:t,height:r},children:[o.jsxs("svg",{width:t,height:r,viewBox:`0 0 ${t} ${r}`,style:{display:"block",overflow:"visible"},children:[o.jsx("defs",{children:o.jsxs("linearGradient",{id:s,x1:"100%",y1:"0%",x2:"0%",y2:"100%",children:[o.jsx("stop",{offset:"0%",stopColor:a[0]}),o.jsx("stop",{offset:"100%",stopColor:a[1]})]})}),o.jsx("rect",{x:c,y:c,width:d,height:f,rx:p,ry:p,fill:"none",stroke:"#F3F4F5",strokeWidth:n}),o.jsx("path",{d:g,fill:"none",stroke:`url(#${s})`,strokeWidth:n,strokeDasharray:b,strokeDashoffset:y,strokeLinecap:"round"})]}),undefined!==l&&o.jsx("div",{style:{position:"absolute",left:h.left,top:h.top,width:h.width,height:h.height,display:"flex",alignItems:"flex-start",justifyContent:"center",pointerEvents:"none"},children:o.jsxs("div",{style:{display:"inline-flex",alignItems:"flex-start",justifyContent:"center",gap:0,width:"100%",height:"100%",whiteSpace:"nowrap",flexWrap:"nowrap"},children:[o.jsx("span",{style:{color:"var(--mainFill, var(--base-color-black, #000))",textAlign:"center",fontFamily:"Rubik, Inter, sans-serif",fontSize:"16px",fontWeight:500,fontStyle:"normal",lineHeight:"16px",flexShrink:0},children:l}),o.jsx("span",{style:{color:"var(--mainFill, var(--base-color-black, #000))",fontFamily:"Rubik, Inter, sans-serif",fontSize:"10px",fontWeight:700,fontStyle:"normal",lineHeight:"15px",flexShrink:0,transform:"translateY(1px)"},children:"%"})]})})]})};
+import { jsx, jsxs } from "react/jsx-runtime"
+import { useId, useMemo } from "react"
 
-export default a
+export default function RoundedRingProgress({
+  progress,
+  width = 56,
+  height = 32,
+  strokeWidth = 2,
+  gradient = ["#50FABE", "#A0FA96"],
+  progressText,
+}) {
+  const gradientId = useId().replace(/:/g, "")
+  const clamped = Math.max(0, Math.min(1, progress || 0))
+  const halfStroke = strokeWidth / 2
+  const innerWidth = width - strokeWidth
+  const innerHeight = height - strokeWidth
+  const radius = innerHeight / 2
+  const straightLength = Math.max(innerWidth - innerHeight, 0)
+  const labelBox = { left: 13, top: 9, width: 30, height: 16 }
+
+  const { trackPath, trackLength } = useMemo(() => {
+    const path = `M ${width / 2} ${height - halfStroke} H ${halfStroke + radius} A ${radius} ${radius} 0 0 1 ${halfStroke + radius} ${halfStroke} H ${width - halfStroke - radius} A ${radius} ${radius} 0 0 1 ${width - halfStroke - radius} ${height - halfStroke} H ${width / 2}`
+    return {
+      trackPath: path,
+      trackLength: 2 * straightLength + 2 * Math.PI * radius,
+    }
+  }, [height, halfStroke, radius, straightLength, width])
+
+  const dashOffset = trackLength * (1 - clamped)
+
+  return jsxs("div", {
+    style: {
+      position: "relative",
+      width,
+      height,
+    },
+    children: [
+      jsxs("svg", {
+        width,
+        height,
+        viewBox: `0 0 ${width} ${height}`,
+        style: {
+          display: "block",
+          overflow: "visible",
+        },
+        children: [
+          jsx("defs", {
+            children: jsxs("linearGradient", {
+              id: gradientId,
+              x1: "100%",
+              y1: "0%",
+              x2: "0%",
+              y2: "100%",
+              children: [
+                jsx("stop", {
+                  offset: "0%",
+                  stopColor: gradient[0],
+                }),
+                jsx("stop", {
+                  offset: "100%",
+                  stopColor: gradient[1],
+                }),
+              ],
+            }),
+          }),
+          jsx("rect", {
+            x: halfStroke,
+            y: halfStroke,
+            width: innerWidth,
+            height: innerHeight,
+            rx: radius,
+            ry: radius,
+            fill: "none",
+            stroke: "#F3F4F5",
+            strokeWidth,
+          }),
+          jsx("path", {
+            d: trackPath,
+            fill: "none",
+            stroke: `url(#${gradientId})`,
+            strokeWidth,
+            strokeDasharray: trackLength,
+            strokeDashoffset: dashOffset,
+            strokeLinecap: "round",
+          }),
+        ],
+      }),
+      progressText !== undefined &&
+        jsx("div", {
+          style: {
+            position: "absolute",
+            left: labelBox.left,
+            top: labelBox.top,
+            width: labelBox.width,
+            height: labelBox.height,
+            display: "flex",
+            alignItems: "flex-start",
+            justifyContent: "center",
+            pointerEvents: "none",
+          },
+          children: jsxs("div", {
+            style: {
+              display: "inline-flex",
+              alignItems: "flex-start",
+              justifyContent: "center",
+              gap: 0,
+              width: "100%",
+              height: "100%",
+              whiteSpace: "nowrap",
+              flexWrap: "nowrap",
+            },
+            children: [
+              jsx("span", {
+                style: {
+                  color: "var(--mainFill, var(--base-color-black, #000))",
+                  textAlign: "center",
+                  fontFamily: "Rubik, Inter, sans-serif",
+                  fontSize: "16px",
+                  fontWeight: 500,
+                  fontStyle: "normal",
+                  lineHeight: "16px",
+                  flexShrink: 0,
+                },
+                children: progressText,
+              }),
+              jsx("span", {
+                style: {
+                  color: "var(--mainFill, var(--base-color-black, #000))",
+                  fontFamily: "Rubik, Inter, sans-serif",
+                  fontSize: "10px",
+                  fontWeight: 700,
+                  fontStyle: "normal",
+                  lineHeight: "15px",
+                  flexShrink: 0,
+                  transform: "translateY(1px)",
+                },
+                children: "%",
+              }),
+            ],
+          }),
+        }),
+    ],
+  })
+}

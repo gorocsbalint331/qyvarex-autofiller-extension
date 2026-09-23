@@ -1,7 +1,25 @@
 // @ts-nocheck
 /**
- * Readable TypeScript converted from Parcel dump (helper-runtime/src/components/resume-init-gate.js).
+ * Resolve which job id should drive resume initialization (or a sentinel when none).
  */
-let o = "__resume-init-without-job-id__",i = e => {if (null == e) return null;let t = String(e).trim();return t || null},a = ({resumeTargetJob: e,fallbackJobId: t,jobContextLoading: r = false}) => r ? null : i(e?.jobResult?.jobId) || i(t) || o
 
-export { a as resolveResumeInitializationJobId }
+const RESUME_INIT_WITHOUT_JOB_ID = "__resume-init-without-job-id__"
+
+function normalizeJobId(value) {
+  if (value == null) return null
+  const trimmed = String(value).trim()
+  return trimmed || null
+}
+
+export function resolveResumeInitializationJobId({
+  resumeTargetJob,
+  fallbackJobId,
+  jobContextLoading = false,
+}) {
+  if (jobContextLoading) return null
+  return (
+    normalizeJobId(resumeTargetJob?.jobResult?.jobId) ||
+    normalizeJobId(fallbackJobId) ||
+    RESUME_INIT_WITHOUT_JOB_ID
+  )
+}

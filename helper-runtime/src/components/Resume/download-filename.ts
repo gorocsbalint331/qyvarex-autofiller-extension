@@ -1,7 +1,22 @@
 // @ts-nocheck
 /**
- * Readable TypeScript converted from Parcel dump (helper-runtime/src/components/Resume/download-filename.js).
+ * Resume download basename helpers.
  */
-function o(e){return e.replace(/\.[^/.]+$/,"")}function i({selectedResume:e,isTailorResume:t,tailorResumeName:r}){let n=e?.resumeName?.trim(),i=r.trim(),a=e?.resumeNameWithSuffix?.trim();return n?o(n):t&&i?o(i):a?o(a):"resume"}
 
-export { i as getResumeDownloadBaseName }
+function stripExtension(filename) {
+  return filename.replace(/\.[^/.]+$/, "")
+}
+
+export function getResumeDownloadBaseName({
+  selectedResume,
+  isTailorResume,
+  tailorResumeName,
+}) {
+  const resumeName = selectedResume?.resumeName?.trim()
+  const tailorName = tailorResumeName.trim()
+  const withSuffix = selectedResume?.resumeNameWithSuffix?.trim()
+  if (resumeName) return stripExtension(resumeName)
+  if (isTailorResume && tailorName) return stripExtension(tailorName)
+  if (withSuffix) return stripExtension(withSuffix)
+  return "resume"
+}

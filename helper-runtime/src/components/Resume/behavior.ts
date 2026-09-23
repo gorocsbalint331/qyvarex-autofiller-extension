@@ -1,9 +1,23 @@
 // @ts-nocheck
 /**
- * Readable TypeScript converted from Parcel dump (helper-runtime/src/components/Resume/behavior.js).
+ * Resume review download menu + autofill-info handoff helpers.
  */
-import * as o from "./download-menu.ts"
 
-function i({disableUploadResume:e,downloadPdf:t,downloadWord:r}){if(!e)return o.buildResumeDownloadMenuItems(t,r)}function a({closeResumeReview:e,openAutofillInfo:t}){e(),t()}
+import { buildResumeDownloadMenuItems } from "./ResumeReview/download-menu.ts"
 
-export { i as getResumeReviewDownloadMenuItems, a as openAutofillInfoFromResumeReview }
+export function getResumeReviewDownloadMenuItems({
+  disableUploadResume,
+  downloadPdf,
+  downloadWord,
+}) {
+  if (disableUploadResume) return undefined
+  return buildResumeDownloadMenuItems(downloadPdf, downloadWord)
+}
+
+export function openAutofillInfoFromResumeReview({
+  closeResumeReview,
+  openAutofillInfo,
+}) {
+  closeResumeReview()
+  openAutofillInfo()
+}

@@ -1,13 +1,28 @@
 // @ts-nocheck
 /**
- * Readable TypeScript converted from Parcel dump (helper-runtime/src/components/CheckedIcon.js).
+ * Small checked/conform icon used in autofill field lists.
  */
-import * as o from "react/jsx-runtime"
-import * as i from "../ui/Image.ts"
-import * as l from "../assets/inline/images/conform.svg.js"
 
-const a = { default: i }
-const s = { default: l }
-let u = () => o.jsx("div", {className: "checked-icon",children: o.jsx(a.default, {preview: false,src: s.default,height: 12,width: 12,style: {minWidth: 12,minHeight: 12}})});
+import { jsx } from "react/jsx-runtime"
+import * as conformSvg from "../assets/inline/images/conform.svg.js"
+import Image from "../ui/Image.ts"
 
-export default u
+function assetUrl(mod) {
+  return mod?.default ?? mod
+}
+
+export default function CheckedIcon() {
+  return jsx("div", {
+    className: "checked-icon",
+    children: jsx(Image, {
+      preview: false,
+      src: assetUrl(conformSvg),
+      height: 12,
+      width: 12,
+      style: {
+        minWidth: 12,
+        minHeight: 12,
+      },
+    }),
+  })
+}

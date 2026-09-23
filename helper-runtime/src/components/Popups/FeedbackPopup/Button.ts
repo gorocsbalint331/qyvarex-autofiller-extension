@@ -1,15 +1,32 @@
 // @ts-nocheck
 /**
- * Readable TypeScript converted from Parcel dump (helper-runtime/src/components/Popups/FeedbackPopup/Button.js).
+ * Feedback entry button that opens the feedback modal.
  */
-import * as o from "react/jsx-runtime"
-import * as i from "antd"
-import * as a from "../../../assets/inline/images/feedback.svg.js"
-import * as s from "../../../store/feedback.ts"
-import * as u from "../../../ui/Image.ts"
 
-const l = { default: a }
-const c = { default: u }
-function d() {let e = s.useFeedbackStore(e => e.setOpenFeedbackPopup);return o.jsxs(i.Button, {id: "feedback-entry",onClick: () => e(true),children: [o.jsx(c.default, {src: l.default,alt: "logo-image",preview: false}), "Feedback"]})}
+import { jsx, jsxs } from "react/jsx-runtime"
+import { Button } from "antd"
+import * as feedbackSvg from "../../../assets/inline/images/feedback.svg.js"
+import { useFeedbackStore } from "../../../store/feedback.ts"
+import Image from "../../../ui/Image.ts"
 
-export default d
+function assetUrl(mod) {
+  return mod?.default ?? mod
+}
+
+export default function FeedbackEntryButton() {
+  const setOpenFeedbackPopup = useFeedbackStore(
+    (state) => state.setOpenFeedbackPopup,
+  )
+  return jsxs(Button, {
+    id: "feedback-entry",
+    onClick: () => setOpenFeedbackPopup(true),
+    children: [
+      jsx(Image, {
+        src: assetUrl(feedbackSvg),
+        alt: "logo-image",
+        preview: false,
+      }),
+      "Feedback",
+    ],
+  })
+}

@@ -21,7 +21,7 @@ import { agentDomains } from "./api/env-resolver.js"
 import * as DraggableIconModule from "./components/DraggableIcon.js"
 import * as LinkedinBannerProviderModule from "./components/LinkedinBannerProvider.js"
 import * as FeedbackPopupModule from "./components/Popups/FeedbackPopup.js"
-import * as StarRatingModalModule from "./components/StarRatingModal.js"
+import * as StarRatingModalModule from "./components/StarRatingModal.ts"
 import { TextareaGenerateButtonLayer } from "./components/TextareaGenerateButton.js"
 import * as TraceProviderModule from "./components/TraceProvider.js"
 import {

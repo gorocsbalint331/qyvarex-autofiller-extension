@@ -1,7 +1,9 @@
 // @ts-nocheck
 /**
- * Readable TypeScript converted from Parcel dump (helper-runtime/src/components/formatPublishTime.js).
+ * Format job publish-time copy, optionally marking a repost.
  */
-let o=(e,t)=>e?t?`Reposted ${e}`:e:""
 
-export { o as formatPublishTimeDesc }
+export function formatPublishTimeDesc(publishTimeDesc, isRepost) {
+  if (!publishTimeDesc) return ""
+  return isRepost ? `Reposted ${publishTimeDesc}` : publishTimeDesc
+}

@@ -1,25 +1,596 @@
 // @ts-nocheck
 /**
- * Readable TypeScript converted from Parcel dump (helper-runtime/src/components/TextareaGenerateButton.js).
+ * Shadow-DOM "Edit with AI" buttons overlaid on tracked textareas.
  */
-import * as o from "react/jsx-runtime"
-import * as i from "data-base64:~/assets/images/logo_bird.svg"
-import * as l from "data-base64:~/assets/images/turbo.png"
-import * as u from "react"
-import * as c from "react-dom"
-import * as d from "@plasmohq/messaging"
-import * as f from "../api/env-resolver.ts"
-import * as p from "../constants/payment.ts"
-import * as m from "../store/profile.ts"
-import * as h from "../store/url.ts"
-import * as g from "../utils/trace.ts"
-import * as b from "./constants.ts"
-import * as y from "./exposureTracker.ts"
-import * as v from "./useGenerateField.js"
-import * as w from "./useTextareaTracker.js"
 
-const a = { default: i }
-const s = { default: l }
-let S = 4,E = 40,x = 240,C = 100,A = ["...", "..", ".", "..", "..."];function k() {let [e, t] = u.useState(0);return u.useEffect(() => {let e = setInterval(() => {t(e => (e + 1) % A.length)}, 300);return () => clearInterval(e)}, []), o.jsx("span", {style: {display: "inline-block",width: "1.2em",textAlign: "left"},children: A[e]})}function T({onClose: e}) {return o.jsx("div", {style: {display: "flex",width: x,padding: 8,flexDirection: "column",justifyContent: "center",alignItems: "center",gap: 8,borderRadius: 16,background: "#fff",boxShadow: "0 4px 24px rgba(0,0,0,0.12), 0 0 0 1px rgba(0,0,0,0.06)",fontFamily: "Inter, -apple-system, sans-serif"},onClick: e => e.stopPropagation(),children: o.jsxs("div", {style: {display: "flex",width: "100%",padding: 8,flexDirection: "column",justifyContent: "center",alignItems: "center",gap: 8,borderRadius: 8},children: [o.jsxs("div", {style: {display: "flex",alignItems: "center",gap: 8,width: "100%"},children: [o.jsx("img", {src: s.default,alt: "",style: {width: 40,height: 40,display: "block",flexShrink: 0}}), o.jsxs("p", {style: {margin: 0,fontSize: 13,fontWeight: 400,lineHeight: "16px",color: "#000"},children: ["Upgrade to Turbo to", " ", o.jsx("strong", {style: {fontWeight: 700},children: "autofill answers with AI"})]})]}), o.jsx("button", {type: "button",onClick: () => {g.trackEvent("autofill_ai_regenerate_upgrade_click"), window.open(f.HOST_DOMAIN + p.MEMBERSHIP_RETARGET_PATH, "_blank"), e()},style: {width: "100%",padding: 8,borderRadius: 8,border: "none",background: "#57eba1",fontSize: 13,fontWeight: 600,color: "#000",cursor: "pointer",fontFamily: "inherit",lineHeight: "16px",textAlign: "center"},onMouseEnter: e => {e.currentTarget.style.background = "#3dd990"},onMouseLeave: e => {e.currentTarget.style.background = "#57eba1"},children: "Upgrade Now"})]})})}function F({onGenerate: e,onClose: t}) {let [r, n] = u.useState(""), i = () => {g.trackEvent("autofill_ai_regenerate_generate_click", {url: h.useUrlStore.getState().currentTabUrl || window.location.href});let o = r.trim() ? [r.trim()] : [];e(o), n(""), t()};return o.jsxs("div", {style: {display: "flex",width: x,padding: 8,flexDirection: "column",alignItems: "flex-start",gap: 8,borderRadius: 16,background: "#fff",boxShadow: "0 4px 24px rgba(0,0,0,0.12), 0 0 0 1px rgba(0,0,0,0.06)",fontFamily: "Inter, -apple-system, sans-serif"},onClick: e => e.stopPropagation(),children: [o.jsx("textarea", {placeholder: "Tell me what you want to add, change, or improve.",value: r,maxLength: 750,onChange: e => n(e.target.value.slice(0, 750)),onKeyDown: e => {"Enter" !== e.key || e.shiftKey || (e.preventDefault(), i()), "Escape" === e.key && t()},autoFocus: true,style: {width: "100%",height: 96,padding: 8,borderRadius: 8,border: "none",outline: "none",background: "#F7F8F9",boxShadow: "inset 0 0 0 1px rgba(0,0,0,0.06)",fontSize: 13,fontWeight: 400,lineHeight: "16px",color: "#000",fontFamily: "inherit",resize: "none",boxSizing: "border-box"}}), o.jsxs("div", {style: {display: "flex",gap: 8,alignSelf: "stretch"},children: [o.jsx("button", {type: "button",onClick: () => {n(""), t()},style: {flex: 1,padding: 8,borderRadius: 8,border: "none",background: "#fff",boxShadow: "0 0 0 1px rgba(0,0,0,0.1)",fontSize: 13,fontWeight: 500,color: "#000",cursor: "pointer",fontFamily: "inherit",lineHeight: "16px"},onMouseEnter: e => {e.currentTarget.style.background = "#F7F8F9"},onMouseLeave: e => {e.currentTarget.style.background = "#fff"},children: "Cancel"}), o.jsx("button", {type: "button",onClick: i,style: {flex: 1,padding: 8,borderRadius: 8,border: "none",background: "#57eba1",fontSize: 13,fontWeight: 500,color: "#000",cursor: "pointer",fontFamily: "inherit",lineHeight: "16px"},onMouseEnter: e => {e.currentTarget.style.background = "#3dd990"},onMouseLeave: e => {e.currentTarget.style.background = "#57eba1"},children: "Generate"})]})]})}function I({textarea: e,rect: t,status: r,isPopoverOpen: n,isSubscribed: i,onTogglePopover: l,onGenerate: s,onClosePopover: c}) {let [d, f] = u.useState(false), p = d || "loading" === r || n, m = u.useRef(null), [h, b] =u.useState({top: -9999,left: -9999}), y = 32, v = 6;if (u.useLayoutEffect(() => {let t = m.current;if (!t) return;let r = t.getRootNode(),n = r.host;if (!n) return;let o = n.getBoundingClientRect(),i = e.getBoundingClientRect();b({top: i.top - o.top + i.height - y - S,left: i.left - o.left + S})}, [e, t.top, t.left, t.width, t.height]), t.height < E) return null;let {top: w,left: x} = h, C = 1;return o.jsxs(o.Fragment, {children: [o.jsxs("button", {ref: m,type: "button",title: "loading" === r ? "Generating..." : "error" === r ?"Generation failed, click to retry" : "Edit with AI",onClick: t => {t.stopPropagation(), t.preventDefault(), "loading" !== r && (g.trackEvent("autofill_ai_regenerate_entry_click"), l(e))},style: {position: "absolute",top: w,left: x,height: y,zIndex: C,display: "inline-flex",alignItems: "center",gap: p ? 4 : 0,padding: p ? "0 8px 0 6px" : "0 6px",borderRadius: "6px 0 6px 6px",background: "error" === r ? "#ef4444" : "#fff",boxShadow: "0 0 0 1px rgba(0,0,0,0.1)",border: "none",cursor: "loading" === r ? "default" : "pointer",userSelect: "none",pointerEvents: "auto",outline: "none",fontFamily: "Inter, -apple-system, sans-serif",transition: "box-shadow 0.15s ease, background 0.15s ease, padding 0.2s ease, gap 0.2s ease"},onMouseEnter: e => {f(true), "loading" !== r && (e.currentTarget.style.boxShadow ="0 0 0 1px rgba(0,0,0,0.2)")},onMouseLeave: e => {f(false), e.currentTarget.style.boxShadow = "0 0 0 1px rgba(0,0,0,0.1)"},children: [o.jsx("img", {src: a.default,alt: "",style: {width: 20,height: 20,display: "block",flexShrink: 0}}), o.jsx("span", {style: {fontSize: 12,fontWeight: 600,lineHeight: "16px",color: "error" === r ? "#fff" : "#000",whiteSpace: "nowrap",overflow: "hidden",maxWidth: p ? 100 : 0,opacity: p ? 1 : 0,transition: "max-width 0.2s ease, opacity 0.15s ease"},children: "loading" === r ? o.jsxs(o.Fragment, {children: ["Generating", o.jsx(k, {})]}) : "error" === r ? "Error" : "Edit with AI"})]}), n && "loading" !== r && o.jsxs("div", {style: {position: "absolute",top: w - v - 2,left: x,zIndex: C,transform: "translateY(-100%)",pointerEvents: "auto"},children: [i ? o.jsx(F, {onGenerate: t => s(e, t),onClose: c}) : o.jsx(T, {onClose: c}), o.jsx("div", {style: {position: "absolute",bottom: -v,left: 20,width: 0,height: 0,borderLeft: `${v}px solid transparent`,borderRight: `${v}px solid transparent`,borderTop: `${v}px solid #fff`}})]})]})}function j({textarea: e,children: t}) {let [r, n] = u.useState(null);return (u.useEffect(() => {let t = e.parentElement;if (!t) return;let r = document.createElement("div");r.className = b.JR_EDIT_AI_HOST_CLASS, r.style.cssText ="all: initial; position: relative; display: block; width: 0; height: 0; align-self: flex-start; pointer-events: none;";let o = r.attachShadow({mode: "open"});t.insertBefore(r, e.nextSibling), n(o);let i = 0,a = new MutationObserver(t => {for (let n of t)if ("childList" === n.type) {for (let t of n.removedNodes)if (t === r && !(i >= C) && e.isConnected) {i += 1;try {let t = e.parentElement;if (!t) continue;t.insertBefore(r, e.nextSibling)} catch {}}}});return a.observe(t, {childList: true}), () => {a.disconnect(), r.remove(), n(null)}}, [e]), r) ? c.createPortal(t, r) : null}function D() {let e = w.useTextareaTracker(),{statusMap: t,generate: r} = v.useGenerateField(),n = m.useProfileStore(e => e.creditsLeft),i = m.useProfileStore(e => e.ensureCreditsLeft),a = !!n?.subscribed,[l, s] = u.useState(null);u.useEffect(() => {i()}, [i]), u.useEffect(() => {let t = Array.from(e.values()).filter(e => e.height >= E).length;t && y.claimPageExposure(document) && (console.debug("[TextareaGenerateButton] reporting entry exposure", {visibleTextareaCount: t}), g.trackEvent("autofill_ai_regenerate_entry_exposure"))}, [e]);let c = u.useRef(false),f = u.useCallback(async () => {if (!c.current) {c.current = true;try {let e = await d.sendToBackground({name: "getCreditsLeft"});e && m.useProfileStore.setState({creditsLeft: e})} catch (e) {console.warn("[TextareaGenerateButton] refresh subscription failed", e)} finally {c.current = false}}}, []),p = u.useCallback(e => {let t = l === e ? null : e;s(t), t && !a && f()}, [l, f, a]),h = u.useCallback(() => {s(null)}, []);return u.useEffect(() => {if (!l) return;let e = () => s(null);return document.addEventListener("click", e), () => document.removeEventListener("click", e)}, [l]), o.jsx(o.Fragment, {children: Array.from(e.entries()).map(([e, n]) => o.jsx(j, {textarea: e,children: o.jsx(I, {textarea: e,rect: n,status: t.get(e) ?? "idle",isPopoverOpen: l === e,isSubscribed: a,onTogglePopover: p,onGenerate: r,onClosePopover: h})}, `jr-btn-${L(e)}`))})}let P = 0,_ = new WeakMap;function L(e) {let t = _.get(e);return null == t && (t = P++, _.set(e, t)), t}
+import { Fragment, jsx, jsxs } from "react/jsx-runtime"
+import * as logoBirdSvg from "data-base64:~/assets/images/logo_bird.svg"
+import * as turboPng from "data-base64:~/assets/images/turbo.png"
+import {
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState,
+} from "react"
+import { createPortal } from "react-dom"
+import { sendToBackground } from "@plasmohq/messaging"
+import { HOST_DOMAIN } from "../api/env-resolver.ts"
+import { MEMBERSHIP_RETARGET_PATH } from "../constants/payment.ts"
+import { useProfileStore } from "../store/profile.ts"
+import { useUrlStore } from "../store/url.ts"
+import { trackEvent } from "../utils/trace.ts"
+import { JR_EDIT_AI_HOST_CLASS } from "./constants.ts"
+import { claimPageExposure } from "./exposureTracker.ts"
+import { useGenerateField } from "./useGenerateField.ts"
+import { useTextareaTracker } from "./useTextareaTracker.ts"
 
-export { D as TextareaGenerateButtonLayer }
+function assetUrl(mod) {
+  return mod?.default ?? mod
+}
+
+const BUTTON_EDGE_INSET = 4
+const MIN_TEXTAREA_HEIGHT = 40
+const POPOVER_WIDTH = 240
+const HOST_REINSERT_LIMIT = 100
+const LOADING_DOT_FRAMES = ["...", "..", ".", "..", "..."]
+
+function LoadingDots() {
+  const [frameIndex, setFrameIndex] = useState(0)
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setFrameIndex((index) => (index + 1) % LOADING_DOT_FRAMES.length)
+    }, 300)
+    return () => clearInterval(timer)
+  }, [])
+
+  return jsx("span", {
+    style: {
+      display: "inline-block",
+      width: "1.2em",
+      textAlign: "left",
+    },
+    children: LOADING_DOT_FRAMES[frameIndex],
+  })
+}
+
+function UpgradePopover({ onClose }) {
+  return jsx("div", {
+    style: {
+      display: "flex",
+      width: POPOVER_WIDTH,
+      padding: 8,
+      flexDirection: "column",
+      justifyContent: "center",
+      alignItems: "center",
+      gap: 8,
+      borderRadius: 16,
+      background: "#fff",
+      boxShadow: "0 4px 24px rgba(0,0,0,0.12), 0 0 0 1px rgba(0,0,0,0.06)",
+      fontFamily: "Inter, -apple-system, sans-serif",
+    },
+    onClick: (event) => event.stopPropagation(),
+    children: jsxs("div", {
+      style: {
+        display: "flex",
+        width: "100%",
+        padding: 8,
+        flexDirection: "column",
+        justifyContent: "center",
+        alignItems: "center",
+        gap: 8,
+        borderRadius: 8,
+      },
+      children: [
+        jsxs("div", {
+          style: {
+            display: "flex",
+            alignItems: "center",
+            gap: 8,
+            width: "100%",
+          },
+          children: [
+            jsx("img", {
+              src: assetUrl(turboPng),
+              alt: "",
+              style: {
+                width: 40,
+                height: 40,
+                display: "block",
+                flexShrink: 0,
+              },
+            }),
+            jsxs("p", {
+              style: {
+                margin: 0,
+                fontSize: 13,
+                fontWeight: 400,
+                lineHeight: "16px",
+                color: "#000",
+              },
+              children: [
+                "Upgrade to Turbo to",
+                " ",
+                jsx("strong", {
+                  style: {
+                    fontWeight: 700,
+                  },
+                  children: "autofill answers with AI",
+                }),
+              ],
+            }),
+          ],
+        }),
+        jsx("button", {
+          type: "button",
+          onClick: () => {
+            trackEvent("autofill_ai_regenerate_upgrade_click")
+            window.open(HOST_DOMAIN + MEMBERSHIP_RETARGET_PATH, "_blank")
+            onClose()
+          },
+          style: {
+            width: "100%",
+            padding: 8,
+            borderRadius: 8,
+            border: "none",
+            background: "#57eba1",
+            fontSize: 13,
+            fontWeight: 600,
+            color: "#000",
+            cursor: "pointer",
+            fontFamily: "inherit",
+            lineHeight: "16px",
+            textAlign: "center",
+          },
+          onMouseEnter: (event) => {
+            event.currentTarget.style.background = "#3dd990"
+          },
+          onMouseLeave: (event) => {
+            event.currentTarget.style.background = "#57eba1"
+          },
+          children: "Upgrade Now",
+        }),
+      ],
+    }),
+  })
+}
+
+function PromptPopover({ onGenerate, onClose }) {
+  const [prompt, setPrompt] = useState("")
+
+  const submit = () => {
+    trackEvent("autofill_ai_regenerate_generate_click", {
+      url: useUrlStore.getState().currentTabUrl || window.location.href,
+    })
+    const promptList = prompt.trim() ? [prompt.trim()] : []
+    onGenerate(promptList)
+    setPrompt("")
+    onClose()
+  }
+
+  return jsxs("div", {
+    style: {
+      display: "flex",
+      width: POPOVER_WIDTH,
+      padding: 8,
+      flexDirection: "column",
+      alignItems: "flex-start",
+      gap: 8,
+      borderRadius: 16,
+      background: "#fff",
+      boxShadow: "0 4px 24px rgba(0,0,0,0.12), 0 0 0 1px rgba(0,0,0,0.06)",
+      fontFamily: "Inter, -apple-system, sans-serif",
+    },
+    onClick: (event) => event.stopPropagation(),
+    children: [
+      jsx("textarea", {
+        placeholder: "Tell me what you want to add, change, or improve.",
+        value: prompt,
+        maxLength: 750,
+        onChange: (event) => setPrompt(event.target.value.slice(0, 750)),
+        onKeyDown: (event) => {
+          if (event.key === "Enter" && !event.shiftKey) {
+            event.preventDefault()
+            submit()
+          }
+          if (event.key === "Escape") onClose()
+        },
+        autoFocus: true,
+        style: {
+          width: "100%",
+          height: 96,
+          padding: 8,
+          borderRadius: 8,
+          border: "none",
+          outline: "none",
+          background: "#F7F8F9",
+          boxShadow: "inset 0 0 0 1px rgba(0,0,0,0.06)",
+          fontSize: 13,
+          fontWeight: 400,
+          lineHeight: "16px",
+          color: "#000",
+          fontFamily: "inherit",
+          resize: "none",
+          boxSizing: "border-box",
+        },
+      }),
+      jsxs("div", {
+        style: {
+          display: "flex",
+          gap: 8,
+          alignSelf: "stretch",
+        },
+        children: [
+          jsx("button", {
+            type: "button",
+            onClick: () => {
+              setPrompt("")
+              onClose()
+            },
+            style: {
+              flex: 1,
+              padding: 8,
+              borderRadius: 8,
+              border: "none",
+              background: "#fff",
+              boxShadow: "0 0 0 1px rgba(0,0,0,0.1)",
+              fontSize: 13,
+              fontWeight: 500,
+              color: "#000",
+              cursor: "pointer",
+              fontFamily: "inherit",
+              lineHeight: "16px",
+            },
+            onMouseEnter: (event) => {
+              event.currentTarget.style.background = "#F7F8F9"
+            },
+            onMouseLeave: (event) => {
+              event.currentTarget.style.background = "#fff"
+            },
+            children: "Cancel",
+          }),
+          jsx("button", {
+            type: "button",
+            onClick: submit,
+            style: {
+              flex: 1,
+              padding: 8,
+              borderRadius: 8,
+              border: "none",
+              background: "#57eba1",
+              fontSize: 13,
+              fontWeight: 500,
+              color: "#000",
+              cursor: "pointer",
+              fontFamily: "inherit",
+              lineHeight: "16px",
+            },
+            onMouseEnter: (event) => {
+              event.currentTarget.style.background = "#3dd990"
+            },
+            onMouseLeave: (event) => {
+              event.currentTarget.style.background = "#57eba1"
+            },
+            children: "Generate",
+          }),
+        ],
+      }),
+    ],
+  })
+}
+
+function GenerateButton({
+  textarea,
+  rect,
+  status,
+  isPopoverOpen,
+  isSubscribed,
+  onTogglePopover,
+  onGenerate,
+  onClosePopover,
+}) {
+  const [hovered, setHovered] = useState(false)
+  const expanded = hovered || status === "loading" || isPopoverOpen
+  const buttonRef = useRef(null)
+  const [position, setPosition] = useState({
+    top: -9999,
+    left: -9999,
+  })
+  const buttonHeight = 32
+  const caretSize = 6
+
+  useLayoutEffect(() => {
+    const button = buttonRef.current
+    if (!button) return
+    const root = button.getRootNode()
+    const host = root.host
+    if (!host) return
+    const hostRect = host.getBoundingClientRect()
+    const textareaRect = textarea.getBoundingClientRect()
+    setPosition({
+      top: textareaRect.top - hostRect.top + textareaRect.height - buttonHeight - BUTTON_EDGE_INSET,
+      left: textareaRect.left - hostRect.left + BUTTON_EDGE_INSET,
+    })
+  }, [textarea, rect.top, rect.left, rect.width, rect.height])
+
+  if (rect.height < MIN_TEXTAREA_HEIGHT) return null
+
+  const { top, left } = position
+  const zIndex = 1
+
+  return jsxs(Fragment, {
+    children: [
+      jsxs("button", {
+        ref: buttonRef,
+        type: "button",
+        title:
+          status === "loading"
+            ? "Generating..."
+            : status === "error"
+              ? "Generation failed, click to retry"
+              : "Edit with AI",
+        onClick: (event) => {
+          event.stopPropagation()
+          event.preventDefault()
+          if (status !== "loading") {
+            trackEvent("autofill_ai_regenerate_entry_click")
+            onTogglePopover(textarea)
+          }
+        },
+        style: {
+          position: "absolute",
+          top,
+          left,
+          height: buttonHeight,
+          zIndex,
+          display: "inline-flex",
+          alignItems: "center",
+          gap: expanded ? 4 : 0,
+          padding: expanded ? "0 8px 0 6px" : "0 6px",
+          borderRadius: "6px 0 6px 6px",
+          background: status === "error" ? "#ef4444" : "#fff",
+          boxShadow: "0 0 0 1px rgba(0,0,0,0.1)",
+          border: "none",
+          cursor: status === "loading" ? "default" : "pointer",
+          userSelect: "none",
+          pointerEvents: "auto",
+          outline: "none",
+          fontFamily: "Inter, -apple-system, sans-serif",
+          transition:
+            "box-shadow 0.15s ease, background 0.15s ease, padding 0.2s ease, gap 0.2s ease",
+        },
+        onMouseEnter: (event) => {
+          setHovered(true)
+          if (status !== "loading") {
+            event.currentTarget.style.boxShadow = "0 0 0 1px rgba(0,0,0,0.2)"
+          }
+        },
+        onMouseLeave: (event) => {
+          setHovered(false)
+          event.currentTarget.style.boxShadow = "0 0 0 1px rgba(0,0,0,0.1)"
+        },
+        children: [
+          jsx("img", {
+            src: assetUrl(logoBirdSvg),
+            alt: "",
+            style: {
+              width: 20,
+              height: 20,
+              display: "block",
+              flexShrink: 0,
+            },
+          }),
+          jsx("span", {
+            style: {
+              fontSize: 12,
+              fontWeight: 600,
+              lineHeight: "16px",
+              color: status === "error" ? "#fff" : "#000",
+              whiteSpace: "nowrap",
+              overflow: "hidden",
+              maxWidth: expanded ? 100 : 0,
+              opacity: expanded ? 1 : 0,
+              transition: "max-width 0.2s ease, opacity 0.15s ease",
+            },
+            children:
+              status === "loading"
+                ? jsxs(Fragment, {
+                    children: ["Generating", jsx(LoadingDots, {})],
+                  })
+                : status === "error"
+                  ? "Error"
+                  : "Edit with AI",
+          }),
+        ],
+      }),
+      isPopoverOpen &&
+        status !== "loading" &&
+        jsxs("div", {
+          style: {
+            position: "absolute",
+            top: top - caretSize - 2,
+            left,
+            zIndex,
+            transform: "translateY(-100%)",
+            pointerEvents: "auto",
+          },
+          children: [
+            isSubscribed
+              ? jsx(PromptPopover, {
+                  onGenerate: (promptList) => onGenerate(textarea, promptList),
+                  onClose: onClosePopover,
+                })
+              : jsx(UpgradePopover, {
+                  onClose: onClosePopover,
+                }),
+            jsx("div", {
+              style: {
+                position: "absolute",
+                bottom: -caretSize,
+                left: 20,
+                width: 0,
+                height: 0,
+                borderLeft: `${caretSize}px solid transparent`,
+                borderRight: `${caretSize}px solid transparent`,
+                borderTop: `${caretSize}px solid #fff`,
+              },
+            }),
+          ],
+        }),
+    ],
+  })
+}
+
+function TextareaShadowHost({ textarea, children }) {
+  const [shadowRoot, setShadowRoot] = useState(null)
+
+  useEffect(() => {
+    const parent = textarea.parentElement
+    if (!parent) return
+
+    const host = document.createElement("div")
+    host.className = JR_EDIT_AI_HOST_CLASS
+    host.style.cssText =
+      "all: initial; position: relative; display: block; width: 0; height: 0; align-self: flex-start; pointer-events: none;"
+    const shadow = host.attachShadow({
+      mode: "open",
+    })
+    parent.insertBefore(host, textarea.nextSibling)
+    setShadowRoot(shadow)
+
+    let reinsertCount = 0
+    const observer = new MutationObserver((mutations) => {
+      for (const mutation of mutations) {
+        if (mutation.type === "childList") {
+          for (const removed of mutation.removedNodes) {
+            if (
+              removed === host &&
+              !(reinsertCount >= HOST_REINSERT_LIMIT) &&
+              textarea.isConnected
+            ) {
+              reinsertCount += 1
+              try {
+                const nextParent = textarea.parentElement
+                if (!nextParent) continue
+                nextParent.insertBefore(host, textarea.nextSibling)
+              } catch {}
+            }
+          }
+        }
+      }
+    })
+
+    observer.observe(parent, {
+      childList: true,
+    })
+
+    return () => {
+      observer.disconnect()
+      host.remove()
+      setShadowRoot(null)
+    }
+  }, [textarea])
+
+  return shadowRoot ? createPortal(children, shadowRoot) : null
+}
+
+export function TextareaGenerateButtonLayer() {
+  const trackedTextareas = useTextareaTracker()
+  const { statusMap, generate } = useGenerateField()
+  const creditsLeft = useProfileStore((state) => state.creditsLeft)
+  const ensureCreditsLeft = useProfileStore((state) => state.ensureCreditsLeft)
+  const isSubscribed = !!creditsLeft?.subscribed
+  const [openPopoverTextarea, setOpenPopoverTextarea] = useState(null)
+
+  useEffect(() => {
+    ensureCreditsLeft()
+  }, [ensureCreditsLeft])
+
+  useEffect(() => {
+    const visibleCount = Array.from(trackedTextareas.values()).filter(
+      (rect) => rect.height >= MIN_TEXTAREA_HEIGHT,
+    ).length
+    if (visibleCount && claimPageExposure(document)) {
+      console.debug("[TextareaGenerateButton] reporting entry exposure", {
+        visibleTextareaCount: visibleCount,
+      })
+      trackEvent("autofill_ai_regenerate_entry_exposure")
+    }
+  }, [trackedTextareas])
+
+  const refreshingCreditsRef = useRef(false)
+
+  const refreshSubscription = useCallback(async () => {
+    if (refreshingCreditsRef.current) return
+    refreshingCreditsRef.current = true
+    try {
+      const credits = await sendToBackground({
+        name: "getCreditsLeft",
+      })
+      if (credits) {
+        useProfileStore.setState({
+          creditsLeft: credits,
+        })
+      }
+    } catch (error) {
+      console.warn("[TextareaGenerateButton] refresh subscription failed", error)
+    } finally {
+      refreshingCreditsRef.current = false
+    }
+  }, [])
+
+  const togglePopover = useCallback(
+    (textarea) => {
+      const next = openPopoverTextarea === textarea ? null : textarea
+      setOpenPopoverTextarea(next)
+      if (next && !isSubscribed) refreshSubscription()
+    },
+    [openPopoverTextarea, refreshSubscription, isSubscribed],
+  )
+
+  const closePopover = useCallback(() => {
+    setOpenPopoverTextarea(null)
+  }, [])
+
+  useEffect(() => {
+    if (!openPopoverTextarea) return
+    const onDocumentClick = () => setOpenPopoverTextarea(null)
+    document.addEventListener("click", onDocumentClick)
+    return () => document.removeEventListener("click", onDocumentClick)
+  }, [openPopoverTextarea])
+
+  return jsx(Fragment, {
+    children: Array.from(trackedTextareas.entries()).map(([textarea, rect]) =>
+      jsx(
+        TextareaShadowHost,
+        {
+          textarea,
+          children: jsx(GenerateButton, {
+            textarea,
+            rect,
+            status: statusMap.get(textarea) ?? "idle",
+            isPopoverOpen: openPopoverTextarea === textarea,
+            isSubscribed,
+            onTogglePopover: togglePopover,
+            onGenerate: generate,
+            onClosePopover: closePopover,
+          }),
+        },
+        `jr-btn-${getTextareaKey(textarea)}`,
+      ),
+    ),
+  })
+}
+
+let nextTextareaKey = 0
+const textareaKeys = new WeakMap()
+
+function getTextareaKey(textarea) {
+  let key = textareaKeys.get(textarea)
+  if (key == null) {
+    key = nextTextareaKey++
+    textareaKeys.set(textarea, key)
+  }
+  return key
+}

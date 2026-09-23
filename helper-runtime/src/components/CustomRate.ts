@@ -1,15 +1,53 @@
 // @ts-nocheck
 /**
- * Readable TypeScript converted from Parcel dump (helper-runtime/src/components/CustomRate.js).
+ * Horizontal score picker (1–N) with hover highlight.
  */
-import * as o from "react/jsx-runtime"
-import * as i from "antd"
-import * as a from "clsx"
-import * as s from "react"
-import * as u from "../BasicButton.ts"
 
-const l = { default: a }
-const c = { default: u }
-let d = ({scores: e,className: t,buttonClassName: r,onSelect: n}) => {let [a, u] = s.useState(undefined), [d, f] = s.useState(false), [p, m] = s.useState(undefined);return o.jsx(i.Flex, {gap: 8,className: t,onMouseLeave: () => {f(false)},onMouseEnter: () => {f(true)},children: e.map(e => o.jsx(c.default, {className: l.default("rate-button", "rate-button-overwrite", r, {"rate-button-hightlight": d ? undefined !== a && e <= a : undefined !== p && e <=p}),onClick: () => {m(e), n && n(e)},onMouseEnter: () => {u(e)},children: e}, e))})};
+import { jsx } from "react/jsx-runtime"
+import { Flex } from "antd"
+import clsx from "clsx"
+import { useState } from "react"
+import BasicButton from "./BasicButton.ts"
 
-export default d
+export default function CustomRate({
+  scores,
+  className,
+  buttonClassName,
+  onSelect,
+}) {
+  const [hoverScore, setHoverScore] = useState(undefined)
+  const [isHovering, setIsHovering] = useState(false)
+  const [selectedScore, setSelectedScore] = useState(undefined)
+
+  return jsx(Flex, {
+    gap: 8,
+    className,
+    onMouseLeave: () => {
+      setIsHovering(false)
+    },
+    onMouseEnter: () => {
+      setIsHovering(true)
+    },
+    children: scores.map((score) =>
+      jsx(
+        BasicButton,
+        {
+          className: clsx("rate-button", "rate-button-overwrite", buttonClassName, {
+            "rate-button-hightlight": isHovering
+              ? hoverScore !== undefined && score <= hoverScore
+              : selectedScore !== undefined && score <= selectedScore,
+          }),
+          onClick: () => {
+            setSelectedScore(score)
+            onSelect?.(score)
+          },
+          onMouseEnter: () => {
+            setHoverScore(score)
+          },
+          children: score,
+        },
+        score,
+      ),
+    ),
+  })
+}

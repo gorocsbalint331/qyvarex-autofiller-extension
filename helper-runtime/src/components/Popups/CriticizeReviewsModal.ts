@@ -1,14 +1,93 @@
 // @ts-nocheck
 /**
- * Readable TypeScript converted from Parcel dump (helper-runtime/src/components/Popups/CriticizeReviewsModal.js).
+ * Low-rating follow-up: invite the user to leave written feedback.
  */
-import * as n from "react/jsx-runtime"
-import * as o from "antd"
-import * as i from "react"
-import * as a from "../StarRatingModal/shared.js"
-import * as l from "../../store/feedback.ts"
-import * as s from "../../utils/trace.ts"
 
-let u = e => {let t = l.useFeedbackStore(e => e.setOpenFeedbackPopup);return i.useEffect(() => {e.open && s.trackEvent("autofill_starrating_popup_exposure", {current_url: window.location.href,type: "feedback"})}, [e.open]), n.jsxs(o.Modal, {open: e.open,title: null,footer: null,mask: true,closable: true,closeIcon: n.jsx(a.CloseIcon, {}),centered: true,onCancel: e.onCancel,destroyOnClose: true,width: 480,styles: a.RATING_MODAL_STYLES,children: [n.jsxs(o.Flex, {align: "center",justify: "center",vertical: true,gap: 12,style: {paddingTop: 64},children: [n.jsx("span", {style: a.TITLE_STYLE,children: "Thanks for your rating!"}), n.jsx("span", {style: a.BODY_TEXT_STYLE,children: "Could you tell us a little more? Your feedback helps us improve Autofill for you."})]}), n.jsxs(o.Flex, {align: "center",justify: "center",gap: 12,style: {marginTop: 24},children: [n.jsx(o.Button, {type: "default",style: a.DEFAULT_BUTTON_STYLE,onClick: e.onCancel,children: "Cancel"}), n.jsx(o.Button, {type: "primary",style: a.PRIMARY_BUTTON_STYLE,onClick: () => {t(true), s.trackEvent("autofill_starrating_popup_click", {current_url: window.location.href,type: "feedback"}), e.onCancel()},children: "Give Feedback"})]})]})};
+import { useEffect } from "react"
+import { jsx, jsxs } from "react/jsx-runtime"
+import { Button, Flex, Modal } from "antd"
+import {
+  BODY_TEXT_STYLE,
+  CloseIcon,
+  DEFAULT_BUTTON_STYLE,
+  PRIMARY_BUTTON_STYLE,
+  RATING_MODAL_STYLES,
+  TITLE_STYLE,
+} from "../StarRatingModal/shared.ts"
+import { useFeedbackStore } from "../../store/feedback.ts"
+import { trackEvent } from "../../utils/trace.ts"
 
-export default u
+export default function CriticizeReviewsModal({ open, onCancel }) {
+  const setOpenFeedbackPopup = useFeedbackStore(
+    (state) => state.setOpenFeedbackPopup,
+  )
+
+  useEffect(() => {
+    if (!open) return
+    trackEvent("autofill_starrating_popup_exposure", {
+      current_url: window.location.href,
+      type: "feedback",
+    })
+  }, [open])
+
+  return jsxs(Modal, {
+    open,
+    title: null,
+    footer: null,
+    mask: true,
+    closable: true,
+    closeIcon: jsx(CloseIcon, {}),
+    centered: true,
+    onCancel,
+    destroyOnClose: true,
+    width: 480,
+    styles: RATING_MODAL_STYLES,
+    children: [
+      jsxs(Flex, {
+        align: "center",
+        justify: "center",
+        vertical: true,
+        gap: 12,
+        style: { paddingTop: 64 },
+        children: [
+          jsx("span", {
+            style: TITLE_STYLE,
+            children: "Thanks for your rating!",
+          }),
+          jsx("span", {
+            style: BODY_TEXT_STYLE,
+            children:
+              "Could you tell us a little more? Your feedback helps us improve Autofill for you.",
+          }),
+        ],
+      }),
+      jsxs(Flex, {
+        align: "center",
+        justify: "center",
+        gap: 12,
+        style: { marginTop: 24 },
+        children: [
+          jsx(Button, {
+            type: "default",
+            style: DEFAULT_BUTTON_STYLE,
+            onClick: onCancel,
+            children: "Cancel",
+          }),
+          jsx(Button, {
+            type: "primary",
+            style: PRIMARY_BUTTON_STYLE,
+            onClick: () => {
+              setOpenFeedbackPopup(true)
+              trackEvent("autofill_starrating_popup_click", {
+                current_url: window.location.href,
+                type: "feedback",
+              })
+              onCancel()
+            },
+            children: "Give Feedback",
+          }),
+        ],
+      }),
+    ],
+  })
+}

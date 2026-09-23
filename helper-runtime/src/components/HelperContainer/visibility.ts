@@ -1,7 +1,12 @@
 // @ts-nocheck
 /**
- * Readable TypeScript converted from Parcel dump (helper-runtime/src/components/HelperContainer/visibility.js).
+ * Whether the helper sidebar should be visible for the current card/agent state.
  */
-function o(e) {let {openCard: t,isAgentDomain: r,clickOpenInAgent: n} = e;return t && (!r || n)}
 
-export { o as isHelperSidebarVisible }
+export function isHelperSidebarVisible({
+  openCard,
+  isAgentDomain,
+  clickOpenInAgent,
+}) {
+  return openCard && (!isAgentDomain || clickOpenInAgent)
+}

@@ -1,11 +1,68 @@
 // @ts-nocheck
 /**
- * Readable TypeScript converted from Parcel dump (helper-runtime/src/components/TextFieldRows.js).
+ * Text input rows for autofill info editor sections.
  */
-import * as o from "react/jsx-runtime"
-import * as i from "antd"
-import * as a from "../FormField.ts"
 
-let l=({rows:e,values:t,errorPrefix:r,fieldDot:n,updateField:l,hasError:s,clearError:u})=>{let c=(e,c)=>{let d=`${r}.${e.field}`;return o.jsxs(i.Flex,{vertical:true,gap:8,flex:c,"data-autofill-info-field":d,children:[a.fieldLabel(e.label,{required:e.required,showDot:n(e.field)}),o.jsx(i.Input,{value:t[e.field],placeholder:e.placeholder,className:"autofill-info-modal-control",onChange:t=>{l(e.field,t.target.value),e.error&&u(d)}}),e.error&&s(d)&&o.jsx("span",{className:"autofill-info-modal-error",children:e.error})]},e.field)};return e.map(e=>{let t=e.fields.map(({field:e})=>e).join("-");return"row"===e.layout?o.jsx(i.Flex,{gap:8,children:e.fields.map(e=>c(e,1))},t):c(e.fields[0])})}
+import { jsx, jsxs } from "react/jsx-runtime"
+import { Flex, Input } from "antd"
+import { fieldLabel } from "./FormField.ts"
 
-export { l as TextFieldRows }
+export function TextFieldRows({
+  rows,
+  values,
+  errorPrefix,
+  fieldDot,
+  updateField,
+  hasError,
+  clearError,
+}) {
+  function renderField(fieldConfig, flex) {
+    const fieldKey = `${errorPrefix}.${fieldConfig.field}`
+    return jsxs(
+      Flex,
+      {
+        vertical: true,
+        gap: 8,
+        flex,
+        "data-autofill-info-field": fieldKey,
+        children: [
+          fieldLabel(fieldConfig.label, {
+            required: fieldConfig.required,
+            showDot: fieldDot(fieldConfig.field),
+          }),
+          jsx(Input, {
+            value: values[fieldConfig.field],
+            placeholder: fieldConfig.placeholder,
+            className: "autofill-info-modal-control",
+            onChange: (event) => {
+              updateField(fieldConfig.field, event.target.value)
+              if (fieldConfig.error) clearError(fieldKey)
+            },
+          }),
+          fieldConfig.error &&
+            hasError(fieldKey) &&
+            jsx("span", {
+              className: "autofill-info-modal-error",
+              children: fieldConfig.error,
+            }),
+        ],
+      },
+      fieldConfig.field,
+    )
+  }
+
+  return rows.map((row) => {
+    const key = row.fields.map(({ field }) => field).join("-")
+    if (row.layout === "row") {
+      return jsx(
+        Flex,
+        {
+          gap: 8,
+          children: row.fields.map((fieldConfig) => renderField(fieldConfig, 1)),
+        },
+        key,
+      )
+    }
+    return renderField(row.fields[0])
+  })
+}

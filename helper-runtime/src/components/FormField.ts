@@ -1,10 +1,49 @@
 // @ts-nocheck
 /**
- * Readable TypeScript converted from Parcel dump (helper-runtime/src/components/FormField.js).
+ * Labeled field wrapper for autofill info editor rows.
  */
-import * as o from "react/jsx-runtime"
-import * as i from "antd"
 
-let a=(e,t)=>{let{required:r=true,showDot:n=false}=t??{};return o.jsxs("span",{className:"autofill-info-modal-label",children:[r&&o.jsx("span",{className:"autofill-info-modal-label-required",children:"*"}),e,n&&o.jsx("span",{className:"autofill-info-modal-nav-dot"})]})},l=({label:e,required:t=true,showDot:r,error:n,fieldKey:l,className:s,children:u})=>o.jsxs(i.Flex,{vertical:true,gap:8,className:s,"data-autofill-info-field":l,children:[a(e,{required:t,showDot:r}),u,n&&o.jsx("span",{className:"autofill-info-modal-error",children:n})]})
+import { jsx, jsxs } from "react/jsx-runtime"
+import { Flex } from "antd"
 
-export { a as fieldLabel, l as FormField }
+export function fieldLabel(label, options) {
+  const { required = true, showDot = false } = options ?? {}
+  return jsxs("span", {
+    className: "autofill-info-modal-label",
+    children: [
+      required &&
+        jsx("span", {
+          className: "autofill-info-modal-label-required",
+          children: "*",
+        }),
+      label,
+      showDot && jsx("span", { className: "autofill-info-modal-nav-dot" }),
+    ],
+  })
+}
+
+export function FormField({
+  label,
+  required = true,
+  showDot,
+  error,
+  fieldKey,
+  className,
+  children,
+}) {
+  return jsxs(Flex, {
+    vertical: true,
+    gap: 8,
+    className,
+    "data-autofill-info-field": fieldKey,
+    children: [
+      fieldLabel(label, { required, showDot }),
+      children,
+      error &&
+        jsx("span", {
+          className: "autofill-info-modal-error",
+          children: error,
+        }),
+    ],
+  })
+}

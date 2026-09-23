@@ -53,6 +53,12 @@ export async function saveWorkdaySignupInformation(
   })
 }
 
+export async function clearWorkdaySignupInformation(
+  storage = defaultStorage,
+) {
+  await storage.remove(WORKDAY_SIGNUP_INFORMATION_STORAGE_KEY)
+}
+
 export function getWorkdaySignupPasswordLocalUpdateAction({
   password,
   isLoaded,

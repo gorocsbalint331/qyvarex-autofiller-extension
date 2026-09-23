@@ -1,7 +1,28 @@
 // @ts-nocheck
 /**
- * Readable TypeScript converted from Parcel dump (helper-runtime/src/components/JobProfileStep/myworkday-progress.js).
+ * MyWorkday apply-step helpers for clearing stale fill progress.
  */
-function o(e) {if (!e) return false;try {return new URL(e).pathname.includes("/apply")} catch {return e.includes("/apply")}}function i({fillingMode: e,hasAutoFillResult: t,isFilling: r,url: n}) {return !(!r && !t || o(n)) && "pre_autofill_flow" !== e && "signup_autofill_flow" !== e}
 
-export { o as isMyWorkdayApplyUrl, i as shouldClearMissingMyWorkdayStepProgress }
+export function isMyWorkdayApplyUrl(url) {
+  if (!url) return false
+  try {
+    return new URL(url).pathname.includes("/apply")
+  } catch {
+    return url.includes("/apply")
+  }
+}
+
+export function shouldClearMissingMyWorkdayStepProgress({
+  fillingMode,
+  hasAutoFillResult,
+  isFilling,
+  url,
+}) {
+  if ((!isFilling && !hasAutoFillResult) || isMyWorkdayApplyUrl(url)) {
+    return false
+  }
+  return (
+    fillingMode !== "pre_autofill_flow" &&
+    fillingMode !== "signup_autofill_flow"
+  )
+}

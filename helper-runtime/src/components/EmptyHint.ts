@@ -1,14 +1,35 @@
 // @ts-nocheck
 /**
- * Readable TypeScript converted from Parcel dump (helper-runtime/src/components/EmptyHint.js).
+ * Empty state with optional CTA button.
  */
-import * as o from "react/jsx-runtime"
-import * as i from "antd"
-import * as a from "clsx"
-import * as s from "./BasicButton.ts"
 
-const l = { default: a }
-const u = { default: s }
-let c="empty-hint-",d=e=>o.jsx(i.Empty,{className:l.default(c+"container",e.className),image:e.image,description:o.jsx("div",{className:c+"message",children:e?.description}),children:!!e?.buttonText&&o.jsx(u.default,{className:c+"button",onClick:e?.onClick,children:e?.buttonText})});
+import { jsx } from "react/jsx-runtime"
+import { Empty } from "antd"
+import clsx from "clsx"
+import BasicButton from "./BasicButton.ts"
 
-export default d
+const CLASS_PREFIX = "empty-hint-"
+
+export default function EmptyHint({
+  className,
+  image,
+  description,
+  buttonText,
+  onClick,
+}) {
+  return jsx(Empty, {
+    className: clsx(`${CLASS_PREFIX}container`, className),
+    image,
+    description: jsx("div", {
+      className: `${CLASS_PREFIX}message`,
+      children: description,
+    }),
+    children:
+      !!buttonText &&
+      jsx(BasicButton, {
+        className: `${CLASS_PREFIX}button`,
+        onClick,
+        children: buttonText,
+      }),
+  })
+}

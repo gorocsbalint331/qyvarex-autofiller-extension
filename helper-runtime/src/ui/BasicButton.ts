@@ -1,6 +1,6 @@
 // @ts-nocheck
 /**
- * Thin antd Button with black primary theme.
+ * Thin antd Button with black primary theme (ui package).
  */
 
 import { jsx } from "react/jsx-runtime"
