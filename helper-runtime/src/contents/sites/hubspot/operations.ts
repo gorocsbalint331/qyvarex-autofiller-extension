@@ -3,9 +3,9 @@
  * HubSpot DOM fill operations (inputs, selects, search, uploads).
  */
 
-import * as filler from "../../shared/filler.js"
-import * as answer from "../../methods/answer.js"
-import * as dom from "../../methods/dom.js"
+import * as filler from "../../shared/filler.ts"
+import * as answer from "../../methods/answer.ts"
+import * as dom from "../../methods/dom.ts"
 import * as delay from "../../../utils/delay.js"
 
 const UPLOAD_SLOTS = {

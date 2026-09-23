@@ -4,7 +4,7 @@
  * Bundled directly by scripts/bundle-engine-helper.mjs.
  */
 
-import * as sharedConstants from "../contents/shared/constants.js"
+import * as sharedConstants from "../contents/shared/constants.ts"
 import * as coreUtils from "../core/utils.js"
 import * as atsDetection from "./atsDetection.ts"
 

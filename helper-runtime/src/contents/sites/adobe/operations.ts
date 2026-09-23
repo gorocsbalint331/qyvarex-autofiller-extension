@@ -3,10 +3,10 @@
  * Adobe Careers DOM fill operations (inputs, datepicker, selects, resume).
  */
 
-import * as choiceMatch from "../../methods/choice-match.js"
-import * as defaultInput from "../../crawler/utils/input.js"
-import * as answer from "../../methods/answer.js"
-import * as dom from "../../methods/dom.js"
+import * as choiceMatch from "../../methods/choice-match.ts"
+import * as defaultInput from "../../crawler/fill-utils/input.ts"
+import * as answer from "../../methods/answer.ts"
+import * as dom from "../../methods/dom.ts"
 import * as xpath from "../../../core/xpath.js"
 import * as delay from "../../../utils/delay.js"
 

@@ -3,9 +3,9 @@
  * Walmart DOM fill operations — text, date picker, select, checkbox, resume.
  */
 
-import * as filler from "../../shared/filler.js"
-import * as answerMethods from "../../methods/answer.js"
-import * as dom from "../../methods/dom.js"
+import * as filler from "../../shared/filler.ts"
+import * as answerMethods from "../../methods/answer.ts"
+import * as dom from "../../methods/dom.ts"
 import * as delay from "../../../utils/delay.js"
 import * as getTargetOrTimeoutModule from "../../../utils/getTargetOrTimeout.js"
 import * as walmartDate from "./date.ts"

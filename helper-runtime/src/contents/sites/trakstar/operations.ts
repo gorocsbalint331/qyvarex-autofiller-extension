@@ -3,10 +3,10 @@
  * Trakstar — DOM fill operations (inputs, selects, resume/cover letter).
  */
 
-import * as filler from "../../shared/filler.js"
-import * as inputUtils from "../../crawler/utils/input.js"
-import * as answerMethods from "../../methods/answer.js"
-import * as dom from "../../methods/dom.js"
+import * as filler from "../../shared/filler.ts"
+import * as inputUtils from "../../crawler/fill-utils/input.ts"
+import * as answerMethods from "../../methods/answer.ts"
+import * as dom from "../../methods/dom.ts"
 import * as delay from "../../../utils/delay.js"
 
 const normalizeWhitespace = (text) => text?.replace(/\s+/g, " ").trim() || ""

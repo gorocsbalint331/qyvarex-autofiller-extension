@@ -3,8 +3,8 @@
  * Gusto — date answer lookup and fill-handler helpers.
  */
 
-import * as filler from "../../shared/filler.js"
-import * as answerMethods from "../../methods/answer.js"
+import * as filler from "../../shared/filler.ts"
+import * as answerMethods from "../../methods/answer.ts"
 
 export function getDateValueFromRecord(label, record) {
   let matched

@@ -3,16 +3,16 @@
  * Paycom Online v3 — field fill operations (inputs, selects, education, uploads).
  */
 
-import * as choiceMatch from "../../methods/choice-match.js"
+import * as choiceMatch from "../../methods/choice-match.ts"
 import * as dayjs from "dayjs"
-import * as checkbox from "../../crawler/utils/checkbox.js"
-import * as input from "../../crawler/utils/input.js"
-import * as select from "../../crawler/utils/select.js"
-import * as answerMethods from "../../methods/answer.js"
-import * as dom from "../../methods/dom.js"
+import * as checkbox from "../../crawler/fill-utils/checkbox.ts"
+import * as input from "../../crawler/fill-utils/input.ts"
+import * as select from "../../crawler/fill-utils/select.ts"
+import * as answerMethods from "../../methods/answer.ts"
+import * as dom from "../../methods/dom.ts"
 import * as enums from "../../../core/enums.js"
 import * as coreDom from "../../../core/dom.js"
-import * as cancellation from "../../methods/cancellation.js"
+import * as cancellation from "../../methods/cancellation.ts"
 import * as xpath from "../../../core/xpath.js"
 import * as delay from "../../../utils/delay.js"
 import * as geographicCountry from "./geographic-country.ts"
@@ -20,8 +20,8 @@ import * as phoneCountry from "./phone-country.ts"
 import * as fileUpload from "./file-upload.ts"
 import * as startApplicationDialog from "./start-application-dialog.ts"
 
-export { fillCheckBoxesField } from "../../methods/dom.js"
-export { fillSelectField } from "../../methods/dom.js"
+export { fillCheckBoxesField } from "../../methods/dom.ts"
+export { fillSelectField } from "../../methods/dom.ts"
 
 const dayjsInterop = { default: dayjs }
 

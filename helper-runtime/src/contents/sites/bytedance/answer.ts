@@ -3,7 +3,7 @@
  * ByteDance ATS — answer shaping (dates, mobile, social media).
  */
 
-import * as filler from "../../shared/filler.js"
+import * as filler from "../../shared/filler.ts"
 import * as phoneCountryCode from "../../../core/phone-country-code.js"
 
 const LINKEDIN_SOCIAL_MEDIA_VALUE = "LinkedIn"

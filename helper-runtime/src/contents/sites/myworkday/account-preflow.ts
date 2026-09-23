@@ -1,13 +1,13 @@
 // @ts-nocheck
 /**
- * MyWorkday — account/sign-in/registration pre-autofill flow.
+ * MyWorkday â€” account/sign-in/registration pre-autofill flow.
  */
 
 import * as messaging from "@plasmohq/messaging";
 import * as autofillSignupInformation from "../../../api/autofill-signup-information.js";
-import * as accountFlow from "../../pre-autofill-flow/account-flow.js";
-import * as preAutofillDom from "../../pre-autofill-flow/dom.js";
-import * as preAutofillTracking from "../../pre-autofill-flow/tracking.js";
+import * as accountFlow from "../../pre-autofill-flow/account-flow.ts";
+import * as preAutofillDom from "../../pre-autofill-flow/dom.ts";
+import * as preAutofillTracking from "../../pre-autofill-flow/tracking.ts";
 import * as autofillResultStore from "../../../store/autofillResult.js";
 import * as workdaySignupInfo from "../../../store/workday-signup-info.js";
 import * as getTargetOrTimeout from "../../../utils/getTargetOrTimeout.js";

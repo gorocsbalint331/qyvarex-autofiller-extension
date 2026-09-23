@@ -3,10 +3,10 @@
  * HRMDirect — DOM fill operations (inputs, selects, files, edu/emp rows).
  */
 
-import * as choiceMatch from "../../methods/choice-match.js"
-import * as answerMethods from "../../methods/answer.js"
+import * as choiceMatch from "../../methods/choice-match.ts"
+import * as answerMethods from "../../methods/answer.ts"
 import * as xpath from "../../../core/xpath.js"
-import * as observer from "../../methods/observer.js"
+import * as observer from "../../methods/observer.ts"
 import * as delay from "../../../utils/delay.js"
 import * as hrmdirectAnswer from "./answer.ts"
 

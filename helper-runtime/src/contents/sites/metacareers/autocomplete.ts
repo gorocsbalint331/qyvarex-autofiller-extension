@@ -3,7 +3,7 @@
  * Meta Careers — autocomplete / popover option matching helpers.
  */
 
-import * as choiceMatch from "../../methods/choice-match.js"
+import * as choiceMatch from "../../methods/choice-match.ts"
 
 export const normalizeAutocompleteText = (text) =>
   text.replace(/\s+/g, " ").trim().toLowerCase()

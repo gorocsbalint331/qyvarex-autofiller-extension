@@ -7,7 +7,7 @@
  */
 
 import { BaseFiller } from "./base-filler.ts"
-import * as dom from "../methods/dom.js"
+import * as dom from "../methods/dom.ts"
 import * as autofillAnswerPairTracking from "./autofill-answer-pair-tracking.ts"
 import * as enums from "../../core/enums.js"
 import * as phoneCountryCode from "../../core/phone-country-code.js"

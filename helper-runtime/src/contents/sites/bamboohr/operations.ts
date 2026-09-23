@@ -3,8 +3,8 @@
  * BambooHR DOM fill operations (inputs, selects, checkboxes, resume, cover letter).
  */
 
-import * as answerMethods from "../../methods/answer.js"
-import * as dom from "../../methods/dom.js"
+import * as answerMethods from "../../methods/answer.ts"
+import * as dom from "../../methods/dom.ts"
 import * as enums from "../../../core/enums.js"
 import * as xpath from "../../../core/xpath.js"
 import * as delay from "../../../utils/delay.js"

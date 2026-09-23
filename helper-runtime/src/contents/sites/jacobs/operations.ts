@@ -4,11 +4,11 @@
  */
 
 import * as constants from "../../../constants.ts"
-import * as filler from "../../shared/filler.js"
+import * as filler from "../../shared/filler.ts"
 import * as xpath from "../../../core/xpath.js"
 import * as delay from "../../../utils/delay.js"
-import * as answerMethods from "../../methods/answer.js"
-import * as dom from "../../methods/dom.js"
+import * as answerMethods from "../../methods/answer.ts"
+import * as dom from "../../methods/dom.ts"
 import * as jacobsAnswer from "./answer.ts"
 import * as rules from "./rules.ts"
 

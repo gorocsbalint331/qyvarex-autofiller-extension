@@ -3,9 +3,9 @@
  * Rippling answer shaping — readable TypeScript source of truth.
  */
 
-import * as filler from "../../shared/filler.js"
-import * as answerMethods from "../../methods/answer.js"
-import * as cancellation from "../../methods/cancellation.js"
+import * as filler from "../../shared/filler.ts"
+import * as answerMethods from "../../methods/answer.ts"
+import * as cancellation from "../../methods/cancellation.ts"
 import * as coreDom from "../../../core/dom.js"
 import * as enums from "../../../core/enums.js"
 function createOperationHandlerFactory(e, t) {

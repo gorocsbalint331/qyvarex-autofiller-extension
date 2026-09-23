@@ -4,7 +4,7 @@
  */
 
 import * as messaging from "@plasmohq/messaging";
-import * as cancellation from "../../methods/cancellation.js";
+import * as cancellation from "../../methods/cancellation.ts";
 import * as enums from "../../../core/enums.js";
 import * as autofillClientSearch from "../../../api/autofill-client-search.js";
 let s = Object.freeze({ prepare: 5e3, probe: 12e3, wait: 5e3, clear: 2e3, resolve: 6e4 }), u = /* @__PURE__ */ new WeakMap(), c = /* @__PURE__ */ new WeakMap(), d = /* @__PURE__ */ new WeakMap();

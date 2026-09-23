@@ -5,7 +5,7 @@
 
 import * as messaging from "@plasmohq/messaging"
 import * as utils from "./utils.js"
-import * as cancellation from "../../methods/cancellation.js"
+import * as cancellation from "../../methods/cancellation.ts"
 
 const OPEN_TIMEOUT_MS = 500
 const SEARCH_TIMEOUT_MS = 650

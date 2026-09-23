@@ -3,12 +3,12 @@
  * Uber Careers — DOM fill operations (inputs, sections, resume, conditionals).
  */
 
-import * as choiceMatch from "../../methods/choice-match.js"
-import * as sectionResults from "../../methods/section-results.js"
-import * as cancellation from "../../methods/cancellation.js"
-import * as filler from "../../shared/filler.js"
-import * as answerMethods from "../../methods/answer.js"
-import * as dom from "../../methods/dom.js"
+import * as choiceMatch from "../../methods/choice-match.ts"
+import * as sectionResults from "../../methods/section-results.ts"
+import * as cancellation from "../../methods/cancellation.ts"
+import * as filler from "../../shared/filler.ts"
+import * as answerMethods from "../../methods/answer.ts"
+import * as dom from "../../methods/dom.ts"
 import * as delay from "../../../utils/delay.js"
 import * as getTargetOrTimeout from "../../../utils/getTargetOrTimeout.js"
 import * as rules from "./rules.js"

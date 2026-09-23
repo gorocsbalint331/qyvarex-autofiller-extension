@@ -3,7 +3,7 @@
  * Detects Workday application submitted / congratulations state.
  */
 import { useEffect, useState } from "react"
-import { getTargetName } from "../contents/crawler/target.js"
+import { getTargetName } from "../contents/crawler/target.ts"
 import { getFirstOrderedNodeSafe } from "../core/xpath.js"
 
 function isWorkdaySubmittedPage() {

@@ -3,7 +3,7 @@
  * Rippling location operation — readable TypeScript source of truth.
  */
 
-import * as observer from "../../methods/observer.js"
+import * as observer from "../../methods/observer.ts"
 import * as profileLocationOriginalAnswer from "../profile-location-original-answer.ts"
 import * as enums from "../../../core/enums.js"
 let l = "/maps/api/place/js/AutocompletionService.GetPredictionsJson";

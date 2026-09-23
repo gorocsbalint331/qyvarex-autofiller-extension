@@ -3,8 +3,8 @@
  * Breezy ATS — DOM fill operations (inputs, resume, edu/work, snapshots).
  */
 
-import * as choiceMatch from "../../methods/choice-match.js"
-import * as answerMethods from "../../methods/answer.js"
+import * as choiceMatch from "../../methods/choice-match.ts"
+import * as answerMethods from "../../methods/answer.ts"
 import * as enums from "../../../core/enums.js"
 import * as xpath from "../../../core/xpath.js"
 import * as urlStore from "../../../store/url.js"

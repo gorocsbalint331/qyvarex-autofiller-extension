@@ -8,8 +8,8 @@
 
 import * as messaging from "@plasmohq/messaging"
 import * as autofillSignupInformation from "../../api/autofill-signup-information.js"
-import * as cancellation from "../methods/cancellation.js"
-import * as dom from "../methods/dom.js"
+import * as cancellation from "../methods/cancellation.ts"
+import * as dom from "../methods/dom.ts"
 import { BaseFiller } from "./base-filler.ts"
 import * as enums from "../../core/enums.js"
 import * as workdaySignupInfo from "../../store/workday-signup-info.js"

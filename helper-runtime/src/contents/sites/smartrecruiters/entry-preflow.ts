@@ -1,10 +1,10 @@
 // @ts-nocheck
 /**
- * SmartRecruiters — pre-autofill entry flow (detail → application).
+ * SmartRecruiters â€” pre-autofill entry flow (detail â†’ application).
  */
 
-import * as accountFlowState from "../../pre-autofill-flow/account-flow-state.js"
-import * as preAutofillDom from "../../pre-autofill-flow/dom.js"
+import * as accountFlowState from "../../pre-autofill-flow/account-flow-state.ts"
+import * as preAutofillDom from "../../pre-autofill-flow/dom.ts"
 
 const FLOW_ID = "smartrecruiters-entry"
 const JOBS_ORIGIN = "https://jobs.smartrecruiters.com"

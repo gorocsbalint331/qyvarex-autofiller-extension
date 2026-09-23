@@ -3,8 +3,8 @@
  * Google Careers — skills autocomplete fill helpers.
  */
 
-import * as cancellation from "../../methods/cancellation.js";
-import * as autocompleteListbox from "../../methods/autocomplete-listbox.js";
+import * as cancellation from "../../methods/cancellation.ts";
+import * as autocompleteListbox from "../../methods/autocomplete-listbox.ts";
 
 export const GOOGLE_SKILLS_LABEL =
   "What skills do you have? You can add up to 25 skills";

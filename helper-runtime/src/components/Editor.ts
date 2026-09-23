@@ -27,7 +27,7 @@ import {
 import { buildSignupRegistrationEmailUpdateBody } from "../api/autofill-signup-information.ts"
 import { HELPER_MODAL_Z_INDEX } from "../constants.ts"
 import { HOST_ID } from "../contents.ts"
-import * as accountFlowState from "../contents/pre-autofill-flow/account-flow-state.js"
+import * as accountFlowState from "../contents/pre-autofill-flow/account-flow-state.ts"
 import { sendAutofillAnswerPairEvent } from "../contents/sites/autofill-answer-pair-tracking.ts"
 import { SECTION_LABELS, isSectionKey } from "../forms/constants.ts"
 import { useAddressLocation } from "../hooks/useAddressLocation.ts"

@@ -4,8 +4,8 @@
  * Readable TypeScript source of truth.
  */
 
-import * as choiceMatch from "../../methods/choice-match.js"
-import * as filler from "../../shared/filler.js"
+import * as choiceMatch from "../../methods/choice-match.ts"
+import * as filler from "../../shared/filler.ts"
 import * as xpath from "../../../core/xpath.js"
 import * as delay from "../../../utils/delay.js"
 

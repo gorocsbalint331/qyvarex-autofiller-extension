@@ -3,7 +3,7 @@
  * Meta Careers — form rule extraction and snapshot helpers.
  */
 
-import * as executor from "../../crawler/utils/executor.js"
+import * as executor from "../../crawler/fill-utils/executor.ts"
 import * as enums from "../../../core/enums.js"
 import * as xpath from "../../../core/xpath.js"
 import * as getTargetOrTimeoutModule from "../../../utils/getTargetOrTimeout.js"

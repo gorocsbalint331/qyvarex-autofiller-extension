@@ -4,7 +4,7 @@
  */
 
 import * as enums from "../../../core/enums.js"
-import * as observer from "../../methods/observer.js"
+import * as observer from "../../methods/observer.ts"
 import * as xpath from "../../../core/xpath.js"
 import * as teamtailorPhone from "./phone-country-code.ts"
 

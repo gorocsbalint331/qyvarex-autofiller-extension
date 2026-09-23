@@ -6,7 +6,7 @@
  * Site id: "polymer"
  */
 
-import * as dom from "../methods/dom.js"
+import * as dom from "../methods/dom.ts"
 import { BaseFiller } from "./base-filler.ts"
 import * as polymerAnswer from "./polymer/answer.ts"
 import * as operations from "./polymer/operations.ts"

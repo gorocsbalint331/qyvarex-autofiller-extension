@@ -6,13 +6,13 @@
  * Site engines extend BaseFiller and override hooks (rules, uploads, combo, tracking).
  */
 
-import * as filler from "../shared/filler.js"
-import * as answer from "../methods/answer.js"
-import * as cancellation from "../methods/cancellation.js"
-import * as coverLetter from "../methods/cover-letter.js"
-import * as dom from "../methods/dom.js"
-import * as runtimeError from "../methods/runtime-error.js"
-import * as track from "../methods/track.js"
+import * as filler from "../shared/filler.ts"
+import * as answer from "../methods/answer.ts"
+import * as cancellation from "../methods/cancellation.ts"
+import * as coverLetter from "../methods/cover-letter.ts"
+import * as dom from "../methods/dom.ts"
+import * as runtimeError from "../methods/runtime-error.ts"
+import * as track from "../methods/track.ts"
 import * as enums from "../../core/enums.js"
 import * as xpath from "../../core/xpath.js"
 import * as httpEnums from "../../enums/http.js"

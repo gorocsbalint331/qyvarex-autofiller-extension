@@ -3,7 +3,7 @@
  * TeamTailor — answer shaping (cover letter text).
  */
 
-import * as coverLetter from "../../methods/cover-letter.js"
+import * as coverLetter from "../../methods/cover-letter.ts"
 
 export function formatAnswer(answer, coverLetterInfo) {
   const withCoverLetter = coverLetter.applyCoverLetterTextToAnswer(

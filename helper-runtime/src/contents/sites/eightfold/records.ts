@@ -3,7 +3,7 @@
  * Eightfold CareerHub — experience / education record fill (readable TypeScript source of truth).
  */
 
-import * as cancellation from "../../methods/cancellation.js"
+import * as cancellation from "../../methods/cancellation.ts"
 import * as dom from "../../../core/dom.js"
 import * as enums from "../../../core/enums.js"
 import * as steps from "./steps.ts"

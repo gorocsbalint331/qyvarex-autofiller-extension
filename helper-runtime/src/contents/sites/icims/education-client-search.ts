@@ -5,7 +5,7 @@
 
 import * as enums from "../../../core/enums.js"
 import * as autofillClientSearch from "../../../api/autofill-client-search.js"
-import * as cancellation from "../../methods/cancellation.js"
+import * as cancellation from "../../methods/cancellation.ts"
 import * as clientSearchWidget from "./client-search-widget.ts"
 import * as utils from "./utils.js"
 

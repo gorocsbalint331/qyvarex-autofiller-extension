@@ -4,10 +4,10 @@
  */
 
 import * as dayjs from "dayjs"
-import * as filler from "../../shared/filler.js"
-import * as answerMethods from "../../methods/answer.js"
-import * as cancellation from "../../methods/cancellation.js"
-import * as dom from "../../methods/dom.js"
+import * as filler from "../../shared/filler.ts"
+import * as answerMethods from "../../methods/answer.ts"
+import * as cancellation from "../../methods/cancellation.ts"
+import * as dom from "../../methods/dom.ts"
 import * as zohoPhoneCountryCode from "./phone-country-code.ts"
 import * as locationOperation from "./location-operation.ts"
 

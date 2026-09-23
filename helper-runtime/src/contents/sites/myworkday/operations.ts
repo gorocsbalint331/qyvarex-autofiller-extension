@@ -3,15 +3,15 @@
  * MyWorkday — DOM fill operations (text, select, date, resume, skills, submit tracking).
  */
 
-import * as choiceMatch from "../../methods/choice-match.js";
+import * as choiceMatch from "../../methods/choice-match.ts";
 import * as agreements from "./agreements.ts";
 import * as messaging from "@plasmohq/messaging";
-import * as crawlerUtils from "../../crawler/utils.js";
-import * as selectUtils from "../../crawler/utils/select.js";
-import * as answerMethods from "../../methods/answer.js";
-import * as checkboxLabel from "../../methods/checkbox-label.js";
-import * as dom from "../../methods/dom.js";
-import * as observer from "../../methods/observer.js";
+import * as crawlerUtils from "../../crawler/fill-utils/label.ts";
+import * as selectUtils from "../../crawler/fill-utils/select.ts";
+import * as answerMethods from "../../methods/answer.ts";
+import * as checkboxLabel from "../../methods/checkbox-label.ts";
+import * as dom from "../../methods/dom.ts";
+import * as observer from "../../methods/observer.ts";
 import * as autofillAnswerPairTracking from "../autofill-answer-pair-tracking.ts";
 import * as educationItemTrace from "../education-item-trace.js";
 import * as snapshotAlignment from "./snapshot-alignment.ts";

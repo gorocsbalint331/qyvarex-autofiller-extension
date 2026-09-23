@@ -5,7 +5,7 @@
  */
 
 import * as plasmohqStorage from "@plasmohq/storage"
-import * as submitSuccessObserver from "../contents/methods/submit-success-observer.js"
+import * as submitSuccessObserver from "../contents/methods/submit-success-observer.ts"
 import * as storageEnums from "../enums/storage.js"
 import * as feedbackStore from "../store/feedback.js"
 

@@ -7,7 +7,7 @@
  */
 
 import * as messaging from "@plasmohq/messaging"
-import * as dom from "../methods/dom.js"
+import * as dom from "../methods/dom.ts"
 import { BaseFiller } from "./base-filler.js"
 import * as enums from "../../core/enums.js"
 import * as autofillInfo from "../../store/autofillInfo.js"

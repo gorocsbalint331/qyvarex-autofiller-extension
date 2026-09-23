@@ -4,7 +4,7 @@
  */
 
 import * as dayjs from "dayjs"
-import * as coverLetter from "../../methods/cover-letter.js"
+import * as coverLetter from "../../methods/cover-letter.ts"
 
 const dayjsDefault = { default: dayjs }
 

@@ -8,7 +8,7 @@ import { Flex, Typography } from "antd"
 import { useEffect, useState } from "react"
 import { sendToBackground } from "@plasmohq/messaging"
 import * as smileSvg from "../assets/inline/images/smile.svg.js"
-import { TAILOR_RESUME_ID_PREFIX } from "../contents/shared/constants.js"
+import { TAILOR_RESUME_ID_PREFIX } from "../contents/shared/constants.ts"
 import Image from "../ui/Image.ts"
 import ResumeLoading from "./Resume/ResumeReview/components/ResumeLoading.ts"
 

@@ -7,7 +7,7 @@
  */
 
 import { BaseFiller } from "./base-filler.ts"
-import * as dom from "../methods/dom.js"
+import * as dom from "../methods/dom.ts"
 import * as enums from "../../core/enums.js"
 import * as xpath from "../../core/xpath.js"
 import * as delay from "../../utils/delay.js"

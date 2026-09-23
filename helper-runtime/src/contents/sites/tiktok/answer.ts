@@ -3,7 +3,7 @@
  * TikTok — answer shaping (dates, social media, skippable inputs).
  */
 
-import * as filler from "../../shared/filler.js"
+import * as filler from "../../shared/filler.ts"
 import * as dateUtils from "./date-utils.ts"
 
 function stripNonAlnumKeepSpaces(text) {

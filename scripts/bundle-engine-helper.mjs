@@ -73,16 +73,16 @@ const VENDOR_FALLBACK =
     : null
 
 if (USE_SRC_TREE) {
-  const factory = path.join(
+  const factoryDir = path.join(
     HELPER_RUNTIME_ROOT,
     "src",
     "contents",
-    "crawler",
-    "factory.js"
+    "crawler"
   )
-  if (fs.existsSync(factory)) {
-    // no-op: factory presence check only
-  } else {
+  const factory =
+    fs.existsSync(path.join(factoryDir, "factory.ts")) ||
+    fs.existsSync(path.join(factoryDir, "factory.js"))
+  if (!factory) {
     console.error(
       "[bundle-engine-helper] missing helper-runtime factory — run: npm run port:vendor-helper"
     )

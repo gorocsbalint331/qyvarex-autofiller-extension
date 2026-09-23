@@ -8,11 +8,11 @@
 
 import { BaseFiller } from "./base-filler.ts";
 import * as contents from "../../contents.js";
-import * as answerMethods from "../methods/answer.js";
-import * as cancellation from "../methods/cancellation.js";
-import * as coverLetter from "../methods/cover-letter.js";
-import * as dom from "../methods/dom.js";
-import * as track from "../methods/track.js";
+import * as answerMethods from "../methods/answer.ts";
+import * as cancellation from "../methods/cancellation.ts";
+import * as coverLetter from "../methods/cover-letter.ts";
+import * as dom from "../methods/dom.ts";
+import * as track from "../methods/track.ts";
 import * as falconAnswerTracking from "./falcon-answer-tracking.ts";
 import * as coreDom from "../../core/dom.js";
 import * as enums from "../../core/enums.js";

@@ -3,7 +3,7 @@
  * Walmart composite employment/education dialogs — open, fill mapping, save, snapshots.
  */
 
-import * as observer from "../../methods/observer.js"
+import * as observer from "../../methods/observer.ts"
 import * as enums from "../../../core/enums.js"
 import * as delay from "../../../utils/delay.js"
 import * as rules from "./rules.ts"

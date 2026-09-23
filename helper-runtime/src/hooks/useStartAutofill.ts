@@ -6,7 +6,7 @@
 import { useCallback, useEffect } from "react"
 import { agentDomains } from "../api/env-resolver.js"
 import { getAutofillInstance } from "../contents.js"
-import { CancelledError } from "../contents/methods/cancellation.js"
+import { CancelledError } from "../contents/methods/cancellation.ts"
 import { beginFalconResponseAnswerRequest } from "../contents/sites/falcon-answer-tracking.ts"
 import {
   APPLICATION_STATUS,

@@ -7,9 +7,9 @@ import {
   cancelAutofillInstance,
   getAutofillInstance,
 } from "../contents.js"
-import { CancelledError } from "../contents/methods/cancellation.js"
-import { isExtensionContextInvalidatedError } from "../contents/methods/runtime-error.js"
-import { sendHttpStatusMessage } from "../contents/methods/track.js"
+import { CancelledError } from "../contents/methods/cancellation.ts"
+import { isExtensionContextInvalidatedError } from "../contents/methods/runtime-error.ts"
+import { sendHttpStatusMessage } from "../contents/methods/track.ts"
 import { beginFalconResponseAnswerRequest } from "../contents/sites/falcon-answer-tracking.ts"
 import { MESSAGE_EVENTS } from "./enums.js"
 import { IFRAME_EVENTS } from "../enums.js"

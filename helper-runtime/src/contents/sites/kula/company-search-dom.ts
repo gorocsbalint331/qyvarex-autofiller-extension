@@ -4,7 +4,7 @@
  */
 
 import * as messaging from "@plasmohq/messaging"
-import * as cancellation from "../../methods/cancellation.js"
+import * as cancellation from "../../methods/cancellation.ts"
 
 function isCompanyInput(input) {
   return (

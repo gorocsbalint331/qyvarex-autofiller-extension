@@ -6,7 +6,7 @@
  * Site id: "bytedance"
  */
 
-import * as answerMethods from "../methods/answer.js"
+import * as answerMethods from "../methods/answer.ts"
 import { BaseFiller } from "./base-filler.js"
 import * as bytedanceAnswer from "./bytedance/answer.ts"
 import * as coreDom from "../../core/dom.js"

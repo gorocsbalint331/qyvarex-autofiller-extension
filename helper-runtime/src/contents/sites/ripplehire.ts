@@ -7,9 +7,9 @@
  */
 
 import * as messaging from "@plasmohq/messaging"
-import * as answerMethods from "../methods/answer.js"
-import * as cancellation from "../methods/cancellation.js"
-import * as filler from "../shared/filler.js"
+import * as answerMethods from "../methods/answer.ts"
+import * as cancellation from "../methods/cancellation.ts"
+import * as filler from "../shared/filler.ts"
 import { BaseFiller } from "./base-filler.ts"
 import * as enums from "../../core/enums.js"
 import * as entryNavigation from "./ripplehire/entry-navigation.ts"

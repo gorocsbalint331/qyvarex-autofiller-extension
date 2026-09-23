@@ -4,7 +4,7 @@
  */
 
 import * as autofillClientSearch from "../../../api/autofill-client-search.js"
-import * as cancellation from "../../methods/cancellation.js"
+import * as cancellation from "../../methods/cancellation.ts"
 import * as profileLocationOriginalAnswer from "../profile-location-original-answer.ts"
 import * as enums from "../../../core/enums.js"
 let s = 5, u = 25, c = 128, d = 256, f = 256, p = 512, m = 250;

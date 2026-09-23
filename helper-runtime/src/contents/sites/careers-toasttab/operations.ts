@@ -3,12 +3,12 @@
  * Careers Toasttab DOM fill operations (select, phone, resume, pre-fill).
  */
 
-import * as answerMethods from "../../methods/answer.js"
-import * as dom from "../../methods/dom.js"
+import * as answerMethods from "../../methods/answer.ts"
+import * as dom from "../../methods/dom.ts"
 import * as delay from "../../../utils/delay.js"
 import * as toasttabAnswer from "./answer.ts"
 
-export { fillCheckBoxesField } from "../../methods/dom.js"
+export { fillCheckBoxesField } from "../../methods/dom.ts"
 
 async function fillSelectField(rule, value) {
   const values = Array.isArray(value) ? value : [value]

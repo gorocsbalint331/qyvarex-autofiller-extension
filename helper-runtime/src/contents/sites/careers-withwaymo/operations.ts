@@ -3,9 +3,9 @@
  * Careers With Waymo DOM fill operations (text, selectize, checkbox, resume, education).
  */
 
-import * as checkboxUtils from "../../crawler/utils/checkbox.js"
-import * as answerMethods from "../../methods/answer.js"
-import * as dom from "../../methods/dom.js"
+import * as checkboxUtils from "../../crawler/fill-utils/checkbox.ts"
+import * as answerMethods from "../../methods/answer.ts"
+import * as dom from "../../methods/dom.ts"
 import * as delay from "../../../utils/delay.js"
 import * as waymoAnswer from "./answer.ts"
 import * as waymoRules from "./rules.ts"

@@ -3,7 +3,7 @@
  * RippleHire location typeahead — readable TypeScript source of truth.
  */
 
-import * as cancellation from "../../methods/cancellation.js"
+import * as cancellation from "../../methods/cancellation.ts"
 let i = "ul.typeahead.dropdown-menu[role=listbox]", a = ".pac-container", l = "#currentLocation[name=currentLocation].pac-target-input", s = ".no-results, [data-no-results=true]", u = ".loading, .typeahead-loading, [data-loading=true]", c = 25, d = 10, f = 3e3, p = 1e3, m = 100, h = /* @__PURE__ */ new WeakMap(), g = /* @__PURE__ */ new WeakMap();
 function b(e) {
   return e instanceof cancellation.CancelledError || e instanceof cancellation.SkippedError;

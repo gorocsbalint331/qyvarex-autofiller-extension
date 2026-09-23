@@ -7,7 +7,7 @@ import {
   cancelAutofillInstance,
   getAutofillInstance,
 } from "../contents.js"
-import { cancelPreAutofillAccountFlow } from "../contents/pre-autofill-flow/account-flow.js"
+import { cancelPreAutofillAccountFlow } from "../contents/pre-autofill-flow/account-flow.ts"
 import { cancelIframeAutofill } from "../core/utils.js"
 
 export default function useRegisterAgentCancel() {

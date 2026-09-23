@@ -7,10 +7,10 @@
  */
 
 import * as messaging from "@plasmohq/messaging";
-import * as answerMethods from "../methods/answer.js";
-import * as cancellation from "../methods/cancellation.js";
-import * as rulesMethods from "../methods/rules.js";
-import * as track from "../methods/track.js";
+import * as answerMethods from "../methods/answer.ts";
+import * as cancellation from "../methods/cancellation.ts";
+import * as rulesMethods from "../methods/rules.ts";
+import * as track from "../methods/track.ts";
 import * as autofillAnswerPairTracking from "./autofill-answer-pair-tracking.ts";
 import {
   BaseFiller,

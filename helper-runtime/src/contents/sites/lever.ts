@@ -6,7 +6,7 @@
  * Site id: "lever"
  */
 
-import * as answerMethods from "../methods/answer.js"
+import * as answerMethods from "../methods/answer.ts"
 import { BaseFiller } from "./base-filler.ts"
 import * as enums from "../../core/enums.js"
 import * as xpath from "../../core/xpath.js"

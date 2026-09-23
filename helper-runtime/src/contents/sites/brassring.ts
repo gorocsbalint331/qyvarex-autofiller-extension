@@ -6,12 +6,12 @@
  * Site id: "brassring"
  */
 
-import * as sectionResults from "../methods/section-results.js"
+import * as sectionResults from "../methods/section-results.ts"
 import * as dayjs from "dayjs"
 import * as messaging from "@plasmohq/messaging"
-import * as answerMethods from "../methods/answer.js"
-import * as cancellation from "../methods/cancellation.js"
-import * as dom from "../methods/dom.js"
+import * as answerMethods from "../methods/answer.ts"
+import * as cancellation from "../methods/cancellation.ts"
+import * as dom from "../methods/dom.ts"
 import { BaseFiller } from "./base-filler.js"
 import * as enums from "../../core/enums.js"
 import * as brassringAnswer from "./answer.ts"

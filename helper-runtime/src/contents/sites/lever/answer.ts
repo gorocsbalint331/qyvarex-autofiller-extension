@@ -4,8 +4,8 @@
  */
 
 import * as dayjs from "dayjs"
-import * as filler from "../../shared/filler.js"
-import * as answerMethods from "../../methods/answer.js"
+import * as filler from "../../shared/filler.ts"
+import * as answerMethods from "../../methods/answer.ts"
 
 const dayjsDefault = { default: dayjs }
 

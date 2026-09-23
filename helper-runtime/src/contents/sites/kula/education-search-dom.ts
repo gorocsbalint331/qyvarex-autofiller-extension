@@ -3,7 +3,7 @@
  * Kula — education search DOM capture / commit helpers.
  */
 
-import * as cancellation from "../../methods/cancellation.js"
+import * as cancellation from "../../methods/cancellation.ts"
 
 function getEducationFieldControl(input) {
   const control = input.closest(

@@ -9,8 +9,8 @@
  */
 
 import * as messaging from "@plasmohq/messaging";
-import * as answer from "../methods/answer.js";
-import * as dom from "../methods/dom.js";
+import * as answer from "../methods/answer.ts";
+import * as dom from "../methods/dom.ts";
 import * as educationItemTrace from "./education-item-trace.js";
 import * as greenhouseAnswer from "./greenhouse/answer.ts";
 import * as educationOperation from "./greenhouse/education-operation.ts";

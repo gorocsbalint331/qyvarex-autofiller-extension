@@ -3,9 +3,9 @@
  * Careers Page DOM fill operations (inputs, flatpickr dates, resume, sections).
  */
 
-import * as choiceMatch from "../../methods/choice-match.js"
-import * as answer from "../../methods/answer.js"
-import * as dom from "../../methods/dom.js"
+import * as choiceMatch from "../../methods/choice-match.ts"
+import * as answer from "../../methods/answer.ts"
+import * as dom from "../../methods/dom.ts"
 import * as delay from "../../../utils/delay.js"
 import * as careersAnswer from "./answer.ts"
 import * as rules from "./rules.ts"

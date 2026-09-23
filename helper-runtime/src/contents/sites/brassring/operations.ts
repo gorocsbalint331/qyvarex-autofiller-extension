@@ -3,14 +3,14 @@
  * BrassRing DOM fill operations (inputs, selects, autocomplete, uploads, composites).
  */
 
-import * as choiceMatch from "../../methods/choice-match.js"
+import * as choiceMatch from "../../methods/choice-match.ts"
 import * as dayjs from "dayjs"
 import * as messaging from "@plasmohq/messaging"
-import * as filler from "../../shared/filler.js"
-import * as answerMethods from "../../methods/answer.js"
-import * as cancellation from "../../methods/cancellation.js"
-import * as dom from "../../methods/dom.js"
-import * as observer from "../../methods/observer.js"
+import * as filler from "../../shared/filler.ts"
+import * as answerMethods from "../../methods/answer.ts"
+import * as cancellation from "../../methods/cancellation.ts"
+import * as dom from "../../methods/dom.ts"
+import * as observer from "../../methods/observer.ts"
 import * as delay from "../../../utils/delay.js"
 
 const dayjsDefault = { default: dayjs }

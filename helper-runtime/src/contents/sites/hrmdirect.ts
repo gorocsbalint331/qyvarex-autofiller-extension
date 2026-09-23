@@ -6,9 +6,9 @@
  * Site id: "hrmdirect"
  */
 
-import * as answerMethods from "../methods/answer.js"
+import * as answerMethods from "../methods/answer.ts"
 import { BaseFiller } from "./base-filler.ts"
-import * as methodsDom from "../methods/dom.js"
+import * as methodsDom from "../methods/dom.ts"
 import * as coreDom from "../../core/dom.js"
 import * as enums from "../../core/enums.js"
 import * as autofillInfo from "../../store/autofillInfo.js"

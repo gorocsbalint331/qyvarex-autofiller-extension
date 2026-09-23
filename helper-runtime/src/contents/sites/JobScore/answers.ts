@@ -3,7 +3,7 @@
  * JobScore — answer formatting and field helpers.
  */
 
-import * as coverLetter from "../../methods/cover-letter.js"
+import * as coverLetter from "../../methods/cover-letter.ts"
 
 export function formatAnswer(answer, coverLetterText) {
   return coverLetter.applyCoverLetterTextToAnswer(answer, coverLetterText, [

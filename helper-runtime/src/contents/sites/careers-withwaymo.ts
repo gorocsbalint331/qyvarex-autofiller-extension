@@ -7,9 +7,9 @@
  */
 
 import * as coreDom from "../../core/dom.js"
-import * as answerMethods from "../methods/answer.js"
-import * as dom from "../methods/dom.js"
-import * as track from "../methods/track.js"
+import * as answerMethods from "../methods/answer.ts"
+import * as dom from "../methods/dom.ts"
+import * as track from "../methods/track.ts"
 import * as autofillAnswerPairTracking from "./autofill-answer-pair-tracking.ts"
 import { BaseFiller } from "./base-filler.js"
 import * as urlStore from "../../store/url.js"

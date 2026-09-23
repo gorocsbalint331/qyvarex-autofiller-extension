@@ -3,7 +3,7 @@
  * Kula — location/address search DOM capture / commit helpers.
  */
 
-import * as cancellation from "../../methods/cancellation.js"
+import * as cancellation from "../../methods/cancellation.ts"
 
 function getAddressFieldControl(input) {
   const control = input.closest?.(

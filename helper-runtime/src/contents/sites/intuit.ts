@@ -6,8 +6,8 @@
  * Site id: "intuit"
  */
 
-import * as answerMethods from "../methods/answer.js"
-import * as dom from "../methods/dom.js"
+import * as answerMethods from "../methods/answer.ts"
+import * as dom from "../methods/dom.ts"
 import { BaseFiller } from "./base-filler.ts"
 import * as enums from "../../core/enums.js"
 import * as xpath from "../../core/xpath.js"

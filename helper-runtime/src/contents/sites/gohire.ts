@@ -9,7 +9,7 @@
 import * as React from "react"
 import * as ReactDOMClient from "react-dom/client"
 import * as TextareaGenerateButton from "../../components/TextareaGenerateButton.js"
-import * as dom from "../methods/dom.js"
+import * as dom from "../methods/dom.ts"
 import { BaseFiller } from "./base-filler.ts"
 import * as enums from "../../core/enums.js"
 import * as xpath from "../../core/xpath.js"

@@ -6,7 +6,7 @@
  * Site id: "tiktok"
  */
 
-import * as answerMethods from "../methods/answer.js"
+import * as answerMethods from "../methods/answer.ts"
 import { BaseFiller } from "./base-filler.ts"
 import * as tiktokAnswer from "./tiktok/answer.ts"
 import * as coreDom from "../../core/dom.js"

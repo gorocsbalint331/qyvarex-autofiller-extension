@@ -6,7 +6,7 @@
  * Site id: "amazon"
  */
 
-import * as answerMethods from "../methods/answer.js"
+import * as answerMethods from "../methods/answer.ts"
 import { BaseFiller } from "./base-filler.js"
 import * as enums from "../../core/enums.js"
 import * as phoneCountryCode from "../../core/phone-country-code.js"

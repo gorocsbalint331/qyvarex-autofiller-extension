@@ -7,11 +7,11 @@
  */
 
 import * as messaging from "@plasmohq/messaging"
-import * as cancellation from "../methods/cancellation.js"
-import * as dom from "../methods/dom.js"
-import * as coverLetter from "../methods/cover-letter.js"
-import * as answerMethods from "../methods/answer.js"
-import * as track from "../methods/track.js"
+import * as cancellation from "../methods/cancellation.ts"
+import * as dom from "../methods/dom.ts"
+import * as coverLetter from "../methods/cover-letter.ts"
+import * as answerMethods from "../methods/answer.ts"
+import * as track from "../methods/track.ts"
 import * as enums from "../../core/enums.js"
 import * as stringUtils from "../../utils/string.ts"
 import { BaseFiller } from "./base-filler.ts"

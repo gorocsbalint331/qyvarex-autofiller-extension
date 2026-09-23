@@ -9,13 +9,13 @@ import {
   PRE_AUTOFILL_ACCOUNT_TRANSITION_TTL_MS,
   preAutofillAccountTransitionSession,
   consumePreAutofillAccountTransition,
-} from "../contents/pre-autofill-flow/account-flow.js"
+} from "../contents/pre-autofill-flow/account-flow.ts"
 import {
   waitForPreAutofillFlowDebugStep,
   startPreAutofillFlow,
   shouldResumePreAutofillFlow,
   resolvePreAutofillFlow,
-} from "../contents/pre-autofill-flow/core.js"
+} from "../contents/pre-autofill-flow/core.ts"
 import {
   PRE_AUTOFILL_FLOW_REGISTRY,
   canStartPreAutofillStandardAutofill,
@@ -24,8 +24,8 @@ import {
   getPreAutofillAccountTransitionCompleteHandler,
   isPreAutofillAccountTransitionInScope,
   detectPreAutofillAccountSourcePageSubmitError,
-} from "../contents/pre-autofill-flow/registry.js"
-import { sendWorkdayAccountSubmitWarningExposure } from "../contents/pre-autofill-flow/tracking.js"
+} from "../contents/pre-autofill-flow/registry.ts"
+import { sendWorkdayAccountSubmitWarningExposure } from "../contents/pre-autofill-flow/tracking.ts"
 import { useAutofillResultStore } from "../store/autofillResult.ts"
 import { usePreAutofillFlow } from "./usePreAutofillFlow.ts"
 

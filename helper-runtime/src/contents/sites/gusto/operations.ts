@@ -3,9 +3,9 @@
  * Gusto — DOM fill operations (inputs, selects, resume, cover letter).
  */
 
-import * as choiceMatch from "../../methods/choice-match.js"
-import * as inputUtils from "../../crawler/utils/input.js"
-import * as answerMethods from "../../methods/answer.js"
+import * as choiceMatch from "../../methods/choice-match.ts"
+import * as inputUtils from "../../crawler/fill-utils/input.ts"
+import * as answerMethods from "../../methods/answer.ts"
 import * as delay from "../../../utils/delay.js"
 import * as getTargetOrTimeoutModule from "../../../utils/getTargetOrTimeout.js"
 

@@ -6,10 +6,10 @@
  * Site id: "recruiterflow"
  */
 
-import * as answerMethods from "../methods/answer.js"
-import * as dom from "../methods/dom.js"
-import * as rulesMethods from "../methods/rules.js"
-import * as track from "../methods/track.js"
+import * as answerMethods from "../methods/answer.ts"
+import * as dom from "../methods/dom.ts"
+import * as rulesMethods from "../methods/rules.ts"
+import * as track from "../methods/track.ts"
 import * as recruiterflowAnswer from "./recruiterflow/answer.ts"
 import * as operations from "./recruiterflow/operations.ts"
 import * as phoneCountryCode from "./recruiterflow/phone-country-code.ts"

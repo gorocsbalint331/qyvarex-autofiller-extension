@@ -3,15 +3,15 @@
  * Cisco Careers DOM fill operations (inputs, selects, composites, resume).
  */
 
-import * as choiceMatch from "../../methods/choice-match.js"
+import * as choiceMatch from "../../methods/choice-match.ts"
 import * as dayjs from "dayjs"
 import * as customParseFormat from "dayjs/plugin/customParseFormat"
 import * as messaging from "@plasmohq/messaging"
-import * as selectUtils from "../../crawler/utils/select.js"
-import * as answerMethods from "../../methods/answer.js"
+import * as selectUtils from "../../crawler/fill-utils/select.ts"
+import * as answerMethods from "../../methods/answer.ts"
 import * as coreDom from "../../../core/dom.js"
-import * as dom from "../../methods/dom.js"
-import * as observer from "../../methods/observer.js"
+import * as dom from "../../methods/dom.ts"
+import * as observer from "../../methods/observer.ts"
 import * as autofillAnswerPairTracking from "../autofill-answer-pair-tracking.js"
 import * as enums from "../../../core/enums.js"
 import * as urlStore from "../../../store/url.js"

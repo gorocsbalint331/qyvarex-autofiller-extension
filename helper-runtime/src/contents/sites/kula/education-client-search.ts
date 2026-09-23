@@ -3,7 +3,7 @@
  * Kula — education degree/major client-search resolution.
  */
 
-import * as cancellation from "../../methods/cancellation.js"
+import * as cancellation from "../../methods/cancellation.ts"
 import * as autofillClientSearch from "../../../api/autofill-client-search.js"
 
 export function classifyKulaEducationField(rule) {

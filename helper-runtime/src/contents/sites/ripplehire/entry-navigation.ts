@@ -3,7 +3,7 @@
  * RippleHire entry navigation — readable TypeScript source of truth.
  */
 
-import * as cancellation from "../../methods/cancellation.js"
+import * as cancellation from "../../methods/cancellation.ts"
 let i = 15e3, a = 100, l = "Autofill could not open the application form. Please open it manually and try again.", s = "The job page changed while opening the application. Please click Autofill again on the intended job.";
 function u(e) {
   try {

@@ -3,8 +3,8 @@
  * JobScore — DOM fill operations (inputs, resume, cover letter, sections).
  */
 
-import * as answerMethods from "../../methods/answer.js"
-import * as dom from "../../methods/dom.js"
+import * as answerMethods from "../../methods/answer.ts"
+import * as dom from "../../methods/dom.ts"
 import * as enums from "../../../core/enums.js"
 import * as delay from "../../../utils/delay.js"
 import * as answers from "./answers.ts"

@@ -4,7 +4,7 @@
  */
 
 import * as autofillSignupInformation from "../../../api/autofill-signup-information.js"
-import * as inputUtils from "../../crawler/utils/input.js"
+import * as inputUtils from "../../crawler/fill-utils/input.ts"
 import * as enums from "../../../core/enums.js"
 import * as workdaySignupInfo from "../../../store/workday-signup-info.js"
 import * as utils from "./utils.js"

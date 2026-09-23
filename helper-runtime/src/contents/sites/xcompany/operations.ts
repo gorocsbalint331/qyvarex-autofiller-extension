@@ -3,9 +3,9 @@
  * XCompany — DOM fill operations (inputs, uploads, consent checkboxes).
  */
 
-import * as answerMethods from "../../methods/answer.js"
-import * as dom from "../../methods/dom.js"
-import * as observer from "../../methods/observer.js"
+import * as answerMethods from "../../methods/answer.ts"
+import * as dom from "../../methods/dom.ts"
+import * as observer from "../../methods/observer.ts"
 import * as delay from "../../../utils/delay.js"
 
 const FORM_ROOT_SELECTOR = "#main x-island form"

@@ -4,8 +4,8 @@
  */
 
 import * as messaging from "@plasmohq/messaging"
-import * as answerMethods from "../../methods/answer.js"
-import * as cancellation from "../../methods/cancellation.js"
+import * as answerMethods from "../../methods/answer.ts"
+import * as cancellation from "../../methods/cancellation.ts"
 import {
   BaseFiller,
   waitForComboQuestionsToSettle,

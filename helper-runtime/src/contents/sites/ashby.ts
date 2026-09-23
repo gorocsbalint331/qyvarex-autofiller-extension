@@ -8,8 +8,8 @@
 
 import * as coreDom from "../../core/dom.js"
 import * as messaging from "@plasmohq/messaging"
-import * as answerMethods from "../methods/answer.js"
-import * as dom from "../methods/dom.js"
+import * as answerMethods from "../methods/answer.ts"
+import * as dom from "../methods/dom.ts"
 import * as ashbyAnswer from "./ashby/answer.ts"
 import * as canonicalSearch from "./ashby/canonical-search.ts"
 import * as locationOperation from "./ashby/location-operation.ts"

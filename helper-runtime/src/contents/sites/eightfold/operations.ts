@@ -6,12 +6,12 @@
  * that share this module path in the Parcel dump.
  */
 
-import * as choiceMatch from "../../methods/choice-match.js"
-import * as inputUtils from "../../crawler/utils/input.js"
-import * as answerMethods from "../../methods/answer.js"
-import * as cancellation from "../../methods/cancellation.js"
-import * as dom from "../../methods/dom.js"
-import * as filler from "../../shared/filler.js"
+import * as choiceMatch from "../../methods/choice-match.ts"
+import * as inputUtils from "../../crawler/fill-utils/input.ts"
+import * as answerMethods from "../../methods/answer.ts"
+import * as cancellation from "../../methods/cancellation.ts"
+import * as dom from "../../methods/dom.ts"
+import * as filler from "../../shared/filler.ts"
 import * as phoneCountryCode from "../../../core/phone-country-code.js"
 import * as enums from "../../../core/enums.js"
 import * as xpath from "../../../core/xpath.js"

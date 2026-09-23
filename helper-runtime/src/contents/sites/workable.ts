@@ -6,11 +6,11 @@
  * Site id: "workable"
  */
 
-import * as sectionResults from "../methods/section-results.js"
-import * as answerMethods from "../methods/answer.js"
-import * as cancellation from "../methods/cancellation.js"
-import * as dom from "../methods/dom.js"
-import * as track from "../methods/track.js"
+import * as sectionResults from "../methods/section-results.ts"
+import * as answerMethods from "../methods/answer.ts"
+import * as cancellation from "../methods/cancellation.ts"
+import * as dom from "../methods/dom.ts"
+import * as track from "../methods/track.ts"
 import { BaseFiller } from "./base-filler.ts"
 import * as workableAnswer from "./workable/answer.ts"
 import * as operations from "./workable/operations.ts"

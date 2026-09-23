@@ -6,8 +6,8 @@
  * Site id: "zohorecruit" (v2 WebToLeads flow)
  */
 
-import * as cancellation from "../methods/cancellation.js"
-import * as answerMethods from "../methods/answer.js"
+import * as cancellation from "../methods/cancellation.ts"
+import * as answerMethods from "../methods/answer.ts"
 import { BaseFiller } from "./base-filler.ts"
 import * as zohoV2Answer from "./zohorecruit-v2/answer.ts"
 import * as operations from "./zohorecruit-v2/operations.ts"

@@ -3,7 +3,7 @@
  * Kula — company field client-search resolution.
  */
 
-import * as cancellation from "../../methods/cancellation.js"
+import * as cancellation from "../../methods/cancellation.ts"
 
 export function classifyKulaCompanyField(rule) {
   const input = rule.$input

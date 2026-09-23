@@ -3,10 +3,10 @@
  * TeamTailor — DOM fill operations (inputs, selects, phone, uploads, consents).
  */
 
-import * as choiceMatch from "../../methods/choice-match.js"
-import * as filler from "../../shared/filler.js"
-import * as answerMethods from "../../methods/answer.js"
-import * as dom from "../../methods/dom.js"
+import * as choiceMatch from "../../methods/choice-match.ts"
+import * as filler from "../../shared/filler.ts"
+import * as answerMethods from "../../methods/answer.ts"
+import * as dom from "../../methods/dom.ts"
 import * as xpath from "../../../core/xpath.js"
 import * as phoneCountryCode from "../../../core/phone-country-code.js"
 import * as getTargetOrTimeoutModule from "../../../utils/getTargetOrTimeout.js"

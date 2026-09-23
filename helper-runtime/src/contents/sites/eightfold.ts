@@ -6,8 +6,8 @@
  * Site id: "eightfold"
  */
 
-import * as answerMethods from "../methods/answer.js"
-import * as dom from "../methods/dom.js"
+import * as answerMethods from "../methods/answer.ts"
+import * as dom from "../methods/dom.ts"
 import {
   BaseFiller,
   waitForComboQuestionsToSettle,

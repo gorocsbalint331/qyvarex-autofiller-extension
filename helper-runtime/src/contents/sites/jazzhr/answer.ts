@@ -4,7 +4,7 @@
  */
 
 import * as phoneCountryCode from "../../../core/phone-country-code.js"
-import * as coverLetter from "../../methods/cover-letter.js"
+import * as coverLetter from "../../methods/cover-letter.ts"
 
 function formatJazzhrPhone(phone, countryCode) {
   const resolved = phoneCountryCode.resolvePhoneFieldValue(phone, countryCode)

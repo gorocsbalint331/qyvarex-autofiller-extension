@@ -11,13 +11,12 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const EXT = path.resolve(__dirname, "..")
 const VENDOR = path.join(EXT, "vendor", "helper-app")
 const MANIFEST = path.join(VENDOR, "_manifest.json")
-const FACTORY = path.join(
+const FACTORY_DIR = path.join(
   EXT,
   "helper-runtime",
   "src",
   "contents",
-  "crawler",
-  "factory.js"
+  "crawler"
 )
 const OUT = path.join(EXT, "assets", "helper-app.js")
 
@@ -45,9 +44,12 @@ function runBundle(runtime) {
 if (!fs.existsSync(MANIFEST)) {
   fail(`missing vendored helper-app at ${VENDOR}`)
 }
-if (!fs.existsSync(FACTORY)) {
+if (
+  !fs.existsSync(path.join(FACTORY_DIR, "factory.ts")) &&
+  !fs.existsSync(path.join(FACTORY_DIR, "factory.js"))
+) {
   fail(
-    `missing ported factory at ${FACTORY} — run: npm run port:vendor-helper`
+    `missing ported factory at ${FACTORY_DIR}/factory.{ts,js} — run: npm run port:vendor-helper`
   )
 }
 

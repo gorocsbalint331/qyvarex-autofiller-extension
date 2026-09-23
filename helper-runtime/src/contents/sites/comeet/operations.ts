@@ -4,9 +4,9 @@
  */
 
 import * as delay from "../../../utils/delay.js"
-import * as answerMethods from "../../methods/answer.js"
-import * as dom from "../../methods/dom.js"
-import * as observer from "../../methods/observer.js"
+import * as answerMethods from "../../methods/answer.ts"
+import * as dom from "../../methods/dom.ts"
+import * as observer from "../../methods/observer.ts"
 import * as getTargetOrTimeoutModule from "../../../utils/getTargetOrTimeout.js"
 import * as comeetAnswer from "./answer.ts"
 import * as phoneCountryCode from "./phone-country-code.ts"

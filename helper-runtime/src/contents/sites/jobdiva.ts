@@ -6,8 +6,8 @@
  * Site id: "jobdiva"
  */
 
-import * as answerMethods from "../methods/answer.js"
-import * as track from "../methods/track.js"
+import * as answerMethods from "../methods/answer.ts"
+import * as track from "../methods/track.ts"
 import { BaseFiller } from "./base-filler.ts"
 import * as enums from "../../core/enums.js"
 import * as coreDom from "../../core/dom.js"

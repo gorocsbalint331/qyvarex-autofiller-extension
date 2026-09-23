@@ -4,7 +4,7 @@
  */
 
 import * as enums from "../../../core/enums.js"
-import * as observer from "../../methods/observer.js"
+import * as observer from "../../methods/observer.ts"
 
 export const FORM_SELECTOR = 'form.rjsf[data-ot-ignore="true"], form.rjsf'
 export const FIELD_CONTAINER_SELECTOR = ".form-group.field"

@@ -3,8 +3,8 @@
  * Zoho Recruit — per-record section result reporting for education/employment.
  */
 
-import * as answerMethods from "../../methods/answer.js"
-import * as cancellation from "../../methods/cancellation.js"
+import * as answerMethods from "../../methods/answer.ts"
+import * as cancellation from "../../methods/cancellation.ts"
 
 export function createZohoRecordResult(
   sectionType,

@@ -3,7 +3,7 @@
  * Decides whether resume data should refresh before autofill starts.
  * Bundled directly by scripts/bundle-engine-helper.mjs.
  */
-import { TAILOR_RESUME_ID_PREFIX } from "../contents/shared/constants.js"
+import { TAILOR_RESUME_ID_PREFIX } from "../contents/shared/constants.ts"
 
 export function shouldRefreshResumeBeforeAutofill({
   disableUploadResume,

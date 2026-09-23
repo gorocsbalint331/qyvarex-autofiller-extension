@@ -7,9 +7,9 @@
  */
 
 import * as messaging from "@plasmohq/messaging"
-import * as cancellation from "../methods/cancellation.js"
-import * as dom from "../methods/dom.js"
-import * as answerMethods from "../methods/answer.js"
+import * as cancellation from "../methods/cancellation.ts"
+import * as dom from "../methods/dom.ts"
+import * as answerMethods from "../methods/answer.ts"
 import { BaseFiller } from "./base-filler.ts"
 import * as coreDom from "../../core/dom.js"
 import * as enums from "../../core/enums.js"

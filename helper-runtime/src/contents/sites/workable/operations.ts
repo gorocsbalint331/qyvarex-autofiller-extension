@@ -3,11 +3,11 @@
  * Workable DOM fill operations — React inputs, checkbox main-world inject, sections.
  */
 
-import * as choiceMatch from "../../methods/choice-match.js"
+import * as choiceMatch from "../../methods/choice-match.ts"
 import * as dayjs from "dayjs"
 import * as messaging from "@plasmohq/messaging"
-import * as answerMethods from "../../methods/answer.js"
-import * as dom from "../../methods/dom.js"
+import * as answerMethods from "../../methods/answer.ts"
+import * as dom from "../../methods/dom.ts"
 import * as rules from "./rules.ts"
 import * as phoneCountryCode from "./phone-country-code.ts"
 import * as enums from "../../../core/enums.js"

@@ -6,11 +6,11 @@
  * Site id: "taleo"
  */
 
-import * as executor from "../crawler/utils/executor.js"
-import * as filler from "../shared/filler.js"
-import * as answerMethods from "../methods/answer.js"
-import * as dom from "../methods/dom.js"
-import * as observer from "../methods/observer.js"
+import * as executor from "../crawler/fill-utils/executor.ts"
+import * as filler from "../shared/filler.ts"
+import * as answerMethods from "../methods/answer.ts"
+import * as dom from "../methods/dom.ts"
+import * as observer from "../methods/observer.ts"
 import { BaseFiller } from "./base-filler.ts"
 import * as enums from "../../core/enums.js"
 import * as xpath from "../../core/xpath.js"

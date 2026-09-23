@@ -15,7 +15,7 @@ import { sendToBackground } from "@plasmohq/messaging"
 import { agentDomains, HOST_DOMAIN } from "../api/env-resolver.ts"
 import AddJobFirstPopup from "./Popups/AddJobFirstPopup.ts"
 import { getAutofillInstance } from "../contents.ts"
-import { TAILOR_RESUME_ID_PREFIX } from "../contents/shared/constants.js"
+import { TAILOR_RESUME_ID_PREFIX } from "../contents/shared/constants.ts"
 import { MESSAGE_EVENTS } from "../core/enums.ts"
 import { useAutofillInfoStore } from "../store/autofillInfo.ts"
 import {

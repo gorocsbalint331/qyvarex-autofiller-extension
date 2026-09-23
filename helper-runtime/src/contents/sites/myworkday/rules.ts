@@ -3,8 +3,8 @@
  * MyWorkday — form rule discovery and snapshot helpers.
  */
 
-import * as checkboxLabel from "../../methods/checkbox-label.js";
-import * as observer from "../../methods/observer.js";
+import * as checkboxLabel from "../../methods/checkbox-label.ts";
+import * as observer from "../../methods/observer.ts";
 import * as enums from "../../../core/enums.js";
 import * as xpath from "../../../core/xpath.js";
 import * as delay from "../../../utils/delay.js";

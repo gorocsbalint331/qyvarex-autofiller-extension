@@ -4,7 +4,7 @@
  */
 
 import { useState, useRef, useEffect } from "react"
-import { getTargetName } from "../contents/crawler/target.js"
+import { getTargetName } from "../contents/crawler/target.ts"
 import {
   resolvePaginationAutofillStartDelay,
   getOracleCloudStepState,
@@ -15,7 +15,7 @@ import {
 import {
   shouldSuppressStandardAutofillForPreAutofillTransition,
   canStartPreAutofillStandardAutofill,
-} from "../contents/pre-autofill-flow/registry.js"
+} from "../contents/pre-autofill-flow/registry.ts"
 import { useAutofillResultStore } from "../store/autofillResult.ts"
 import { useProfileStore } from "../store/profile.ts"
 import { useSettingStore } from "../store/setting.ts"

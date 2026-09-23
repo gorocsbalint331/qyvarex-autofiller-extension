@@ -3,8 +3,8 @@
  * Amazon ATS DOM fill operations (inputs, selects, phone, resume upload).
  */
 
-import * as choiceMatch from "../../methods/choice-match.js"
-import * as answerMethods from "../../methods/answer.js"
+import * as choiceMatch from "../../methods/choice-match.ts"
+import * as answerMethods from "../../methods/answer.ts"
 import * as phoneCountryCode from "../../../core/phone-country-code.js"
 import * as xpath from "../../../core/xpath.js"
 import * as dayjs from "dayjs"

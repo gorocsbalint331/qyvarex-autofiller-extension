@@ -7,9 +7,9 @@
  */
 
 import * as messaging from "@plasmohq/messaging"
-import * as answerMethods from "../methods/answer.js"
-import * as cancellation from "../methods/cancellation.js"
-import * as dom from "../methods/dom.js"
+import * as answerMethods from "../methods/answer.ts"
+import * as cancellation from "../methods/cancellation.ts"
+import * as dom from "../methods/dom.ts"
 import { BaseFiller } from "./base-filler.ts"
 import * as zohoAnswer from "./zohorecruit/answer.ts"
 import * as locationOperation from "./zohorecruit/location-operation.ts"
@@ -17,7 +17,7 @@ import * as operations from "./zohorecruit/operations.ts"
 import * as progress from "./zohorecruit/progress.ts"
 import * as rules from "./zohorecruit/rules.ts"
 import * as enums from "../../core/enums.js"
-import * as sectionResults from "../methods/section-results.js"
+import * as sectionResults from "../methods/section-results.ts"
 import * as zohoSectionResults from "./zohorecruit/section-results.ts"
 import * as trace from "../../utils/trace.js"
 

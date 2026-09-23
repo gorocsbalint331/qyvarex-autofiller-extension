@@ -5,13 +5,13 @@
 
 import { useCallback, useRef, useState } from "react"
 import { sendToBackground } from "@plasmohq/messaging"
-import { TAILOR_RESUME_ID_PREFIX } from "../contents/shared/constants.js"
-import { fillDefaultInputField } from "../contents/crawler/utils/input.js"
+import { TAILOR_RESUME_ID_PREFIX } from "../contents/shared/constants.ts"
+import { fillDefaultInputField } from "../contents/crawler/fill-utils/input.ts"
 import {
   DEFAULT_AUTOFILL_COVER_LETTER_PROMPT,
   formatCoverLetterMarkdownAsText,
   getCurrentAutofillJobId,
-} from "../contents/methods/cover-letter.js"
+} from "../contents/methods/cover-letter.ts"
 import {
   buildEditWithAiCoverLetterSeed,
   resolveEditWithAiCoverLetterSeedId,

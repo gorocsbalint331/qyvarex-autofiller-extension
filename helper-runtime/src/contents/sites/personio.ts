@@ -6,8 +6,8 @@
  * Site id: "personio"
  */
 
-import * as dom from "../methods/dom.js"
-import * as track from "../methods/track.js"
+import * as dom from "../methods/dom.ts"
+import * as track from "../methods/track.ts"
 import { BaseFiller } from "./base-filler.ts"
 import * as enums from "../../core/enums.js"
 import * as phoneCountryCode from "../../core/phone-country-code.js"

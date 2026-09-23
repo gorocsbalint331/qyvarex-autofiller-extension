@@ -7,11 +7,11 @@
  */
 
 import * as messaging from "@plasmohq/messaging";
-import * as answerMethods from "../methods/answer.js";
-import * as cancellation from "../methods/cancellation.js";
-import * as dom from "../methods/dom.js";
-import * as observer from "../methods/observer.js";
-import * as track from "../methods/track.js";
+import * as answerMethods from "../methods/answer.ts";
+import * as cancellation from "../methods/cancellation.ts";
+import * as dom from "../methods/dom.ts";
+import * as observer from "../methods/observer.ts";
+import * as track from "../methods/track.ts";
 import * as httpEnums from "../../enums/http.js";
 import { BaseFiller } from "./base-filler.ts";
 import * as addressOperation from "./oraclecloud/address-operation.ts";

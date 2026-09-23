@@ -6,8 +6,8 @@
  * Site id: "jobvite"
  */
 
-import * as answerMethods from "../methods/answer.js"
-import * as dom from "../methods/dom.js"
+import * as answerMethods from "../methods/answer.ts"
+import * as dom from "../methods/dom.ts"
 import { BaseFiller } from "./base-filler.ts"
 import * as jobviteAnswer from "./jobvite/answer.ts"
 import * as operations from "./jobvite/operations.ts"

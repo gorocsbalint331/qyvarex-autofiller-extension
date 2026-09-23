@@ -3,7 +3,7 @@
  * Tesla — DOM fill operations (inputs, selects, phone, uploads, EEO scroll).
  */
 
-import * as answerMethods from "../../methods/answer.js"
+import * as answerMethods from "../../methods/answer.ts"
 import * as autofillAnswerPairTracking from "../autofill-answer-pair-tracking.ts"
 import * as phoneCountryCode from "../../../core/phone-country-code.js"
 import * as urlStore from "../../../store/url.js"

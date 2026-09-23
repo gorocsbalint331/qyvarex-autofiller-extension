@@ -3,7 +3,7 @@
  * Careers Page answer helpers — constants and cover-letter formatting.
  */
 
-import * as coverLetter from "../../methods/cover-letter.js"
+import * as coverLetter from "../../methods/cover-letter.ts"
 
 export const MONTH_NAMES = [
   "January",

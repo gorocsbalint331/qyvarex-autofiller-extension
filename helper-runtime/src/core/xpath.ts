@@ -73,7 +73,7 @@ export function getOrderedNodes(xpath, context) {
   return nodes
 }
 
-function getOrderedNodesSafe(xpath, context = document) {
+export function getOrderedNodesSafe(xpath, context = document) {
   if (!context) return []
   let snapshot = document.evaluate(
     xpath,

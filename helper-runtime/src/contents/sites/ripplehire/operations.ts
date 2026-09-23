@@ -3,11 +3,11 @@
  * RippleHire DOM fill operations — readable TypeScript source of truth.
  */
 
-import * as choiceMatch from "../../methods/choice-match.js"
-import * as inputUtils from "../../crawler/utils/input.js"
-import * as answerMethods from "../../methods/answer.js"
-import * as dom from "../../methods/dom.js"
-import * as observer from "../../methods/observer.js"
+import * as choiceMatch from "../../methods/choice-match.ts"
+import * as inputUtils from "../../crawler/fill-utils/input.ts"
+import * as answerMethods from "../../methods/answer.ts"
+import * as dom from "../../methods/dom.ts"
+import * as observer from "../../methods/observer.ts"
 import * as delay from "../../../utils/delay.js"
 import * as phoneCountryCode from "./phone-country-code.ts"
 function normalizeRipplehireOptionText(e) {

@@ -6,11 +6,11 @@
  * Site id: "apple"
  */
 
-import * as cancellation from "../methods/cancellation.js"
-import * as answerMethods from "../methods/answer.js"
-import * as rulesMethods from "../methods/rules.js"
-import * as dom from "../methods/dom.js"
-import * as track from "../methods/track.js"
+import * as cancellation from "../methods/cancellation.ts"
+import * as answerMethods from "../methods/answer.ts"
+import * as rulesMethods from "../methods/rules.ts"
+import * as dom from "../methods/dom.ts"
+import * as track from "../methods/track.ts"
 import * as operations from "./apple/operations.ts"
 import * as appleAnswer from "./apple/answer.ts"
 import * as appleCountry from "./apple/country.ts"

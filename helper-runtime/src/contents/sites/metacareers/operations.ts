@@ -3,12 +3,12 @@
  * Meta Careers — DOM fill operations (inputs, location, experience, skills).
  */
 
-import * as choiceMatch from "../../methods/choice-match.js"
-import * as filler from "../../shared/filler.js"
-import * as answerMethods from "../../methods/answer.js"
-import * as cancellation from "../../methods/cancellation.js"
+import * as choiceMatch from "../../methods/choice-match.ts"
+import * as filler from "../../shared/filler.ts"
+import * as answerMethods from "../../methods/answer.ts"
+import * as cancellation from "../../methods/cancellation.ts"
 import * as coreDom from "../../../core/dom.js"
-import * as dom from "../../methods/dom.js"
+import * as dom from "../../methods/dom.ts"
 import * as enums from "../../../core/enums.js"
 import * as xpath from "../../../core/xpath.js"
 import * as delay from "../../../utils/delay.js"

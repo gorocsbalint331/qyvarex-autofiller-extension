@@ -3,12 +3,12 @@
  * Zoho Recruit v2 — WebToLeads DOM fill operations.
  */
 
-import * as answerMethods from "../../methods/answer.js"
-import * as dom from "../../methods/dom.js"
+import * as answerMethods from "../../methods/answer.ts"
+import * as dom from "../../methods/dom.ts"
 import * as rules from "./rules.ts"
 import * as enums from "../../../core/enums.js"
 import * as delay from "../../../utils/delay.js"
-import * as sectionResults from "../../methods/section-results.js"
+import * as sectionResults from "../../methods/section-results.ts"
 import * as zohoSectionResults from "../zohorecruit/section-results.ts"
 
 export async function preExpandForm() {

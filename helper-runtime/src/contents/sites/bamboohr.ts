@@ -6,11 +6,11 @@
  * Site id: "bamboohr"
  */
 
-import * as answerMethods from "../methods/answer.js"
+import * as answerMethods from "../methods/answer.ts"
 import { BaseFiller } from "./base-filler.js"
 import * as bambooAnswer from "./answer.ts"
 import * as operations from "./operations.ts"
-import * as dom from "../methods/dom.js"
+import * as dom from "../methods/dom.ts"
 import * as enums from "../../core/enums.js"
 import * as xpath from "../../core/xpath.js"
 import * as autofillInfo from "../../store/autofillInfo.js"

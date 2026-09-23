@@ -5,9 +5,9 @@
 
 import * as messaging from "@plasmohq/messaging";
 import * as lodash from "lodash-es";
-import * as answerMethods from "../../methods/answer.js";
-import * as cancellation from "../../methods/cancellation.js";
-import * as coverLetter from "../../methods/cover-letter.js";
+import * as answerMethods from "../../methods/answer.ts";
+import * as cancellation from "../../methods/cancellation.ts";
+import * as coverLetter from "../../methods/cover-letter.ts";
 import * as enums from "../../../core/enums.js";
 import * as countryConstants from "../../../constants/country.ts";
 import * as coreUtils from "../../../core/utils.js";

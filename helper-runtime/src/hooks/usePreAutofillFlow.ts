@@ -3,8 +3,8 @@
  * Observes DOM and resolves the active pre-autofill flow.
  */
 import { useEffect, useState } from "react"
-import { resolvePreAutofillFlow } from "../contents/pre-autofill-flow/core.js"
-import { PRE_AUTOFILL_FLOW_REGISTRY } from "../contents/pre-autofill-flow/registry.js"
+import { resolvePreAutofillFlow } from "../contents/pre-autofill-flow/core.ts"
+import { PRE_AUTOFILL_FLOW_REGISTRY } from "../contents/pre-autofill-flow/registry.ts"
 
 const POLL_INTERVAL_MS = 1e3
 const OBSERVE_DURATION_MS = 3e4

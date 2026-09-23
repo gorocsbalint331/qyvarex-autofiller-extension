@@ -6,9 +6,9 @@
  * Site id: "careers-page"
  */
 
-import * as sectionResults from "../methods/section-results.js"
-import * as answerMethods from "../methods/answer.js"
-import * as dom from "../methods/dom.js"
+import * as sectionResults from "../methods/section-results.ts"
+import * as answerMethods from "../methods/answer.ts"
+import * as dom from "../methods/dom.ts"
 import { BaseFiller } from "./base-filler.ts"
 import * as autofillAnswerPairTracking from "./autofill-answer-pair-tracking.ts"
 import * as enums from "../../core/enums.js"

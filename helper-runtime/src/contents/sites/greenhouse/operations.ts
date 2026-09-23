@@ -2,17 +2,17 @@
 
 import { sendToBackground } from "@plasmohq/messaging"
 
-import { fillCheckbox } from "../../crawler/utils/checkbox.js"
+import { fillCheckbox } from "../../crawler/fill-utils/checkbox.ts"
 import {
   fetchCoverLetterPdfAsBlob,
   fetchPdfAsBlob,
-} from "../../methods/answer.js"
+} from "../../methods/answer.ts"
 import {
   fillInputTextField,
   triggerEvents,
   uploadFiles,
-} from "../../methods/dom.js"
-import { waitForCondition } from "../../methods/observer.js"
+} from "../../methods/dom.ts"
+import { waitForCondition } from "../../methods/observer.ts"
 import {
   getFirstOrderedNode,
   getFirstOrderedNodeSafe,

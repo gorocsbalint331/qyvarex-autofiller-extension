@@ -14,7 +14,7 @@ import * as nonePng from "../../assets/inline/images/none.png.js"
 import * as starSvg from "../../assets/inline/images/star_b.svg.js"
 import { HELPER_MODAL_Z_INDEX } from "../../constants.ts"
 import { HOST_ID, getAutofillInstance } from "../../contents.ts"
-import { TAILOR_RESUME_ID_PREFIX } from "../../contents/shared/constants.js"
+import { TAILOR_RESUME_ID_PREFIX } from "../../contents/shared/constants.ts"
 import { updateIframeUserInfo } from "../../core/utils.ts"
 import { useProfileStore } from "../../store/profile.ts"
 import {

@@ -3,7 +3,7 @@
  * Resolves which resume ID becomes last-used during resume store init.
  * Bundled directly by scripts/bundle-engine-helper.mjs.
  */
-import { TAILOR_RESUME_ID_PREFIX } from "../contents/shared/constants.js"
+import { TAILOR_RESUME_ID_PREFIX } from "../contents/shared/constants.ts"
 
 const findResumeIdInCollection = (resumeCollection, resumeId) =>
   resumeCollection.find((resume) => resume.resumeId === resumeId)?.resumeId

@@ -6,8 +6,8 @@
  * Site id: "hiringthing"
  */
 
-import * as answerMethods from "../methods/answer.js"
-import * as methodsDom from "../methods/dom.js"
+import * as answerMethods from "../methods/answer.ts"
+import * as methodsDom from "../methods/dom.ts"
 import { BaseFiller } from "./base-filler.ts"
 import * as coreDom from "../../core/dom.js"
 import * as enums from "../../core/enums.js"

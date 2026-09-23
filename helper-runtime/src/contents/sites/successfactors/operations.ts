@@ -3,9 +3,9 @@
  * SuccessFactors — DOM fill operations (selects, uploads, sections, skills).
  */
 
-import * as answerMethods from "../../methods/answer.js"
-import * as dom from "../../methods/dom.js"
-import * as observer from "../../methods/observer.js"
+import * as answerMethods from "../../methods/answer.ts"
+import * as dom from "../../methods/dom.ts"
+import * as observer from "../../methods/observer.ts"
 import * as autofillAnswerPairTracking from "../autofill-answer-pair-tracking.ts"
 import * as xpath from "../../../core/xpath.js"
 import * as delay from "../../../utils/delay.js"

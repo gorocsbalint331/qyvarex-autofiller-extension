@@ -3,7 +3,7 @@
  * Ashby — answer shaping (education dates, cover letter text).
  */
 
-import * as coverLetter from "../../methods/cover-letter.js"
+import * as coverLetter from "../../methods/cover-letter.ts"
 
 const MONTH_NAME_TO_NUMBER = {
   jan: "1",

@@ -12,7 +12,7 @@ import * as xpath from "../../core/xpath.js"
 import * as operations from "./catsone/operations.ts"
 import * as rules from "./catsone/rules.ts"
 import * as catsoneAnswer from "./catsone/answer.ts"
-import * as dom from "../methods/dom.js"
+import * as dom from "../methods/dom.ts"
 
 const SUBMIT_BUTTON_XPATH =
   './/button[@type="submit"] | .//input[@type="submit"] | .//button[.//span[normalize-space()="Submit Application"]] | .//button[contains(@class, "submit")] | .//button[contains(normalize-space(.), "Submit")] | .//button[contains(normalize-space(.), "Apply")] | .//button[contains(normalize-space(.), "Send")] | .//input[contains(@value, "Submit")] | .//input[contains(@value, "Apply")]'

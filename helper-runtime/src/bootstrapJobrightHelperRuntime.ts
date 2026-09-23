@@ -29,15 +29,15 @@ import {
   setCurrentJobId,
   setAutofillInstance,
 } from "./contents.js"
-import * as CrawlerFactoryModule from "./contents/crawler/factory.js"
-import { ensureAutofillInstance } from "./contents/shared/autofill-instance-lifecycle.js"
+import * as CrawlerFactoryModule from "./contents/crawler/factory.ts"
+import { ensureAutofillInstance } from "./contents/shared/autofill-instance-lifecycle.ts"
 import {
   keepJobIdInUrl,
   attachClickJrInjector,
-} from "./contents/shared/click-jr-injector.js"
-import { resolveCssAssetUrls } from "./contents/shared/css-assets.js"
-import { shouldResolveGoHireDroppedJobIdUrl } from "./contents/shared/early-url-normalization.js"
-import { applyHelperHostStackingStyle } from "./contents/shared/helper-host-stacking.js"
+} from "./contents/shared/click-jr-injector.ts"
+import { resolveCssAssetUrls } from "./contents/shared/css-assets.ts"
+import { shouldResolveGoHireDroppedJobIdUrl } from "./contents/shared/early-url-normalization.ts"
+import { applyHelperHostStackingStyle } from "./contents/shared/helper-host-stacking.ts"
 import { registerAutofillAnswerPairAnswerProvider } from "./contents/sites/autofill-answer-pair-tracking.ts"
 import {
   registerIframeEventHandle,

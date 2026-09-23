@@ -4,9 +4,9 @@
  */
 
 import * as messaging from "@plasmohq/messaging";
-import * as answerMethods from "../../methods/answer.js";
-import * as dom from "../../methods/dom.js";
-import * as observer from "../../methods/observer.js";
+import * as answerMethods from "../../methods/answer.ts";
+import * as dom from "../../methods/dom.ts";
+import * as observer from "../../methods/observer.ts";
 import * as oracleAnswer from "./answer.ts";
 import * as oracleUrl from "./url.ts";
 import * as educationClientSearch from "./education-client-search.ts";

@@ -3,13 +3,13 @@
  * Taleo — DOM fill operations (hardcoded sections, uploads, dates, selects).
  */
 
-import * as sectionResults from "../../methods/section-results.js"
-import * as cancellation from "../../methods/cancellation.js"
+import * as sectionResults from "../../methods/section-results.ts"
+import * as cancellation from "../../methods/cancellation.ts"
 import * as dayjs from "dayjs"
-import * as checkboxUtils from "../../crawler/utils/checkbox.js"
-import * as executor from "../../crawler/utils/executor.js"
-import * as answerMethods from "../../methods/answer.js"
-import * as observer from "../../methods/observer.js"
+import * as checkboxUtils from "../../crawler/fill-utils/checkbox.ts"
+import * as executor from "../../crawler/fill-utils/executor.ts"
+import * as answerMethods from "../../methods/answer.ts"
+import * as observer from "../../methods/observer.ts"
 import * as enums from "../../../core/enums.js"
 import * as xpath from "../../../core/xpath.js"
 import * as taleoAnswer from "./answer.ts"

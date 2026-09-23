@@ -3,7 +3,7 @@
  * HubSpot ATS filler — readable TypeScript source of truth.
  */
 
-import * as dom from "../methods/dom.js"
+import * as dom from "../methods/dom.ts"
 import { BaseFiller } from "./base-filler.ts"
 import * as enums from "../../core/enums.js"
 import * as xpath from "../../core/xpath.js"

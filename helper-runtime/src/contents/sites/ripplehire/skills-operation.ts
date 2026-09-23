@@ -3,7 +3,7 @@
  * RippleHire skills operation — readable TypeScript source of truth.
  */
 
-import * as cancellation from "../../methods/cancellation.js"
+import * as cancellation from "../../methods/cancellation.ts"
 function i(e) {
   return e.replace(/\s+/g, " ").trim().toLowerCase();
 }

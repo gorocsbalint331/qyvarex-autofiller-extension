@@ -3,9 +3,9 @@
  * Kula — DOM fill operations (inputs, sections, resume, cover letter).
  */
 
-import * as choiceMatch from "../../methods/choice-match.js"
-import * as answerMethods from "../../methods/answer.js"
-import * as observer from "../../methods/observer.js"
+import * as choiceMatch from "../../methods/choice-match.ts"
+import * as answerMethods from "../../methods/answer.ts"
+import * as observer from "../../methods/observer.ts"
 import * as delay from "../../../utils/delay.js"
 import * as phoneCountryCode from "./phone-country-code.ts"
 

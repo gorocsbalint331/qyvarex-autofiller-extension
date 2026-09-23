@@ -4,7 +4,7 @@
  * Bundled directly by scripts/bundle-engine-helper.mjs.
  */
 import { useEffect, useState } from "react"
-import { getTargetName } from "../contents/crawler/target.js"
+import { getTargetName } from "../contents/crawler/target.ts"
 import { getDayforceAuthPageMode } from "../contents/sites/dayforce/auth.ts"
 import { getDayforceRegistrationNextTarget } from "../contents/sites/dayforce/navigation.ts"
 import { getCurrentAdvanceButton as getWalmartAdvanceButton } from "../contents/sites/walmart.ts"

@@ -4,7 +4,7 @@
  * Readable TypeScript source of truth.
  */
 
-import * as answerMethods from "../../methods/answer.js"
+import * as answerMethods from "../../methods/answer.ts"
 import * as delay from "../../../utils/delay.js"
 import * as getTargetOrTimeoutModule from "../../../utils/getTargetOrTimeout.js"
 import * as rules from "./rules.ts"

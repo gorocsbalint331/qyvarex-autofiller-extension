@@ -4,7 +4,7 @@
  */
 
 import * as rules from "./rules.ts"
-import * as track from "../../methods/track.js"
+import * as track from "../../methods/track.ts"
 import * as autofillAnswerPair from "../autofill-answer-pair-tracking.js"
 import * as xpath from "../../../core/xpath.js"
 import * as delayUtil from "../../../utils/delay.js"

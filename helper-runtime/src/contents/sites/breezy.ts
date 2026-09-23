@@ -6,8 +6,8 @@
  * Site id: "breezy"
  */
 
-import * as answerMethods from "../methods/answer.js"
-import * as dom from "../methods/dom.js"
+import * as answerMethods from "../methods/answer.ts"
+import * as dom from "../methods/dom.ts"
 import * as breezyAnswer from "./breezy/answer.js"
 import * as operations from "./breezy/operations.js"
 import * as rules from "./breezy/rules.js"

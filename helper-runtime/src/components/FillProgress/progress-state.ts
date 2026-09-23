@@ -3,7 +3,7 @@
  * Fill-progress helpers: field-item results, signup setup chips, scanning UI.
  */
 
-import * as accountFlowState from "../../contents/pre-autofill-flow/account-flow-state.js"
+import * as accountFlowState from "../../contents/pre-autofill-flow/account-flow-state.ts"
 import {
   buildNormalizedFieldLabelSet,
   normalizeFieldLabel,
