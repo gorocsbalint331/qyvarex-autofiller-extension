@@ -1,9 +1,164 @@
 // @ts-nocheck
 /**
- * Readable TypeScript converted from Parcel dump (helper-runtime/src/enums.js).
- * Bundled directly by scripts/bundle-engine-helper.mjs.
+ * Root app enums (resume status, env, storage keys, iframe events, etc.).
+ * Distinct from `core/enums.ts` and the `enums/` folder.
  */
-var n,o,i,a,l,s,u,c,d,f,p,m,h,g,b,y,v,w
-function(e){e[e.WAITING=1]="WAITING",e[e.READY=2]="READY",e[e.FAIL=3]="FAIL"}(n||(n={})),function(e){e[e.INIT=0]="INIT",e[e.UPLOADING=1]="UPLOADING",e[e.SUCCESS=2]="SUCCESS"}(o||(o={})),function(e){e.VISITOR_FILTERS="visitor_filters",e.VISITOR_NOUN_STRANDARDS="visitor_noun_standards",e.VISITOR_ID="visitor_id",e.DEVICE_ID="device_id"}(i||(i={})),function(e){e.ONBOARDING="ab_onboarding"}(a||(a={})),function(e){e.V2="v2",e.V3="v3"}(l||(l={})),function(e){e.DEVELOPMENT="development",e.PRODUCTION="production",e.STAGING="staging",e.LOCAL="local",e.PREPROD="preprod"}(s||(s={})),function(e){e[e.DEVELOPMENT=s.DEVELOPMENT]="DEVELOPMENT",e[e.PRODUCTION=s.PRODUCTION]="PRODUCTION",e[e.PREPROD=s.PREPROD]="PREPROD",e[e.STAGING=s.STAGING]="STAGING"}(u||(u={})),function(e){e[e.DEVELOPMENT=s.DEVELOPMENT]="DEVELOPMENT",e[e.PRODUCTION=s.PRODUCTION]="PRODUCTION",e[e.STAGING=s.STAGING]="STAGING",e[e.LOCAL=s.LOCAL]="LOCAL"}(c||(c={})),function(e){e[e.NO_FILTER=1]="NO_FILTER",e[e.NO_RESUME=10]="NO_RESUME",e[e.RESUME_PARSING=21]="RESUME_PARSING",e[e.FILTE_RESUME_READY=30]="FILTE_RESUME_READY",e[e.FAILED_RESUME=40]="FAILED_RESUME",e[e.FAILED_WITHOUT_FILTER=41]="FAILED_WITHOUT_FILTER",e[e.V3_TO_SEEKER_TYPE=50]="V3_TO_SEEKER_TYPE",e[e.V3_RUSH_TO_BASIC_PREF=51]="V3_RUSH_TO_BASIC_PREF",e[e.V3_NO_RUSH_TO_BASIC_PREF=52]="V3_NO_RUSH_TO_BASIC_PREF",e[e.V3_TO_CAREER_GOAL=53]="V3_TO_CAREER_GOAL",e[e.V3_TO_ADVANCED_PREF=54]="V3_TO_ADVANCED_PREF",e[e.V3_RUSH_TO_RESUME=55]="V3_RUSH_TO_RESUME",e[e.V3_NOT_RUSH_TO_RESUME=56]="V3_NOT_RUSH_TO_RESUME"}(d||(d={})),function(e){e.EMPTY="empty filters",e.INVALID="invalid filters"}(f||(f={})),function(e){e.USER_ID="userid",e.VISIT_RESUME_PAGE="visit_resume_page",e.RESUME_LAST_POPUP_TIME="resume_last_popup_time",e.TURBO_SURVEY_POPUPED="user_turbo_survey_popuped",e.TURBO_OFFICE_HOUR_LAST_POPUP_TIME="turbo_office_hour_last_popup_time"}(p||(p={})),function(e){e.UTM_SOURCE="utm_source",e.SHARE_ID="share_id",e.REDIRECT="redirect",e.LOGIN="login",e.INVITER_ID="inviter_id",e.UTM_CAMPAIGN="utm_campaign",e.IMP_ID="imp_id",e.UTM_ID="utm_id",e.POS="pos",e.RETARGET="retarget"}(m||(m={})),function(e){e[e.list_never_reached=0]="list_never_reached",e[e.list_reached_within_1_days=1]="list_reached_within_1_days",e[e.list_reached_over_1_days=2]="list_reached_over_1_days"}(h||(h={})),function(e){e.LIST="list",e.RESUME="resume",e.PROFILE="profile",e.CADIDATES="candidates"}(g||(g={})),function(e){e.on="on",e.off="off"}(b||(b={})),function(e){e[e.unknown=-1]="unknown",e[e.web=0]="web",e[e.mobile_web=1]="mobile_web",e[e.app=2]="app"}(y||(y={})),function(e){e.RESUME_AI="resume_ai",e.JOB_MATCHING="job_matching",e.INSIDER_CONNECTIONS="insider_connections",e.AI_COPILOT_ORION="ai_copilot_orion",e.H1B_JOBS="h1b_jobs",e.ABOUT_US="about_us",e.BLOG="blog",e.INTERN_LIST="intern_list",e.NEW_GRAD="new_grad",e.JOBRIGHT_FOR_GOOD="jobright_for_good",e.AI_JOB_ASSISTANT="ai_job_assistant",e.AI_COVER_LETTER_GENERATOR="ai_cover_letter_generator",e.AI_RESUME_HELPER="ai_resume_helper",e.AI_JOB_TRACKER="ai_job_tracker",e.TOOLS_ASSEMBLE="tools_assemble",e.LINKEDIN_101_GUIDE="linkedin_101_guide",e.UNLIMATE_GUIDE_TO_H1B="unlimited_guide_to_h1b",e.LAND_TOP_INTERNSHIP="land_top_internship",e.MASTERING_INTERVIEWS="MASTERING_INTERVIEWS",e.ENERGIZE_YOUR_JOB_SEARCH="ENERGIZE_YOUR_JOB_SEARCH",e.HOW_TO_WRITE_A_RESUME="HOW_TO_WRITE_A_RESUME",e.HOW_TO_GET_A_INTERNSHIP="HOW_TO_GET_A_INTERNSHIP",e.PRIVACY_POLICY="privacy_policy",e.TERMS_OF_SERVICE="terms_of_service",e.FOR_EMPLOYER="/enterprise/invite",e.DIVIDER="divider"}(v||(v={})),function(e){e.EXECUTE_IFRAME_FUNCTION="EXECUTE_IFRAME_FUNCTION",e.UPDATE_IFRAME_DATA="UPDATE_IFRAME_DATA",e.FOCUS_IFRAME_LABEL="FOCUS_IFRAME_LABEL",e.CANCEL_AUTO_FILL="CANCEL_AUTO_FILL",e.SKIP_AUTO_FILL="SKIP_AUTO_FILL",e.SUBMIT_APPLICATION="SUBMIT_APPLICATION",e.CHECK_IFRAME_COVER_LETTER="CHECK_IFRAME_COVER_LETTER",e.REDIRECT_IFRAME="REDIRECT_IFRAME",e.IFRAME_LOADED="IFRAME_LOADED",e.REQUEST_IFRAME_LOADED="REQUEST_IFRAME_LOADED"}(w||(w={}))
 
-export { n as RESUME_PROCESS_STATUS, o as UPLOADING_STATUS, i as VISITOR_STORAGE_KEYS, a as AB_TEST_STORAGE_KEYS, l as AB_ONBOARDING_VERSION, s as ENV, u as BUILD_ENV, c as RUNTIME_ENV, d as PROFILE_CURRENT_STAGE, f as FILTERS_MESSAGE, p as USER_STORAGE_KEY, m as QUERY_KEYS, h as USER_VISIT_STATE, g as MENU_KEY, b as TRAFFIC_AB_STATUS, y as USER_CLIENT_TYPES, v as LANDING_ROUTE_KEY, w as IFRAME_EVENTS }
+export enum RESUME_PROCESS_STATUS {
+  WAITING = 1,
+  READY = 2,
+  FAIL = 3,
+}
+
+export enum UPLOADING_STATUS {
+  INIT = 0,
+  UPLOADING = 1,
+  SUCCESS = 2,
+}
+
+export enum VISITOR_STORAGE_KEYS {
+  VISITOR_FILTERS = "visitor_filters",
+  VISITOR_NOUN_STRANDARDS = "visitor_noun_standards",
+  VISITOR_ID = "visitor_id",
+  DEVICE_ID = "device_id",
+}
+
+export enum AB_TEST_STORAGE_KEYS {
+  ONBOARDING = "ab_onboarding",
+}
+
+export enum AB_ONBOARDING_VERSION {
+  V2 = "v2",
+  V3 = "v3",
+}
+
+export enum ENV {
+  DEVELOPMENT = "development",
+  PRODUCTION = "production",
+  STAGING = "staging",
+  LOCAL = "local",
+  PREPROD = "preprod",
+}
+
+export enum BUILD_ENV {
+  DEVELOPMENT = ENV.DEVELOPMENT,
+  PRODUCTION = ENV.PRODUCTION,
+  PREPROD = ENV.PREPROD,
+  STAGING = ENV.STAGING,
+}
+
+export enum RUNTIME_ENV {
+  DEVELOPMENT = ENV.DEVELOPMENT,
+  PRODUCTION = ENV.PRODUCTION,
+  STAGING = ENV.STAGING,
+  LOCAL = ENV.LOCAL,
+}
+
+export enum PROFILE_CURRENT_STAGE {
+  NO_FILTER = 1,
+  NO_RESUME = 10,
+  RESUME_PARSING = 21,
+  FILTE_RESUME_READY = 30,
+  FAILED_RESUME = 40,
+  FAILED_WITHOUT_FILTER = 41,
+  V3_TO_SEEKER_TYPE = 50,
+  V3_RUSH_TO_BASIC_PREF = 51,
+  V3_NO_RUSH_TO_BASIC_PREF = 52,
+  V3_TO_CAREER_GOAL = 53,
+  V3_TO_ADVANCED_PREF = 54,
+  V3_RUSH_TO_RESUME = 55,
+  V3_NOT_RUSH_TO_RESUME = 56,
+}
+
+export enum FILTERS_MESSAGE {
+  EMPTY = "empty filters",
+  INVALID = "invalid filters",
+}
+
+export enum USER_STORAGE_KEY {
+  USER_ID = "userid",
+  VISIT_RESUME_PAGE = "visit_resume_page",
+  RESUME_LAST_POPUP_TIME = "resume_last_popup_time",
+  TURBO_SURVEY_POPUPED = "user_turbo_survey_popuped",
+  TURBO_OFFICE_HOUR_LAST_POPUP_TIME = "turbo_office_hour_last_popup_time",
+}
+
+export enum QUERY_KEYS {
+  UTM_SOURCE = "utm_source",
+  SHARE_ID = "share_id",
+  REDIRECT = "redirect",
+  LOGIN = "login",
+  INVITER_ID = "inviter_id",
+  UTM_CAMPAIGN = "utm_campaign",
+  IMP_ID = "imp_id",
+  UTM_ID = "utm_id",
+  POS = "pos",
+  RETARGET = "retarget",
+}
+
+export enum USER_VISIT_STATE {
+  list_never_reached = 0,
+  list_reached_within_1_days = 1,
+  list_reached_over_1_days = 2,
+}
+
+export enum MENU_KEY {
+  LIST = "list",
+  RESUME = "resume",
+  PROFILE = "profile",
+  CADIDATES = "candidates",
+}
+
+export enum TRAFFIC_AB_STATUS {
+  on = "on",
+  off = "off",
+}
+
+export enum USER_CLIENT_TYPES {
+  unknown = -1,
+  web = 0,
+  mobile_web = 1,
+  app = 2,
+}
+
+export enum LANDING_ROUTE_KEY {
+  RESUME_AI = "resume_ai",
+  JOB_MATCHING = "job_matching",
+  INSIDER_CONNECTIONS = "insider_connections",
+  AI_COPILOT_ORION = "ai_copilot_orion",
+  H1B_JOBS = "h1b_jobs",
+  ABOUT_US = "about_us",
+  BLOG = "blog",
+  INTERN_LIST = "intern_list",
+  NEW_GRAD = "new_grad",
+  JOBRIGHT_FOR_GOOD = "jobright_for_good",
+  AI_JOB_ASSISTANT = "ai_job_assistant",
+  AI_COVER_LETTER_GENERATOR = "ai_cover_letter_generator",
+  AI_RESUME_HELPER = "ai_resume_helper",
+  AI_JOB_TRACKER = "ai_job_tracker",
+  TOOLS_ASSEMBLE = "tools_assemble",
+  LINKEDIN_101_GUIDE = "linkedin_101_guide",
+  UNLIMATE_GUIDE_TO_H1B = "unlimited_guide_to_h1b",
+  LAND_TOP_INTERNSHIP = "land_top_internship",
+  MASTERING_INTERVIEWS = "MASTERING_INTERVIEWS",
+  ENERGIZE_YOUR_JOB_SEARCH = "ENERGIZE_YOUR_JOB_SEARCH",
+  HOW_TO_WRITE_A_RESUME = "HOW_TO_WRITE_A_RESUME",
+  HOW_TO_GET_A_INTERNSHIP = "HOW_TO_GET_A_INTERNSHIP",
+  PRIVACY_POLICY = "privacy_policy",
+  TERMS_OF_SERVICE = "terms_of_service",
+  FOR_EMPLOYER = "/enterprise/invite",
+  DIVIDER = "divider",
+}
+
+export enum IFRAME_EVENTS {
+  EXECUTE_IFRAME_FUNCTION = "EXECUTE_IFRAME_FUNCTION",
+  UPDATE_IFRAME_DATA = "UPDATE_IFRAME_DATA",
+  FOCUS_IFRAME_LABEL = "FOCUS_IFRAME_LABEL",
+  CANCEL_AUTO_FILL = "CANCEL_AUTO_FILL",
+  SKIP_AUTO_FILL = "SKIP_AUTO_FILL",
+  SUBMIT_APPLICATION = "SUBMIT_APPLICATION",
+  CHECK_IFRAME_COVER_LETTER = "CHECK_IFRAME_COVER_LETTER",
+  REDIRECT_IFRAME = "REDIRECT_IFRAME",
+  IFRAME_LOADED = "IFRAME_LOADED",
+  REQUEST_IFRAME_LOADED = "REQUEST_IFRAME_LOADED",
+}

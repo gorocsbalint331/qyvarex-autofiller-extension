@@ -7,3 +7,4 @@ coverage
 .env
 .env.*
 !.env.example
+scripts/.npm-vendor-cache

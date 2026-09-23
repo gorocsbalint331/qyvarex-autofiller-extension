@@ -16,6 +16,11 @@ import {
   compileTsToParcelSource,
   isTypeScriptFile,
 } from "./lib/ts-to-parcel.mjs"
+import {
+  ensureNpmVendorModule,
+  isNpmVendorSpec,
+  normalizeNpmSpec,
+} from "./lib/npm-vendor-cache.mjs"
 
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
@@ -102,9 +107,7 @@ const ENTRY = path.join(__dirname, "engine-runtime-entry.js")
 const SHIMS = {
   "~contents": path.join(__dirname, "shims", "contents.js"),
   "~store/resume": path.join(__dirname, "shims", "resume-store.js"),
-  "lodash-es": path.join(__dirname, "shims", "lodash-es.js"),
-  nanoid: path.join(__dirname, "shims", "nanoid.js"),
-  ahooks: path.join(__dirname, "shims", "ahooks.js"),
+  // lodash-es / ahooks / nanoid resolve from node_modules via npm-vendor-cache
   "libphonenumber-js": path.join(__dirname, "shims", "libphonenumber.js"),
   "libphonenumber-js/core": path.join(__dirname, "shims", "libphonenumber.js"),
   "libphonenumber-js/min": path.join(__dirname, "shims", "libphonenumber.js"),
@@ -119,14 +122,8 @@ const SHIMS = {
   "~node_modules/dayjs": path.join(__dirname, "shims", "dayjs.js")
 }
 
+/** Specs that are not real npm packages for this bundle (keep stubbed). */
 const EMPTY_STUB_SPECIFIERS = new Set([
-  "react",
-  "react/jsx-runtime",
-  "react-dom",
-  "react-dom/client",
-  "antd",
-  "@ant-design/cssinjs",
-  "@ant-design/icons",
   "@plasmohq/storage/hook",
   "console"
 ])
@@ -260,6 +257,18 @@ function candidatePaths(resolvedFromHeader, specifier, fromFile) {
 function resolveFile(specifier, fromFile, depMap) {
   if (SHIMS[specifier]) return SHIMS[specifier]
   if (EMPTY_STUB_SPECIFIERS.has(specifier)) return null
+
+  // Prefer npm packages over helper-runtime root facades / dep-map paths
+  if (isNpmVendorSpec(specifier)) {
+    try {
+      return ensureNpmVendorModule(normalizeNpmSpec(specifier))
+    } catch (err) {
+      console.warn(
+        `[bundle-engine-helper] npm resolve failed for ${specifier}:`,
+        err.message
+      )
+    }
+  }
 
   const resolved = depMap?.get(specifier)
 

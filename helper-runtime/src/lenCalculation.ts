@@ -1,8 +1,8 @@
 // @ts-nocheck
 /**
- * Readable TypeScript converted from Parcel dump (helper-runtime/src/lenCalculation.js).
- * Bundled directly by scripts/bundle-engine-helper.mjs.
+ * Rough text-length estimate used by layout helpers.
  */
-function o(e){return 7*e.length}
 
-export { o as estimateTextLength }
+export function estimateTextLength(text) {
+  return 7 * text.length
+}

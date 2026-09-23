@@ -1,449 +1,659 @@
 // @ts-nocheck
 /**
  * Readable TypeScript converted from Parcel dump (helper-runtime/src/contents.js).
- * Bundled directly by scripts/bundle-engine-helper.mjs.
+ * Content-script entry: early jr_id retention, runtime activation, helper bootstrap.
  */
-import * as o from "url:./shared/helper-app"
-import * as a from "@plasmohq/messaging"
-import * as l from "./core/cloudflare-challenge.ts"
-import * as s from "../utils/autofill-install-attribution.ts"
-import * as u from "../utils/autofill-install-attribution-client.ts"
-import * as c from "./shared/autofill-install-attribution-bridge.ts"
-import * as d from "./shared/early-url-normalization.ts"
-import * as f from "./shared/incremental-anchor-observer.ts"
-import * as p from "./shared/parcel-runtime.ts"
-import * as m from "./shared/runtime-activation.ts"
-import * as h from "./shared/sticky-job-id.ts"
+import {
+  sendToBackground,
+} from "@plasmohq/messaging"
+import {
+  waitForCloudflareManagedChallengePage,
+  removeCloudflareChallengeInjectedHost,
+} from "./core/cloudflare-challenge.ts"
+import {
+  ATTRIBUTION_RESPONSE_EVENT,
+} from "../utils/autofill-install-attribution.ts"
+import {
+  acceptAutofillInstallAttribution,
+  flushAutofillInstallAttribution,
+} from "../utils/autofill-install-attribution-client.ts"
+import {
+  initializeAutofillInstallAttributionBridge,
+} from "./shared/autofill-install-attribution-bridge.ts"
+import {
+  buildLifeAtTikTokApplyUrl,
+  shouldKeepLifeAtTikTokApplyBridge,
+  shouldRetainLifeAtTikTokJobDetailJrId,
+  shouldRecoverLifeAtTikTokJobDetailJrId,
+  buildLifeAtTikTokRecoveredUrl,
+  normalizeEarlyJobrightUrl,
+} from "./shared/early-url-normalization.ts"
+import {
+  visitChangedAnchors,
+} from "./shared/incremental-anchor-observer.ts"
+import {
+  isParcelRequire,
+  findModuleExportFromParcelRequires,
+} from "./shared/parcel-runtime.ts"
+import {
+  getRuntimeActivationReason,
+  observeRuntimeActivationSignals,
+} from "./shared/runtime-activation.ts"
+import {
+  keepJobIdInUrl,
+} from "./shared/sticky-job-id.ts"
+import * as helperAppUrlModule from "url:./shared/helper-app"
 
-const i = { default: o };
-let g = "jobright-helper-plugin",b = "__jobrightHelperBootstrapEntryActive",y = "__jobrightAutofillInstance",v = "__jobrightGetAutofillInstance",w = "jr_id",S = null,E = null,x = null,C = null;
-function A() {
-  if (C) return;
-  let e = null;
-  C = c.initializeAutofillInstallAttributionBridge({
+function interopDefault(mod) {
+  return mod && mod.__esModule ? mod : { default: mod }
+}
+
+const helperAppBundleUrl = interopDefault(helperAppUrlModule)
+
+export const HOST_ID = "jobright-helper-plugin"
+const BOOTSTRAP_ENTRY_ACTIVE_KEY = "__jobrightHelperBootstrapEntryActive"
+const AUTOFILL_INSTANCE_KEY = "__jobrightAutofillInstance"
+const GET_AUTOFILL_INSTANCE_KEY = "__jobrightGetAutofillInstance"
+const JOB_ID_QUERY_KEY = "jr_id"
+
+let runtimeStartPromise = null
+let stopRuntimeActivationObserver = null
+let removeUrlUpdatedListener = null
+let teardownAttributionBridge = null
+
+function ensureAutofillInstallAttributionBridge() {
+  if (teardownAttributionBridge) return
+  let responseListener = null
+  teardownAttributionBridge = initializeAutofillInstallAttributionBridge({
     origin: window.location.origin,
     isTopFrame: window.top === window.self,
-    addResponseListener: t => {
-      e = e => t(e.detail), document.addEventListener(s.ATTRIBUTION_RESPONSE_EVENT, e)
+    addResponseListener: (onDetail) => {
+      responseListener = (event) => onDetail(event.detail)
+      document.addEventListener(ATTRIBUTION_RESPONSE_EVENT, responseListener)
     },
     removeResponseListener: () => {
-      e && document.removeEventListener(s.ATTRIBUTION_RESPONSE_EVENT, e), e = null
+      if (responseListener) {
+        document.removeEventListener(ATTRIBUTION_RESPONSE_EVENT, responseListener)
+      }
+      responseListener = null
     },
-    dispatch: (e, t) => {
-      document.dispatchEvent(new CustomEvent(e, {
-        detail: t
-      }))
+    dispatch: (eventName, detail) => {
+      document.dispatchEvent(
+        new CustomEvent(eventName, {
+          detail,
+        }),
+      )
     },
-    accept: u.acceptAutofillInstallAttribution,
-    flush: u.flushAutofillInstallAttribution,
-    schedule: (e, t) => setTimeout(e, t),
-    cancelScheduled: e => clearTimeout(e),
-    logWarning: e => {
+    accept: acceptAutofillInstallAttribution,
+    flush: flushAutofillInstallAttribution,
+    schedule: (callback, delayMs) => setTimeout(callback, delayMs),
+    cancelScheduled: (timerId) => clearTimeout(timerId),
+    logWarning: (reason) => {
       console.warn("[AutofillInstallAttribution] bridge failed", {
-        reason: e
+        reason,
       })
-    }
-  }), window.addEventListener("pagehide", () => C?.(), {
-    once: true
+    },
+  })
+  window.addEventListener("pagehide", () => teardownAttributionBridge?.(), {
+    once: true,
   })
 }
-let k = {
-    matches: ["<all_urls>"],
-    all_frames: true,
-    exclude_matches: ["*://*.cloudflare.com/*", "https://li.protechts.net/*",
-      "https://cs.ns1p.net/*", "https://merchantpool1.linkedin.com/*",
-      "https://www.googletagmanager.com/*", "https://*.fls.doubleclick.net/activityi*",
-      "https://li.protechts.net/*", "https://lnkd.demdex.net/*",
-      "https://www.google.com/recaptcha/enterprise/*", "https://crcldu.com/*"
-    ],
-    run_at: "document_start"
-  },
-  T = new URLSearchParams(window.location.search),
-  F = T.get(w),
-  I = T.get("a_t_id"),
-  j = T.get("a_r_id"),
-  D = "true" === T.get("useOriginalResume");
 
-function P(e) {
-  F = e || null
+export const config = {
+  matches: ["<all_urls>"],
+  all_frames: true,
+  exclude_matches: [
+    "*://*.cloudflare.com/*",
+    "https://li.protechts.net/*",
+    "https://cs.ns1p.net/*",
+    "https://merchantpool1.linkedin.com/*",
+    "https://www.googletagmanager.com/*",
+    "https://*.fls.doubleclick.net/activityi*",
+    "https://li.protechts.net/*",
+    "https://lnkd.demdex.net/*",
+    "https://www.google.com/recaptcha/enterprise/*",
+    "https://crcldu.com/*",
+  ],
+  run_at: "document_start",
 }
 
-function _(e) {
-  globalThis[y] = e
+const initialSearchParams = new URLSearchParams(window.location.search)
+export let jobId = initialSearchParams.get(JOB_ID_QUERY_KEY)
+export const agentTailorId = initialSearchParams.get("a_t_id")
+export const agentResumeId = initialSearchParams.get("a_r_id")
+export const agentOriginalResume =
+  "true" === initialSearchParams.get("useOriginalResume")
+
+export function setCurrentJobId(nextJobId) {
+  jobId = nextJobId || null
 }
 
-function L() {
-  let e = globalThis,
-    t = e[v];
-  return "function" == typeof t ? t() : e[y] || null
+export function setAutofillInstance(instance) {
+  globalThis[AUTOFILL_INSTANCE_KEY] = instance
 }
 
-function R(e) {
-  e && ("function" == typeof e.cancel ? e.cancel() : "function" == typeof e.cancelAutoFill && e
-    .cancelAutoFill())
-}
-let O = "__jobrightEarlyCatsoneClickInjectorActive",
-  M = 1e4,
-  N = 250,
-  $ = "__jobrightEarlyGoogleCareersJrIdRetentionActive",
-  B = 1e4,
-  q = 50,
-  U = 5,
-  H = "__jobrightEarlyLifeAtTikTokJrIdRetentionActive",
-  Y = 1e4,
-  z = 50,
-  V = 5,
-  W = "__jobrightEarlyLifeAtTikTokClickInjectorActive",
-  G = 1e4,
-  K = 250;
-
-function X(e) {
-  let t = e.toLowerCase();
-  return "catsone.com" === t || t.endsWith(".catsone.com")
+export function getAutofillInstance() {
+  let globalObject = globalThis
+  let getter = globalObject[GET_AUTOFILL_INSTANCE_KEY]
+  return "function" == typeof getter
+    ? getter()
+    : globalObject[AUTOFILL_INSTANCE_KEY] || null
 }
 
-function J(e) {
-  let t = e.toLowerCase();
-  return "google.com" === t || t.endsWith(".google.com")
+export function cancelAutofillInstance(instance) {
+  if (instance) {
+    if ("function" == typeof instance.cancel) instance.cancel()
+    else if ("function" == typeof instance.cancelAutoFill) instance.cancelAutoFill()
+  }
 }
 
-function Q() {
+const EARLY_CATSONE_CLICK_INJECTOR_ACTIVE =
+  "__jobrightEarlyCatsoneClickInjectorActive"
+const EARLY_CATSONE_DURATION_MS = 1e4
+const EARLY_CATSONE_FALLBACK_INTERVAL_MS = 250
+const EARLY_GOOGLE_CAREERS_JR_ID_RETENTION_ACTIVE =
+  "__jobrightEarlyGoogleCareersJrIdRetentionActive"
+const EARLY_GOOGLE_CAREERS_DURATION_MS = 1e4
+const EARLY_GOOGLE_CAREERS_INTERVAL_MS = 50
+const EARLY_GOOGLE_CAREERS_MAX_RESTORATIONS = 5
+const EARLY_LIFE_AT_TIKTOK_JR_ID_RETENTION_ACTIVE =
+  "__jobrightEarlyLifeAtTikTokJrIdRetentionActive"
+const EARLY_LIFE_AT_TIKTOK_DURATION_MS = 1e4
+const EARLY_LIFE_AT_TIKTOK_INTERVAL_MS = 50
+const EARLY_LIFE_AT_TIKTOK_MAX_RESTORATIONS = 5
+const EARLY_LIFE_AT_TIKTOK_CLICK_INJECTOR_ACTIVE =
+  "__jobrightEarlyLifeAtTikTokClickInjectorActive"
+const EARLY_LIFE_AT_TIKTOK_CLICK_DURATION_MS = 1e4
+const EARLY_LIFE_AT_TIKTOK_CLICK_FALLBACK_INTERVAL_MS = 250
+
+function isCatsoneHost(hostname) {
+  let lower = hostname.toLowerCase()
+  return "catsone.com" === lower || lower.endsWith(".catsone.com")
+}
+
+function isGoogleHost(hostname) {
+  let lower = hostname.toLowerCase()
+  return "google.com" === lower || lower.endsWith(".google.com")
+}
+
+function readJobIdFromLocation() {
   try {
-    return new URL(window.location.href).searchParams.get(w)?.trim() || null
+    return (
+      new URL(window.location.href).searchParams.get(JOB_ID_QUERY_KEY)?.trim() ||
+      null
+    )
   } catch {
     return null
   }
 }
 
-function Z(e) {
-  return X(e.hostname) && /^\/careers\/[^/]+\/jobs\/[^/]+\/apply\/?$/.test(e.pathname)
+function isCatsoneApplyUrl(url) {
+  return (
+    isCatsoneHost(url.hostname) &&
+    /^\/careers\/[^/]+\/jobs\/[^/]+\/apply\/?$/.test(url.pathname)
+  )
 }
 
-function ee(e) {
-  return J(e.hostname) && /^\/about\/careers\/applications\/(?:u\/\d+\/)?apply\/?$/.test(e.pathname)
+function isGoogleCareersApplyUrl(url) {
+  return (
+    isGoogleHost(url.hostname) &&
+    /^\/about\/careers\/applications\/(?:u\/\d+\/)?apply\/?$/.test(url.pathname)
+  )
 }
 
-function et(e) {
-  let t = (e.textContent || "").replace(/\s+/g, " ").trim(),
-    r = (e.getAttribute("aria-label") || "").replace(/\s+/g, " ").trim();
-  return /^apply(?: now)?$/i.test(t) || /^apply(?: now)?$/i.test(r)
+function isApplyAnchorLabel(anchor) {
+  let text = (anchor.textContent || "").replace(/\s+/g, " ").trim()
+  let ariaLabel = (anchor.getAttribute("aria-label") || "")
+    .replace(/\s+/g, " ")
+    .trim()
+  return /^apply(?: now)?$/i.test(text) || /^apply(?: now)?$/i.test(ariaLabel)
 }
 
-function er(e) {
-  let t = e.composedPath?.() ?? [];
-  for (let e of t) {
-    let t = e;
-    if (t?.tagName === "A") return t
+function findAnchorFromClickEvent(event) {
+  let path = event.composedPath?.() ?? []
+  for (let node of path) {
+    let element = node
+    if (element?.tagName === "A") return element
   }
   return null
 }
 
-function en(e, t) {
-  let r;
-  if (!t || !e.href || e.hasAttribute("download")) return false;
+function rewriteCatsoneApplyAnchor(anchor, retainedJobId) {
+  let applyUrl
+  if (!retainedJobId || !anchor.href || anchor.hasAttribute("download")) {
+    return false
+  }
   try {
-    r = new URL(e.href)
+    applyUrl = new URL(anchor.href)
   } catch {
     return false
   }
-  return !!Z(r) && (!!r.searchParams.has(w) || !!et(e) && (r.searchParams.set(w, t), e.href = r
-    .toString(), e.referrerPolicy = "unsafe-url", true))
+  return (
+    !!isCatsoneApplyUrl(applyUrl) &&
+    (!!applyUrl.searchParams.has(JOB_ID_QUERY_KEY) ||
+      (!!isApplyAnchorLabel(anchor) &&
+        (applyUrl.searchParams.set(JOB_ID_QUERY_KEY, retainedJobId),
+        (anchor.href = applyUrl.toString()),
+        (anchor.referrerPolicy = "unsafe-url"),
+        true)))
+  )
 }
 
-function eo({
-  activeFlag: e,
-  durationMs: t,
-  fallbackIntervalMs: r,
-  isEligible: n,
-  label: o,
-  rewriteAnchor: i
+function startEarlyJrIdAnchorInjector({
+  activeFlag,
+  durationMs,
+  fallbackIntervalMs,
+  isEligible,
+  label,
+  rewriteAnchor,
 }) {
-  let a = globalThis;
-  if (a[e] || !n() || !Q()) return;
-  a[e] = true;
-  let l = () => {
-      let e = n() ? Q() : null;
-      if (e)
-        for (let t of document.querySelectorAll("a[href]")) i(t, e)
-    },
-    s = e => {
-      try {
-        let t = n() ? Q() : null;
-        if (!t) return;
-        let r = er(e);
-        if (!r) return;
-        i(r, t)
-      } catch (e) {
-        console.warn(`[jobright] early ${o} jr_id injector failed:`, e)
+  let globalObject = globalThis
+  if (globalObject[activeFlag] || !isEligible() || !readJobIdFromLocation()) {
+    return
+  }
+  globalObject[activeFlag] = true
+  let rewriteAllAnchors = () => {
+    let retainedJobId = isEligible() ? readJobIdFromLocation() : null
+    if (retainedJobId) {
+      for (let anchor of document.querySelectorAll("a[href]")) {
+        rewriteAnchor(anchor, retainedJobId)
       }
-    };
-  document.addEventListener("click", s, true), l();
-  let u = null,
-    c = null,
-    d = null;
-  "undefined" != typeof MutationObserver && document.documentElement ? (u = new MutationObserver(
-    e => {
-      let t = n() ? Q() : null;
-      t && f.visitChangedAnchors(e, e => {
-        i(e, t)
-      })
-    })).observe(document.documentElement, {
-    attributes: true,
-    attributeFilter: ["aria-label", "href"],
-    childList: true,
-    characterData: true,
-    subtree: true
-  }) : c = setInterval(l, r);
-  let p = () => {
-    u?.disconnect(), u = null, null !== c && (clearInterval(c), c = null), null !== d && (
-      clearTimeout(d), d = null)
-  };
-  d = setTimeout(p, t), window.addEventListener("pagehide", p, {
-    once: true
+    }
+  }
+  let onClickCapture = (event) => {
+    try {
+      let retainedJobId = isEligible() ? readJobIdFromLocation() : null
+      if (!retainedJobId) return
+      let anchor = findAnchorFromClickEvent(event)
+      if (!anchor) return
+      rewriteAnchor(anchor, retainedJobId)
+    } catch (error) {
+      console.warn(`[jobright] early ${label} jr_id injector failed:`, error)
+    }
+  }
+  document.addEventListener("click", onClickCapture, true)
+  rewriteAllAnchors()
+  let mutationObserver = null
+  let fallbackIntervalId = null
+  let stopTimeoutId = null
+  if ("undefined" != typeof MutationObserver && document.documentElement) {
+    mutationObserver = new MutationObserver((mutations) => {
+      let retainedJobId = isEligible() ? readJobIdFromLocation() : null
+      if (retainedJobId) {
+        visitChangedAnchors(mutations, (anchor) => {
+          rewriteAnchor(anchor, retainedJobId)
+        })
+      }
+    })
+    mutationObserver.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ["aria-label", "href"],
+      childList: true,
+      characterData: true,
+      subtree: true,
+    })
+  } else {
+    fallbackIntervalId = setInterval(rewriteAllAnchors, fallbackIntervalMs)
+  }
+  let stop = () => {
+    mutationObserver?.disconnect()
+    mutationObserver = null
+    if (null !== fallbackIntervalId) {
+      clearInterval(fallbackIntervalId)
+      fallbackIntervalId = null
+    }
+    if (null !== stopTimeoutId) {
+      clearTimeout(stopTimeoutId)
+      stopTimeoutId = null
+    }
+  }
+  stopTimeoutId = setTimeout(stop, durationMs)
+  window.addEventListener("pagehide", stop, {
+    once: true,
   })
 }
 
-function ei() {
-  eo({
-    activeFlag: O,
-    durationMs: M,
-    fallbackIntervalMs: N,
-    isEligible: () => X(window.location.hostname),
+function startEarlyCatsoneClickInjector() {
+  startEarlyJrIdAnchorInjector({
+    activeFlag: EARLY_CATSONE_CLICK_INJECTOR_ACTIVE,
+    durationMs: EARLY_CATSONE_DURATION_MS,
+    fallbackIntervalMs: EARLY_CATSONE_FALLBACK_INTERVAL_MS,
+    isEligible: () => isCatsoneHost(window.location.hostname),
     label: "CatsOne",
-    rewriteAnchor: en
+    rewriteAnchor: rewriteCatsoneApplyAnchor,
   })
 }
 
-function ea(e, t) {
-  if (e.hasAttribute("download")) return false;
-  let r = (e.textContent || "").replace(/\s+/g, " ").trim(),
-    n = (e.getAttribute("aria-label") || "").replace(/\s+/g, " ").trim();
-  if (!/^apply to this job$/i.test(r) && !/^apply to this job$/i.test(n)) return false;
-  let o = d.buildLifeAtTikTokApplyUrl(window.location.href, e.href, t);
-  return !!o && (e.href = o, true)
+function rewriteLifeAtTikTokApplyAnchor(anchor, retainedJobId) {
+  if (anchor.hasAttribute("download")) return false
+  let text = (anchor.textContent || "").replace(/\s+/g, " ").trim()
+  let ariaLabel = (anchor.getAttribute("aria-label") || "")
+    .replace(/\s+/g, " ")
+    .trim()
+  if (
+    !/^apply to this job$/i.test(text) &&
+    !/^apply to this job$/i.test(ariaLabel)
+  ) {
+    return false
+  }
+  let bridgedUrl = buildLifeAtTikTokApplyUrl(
+    window.location.href,
+    anchor.href,
+    retainedJobId,
+  )
+  return !!bridgedUrl && ((anchor.href = bridgedUrl), true)
 }
 
-function el() {
-  let e = window.location.href;
-  eo({
-    activeFlag: W,
-    durationMs: G,
-    fallbackIntervalMs: K,
-    isEligible: () => d.shouldKeepLifeAtTikTokApplyBridge(e, window.location.href),
+function startEarlyLifeAtTikTokClickInjector() {
+  let pageUrlAtStart = window.location.href
+  startEarlyJrIdAnchorInjector({
+    activeFlag: EARLY_LIFE_AT_TIKTOK_CLICK_INJECTOR_ACTIVE,
+    durationMs: EARLY_LIFE_AT_TIKTOK_CLICK_DURATION_MS,
+    fallbackIntervalMs: EARLY_LIFE_AT_TIKTOK_CLICK_FALLBACK_INTERVAL_MS,
+    isEligible: () =>
+      shouldKeepLifeAtTikTokApplyBridge(pageUrlAtStart, window.location.href),
     label: "LifeAtTikTok Apply bridge",
-    rewriteAnchor: ea
+    rewriteAnchor: rewriteLifeAtTikTokApplyAnchor,
   })
 }
 
-function es() {
-  let e = globalThis;
-  if (!e[$]) try {
-    if (window.top !== window.self) return;
-    let t = new URL(window.location.href);
-    if (!ee(t)) return;
-    let r = t.searchParams.get(w)?.trim() || null;
-    if (!r) return;
-    e[$] = true, console.info("[jobright] Google Careers retaining initial apply jr_id", {
-      pathname: t.pathname,
-      durationMs: B
-    });
-    let n = h.keepJobIdInUrl(r, {
-      originalHost: t.hostname,
-      durationMs: B,
-      intervalMs: q,
-      maxRestorations: U,
-      onRestore: ({
-        pathname: e,
-        restorationCount: t
-      }) => {
-        console.info("[jobright] Google Careers initial apply jr_id restored", {
-          pathname: e,
-          restorationCount: t
-        })
-      }
-    });
-    window.addEventListener("pagehide", n, {
-      once: true
-    })
-  } catch (e) {
-    console.warn("[jobright] early Google Careers jr_id retention failed:", e)
+function startEarlyGoogleCareersJrIdRetention() {
+  let globalObject = globalThis
+  if (!globalObject[EARLY_GOOGLE_CAREERS_JR_ID_RETENTION_ACTIVE]) {
+    try {
+      if (window.top !== window.self) return
+      let pageUrl = new URL(window.location.href)
+      if (!isGoogleCareersApplyUrl(pageUrl)) return
+      let retainedJobId =
+        pageUrl.searchParams.get(JOB_ID_QUERY_KEY)?.trim() || null
+      if (!retainedJobId) return
+      globalObject[EARLY_GOOGLE_CAREERS_JR_ID_RETENTION_ACTIVE] = true
+      console.info("[jobright] Google Careers retaining initial apply jr_id", {
+        pathname: pageUrl.pathname,
+        durationMs: EARLY_GOOGLE_CAREERS_DURATION_MS,
+      })
+      let stopRetention = keepJobIdInUrl(retainedJobId, {
+        originalHost: pageUrl.hostname,
+        durationMs: EARLY_GOOGLE_CAREERS_DURATION_MS,
+        intervalMs: EARLY_GOOGLE_CAREERS_INTERVAL_MS,
+        maxRestorations: EARLY_GOOGLE_CAREERS_MAX_RESTORATIONS,
+        onRestore: ({ pathname, restorationCount }) => {
+          console.info(
+            "[jobright] Google Careers initial apply jr_id restored",
+            {
+              pathname,
+              restorationCount,
+            },
+          )
+        },
+      })
+      window.addEventListener("pagehide", stopRetention, {
+        once: true,
+      })
+    } catch (error) {
+      console.warn(
+        "[jobright] early Google Careers jr_id retention failed:",
+        error,
+      )
+    }
   }
 }
 
-function eu() {
-  let e = globalThis;
-  if (!e[H]) try {
-    if (window.top !== window.self) return;
-    let t = new URL(window.location.href);
-    if (!d.shouldRetainLifeAtTikTokJobDetailJrId(t.toString())) return;
-    let r = t.searchParams.get(w)?.trim() || null;
-    if (!r) return;
-    e[H] = true, console.info("[jobright] LifeAtTikTok retaining initial job detail jr_id", {
-      pathname: t.pathname,
-      durationMs: Y
-    });
-    let n = h.keepJobIdInUrl(r, {
-      originalHost: t.hostname,
-      allowedPathname: t.pathname,
-      durationMs: Y,
-      intervalMs: z,
-      maxRestorations: V,
-      onRestore: ({
-        pathname: e,
-        restorationCount: t
-      }) => {
-        console.info("[jobright] LifeAtTikTok job detail jr_id restored", {
-          pathname: e,
-          restorationCount: t
-        })
-      }
-    });
-    window.addEventListener("pagehide", n, {
-      once: true
-    })
-  } catch (e) {
-    console.warn("[jobright] early LifeAtTikTok jr_id retention failed:", e)
+function startEarlyLifeAtTikTokJrIdRetention() {
+  let globalObject = globalThis
+  if (!globalObject[EARLY_LIFE_AT_TIKTOK_JR_ID_RETENTION_ACTIVE]) {
+    try {
+      if (window.top !== window.self) return
+      let pageUrl = new URL(window.location.href)
+      if (!shouldRetainLifeAtTikTokJobDetailJrId(pageUrl.toString())) return
+      let retainedJobId =
+        pageUrl.searchParams.get(JOB_ID_QUERY_KEY)?.trim() || null
+      if (!retainedJobId) return
+      globalObject[EARLY_LIFE_AT_TIKTOK_JR_ID_RETENTION_ACTIVE] = true
+      console.info(
+        "[jobright] LifeAtTikTok retaining initial job detail jr_id",
+        {
+          pathname: pageUrl.pathname,
+          durationMs: EARLY_LIFE_AT_TIKTOK_DURATION_MS,
+        },
+      )
+      let stopRetention = keepJobIdInUrl(retainedJobId, {
+        originalHost: pageUrl.hostname,
+        allowedPathname: pageUrl.pathname,
+        durationMs: EARLY_LIFE_AT_TIKTOK_DURATION_MS,
+        intervalMs: EARLY_LIFE_AT_TIKTOK_INTERVAL_MS,
+        maxRestorations: EARLY_LIFE_AT_TIKTOK_MAX_RESTORATIONS,
+        onRestore: ({ pathname, restorationCount }) => {
+          console.info("[jobright] LifeAtTikTok job detail jr_id restored", {
+            pathname,
+            restorationCount,
+          })
+        },
+      })
+      window.addEventListener("pagehide", stopRetention, {
+        once: true,
+      })
+    } catch (error) {
+      console.warn(
+        "[jobright] early LifeAtTikTok jr_id retention failed:",
+        error,
+      )
+    }
   }
 }
-async function ec() {
-  if (window.top !== window.self || !d.shouldRecoverLifeAtTikTokJobDetailJrId(window.location
-      .href)) return false;
+
+async function recoverRedirectedLifeAtTikTokJrId() {
+  if (
+    window.top !== window.self ||
+    !shouldRecoverLifeAtTikTokJobDetailJrId(window.location.href)
+  ) {
+    return false
+  }
   try {
-    let e = await a.sendToBackground({
-        name: "getTabJobId",
-        body: {
-          currentUrl: window.location.href,
-          requireSamePath: true
-        }
-      }),
-      t = "string" == typeof e?.jobId ? e.jobId.trim() : "",
-      r = d.buildLifeAtTikTokRecoveredUrl(window.location.href, t);
-    if (!r) return false;
-    window.history.replaceState(window.history.state, "", r), P(t);
-    let n = window.location.pathname,
-      o = h.keepJobIdInUrl(t, {
-        originalHost: window.location.hostname,
-        allowedPathname: n,
-        durationMs: Y,
-        intervalMs: z,
-        maxRestorations: V
-      });
-    return window.addEventListener("pagehide", o, {
-      once: true
-    }), console.info("[jobright] LifeAtTikTok redirected job detail jr_id restored", {
-      pathname: n
-    }), true
-  } catch (e) {
-    return console.warn("[jobright] failed to recover redirected LifeAtTikTok jr_id:", e), false
+    let response = await sendToBackground({
+      name: "getTabJobId",
+      body: {
+        currentUrl: window.location.href,
+        requireSamePath: true,
+      },
+    })
+    let recoveredJobId =
+      "string" == typeof response?.jobId ? response.jobId.trim() : ""
+    let recoveredUrl = buildLifeAtTikTokRecoveredUrl(
+      window.location.href,
+      recoveredJobId,
+    )
+    if (!recoveredUrl) return false
+    window.history.replaceState(window.history.state, "", recoveredUrl)
+    setCurrentJobId(recoveredJobId)
+    let allowedPathname = window.location.pathname
+    let stopRetention = keepJobIdInUrl(recoveredJobId, {
+      originalHost: window.location.hostname,
+      allowedPathname,
+      durationMs: EARLY_LIFE_AT_TIKTOK_DURATION_MS,
+      intervalMs: EARLY_LIFE_AT_TIKTOK_INTERVAL_MS,
+      maxRestorations: EARLY_LIFE_AT_TIKTOK_MAX_RESTORATIONS,
+    })
+    window.addEventListener("pagehide", stopRetention, {
+      once: true,
+    })
+    console.info(
+      "[jobright] LifeAtTikTok redirected job detail jr_id restored",
+      {
+        pathname: allowedPathname,
+      },
+    )
+    return true
+  } catch (error) {
+    return (
+      console.warn(
+        "[jobright] failed to recover redirected LifeAtTikTok jr_id:",
+        error,
+      ),
+      false
+    )
   }
 }
 
-function ed() {
-  return "loading" !== document.readyState ? Promise.resolve() : new Promise(e => {
-    document.addEventListener("DOMContentLoaded", () => e(), {
-      once: true
-    })
-  })
+function waitForDomContentLoaded() {
+  return "loading" !== document.readyState
+    ? Promise.resolve()
+    : new Promise((resolve) => {
+        document.addEventListener("DOMContentLoaded", () => resolve(), {
+          once: true,
+        })
+      })
 }
 
-function ef() {
-  let e = globalThis;
-  return Object.values(e).filter(p.isParcelRequire)
+function collectParcelRequires() {
+  let globalObject = globalThis
+  return Object.values(globalObject).filter(isParcelRequire)
 }
 
-function ep() {
-  return p.findModuleExportFromParcelRequires(ef(), "bootstrapJobrightHelperRuntime")
+function findInjectedHelperRuntimeModule() {
+  return findModuleExportFromParcelRequires(
+    collectParcelRequires(),
+    "bootstrapJobrightHelperRuntime",
+  )
 }
-async function em() {
-  let e = await a.sendToBackground({
+
+async function injectAndLoadHelperRuntimeModule() {
+  let injectResult = await sendToBackground({
     name: "injectHelperAppBundle",
     body: {
-      bundleUrl: i.default
-    }
-  });
-  if (!e?.success) throw Error("Failed to inject Jobright helper runtime bundle");
-  let t = ep();
-  if (!t?.bootstrapJobrightHelperRuntime) throw Error(
-    "Failed to load Jobright helper runtime module");
-  return t
+      bundleUrl: helperAppBundleUrl.default,
+    },
+  })
+  if (!injectResult?.success) {
+    throw Error("Failed to inject Jobright helper runtime bundle")
+  }
+  let runtimeModule = findInjectedHelperRuntimeModule()
+  if (!runtimeModule?.bootstrapJobrightHelperRuntime) {
+    throw Error("Failed to load Jobright helper runtime module")
+  }
+  return runtimeModule
 }
 
-function eh() {
-  let e = Array.from(document.querySelectorAll("iframe[src]"), e => e.src),
-    t = Array.from(document.querySelectorAll("script[src], link[href]"), e =>
-      e instanceof HTMLScriptElement ? e.src : e.href);
-  return m.getRuntimeActivationReason({
+function readRuntimeActivationReason() {
+  let iframeUrls = Array.from(
+    document.querySelectorAll("iframe[src]"),
+    (iframe) => iframe.src,
+  )
+  let pageSourceUrls = Array.from(
+    document.querySelectorAll("script[src], link[href]"),
+    (element) =>
+      element instanceof HTMLScriptElement ? element.src : element.href,
+  )
+  return getRuntimeActivationReason({
     href: window.location.href,
     isTopFrame: window.top === window.self,
-    iframeUrls: e,
-    pageSourceUrls: t
+    iframeUrls,
+    pageSourceUrls,
   })
 }
 
-function eg() {
-  E?.(), E = null, x?.(), x = null
+function clearRuntimeActivationWatchers() {
+  stopRuntimeActivationObserver?.()
+  stopRuntimeActivationObserver = null
+  removeUrlUpdatedListener?.()
+  removeUrlUpdatedListener = null
 }
 
-function eb(e) {
-  return S || (eg(), S = (async () => {
-    if (console.info("[jobright] helper runtime activation matched", {
+function startHelperRuntime(activationReason) {
+  return (
+    runtimeStartPromise ||
+    (clearRuntimeActivationWatchers(),
+    (runtimeStartPromise = (async () => {
+      console.info("[jobright] helper runtime activation matched", {
         host: window.location.hostname,
         pathname: window.location.pathname,
         frame: window.top === window.self ? "top" : "child",
-        reason: e
-      }), await ed(), await l.waitForCloudflareManagedChallengePage()) {
-      l.removeCloudflareChallengeInjectedHost(g);
-      return
-    }
-    let t = await em();
-    return await t.bootstrapJobrightHelperRuntime(), t
-  })().catch(e => {
-    throw S = null, e
-  }))
+        reason: activationReason,
+      })
+      await waitForDomContentLoaded()
+      if (await waitForCloudflareManagedChallengePage()) {
+        removeCloudflareChallengeInjectedHost(HOST_ID)
+        return
+      }
+      let runtimeModule = await injectAndLoadHelperRuntimeModule()
+      return (
+        (await runtimeModule.bootstrapJobrightHelperRuntime()),
+        runtimeModule
+      )
+    })().catch((error) => {
+      throw ((runtimeStartPromise = null), error)
+    })))
+  )
 }
 
-function ey() {
-  window.top === window.self && chrome.runtime.onMessage.addListener(e => {
-    "iconClicked" === e.message && (console.info("[jobright] extension icon requested helper", {
-      runtimeStarted: null !== S
-    }), eb("extension_icon").then(e => e?.openJobrightHelperFromExtensionIcon?.()).catch(
-      e => {
-        console.warn("[jobright] extension icon activation failed:", e)
-      }))
-  })
-}
-
-function ev() {
-  if (window.top !== window.self) return;
-  let e = e => {
-    eb(e).catch(e => {
-      console.warn("[jobright] failed to activate helper runtime:", e)
+function registerExtensionIconClickListener() {
+  if (window.top === window.self) {
+    chrome.runtime.onMessage.addListener((message) => {
+      if ("iconClicked" === message.message) {
+        console.info("[jobright] extension icon requested helper", {
+          runtimeStarted: null !== runtimeStartPromise,
+        })
+        startHelperRuntime("extension_icon")
+          .then((runtimeModule) =>
+            runtimeModule?.openJobrightHelperFromExtensionIcon?.(),
+          )
+          .catch((error) => {
+            console.warn(
+              "[jobright] extension icon activation failed:",
+              error,
+            )
+          })
+      }
     })
-  };
-  E = m.observeRuntimeActivationSignals(e);
-  let t = t => {
-    if (console.debug("[jobright] runtime activation message", {
-        message: t.message,
-        frame: "top"
-      }), "urlUpdated" !== t.message) return;
-    let r = eh();
-    r && e(r)
-  };
-  chrome.runtime.onMessage.addListener(t), x = () => {
-    chrome.runtime.onMessage.removeListener(t)
   }
-}(async function() {
-  let e = globalThis;
-  if (e[b] || (e[b] = true, ey(), A(), d.normalizeEarlyJobrightUrl())) return;
-  ei(), es(), eu(), await ec(), el(), await ed();
-  let t = eh();
-  if (!t) {
-    ev();
+}
+
+function watchForDeferredRuntimeActivation() {
+  if (window.top !== window.self) return
+  let activate = (reason) => {
+    startHelperRuntime(reason).catch((error) => {
+      console.warn("[jobright] failed to activate helper runtime:", error)
+    })
+  }
+  stopRuntimeActivationObserver = observeRuntimeActivationSignals(activate)
+  let onRuntimeMessage = (message) => {
+    console.debug("[jobright] runtime activation message", {
+      message: message.message,
+      frame: "top",
+    })
+    if ("urlUpdated" !== message.message) return
+    let reason = readRuntimeActivationReason()
+    if (reason) activate(reason)
+  }
+  chrome.runtime.onMessage.addListener(onRuntimeMessage)
+  removeUrlUpdatedListener = () => {
+    chrome.runtime.onMessage.removeListener(onRuntimeMessage)
+  }
+}
+
+;(async function bootstrapContentsEntry() {
+  let globalObject = globalThis
+  if (
+    globalObject[BOOTSTRAP_ENTRY_ACTIVE_KEY] ||
+    ((globalObject[BOOTSTRAP_ENTRY_ACTIVE_KEY] = true),
+    registerExtensionIconClickListener(),
+    ensureAutofillInstallAttributionBridge(),
+    normalizeEarlyJobrightUrl())
+  ) {
     return
   }
-  await eb(t)
-})().catch(e => {
-  console.warn("[jobright] failed to bootstrap helper:", e)
+  startEarlyCatsoneClickInjector()
+  startEarlyGoogleCareersJrIdRetention()
+  startEarlyLifeAtTikTokJrIdRetention()
+  await recoverRedirectedLifeAtTikTokJrId()
+  startEarlyLifeAtTikTokClickInjector()
+  await waitForDomContentLoaded()
+  let activationReason = readRuntimeActivationReason()
+  if (!activationReason) {
+    watchForDeferredRuntimeActivation()
+    return
+  }
+  await startHelperRuntime(activationReason)
+})().catch((error) => {
+  console.warn("[jobright] failed to bootstrap helper:", error)
 })
-
-export { g as HOST_ID, k as config, F as jobId, I as agentTailorId, j as agentResumeId, D as agentOriginalResume, P as setCurrentJobId, _ as setAutofillInstance, L as getAutofillInstance, R as cancelAutofillInstance }
