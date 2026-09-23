@@ -50,6 +50,10 @@ export const NPM_PACKAGE_SPECS = new Set([
   "react-draggable",
   "react-is",
   "react-lottie",
+  "@plasmohq/messaging",
+  "@plasmohq/storage",
+  "@plasmohq/storage/hook",
+  "@webext-core/match-patterns",
 ])
 
 /** Shared peers left external so the linker graph has one React / dayjs / etc. */

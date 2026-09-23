@@ -19,6 +19,11 @@ export function getCoverLetterEditableName(name) {
   return name.replace(/\.[^/.]+$/, "")
 }
 
+export function getCoverLetterDisplayName(name, fallback) {
+  const resolved = name?.trim() || fallback?.trim() || "Cover Letter"
+  return getCoverLetterEditableName(resolved)
+}
+
 export function buildEditWithAiCoverLetterSeed(coverLetter) {
   const coverLetterId = coverLetter?.coverLetterId?.trim()
   const jobId = coverLetter?.jobId?.trim()

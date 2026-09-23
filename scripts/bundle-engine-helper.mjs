@@ -107,6 +107,12 @@ const ENTRY = path.join(__dirname, "engine-runtime-entry.js")
 const SHIMS = {
   "~contents": path.join(__dirname, "shims", "contents.js"),
   "~store/resume": path.join(__dirname, "shims", "resume-store.js"),
+  // Parcel linker runtime — lives under scripts/, not helper-runtime/@parcel
+  "@parcel/transformer-js/src/esmodule-helpers.js": path.join(
+    __dirname,
+    "shims",
+    "esmodule-helpers.js"
+  ),
   // lodash-es / ahooks / nanoid resolve from node_modules via npm-vendor-cache
   "libphonenumber-js": path.join(__dirname, "shims", "libphonenumber.js"),
   "libphonenumber-js/core": path.join(__dirname, "shims", "libphonenumber.js"),
@@ -124,7 +130,6 @@ const SHIMS = {
 
 /** Specs that are not real npm packages for this bundle (keep stubbed). */
 const EMPTY_STUB_SPECIFIERS = new Set([
-  "@plasmohq/storage/hook",
   "console"
 ])
 

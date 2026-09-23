@@ -216,15 +216,37 @@ void bootstrapJobrightHelperRuntime()
 
     },
     factory: function (e, r) {
-r.interopDefault=function(e){return e&&e.__esModule?e:{default:e}},r.defineInteropFlag=function(e){Object.defineProperty(e,"__esModule",{value:!0})},r.exportAll=function(e,t){return Object.keys(e).forEach(function(r){"default"===r||"__esModule"===r||t.hasOwnProperty(r)||Object.defineProperty(t,r,{enumerable:!0,get:function(){return e[r]}})}),t},r.export=function(e,t,r){Object.defineProperty(e,t,{enumerable:!0,get:r})}
+r.interopDefault = function (e) {
+  return e && e.__esModule ? e : { default: e }
+}
+r.defineInteropFlag = function (e) {
+  Object.defineProperty(e, "__esModule", { value: true })
+}
+r.exportAll = function (e, t) {
+  return (
+    Object.keys(e).forEach(function (r) {
+      if ("default" === r || "__esModule" === r || t.hasOwnProperty(r)) return
+      Object.defineProperty(t, r, {
+        enumerable: true,
+        get: function () {
+          return e[r]
+        },
+      })
+    }),
+    t
+  )
+}
+r.export = function (e, t, r) {
+  Object.defineProperty(e, t, { enumerable: true, get: r })
+}
 
     }
   }
   __modules["m3"] = {
     cjs: true,
     map: {
-    "@parcel/transformer-js/src/esmodule-helpers.js": "m2",
-    "nanoid": "m4"
+    "nanoid": "m4",
+    "@parcel/transformer-js/src/esmodule-helpers.js": "m2"
     },
     factory: function (e, t) {
 var helpers = e("@parcel/transformer-js/src/esmodule-helpers.js")
@@ -236,125 +258,78 @@ var __mod = (function () {
   var __cjsModule = { exports: {} }
   var module = __cjsModule
   var exports = __cjsModule.exports
-;var __defProp = Object.defineProperty;
-var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
-var __getOwnPropNames = Object.getOwnPropertyNames;
-var __hasOwnProp = Object.prototype.hasOwnProperty;
-var __export = (target, all) => {
-  for (var name in all)
-    __defProp(target, name, { get: all[name], enumerable: true });
+// ../engine/node_modules/@plasmohq/messaging/dist/index.cjs
+var i = Object.defineProperty;
+var f = Object.getOwnPropertyDescriptor;
+var T = Object.getOwnPropertyNames;
+var R = Object.prototype.hasOwnProperty;
+var I = (e, a) => {
+  for (var t in a) i(e, t, { get: a[t], enumerable: true });
 };
-var __copyProps = (to, from, except, desc) => {
-  if (from && typeof from === "object" || typeof from === "function") {
-    for (let key of __getOwnPropNames(from))
-      if (!__hasOwnProp.call(to, key) && key !== except)
-        __defProp(to, key, { get: () => from[key], enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable });
-  }
-  return to;
+var P = (e, a, t, n) => {
+  if (a && typeof a == "object" || typeof a == "function") for (let s of T(a)) !R.call(e, s) && s !== t && i(e, s, { get: () => a[s], enumerable: !(n = f(a, s)) || n.enumerable });
+  return e;
 };
-var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);
-
-// scripts/_remaining-vendor-tmp/entry-92GyB.mjs
-var entry_92GyB_exports = {};
-__export(entry_92GyB_exports, {
-  default: () => entry_92GyB_default,
-  relay: () => E,
-  relayMessage: () => M,
-  sendToActiveContentScript: () => h,
-  sendToBackground: () => p,
-  sendToBackgroundViaRelay: () => u,
-  sendToContentScript: () => x,
-  sendViaRelay: () => S
-});
-module.exports = __toCommonJS(entry_92GyB_exports);
-
-// node_modules/@plasmohq/messaging/dist/index.js
-var dist_exports = {};
-__export(dist_exports, {
-  relay: () => E,
-  relayMessage: () => M,
-  sendToActiveContentScript: () => h,
-  sendToBackground: () => p,
-  sendToBackgroundViaRelay: () => u,
-  sendToContentScript: () => x,
-  sendViaRelay: () => S
-});
-var import_nanoid = __jrReq("nanoid");
-var l = globalThis.browser?.tabs || globalThis.chrome?.tabs;
-var d = () => {
+var h = (e) => P(i({}, "__esModule", { value: true }), e);
+var v = {};
+I(v, { relay: () => S, relayMessage: () => u, sendToActiveContentScript: () => E, sendToBackground: () => x, sendToBackgroundViaRelay: () => w, sendToContentScript: () => M, sendViaRelay: () => O });
+module.exports = h(v);
+var y = __jrReq("nanoid");
+var d = globalThis.browser?.tabs || globalThis.chrome?.tabs;
+var m = () => {
   let e = globalThis.browser?.runtime || globalThis.chrome?.runtime;
   if (!e) throw new Error("Extension runtime is not available");
   return e;
 };
-var i = () => {
-  if (!l) throw new Error("Extension tabs API is not available");
-  return l;
+var g = () => {
+  if (!d) throw new Error("Extension tabs API is not available");
+  return d;
 };
-var m = async () => {
-  let e = i(), [a] = await e.query({ active: true, currentWindow: true });
+var c = async () => {
+  let e = g(), [a] = await e.query({ active: true, currentWindow: true });
   return a;
 };
-var g = (e, a) => !a.__internal && e.source === globalThis.window && e.data.name === a.name && (a.relayId === void 0 || e.data.relayId === a.relayId);
-var c = (e, a, n = globalThis.window) => {
-  let r = async (s) => {
-    if (g(s, e) && !s.data.relayed) {
-      let o = { name: e.name, relayId: e.relayId, body: s.data.body }, t = await a?.(o);
-      n.postMessage({ name: e.name, relayId: e.relayId, instanceId: s.data.instanceId, body: t, relayed: true }, { targetOrigin: e.targetOrigin || "/" });
+var l = (e, a) => !a.__internal && e.source === globalThis.window && e.data.name === a.name && (a.relayId === void 0 || e.data.relayId === a.relayId);
+var b = (e, a, t = globalThis.window) => {
+  let n = async (s) => {
+    if (l(s, e) && !s.data.relayed) {
+      let r = { name: e.name, relayId: e.relayId, body: s.data.body }, o = await a?.(r);
+      t.postMessage({ name: e.name, relayId: e.relayId, instanceId: s.data.instanceId, body: o, relayed: true }, { targetOrigin: e.targetOrigin || "/" });
     }
   };
-  return n.addEventListener("message", r), () => n.removeEventListener("message", r);
+  return t.addEventListener("message", n), () => t.removeEventListener("message", n);
 };
-var y = (e, a = globalThis.window) => new Promise((n, r) => {
-  let s = (0, import_nanoid.nanoid)(), o = new AbortController();
-  a.addEventListener("message", (t) => {
-    g(t, e) && t.data.relayed && t.data.instanceId === s && (n(t.data.body), o.abort());
-  }, { signal: o.signal }), a.postMessage({ ...e, instanceId: s }, { targetOrigin: e.targetOrigin || "/" });
+var p = (e, a = globalThis.window) => new Promise((t, n) => {
+  let s = (0, y.nanoid)(), r = new AbortController();
+  a.addEventListener("message", (o) => {
+    l(o, e) && o.data.relayed && o.data.instanceId === s && (t(o.data.body), r.abort());
+  }, { signal: r.signal }), a.postMessage({ ...e, instanceId: s }, { targetOrigin: e.targetOrigin || "/" });
 });
-var p = async (e) => d().sendMessage(e.extensionId ?? null, e);
-var x = async (e) => {
-  let a = typeof e.tabId == "number" ? e.tabId : (await m())?.id;
+var x = async (e) => m().sendMessage(e.extensionId ?? null, e);
+var M = async (e) => {
+  let a = typeof e.tabId == "number" ? e.tabId : (await c())?.id;
   if (!a) throw new Error("No active tab found to send message to.");
-  return i().sendMessage(a, e);
+  return g().sendMessage(a, e);
 };
-var h = x;
-var M = (e) => c(e, p);
 var E = M;
-var u = y;
+var u = (e) => b(e, x);
 var S = u;
-
-// scripts/_remaining-vendor-tmp/entry-92GyB.mjs
-var entry_92GyB_default = void 0 !== void 0 ? void 0 : dist_exports;
+var w = p;
+var O = w;
 
   var out = module.exports
-  if (out && typeof out === "object" && out.__esModule && "default" in out) {
-    var names = Object.keys(out).filter(function (k) {
-      return k !== "default" && k !== "__esModule"
-    })
-    if (names.length) return out
-    return out.default
-  }
   return out
 })()
 
-if (typeof __mod === "function") {
-  helpers.export(r, "default", function () { return __mod })
-  r.default = __mod
-} else if (__mod && typeof __mod === "object") {
+if (__mod && typeof __mod === "object") {
   for (var __k in __mod) {
-    if (Object.prototype.hasOwnProperty.call(__mod, __k) && __k !== "__esModule") {
-      ;(function (key) {
-        helpers.export(r, key, function () { return __mod[key] })
-        r[key] = __mod[key]
-      })(__k)
-    }
+    if (Object.prototype.hasOwnProperty.call(__mod, __k)) r[__k] = __mod[__k]
   }
-  r.default = __mod.default !== undefined ? __mod.default : __mod
-  if (__mod.default !== undefined) {
-    helpers.export(r, "default", function () { return __mod.default })
-  }
+}
+if (__mod && typeof __mod === "object" && "default" in __mod) {
+  r.default = __mod.default
 } else {
   r.default = __mod
-  helpers.export(r, "default", function () { return __mod })
 }
 
     }
@@ -1184,8 +1159,8 @@ n.defineInteropFlag(r), n.export(r, "fillDefaultInputField", () => o)
   __modules["m18"] = {
     cjs: true,
     map: {
-    "@parcel/transformer-js/src/esmodule-helpers.js": "m2",
-    "pify": "m19"
+    "pify": "m19",
+    "@parcel/transformer-js/src/esmodule-helpers.js": "m2"
     },
     factory: function (e, t) {
 var helpers = e("@parcel/transformer-js/src/esmodule-helpers.js")
@@ -1197,51 +1172,27 @@ var __mod = (function () {
   var __cjsModule = { exports: {} }
   var module = __cjsModule
   var exports = __cjsModule.exports
-;var __create = Object.create;
-var __defProp = Object.defineProperty;
-var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
-var __getOwnPropNames = Object.getOwnPropertyNames;
-var __getProtoOf = Object.getPrototypeOf;
-var __hasOwnProp = Object.prototype.hasOwnProperty;
-var __export = (target, all) => {
-  for (var name in all)
-    __defProp(target, name, { get: all[name], enumerable: true });
+// ../engine/node_modules/@plasmohq/storage/dist/index.cjs
+var w = Object.create;
+var c = Object.defineProperty;
+var S = Object.getOwnPropertyDescriptor;
+var b = Object.getOwnPropertyNames;
+var v = Object.getPrototypeOf;
+var C = Object.prototype.hasOwnProperty;
+var A = (a, e) => {
+  for (var t in e) c(a, t, { get: e[t], enumerable: true });
 };
-var __copyProps = (to, from, except, desc) => {
-  if (from && typeof from === "object" || typeof from === "function") {
-    for (let key of __getOwnPropNames(from))
-      if (!__hasOwnProp.call(to, key) && key !== except)
-        __defProp(to, key, { get: () => from[key], enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable });
-  }
-  return to;
+var y = (a, e, t, s) => {
+  if (e && typeof e == "object" || typeof e == "function") for (let r of b(e)) !C.call(a, r) && r !== t && c(a, r, { get: () => e[r], enumerable: !(s = S(e, r)) || s.enumerable });
+  return a;
 };
-var __toESM = (mod, isNodeMode, target) => (target = mod != null ? __create(__getProtoOf(mod)) : {}, __copyProps(
-  // If the importer is in node compatibility mode or this is not an ESM
-  // file that has been converted to a CommonJS file using a Babel-
-  // compatible transform (i.e. "__esModule" has not been set), then set
-  // "default" to the CommonJS "module.exports" for node compatibility.
-  isNodeMode || !mod || !mod.__esModule ? __defProp(target, "default", { value: mod, enumerable: true }) : target,
-  mod
-));
-var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);
-
-// scripts/_remaining-vendor-tmp/entry-9RCRe.mjs
-var entry_9RCRe_exports = {};
-__export(entry_9RCRe_exports, {
-  BaseStorage: () => o,
-  Storage: () => g,
-  default: () => entry_9RCRe_default
-});
-module.exports = __toCommonJS(entry_9RCRe_exports);
-
-// node_modules/@plasmohq/storage/dist/index.js
-var dist_exports = {};
-__export(dist_exports, {
-  BaseStorage: () => o,
-  Storage: () => g
-});
-var import_pify = __toESM(__jrReq("pify"), 1);
-var l = () => {
+var K = (a, e, t) => (t = a != null ? w(v(a)) : {}, y(e || !a || !a.__esModule ? c(t, "default", { value: a, enumerable: true }) : t, a));
+var T = (a) => y(c({}, "__esModule", { value: true }), a);
+var x = {};
+A(x, { BaseStorage: () => h, Storage: () => l });
+module.exports = T(x);
+var p = K(__jrReq("pify"), 1);
+var d = () => {
   try {
     let e = (globalThis.navigator?.userAgent).match(/(opera|chrome|safari|firefox|msie|trident(?=\/))\/?\s*(\d+)/i) || [];
     if (e[1] === "Chrome") return parseInt(e[2]) < 100 || globalThis.chrome.runtime?.getManifest()?.manifest_version === 2;
@@ -1250,7 +1201,7 @@ var l = () => {
   }
   return false;
 };
-var o = class {
+var h = class {
   #r;
   #t;
   get primaryClient() {
@@ -1302,7 +1253,7 @@ var o = class {
     } catch {
     }
     try {
-      this.hasExtensionApi && (this.#r = this.getExtStorageApi(), l() ? this.#t = (0, import_pify.default)(this.#r[this.area], { exclude: ["getBytesInUse"], errorFirst: false }) : this.#t = this.#r[this.area]);
+      this.hasExtensionApi && (this.#r = this.getExtStorageApi(), d() ? this.#t = (0, p.default)(this.#r[this.area], { exclude: ["getBytesInUse"], errorFirst: false }) : this.#t = this.#r[this.area]);
     } catch {
     }
   }
@@ -1320,9 +1271,9 @@ var o = class {
     let s = this.allCopied ? await this.rawGetAll() : await this.#t.get((t ? [...this.copiedKeySet] : [e]).map(this.getNamespacedKey));
     if (!s) return false;
     let r = false;
-    for (let a in s) {
-      let i = s[a], n = this.#e?.getItem(a);
-      this.#e?.setItem(a, i), r ||= i !== n;
+    for (let i in s) {
+      let n = s[i], o = this.#e?.getItem(i);
+      this.#e?.setItem(i, n), r ||= n !== o;
     }
     return r;
   };
@@ -1351,15 +1302,15 @@ var o = class {
     for (let t in e) {
       let s = this.getNamespacedKey(t), r = this.#s.get(s)?.callbackSet || /* @__PURE__ */ new Set();
       if (r.add(e[t]), r.size > 1) continue;
-      let a = (i, n) => {
-        if (n !== this.area || !i[s]) return;
-        let h = this.#s.get(s);
-        if (!h) throw new Error(`Storage comms does not exist for nsKey: ${s}`);
-        Promise.all([this.parseValue(i[s].newValue), this.parseValue(i[s].oldValue)]).then(([y, d]) => {
-          for (let p of h.callbackSet) p({ newValue: y, oldValue: d }, n);
+      let i = (n, o) => {
+        if (o !== this.area || !n[s]) return;
+        let g = this.#s.get(s);
+        if (!g) throw new Error(`Storage comms does not exist for nsKey: ${s}`);
+        Promise.all([this.parseValue(n[s].newValue), this.parseValue(n[s].oldValue)]).then(([m, u]) => {
+          for (let f of g.callbackSet) f({ newValue: m, oldValue: u }, o);
         });
       };
-      this.#r.onChanged.addListener(a), this.#s.set(s, { callbackSet: r, listener: a });
+      this.#r.onChanged.addListener(i), this.#s.set(s, { callbackSet: r, listener: i });
     }
   };
   unwatch = (e) => {
@@ -1368,8 +1319,8 @@ var o = class {
   };
   #c(e) {
     for (let t in e) {
-      let s = this.getNamespacedKey(t), r = e[t], a = this.#s.get(s);
-      a && (a.callbackSet.delete(r), a.callbackSet.size === 0 && (this.#s.delete(s), this.#r.onChanged.removeListener(a.listener)));
+      let s = this.getNamespacedKey(t), r = e[t], i = this.#s.get(s);
+      i && (i.callbackSet.delete(r), i.callbackSet.size === 0 && (this.#s.delete(s), this.#r.onChanged.removeListener(i.listener)));
     }
   }
   unwatchAll = () => this.#h();
@@ -1395,21 +1346,21 @@ var o = class {
     return await this.removeMany(e);
   }
 };
-var g = class extends o {
+var l = class extends h {
   get = async (e) => {
     let t = this.getNamespacedKey(e), s = await this.rawGet(t);
     return this.parseValue(s);
   };
   getMany = async (e) => {
     let t = e.map(this.getNamespacedKey), s = await this.rawGetMany(t), r = await Promise.all(Object.values(s).map(this.parseValue));
-    return Object.keys(s).reduce((a, i, n) => (a[this.getUnnamespacedKey(i)] = r[n], a), {});
+    return Object.keys(s).reduce((i, n, o) => (i[this.getUnnamespacedKey(n)] = r[o], i), {});
   };
   set = async (e, t) => {
     let s = this.getNamespacedKey(e), r = this.serde.serializer(t);
     return this.rawSet(s, r);
   };
   setMany = async (e) => {
-    let t = Object.entries(e).reduce((s, [r, a]) => (s[this.getNamespacedKey(r)] = this.serde.serializer(a), s), {});
+    let t = Object.entries(e).reduce((s, [r, i]) => (s[this.getNamespacedKey(r)] = this.serde.serializer(i), s), {});
     return await this.rawSetMany(t);
   };
   remove = async (e) => {
@@ -1432,39 +1383,19 @@ var g = class extends o {
   };
 };
 
-// scripts/_remaining-vendor-tmp/entry-9RCRe.mjs
-var entry_9RCRe_default = void 0 !== void 0 ? void 0 : dist_exports;
-
   var out = module.exports
-  if (out && typeof out === "object" && out.__esModule && "default" in out) {
-    var names = Object.keys(out).filter(function (k) {
-      return k !== "default" && k !== "__esModule"
-    })
-    if (names.length) return out
-    return out.default
-  }
   return out
 })()
 
-if (typeof __mod === "function") {
-  helpers.export(r, "default", function () { return __mod })
-  r.default = __mod
-} else if (__mod && typeof __mod === "object") {
+if (__mod && typeof __mod === "object") {
   for (var __k in __mod) {
-    if (Object.prototype.hasOwnProperty.call(__mod, __k) && __k !== "__esModule") {
-      ;(function (key) {
-        helpers.export(r, key, function () { return __mod[key] })
-        r[key] = __mod[key]
-      })(__k)
-    }
+    if (Object.prototype.hasOwnProperty.call(__mod, __k)) r[__k] = __mod[__k]
   }
-  r.default = __mod.default !== undefined ? __mod.default : __mod
-  if (__mod.default !== undefined) {
-    helpers.export(r, "default", function () { return __mod.default })
-  }
+}
+if (__mod && typeof __mod === "object" && "default" in __mod) {
+  r.default = __mod.default
 } else {
   r.default = __mod
-  helpers.export(r, "default", function () { return __mod })
 }
 
     }
@@ -11850,7 +11781,129 @@ const QUERY_PARAM_LIST = Object.values(SITE_REGISTRY).flatMap(
     "@parcel/transformer-js/src/esmodule-helpers.js": "m2"
     },
     factory: function (e, r) {
-var n=e("@parcel/transformer-js/src/esmodule-helpers.js");n.defineInteropFlag(r),n.export(r,"InvalidMatchPattern",()=>a),n.export(r,"MatchPattern",()=>i);var o=class{constructor(e){if("<all_urls>"===e)this.isAllUrls=!0,this.protocolMatches=[...o.PROTOCOLS],this.hostnameMatch="*",this.pathnameMatch="*";else{let t=/(.*):\/\/(.*?)(\/.*)/.exec(e);if(null==t)throw new a(e,"Incorrect format");let[r,n,o,i]=t;l(e,n),s(e,o),this.protocolMatches="*"===n?["http","https"]:[n],this.hostnameMatch=o,this.pathnameMatch=i}}includes(e){if(this.isAllUrls)return!0;let t="string"==typeof e?new URL(e):e instanceof Location?new URL(e.href):e;return!!this.protocolMatches.find(e=>"http"===e?this.isHttpMatch(t):"https"===e?this.isHttpsMatch(t):"file"===e?this.isFileMatch(t):"ftp"===e?this.isFtpMatch(t):"urn"===e?this.isUrnMatch(t):void 0)}isHttpMatch(e){return"http:"===e.protocol&&this.isHostPathMatch(e)}isHttpsMatch(e){return"https:"===e.protocol&&this.isHostPathMatch(e)}isHostPathMatch(e){if(!this.hostnameMatch||!this.pathnameMatch)return!1;let t=[this.convertPatternToRegex(this.hostnameMatch),this.convertPatternToRegex(this.hostnameMatch.replace(/^\*\./,""))],r=this.convertPatternToRegex(this.pathnameMatch);return!!t.find(t=>t.test(e.hostname))&&r.test(e.pathname)}isFileMatch(e){throw Error("Not implemented: file:// pattern matching. Open a PR to add support")}isFtpMatch(e){throw Error("Not implemented: ftp:// pattern matching. Open a PR to add support")}isUrnMatch(e){throw Error("Not implemented: urn:// pattern matching. Open a PR to add support")}convertPatternToRegex(e){let t=this.escapeForRegex(e),r=t.replace(/\\\*/g,".*");return RegExp(`^${r}$`)}escapeForRegex(e){return e.replace(/[.*+?^${}()|[\]\\]/g,"\\$&")}},i=o;i.PROTOCOLS=["http","https","file","ftp","urn"];var a=class extends Error{constructor(e,t){super(`Invalid match pattern "${e}": ${t}`)}};function l(e,t){if(!i.PROTOCOLS.includes(t)&&"*"!==t)throw new a(e,`${t} not a valid protocol (${i.PROTOCOLS.join(", ")})`)}function s(e,t){if(t.includes(":"))throw new a(e,"Hostname cannot include a port");if(t.includes("*")&&t.length>1&&!t.startsWith("*."))throw new a(e,"If using a wildcard (*), it must go at the start of the hostname")}
+var helpers = e("@parcel/transformer-js/src/esmodule-helpers.js")
+helpers.defineInteropFlag(r)
+
+var __jrReq = e
+
+var __mod = (function () {
+  var __cjsModule = { exports: {} }
+  var module = __cjsModule
+  var exports = __cjsModule.exports
+// ../engine/node_modules/@webext-core/match-patterns/lib/index.cjs
+Object.defineProperty(exports, Symbol.toStringTag, { value: "Module" });
+var MatchPattern = class MatchPattern2 {
+  static {
+    this.PROTOCOLS = [
+      "http",
+      "https",
+      "file",
+      "ftp",
+      "urn",
+      "ws",
+      "wss"
+    ];
+  }
+  /**
+  * Parse a match pattern string. If it is invalid, the constructor will throw an
+  * `InvalidMatchPattern` error.
+  *
+  * @param matchPattern The match pattern to parse.
+  */
+  constructor(matchPattern) {
+    if (matchPattern === "<all_urls>") {
+      this.isAllUrls = true;
+      this.protocolMatches = [...MatchPattern2.PROTOCOLS];
+      this.hostnameMatch = "*";
+      this.pathnameMatch = "*";
+    } else {
+      const groups = /(.*):\/\/(.*?)(\/.*)/.exec(matchPattern);
+      if (groups == null) throw new InvalidMatchPattern(matchPattern, "Incorrect format");
+      const [_, protocol, hostname, pathname] = groups;
+      validateProtocol(matchPattern, protocol);
+      validateHostname(matchPattern, hostname);
+      this.protocolMatches = protocol === "*" ? ["http", "https"] : [protocol];
+      this.hostnameMatch = hostname;
+      this.pathnameMatch = pathname;
+    }
+  }
+  /** Check if a URL is included in a pattern. */
+  includes(url) {
+    const u = typeof url === "string" ? new URL(url) : url instanceof Location ? new URL(url.href) : url;
+    if (this.isAllUrls) return !this.isUnknownProtocol(u);
+    return !!this.protocolMatches.find((protocol) => {
+      if (protocol === "http") return this.isHttpMatch(u);
+      if (protocol === "https") return this.isHttpsMatch(u);
+      if (protocol === "file") return this.isFileMatch(u);
+      if (protocol === "ftp") return this.isFtpMatch(u);
+      if (protocol === "urn") return this.isUrnMatch(u);
+    });
+  }
+  isHttpMatch(url) {
+    return url.protocol === "http:" && this.isHostPathMatch(url);
+  }
+  isHttpsMatch(url) {
+    return url.protocol === "https:" && this.isHostPathMatch(url);
+  }
+  isHostPathMatch(url) {
+    if (!this.hostnameMatch || !this.pathnameMatch) return false;
+    const hostnameMatchRegexs = [this.convertPatternToRegex(this.hostnameMatch), this.convertPatternToRegex(this.hostnameMatch.replace(/^\*\./, ""))];
+    const pathnameMatchRegex = this.convertPatternToRegex(this.pathnameMatch);
+    return !!hostnameMatchRegexs.find((regex) => regex.test(url.hostname)) && pathnameMatchRegex.test(url.pathname);
+  }
+  isUnknownProtocol(url) {
+    return !this.protocolMatches.includes(url.protocol.slice(0, -1));
+  }
+  isPathMatch(url) {
+    if (!this.pathnameMatch) return false;
+    return this.convertPatternToRegex(this.pathnameMatch).test(url.pathname);
+  }
+  isFileMatch(url) {
+    return url.protocol === "file:" && this.isPathMatch(url);
+  }
+  isFtpMatch(_url) {
+    throw Error("Not implemented: ftp:// pattern matching. Open a PR to add support");
+  }
+  isUrnMatch(_url) {
+    throw Error("Not implemented: urn:// pattern matching. Open a PR to add support");
+  }
+  convertPatternToRegex(pattern) {
+    const starsReplaced = this.escapeForRegex(pattern).replace(/\\\*/g, ".*");
+    return RegExp(`^${starsReplaced}$`);
+  }
+  escapeForRegex(string) {
+    return string.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  }
+};
+var InvalidMatchPattern = class extends Error {
+  constructor(matchPattern, reason) {
+    super(`Invalid match pattern "${matchPattern}": ${reason}`);
+  }
+};
+function validateProtocol(matchPattern, protocol) {
+  if (!MatchPattern.PROTOCOLS.includes(protocol) && protocol !== "*") throw new InvalidMatchPattern(matchPattern, `${protocol} not a valid protocol (${MatchPattern.PROTOCOLS.join(", ")})`);
+}
+function validateHostname(matchPattern, hostname) {
+  if (hostname.includes(":")) throw new InvalidMatchPattern(matchPattern, `Hostname cannot include a port`);
+  if (hostname.includes("*") && hostname.length > 1 && !hostname.startsWith("*.")) throw new InvalidMatchPattern(matchPattern, `If using a wildcard (*), it must go at the start of the hostname`);
+}
+exports.InvalidMatchPattern = InvalidMatchPattern;
+exports.MatchPattern = MatchPattern;
+
+  var out = module.exports
+  return out
+})()
+
+if (__mod && typeof __mod === "object") {
+  for (var __k in __mod) {
+    if (Object.prototype.hasOwnProperty.call(__mod, __k)) r[__k] = __mod[__k]
+  }
+}
+if (__mod && typeof __mod === "object" && "default" in __mod) {
+  r.default = __mod.default
+} else {
+  r.default = __mod
+}
 
     }
   }
@@ -12863,43 +12916,55 @@ if (__mod && typeof __mod === "object" && "default" in __mod) {
     "@parcel/transformer-js/src/esmodule-helpers.js": "m2"
     },
     factory: function (e, r) {
-var n = e("@parcel/transformer-js/src/esmodule-helpers.js");
-n.defineInteropFlag(r), n.export(r, "isAutofillInfoRevision", () => o), n.export(r,
-  "isAutofillInfoSaveSuccess", () => a), n.export(r, "isAutofillInfoConflict", () => l), n.export(
-  r, "parseAutofillInfoSaveResponse", () => s), n.export(r, "parseAutofillInfoGetResponse", () =>
-  u);
-let o = e => "number" == typeof e && Number.isSafeInteger(e) && e >= 0,
-  i = e => null === e || "object" != typeof e || Array.isArray(e) ? null : e,
-  a = e => {
-    let t = i(e);
-    return t?.success === !0 && t?.result === !0 && (void 0 === t.status || t.status >= 200 && t
-      .status < 300)
-  },
-  l = e => {
-    let t = i(e);
-    return t?.status === 409 || t?.errorCode === 409
-  },
-  s = async e => {
-    let t = i(await e.json().catch(() => null));
-    if (e.ok && a(t)) return t;
-    let r = {
-      success: !1,
-      status: e.status,
-      ..."number" == typeof t?.errorCode && Number.isFinite(t.errorCode) ? {
-        errorCode: t.errorCode
-      } : {}
-    };
-    return console.warn("[autofill-info] write rejected", r), r
-  }, u = async e => {
-    let t = i(await e.json().catch(() => null));
-    if (!e.ok || t?.success !== !0 || !i(t.result)) throw console.warn(
-      "[autofill-info] read rejected", {
-        status: e.status,
-        success: t?.success === !0
-      }), Error("Failed to fetch autofill information");
-    return t
-  }
+var helpers = e("@parcel/transformer-js/src/esmodule-helpers.js");
+helpers.defineInteropFlag(r);
+helpers.export(r, "isAutofillInfoConflict", () => isAutofillInfoConflict);
+helpers.export(r, "isAutofillInfoRevision", () => isAutofillInfoRevision);
+helpers.export(r, "isAutofillInfoSaveSuccess", () => isAutofillInfoSaveSuccess);
+helpers.export(r, "parseAutofillInfoGetResponse", () => parseAutofillInfoGetResponse);
+helpers.export(r, "parseAutofillInfoSaveResponse", () => parseAutofillInfoSaveResponse);
 
+function asObject(value) {
+  if (value === null || typeof value !== "object" || Array.isArray(value)) {
+    return null;
+  }
+  return value;
+}
+function isAutofillInfoRevision(value) {
+  return typeof value === "number" && Number.isSafeInteger(value) && value >= 0;
+}
+function isAutofillInfoSaveSuccess(payload) {
+  const body = asObject(payload);
+  return body?.success === true && body?.result === true && (body.status === void 0 || body.status >= 200 && body.status < 300);
+}
+function isAutofillInfoConflict(payload) {
+  const body = asObject(payload);
+  return body?.status === 409 || body?.errorCode === 409;
+}
+async function parseAutofillInfoSaveResponse(response) {
+  const body = asObject(await response.json().catch(() => null));
+  if (response.ok && isAutofillInfoSaveSuccess(body)) {
+    return body;
+  }
+  const rejected = {
+    success: false,
+    status: response.status,
+    ...typeof body?.errorCode === "number" && Number.isFinite(body.errorCode) ? { errorCode: body.errorCode } : {}
+  };
+  console.warn("[autofill-info] write rejected", rejected);
+  return rejected;
+}
+async function parseAutofillInfoGetResponse(response) {
+  const body = asObject(await response.json().catch(() => null));
+  if (!response.ok || body?.success !== true || !asObject(body.result)) {
+    console.warn("[autofill-info] read rejected", {
+      status: response.status,
+      success: body?.success === true
+    });
+    throw new Error("Failed to fetch autofill information");
+  }
+  return body;
+}
 
     }
   }
@@ -13704,120 +13769,129 @@ coverLetterMethods.onAutofillCoverLetterGenerated((payload) => {
   __modules["m42"] = {
     cjs: false,
     map: {
-    "./env-resolver": "m43",
-    "@parcel/transformer-js/src/esmodule-helpers.js": "m2"
+    "@parcel/transformer-js/src/esmodule-helpers.js": "m2",
+    "./env-resolver": "m43"
     },
     factory: function (e, r) {
-var n = e("@parcel/transformer-js/src/esmodule-helpers.js");
-n.defineInteropFlag(r), n.export(r, "extractCoverLetterInfo", () => a), n.export(r,
-    "resolveFileExtensionFromDisposition", () => l), n.export(r, "buildCurrentCoverLetterUrl", () =>
-    s), n.export(r, "extractAgentCoverLetterId", () => c), n.export(r,
-    "buildAgentCoverLetterViewUrl", () => d), n.export(r, "convertPdfBlobToWordFile", () => h), n
-  .export(r, "downloadOrionCoverLetterPdf", () => g), n.export(r,
-    "shouldUseLegacyAgentCoverLetterDownload", () => b);
-var o = e("./env-resolver");
+var helpers = e("@parcel/transformer-js/src/esmodule-helpers.js");
+helpers.defineInteropFlag(r);
+var _imp_dot_env_resolver_js = e("./env-resolver");
+var API_DOMAIN = _imp_dot_env_resolver_js.API_DOMAIN;
+var HOST_DOMAIN = _imp_dot_env_resolver_js.HOST_DOMAIN;
+helpers.export(r, "buildAgentCoverLetterViewUrl", () => buildAgentCoverLetterViewUrl);
+helpers.export(r, "buildCurrentCoverLetterUrl", () => buildCurrentCoverLetterUrl);
+helpers.export(r, "convertPdfBlobToWordFile", () => convertPdfBlobToWordFile);
+helpers.export(r, "downloadOrionCoverLetterPdf", () => downloadOrionCoverLetterPdf);
+helpers.export(r, "extractAgentCoverLetterId", () => extractAgentCoverLetterId);
+helpers.export(r, "extractCoverLetterInfo", () => extractCoverLetterInfo);
+helpers.export(r, "resolveFileExtensionFromDisposition", () => resolveFileExtensionFromDisposition);
+helpers.export(r, "shouldUseLegacyAgentCoverLetterDownload", () => shouldUseLegacyAgentCoverLetterDownload);
 
-function i(e) {
-  return !e || "object" != typeof e || Array.isArray(e) ? null : e
-}
-
-function a(e) {
-  let t = i(e),
-    r = i(t?.coverLetter),
-    n = r ?? t,
-    o = n?.coverLetterId,
-    a = "string" == typeof n?.coverLetterName ? n.coverLetterName : "string" == typeof n?.name ? n
-    .name : "",
-    l = "string" == typeof n?.markdown ? n.markdown : "";
-  return "string" != typeof o || 0 === o.length ? null : {
-    coverLetterId: o,
-    coverLetterName: a,
-    markdown: l
+function asObject(value) {
+  if (!value || typeof value !== "object" || Array.isArray(value)) {
+    return null;
   }
+  return value;
 }
-
-function l(e, t = "pdf") {
-  if (!e || !e.includes("filename=")) return t;
-  let r = e.match(/filename="?([^"]+)"?/)?.[1],
-    n = r?.split(".").pop()?.toLowerCase();
-  return n || t
+function extractCoverLetterInfo(payload) {
+  const root = asObject(payload);
+  const nested = asObject(root?.coverLetter);
+  const letter = nested ?? root;
+  const coverLetterId = letter?.coverLetterId;
+  const coverLetterName = typeof letter?.coverLetterName === "string" ? letter.coverLetterName : typeof letter?.name === "string" ? letter.name : "";
+  const markdown = typeof letter?.markdown === "string" ? letter.markdown : "";
+  if (typeof coverLetterId !== "string" || coverLetterId.length === 0) {
+    return null;
+  }
+  return { coverLetterId, coverLetterName, markdown };
 }
-
-function s(e, t) {
-  let r = new URLSearchParams({
-    jobId: t
-  });
-  return `${e}/swan/orion/get-cover-letter?${r.toString()}`
+function resolveFileExtensionFromDisposition(contentDisposition, fallback = "pdf") {
+  if (!contentDisposition || !contentDisposition.includes("filename=")) {
+    return fallback;
+  }
+  const filename = contentDisposition.match(/filename="?([^"]+)"?/)?.[1];
+  const ext = filename?.split(".").pop()?.toLowerCase();
+  return ext || fallback;
 }
-
-function u(e) {
-  return e.toLowerCase().replace(/[^a-z0-9]/g, "")
+function buildCurrentCoverLetterUrl(apiDomain, jobId) {
+  const params = new URLSearchParams({ jobId });
+  return `${apiDomain}/swan/orion/get-cover-letter?${params.toString()}`;
 }
-
-function c(e) {
-  let t = new URL(e).searchParams;
-  for (let [e, r] of t.entries())
-    if (u(e).includes("agentcoverletterid")) {
-      let e = r.trim();
-      return e || null
-    } return null
+function normalizeParamKey(key) {
+  return key.toLowerCase().replace(/[^a-z0-9]/g, "");
 }
-
-function d(e, t) {
-  let r = new URLSearchParams({
-    coverLetterId: t
-  });
-  return `${e}/swan/agent/cover-letter/view?${r.toString()}`
+function extractAgentCoverLetterId(url) {
+  const params = new URL(url).searchParams;
+  for (const [key, value] of params.entries()) {
+    if (normalizeParamKey(key).includes("agentcoverletterid")) {
+      const trimmed = value.trim();
+      return trimmed || null;
+    }
+  }
+  return null;
 }
-
-function f(e, t) {
-  let r = t.toLowerCase().endsWith(".pdf") ? t : `${t.replace(/\.[^/.]+$/,"")}.pdf`;
-  return new File([e], r, {
-    type: e.type || "application/pdf",
+function buildAgentCoverLetterViewUrl(apiDomain, coverLetterId) {
+  const params = new URLSearchParams({ coverLetterId });
+  return `${apiDomain}/swan/agent/cover-letter/view?${params.toString()}`;
+}
+function toPdfFile(blob, fileName) {
+  const name = fileName.toLowerCase().endsWith(".pdf") ? fileName : `${fileName.replace(/\.[^/.]+$/, "")}.pdf`;
+  return new File([blob], name, {
+    type: blob.type || "application/pdf",
     lastModified: Date.now()
-  })
+  });
 }
-
-function p(e, t) {
-  let r = new FormData,
-    n = f(e, t);
-  return r.append("file", n, n.name), r
+function buildPdfFormData(blob, fileName) {
+  const form = new FormData();
+  const file = toPdfFile(blob, fileName);
+  form.append("file", file, file.name);
+  return form;
 }
-async function m(e, t, r) {
-  return fetch(e, {
+async function postPdfConversion(url, blob, fileName) {
+  return fetch(url, {
     method: "POST",
-    body: p(t, r),
-    credentials: "include"
-  })
-}
-async function h(e, t) {
-  try {
-    let r = await m(`${o.API_DOMAIN}/foxit/pdf-to-docx`, e, t);
-    if (r.ok) return r
-  } catch (e) {}
-  let r = await m(`${o.API_DOMAIN}/swan/resume/pdf-to-doc`, e, t);
-  if (!r.ok) throw Error("Failed to convert pdf to word");
-  return r
-}
-async function g(e) {
-  let t = await fetch(`${o.HOST_DOMAIN}/api/cover-letter/orion/download`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify({
-      markdown: e
-    }),
+    body: buildPdfFormData(blob, fileName),
     credentials: "include"
   });
-  if (!t.ok) throw Error("Failed to download orion cover letter pdf");
-  return t
 }
-
-function b(e) {
-  return !!c(e)
+async function convertPdfBlobToWordFile(blob, fileName) {
+  try {
+    const foxit = await postPdfConversion(
+      `${API_DOMAIN}/foxit/pdf-to-docx`,
+      blob,
+      fileName
+    );
+    if (foxit.ok) return foxit;
+  } catch {
+  }
+  const swan = await postPdfConversion(
+    `${API_DOMAIN}/swan/resume/pdf-to-doc`,
+    blob,
+    fileName
+  );
+  if (!swan.ok) {
+    throw new Error("Failed to convert pdf to word");
+  }
+  return swan;
 }
-
+async function downloadOrionCoverLetterPdf(markdown) {
+  const response = await fetch(
+    `${HOST_DOMAIN}/api/cover-letter/orion/download`,
+    {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ markdown }),
+      credentials: "include"
+    }
+  );
+  if (!response.ok) {
+    throw new Error("Failed to download orion cover letter pdf");
+  }
+  return response;
+}
+function shouldUseLegacyAgentCoverLetterDownload(url) {
+  return !!extractAgentCoverLetterId(url);
+}
 
     }
   }
@@ -13827,23 +13901,34 @@ function b(e) {
     "@parcel/transformer-js/src/esmodule-helpers.js": "m2"
     },
     factory: function (e, r) {
-var n = e("@parcel/transformer-js/src/esmodule-helpers.js");
-n.defineInteropFlag(r), n.export(r, "API_DOMAIN", () => a), n.export(r, "HOST_DOMAIN", () => l), n
-  .export(r, "COOKIE_DOMAIN", () => s), n.export(r, "agentDomains", () => u);
-let o = () => ({
+var helpers = e("@parcel/transformer-js/src/esmodule-helpers.js");
+helpers.defineInteropFlag(r);
+helpers.export(r, "API_DOMAIN", () => API_DOMAIN);
+helpers.export(r, "COOKIE_DOMAIN", () => COOKIE_DOMAIN);
+helpers.export(r, "HOST_DOMAIN", () => HOST_DOMAIN);
+helpers.export(r, "agentDomains", () => agentDomains);
+
+function resolveDomains() {
+  return {
     apiDomain: "https://api.jobright.ai",
     hostDomain: "https://jobright.ai",
     cookieDomain: ".jobright.ai"
-  }),
-  i = o(),
-  a = i.apiDomain,
-  l = i.hostDomain,
-  s = i.cookieDomain,
-  u = ["localhost", "jobright.ai", "preprod.jobright.ai", "beta.jobright-internal.com",
-    "test-baseline.jobright-internal.com", "dev.jobright-internal.com", "jobright-internal.com",
-    "alpha.jobright-internal.com"
-  ]
-
+  };
+}
+const domains = resolveDomains();
+const API_DOMAIN = domains.apiDomain;
+const HOST_DOMAIN = domains.hostDomain;
+const COOKIE_DOMAIN = domains.cookieDomain;
+const agentDomains = [
+  "localhost",
+  "jobright.ai",
+  "preprod.jobright.ai",
+  "beta.jobright-internal.com",
+  "test-baseline.jobright-internal.com",
+  "dev.jobright-internal.com",
+  "jobright-internal.com",
+  "alpha.jobright-internal.com"
+];
 
     }
   }
@@ -25334,63 +25419,79 @@ if (__mod && typeof __mod === "object" && "default" in __mod) {
   __modules["m62"] = {
     cjs: false,
     map: {
-    "./env-resolver": "m43",
-    "@parcel/transformer-js/src/esmodule-helpers.js": "m2"
+    "@parcel/transformer-js/src/esmodule-helpers.js": "m2",
+    "./env-resolver": "m43"
     },
     factory: function (e, r) {
-var n = e("@parcel/transformer-js/src/esmodule-helpers.js");
-n.defineInteropFlag(r), n.export(r, "pollingExternalJob", () => i), n.export(r,
-  "fetchImportExternalJobStatus", () => a), n.export(r, "parsePageMarkdown", () => l), n.export(r,
-  "importExternalJob", () => s);
-var o = e("./env-resolver");
-let i = ({
-    api: e,
-    checkSuccess: t,
-    checkFailed: r,
-    onSuccess: n,
-    onError: o
-  }) => {
-    let i = setInterval(async () => {
-        let l = await e();
-        l && (t(l) && (n(), clearInterval(i), clearTimeout(a)), r(l) && (o(), clearInterval(i),
-          clearTimeout(a)))
-      }, 5e3),
-      a = setTimeout(() => {
-        i && clearInterval(i), clearTimeout(a), o()
-      }, 3e4)
-  },
-  a = async e => {
-    let t = await fetch(`${o.API_DOMAIN}/swan/import/status?jobId=${e}`, {
-      method: "GET"
-    });
-    if (!t.ok) return;
-    let r = await t.json();
-    return r?.result
-  }, l = async e => {
-    let t = await fetch(`${o.API_DOMAIN}/swan/autofill/external-job`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify(e)
-    });
-    if (!t.ok) throw Error(`Failed to parse page: ${t.statusText}`);
-    let r = await t.json();
-    return r?.result ?? null
-  }, s = async e => {
-    let t = await fetch(`${o.API_DOMAIN}/swan/import/job`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify(e)
-    });
-    if (!t.ok) throw Error(`Failed to import job: ${t.statusText}`);
-    let r = await t.json(),
-      n = r?.result;
-    return n
-  }
+var helpers = e("@parcel/transformer-js/src/esmodule-helpers.js");
+helpers.defineInteropFlag(r);
+var _imp_dot_env_resolver_js = e("./env-resolver");
+var API_DOMAIN = _imp_dot_env_resolver_js.API_DOMAIN;
+helpers.export(r, "fetchImportExternalJobStatus", () => fetchImportExternalJobStatus);
+helpers.export(r, "importExternalJob", () => importExternalJob);
+helpers.export(r, "parsePageMarkdown", () => parsePageMarkdown);
+helpers.export(r, "pollingExternalJob", () => pollingExternalJob);
 
+function pollingExternalJob({
+  api,
+  checkSuccess,
+  checkFailed,
+  onSuccess,
+  onError
+}) {
+  const intervalId = setInterval(async () => {
+    const result = await api();
+    if (!result) return;
+    if (checkSuccess(result)) {
+      onSuccess();
+      clearInterval(intervalId);
+      clearTimeout(timeoutId);
+    }
+    if (checkFailed(result)) {
+      onError();
+      clearInterval(intervalId);
+      clearTimeout(timeoutId);
+    }
+  }, 5e3);
+  const timeoutId = setTimeout(() => {
+    if (intervalId) clearInterval(intervalId);
+    clearTimeout(timeoutId);
+    onError();
+  }, 3e4);
+}
+async function fetchImportExternalJobStatus(jobId) {
+  const response = await fetch(
+    `${API_DOMAIN}/swan/import/status?jobId=${jobId}`,
+    { method: "GET" }
+  );
+  if (!response.ok) return;
+  const body = await response.json();
+  return body?.result;
+}
+async function parsePageMarkdown(payload) {
+  const response = await fetch(`${API_DOMAIN}/swan/autofill/external-job`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload)
+  });
+  if (!response.ok) {
+    throw new Error(`Failed to parse page: ${response.statusText}`);
+  }
+  const body = await response.json();
+  return body?.result ?? null;
+}
+async function importExternalJob(payload) {
+  const response = await fetch(`${API_DOMAIN}/swan/import/job`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload)
+  });
+  if (!response.ok) {
+    throw new Error(`Failed to import job: ${response.statusText}`);
+  }
+  const body = await response.json();
+  return body?.result;
+}
 
     }
   }
@@ -26635,6 +26736,7 @@ var helpers = e("@parcel/transformer-js/src/esmodule-helpers.js");
 helpers.defineInteropFlag(r);
 helpers.export(r, "buildDefaultCoverLetterName", () => buildDefaultCoverLetterName);
 helpers.export(r, "buildEditWithAiCoverLetterSeed", () => buildEditWithAiCoverLetterSeed);
+helpers.export(r, "getCoverLetterDisplayName", () => getCoverLetterDisplayName);
 helpers.export(r, "getCoverLetterEditableName", () => getCoverLetterEditableName);
 helpers.export(r, "hasValidCoverLetter", () => hasValidCoverLetter);
 helpers.export(r, "resolveCoverLetterDownloadRequest", () => resolveCoverLetterDownloadRequest);
@@ -26651,6 +26753,10 @@ function buildDefaultCoverLetterName(firstName, lastName) {
 }
 function getCoverLetterEditableName(name) {
   return name.replace(/\.[^/.]+$/, "");
+}
+function getCoverLetterDisplayName(name, fallback) {
+  const resolved = name?.trim() || fallback?.trim() || "Cover Letter";
+  return getCoverLetterEditableName(resolved);
 }
 function buildEditWithAiCoverLetterSeed(coverLetter) {
   const coverLetterId = coverLetter?.coverLetterId?.trim();
@@ -58381,223 +58487,377 @@ async function resolveAvatureInstitutionClientSearch(select, record, label, hook
   __modules["m182"] = {
     cjs: false,
     map: {
-    "./env-resolver": "m43",
-    "@parcel/transformer-js/src/esmodule-helpers.js": "m2"
+    "@parcel/transformer-js/src/esmodule-helpers.js": "m2",
+    "./env-resolver": "m43"
     },
     factory: function (e, r) {
-var n = e("@parcel/transformer-js/src/esmodule-helpers.js");
-n.defineInteropFlag(r), n.export(r, "getAutofillClientSearchQuestion", () => a), n.export(r,
-  "normalizeAutofillClientSearchStepRequest", () => k), n.export(r,
-  "validateAutofillClientSearchStepResponse", () => F), n.export(r,
-  "fetchAutofillClientSearchStep", () => I);
-var o = e("./env-resolver");
-let i = Object.freeze({
+var helpers = e("@parcel/transformer-js/src/esmodule-helpers.js");
+helpers.defineInteropFlag(r);
+var _imp_dot_env_resolver_js = e("./env-resolver");
+var API_DOMAIN = _imp_dot_env_resolver_js.API_DOMAIN;
+helpers.export(r, "fetchAutofillClientSearchStep", () => fetchAutofillClientSearchStep);
+helpers.export(r, "getAutofillClientSearchQuestion", () => getAutofillClientSearchQuestion);
+helpers.export(r, "normalizeAutofillClientSearchStepRequest", () => normalizeAutofillClientSearchStepRequest);
+helpers.export(r, "validateAutofillClientSearchStepResponse", () => validateAutofillClientSearchStepResponse);
+
+const FIELD_QUESTIONS = Object.freeze({
   school: "What school did you attend?",
   major: "What was your field of study?",
   degree: "What degree did you earn?",
   location: "What city do you live in?",
   company: "What company did you work for?"
 });
-
-function a(e) {
-  return i[e]
+function getAutofillClientSearchQuestion(fieldType) {
+  return FIELD_QUESTIONS[fieldType];
 }
-let l = 512,
-  s = 256,
-  u = 256,
-  c = 128,
-  d = 25,
-  f = 6e4,
-  p = new Set(["REQUEST_INVALID", "MODEL_CALL_FAILED", "MODEL_RESPONSE_INVALID", "MODEL_RETRYABLE",
-    "SESSION_STATE_INVALID", "SESSION_CONFLICT", "SESSION_STORE_FAILED", "INTERNAL_ERROR"
-  ]),
-  m = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/,
-  h = ["source", "field_type", "question", "original_answer"],
-  g = ["resolve_session_id", "round_id", "options"],
-  b = ["candidate_key", "value", "text", "domain"];
-
-function y(e) {
-  return Error(`Invalid autofill client-search payload: ${e}`)
+const MAX_TEXT_LEN = 512;
+const MAX_SEARCH_INPUT_LEN = 256;
+const MAX_VALUE_LEN = 256;
+const MAX_KEY_LEN = 128;
+const MAX_OPTIONS = 25;
+const MAX_RETRY_AFTER_MS = 6e4;
+const FAILURE_CODES = /* @__PURE__ */ new Set([
+  "REQUEST_INVALID",
+  "MODEL_CALL_FAILED",
+  "MODEL_RESPONSE_INVALID",
+  "MODEL_RETRYABLE",
+  "SESSION_STATE_INVALID",
+  "SESSION_CONFLICT",
+  "SESSION_STORE_FAILED",
+  "INTERNAL_ERROR"
+]);
+const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/;
+const START_FIELDS = ["source", "field_type", "question", "original_answer"];
+const CONTINUE_FIELDS = ["resolve_session_id", "round_id", "options"];
+const OPTION_FIELDS = ["candidate_key", "value", "text", "domain"];
+function invalidPayload(message) {
+  return new Error(`Invalid autofill client-search payload: ${message}`);
 }
-
-function v(e, t) {
-  if ("object" != typeof e || null === e || Array.isArray(e) || Object.getPrototypeOf(e) !== Object
-    .prototype && null !== Object.getPrototypeOf(e)) throw y(`${t} must be an object`)
-}
-
-function w(e, t, r, n = t) {
-  let o = Reflect.ownKeys(e);
-  for (let n of o) {
-    if ("string" != typeof n) throw y(`${r} contains a symbol field`);
-    if (!t.includes(n)) throw y(`${r} contains unknown field ${n}`);
-    let o = Object.getOwnPropertyDescriptor(e, n);
-    if (!o || !0 !== o.enumerable || !Object.prototype.hasOwnProperty.call(o, "value")) throw y(
-      `${r}.${n} must be an enumerable data property`)
-  }
-  let i = n.find(e => !o.includes(e));
-  if (i) throw y(`${r} is missing field ${i}`)
-}
-
-function S(e, t, r) {
-  let n = Object.getOwnPropertyDescriptor(e, t);
-  if (!n || !0 !== n.enumerable || !Object.prototype.hasOwnProperty.call(n, "value")) throw y(
-    `${r} must be an enumerable data property`);
-  return n.value
-}
-
-function E(e, t, r) {
-  if ("string" != typeof e || 0 === e.trim().length || e.length > t) throw y(
-    `${r} must be a non-empty string no longer than ${t}`);
-  return e
-}
-
-function x(e) {
-  return v(e, "option"), w(e, b, "option", ["candidate_key", "value", "text"]), {
-    candidate_key: E(e.candidate_key, c, "option.candidate_key"),
-    value: E(e.value, u, "option.value"),
-    text: E(e.text, l, "option.text"),
-    ...Object.hasOwn(e, "domain") ? {
-      domain: E(e.domain, u, "option.domain")
-    } : {}
+function assertPlainObject(value, label) {
+  if (typeof value !== "object" || value === null || Array.isArray(value) || Object.getPrototypeOf(value) !== Object.prototype && Object.getPrototypeOf(value) !== null) {
+    throw invalidPayload(`${label} must be an object`);
   }
 }
-
-function C(e) {
-  if (!Array.isArray(e)) throw y("request.options must be an array");
-  if (e.length > d) throw y(`request.options cannot exceed ${d}`);
-  let t = [],
-    r = new Set;
-  for (let n of e) {
-    let e = x(n);
-    if (r.has(e.candidate_key)) throw y("request.options contains a duplicate candidate_key");
-    r.add(e.candidate_key), t.push(e)
+function assertExactFields(obj, allowed, label, required = allowed) {
+  const keys = Reflect.ownKeys(obj);
+  for (const key of keys) {
+    if (typeof key !== "string") {
+      throw invalidPayload(`${label} contains a symbol field`);
+    }
+    if (!allowed.includes(key)) {
+      throw invalidPayload(`${label} contains unknown field ${key}`);
+    }
+    const desc = Object.getOwnPropertyDescriptor(obj, key);
+    if (!desc || desc.enumerable !== true || !Object.prototype.hasOwnProperty.call(desc, "value")) {
+      throw invalidPayload(
+        `${label}.${key} must be an enumerable data property`
+      );
+    }
   }
-  return t
+  const missing = required.find((field) => !keys.includes(field));
+  if (missing) {
+    throw invalidPayload(`${label} is missing field ${missing}`);
+  }
 }
-
-function A(e) {
-  if ("icims" !== e.source && "phenom" !== e.source && "smartrecruiters" !== e.source &&
-    "avature" !== e.source && "oraclecloud" !== e.source && "jacobs" !== e.source &&
-    "ripplehire" !== e.source && "kula" !== e.source) throw y(
-    "request.source must equal icims, phenom, smartrecruiters, avature, oraclecloud, jacobs, ripplehire, or kula"
+function readDataProperty(obj, key, label) {
+  const desc = Object.getOwnPropertyDescriptor(obj, key);
+  if (!desc || desc.enumerable !== true || !Object.prototype.hasOwnProperty.call(desc, "value")) {
+    throw invalidPayload(`${label} must be an enumerable data property`);
+  }
+  return desc.value;
+}
+function requireBoundedString(value, maxLen, label) {
+  if (typeof value !== "string" || value.trim().length === 0 || value.length > maxLen) {
+    throw invalidPayload(
+      `${label} must be a non-empty string no longer than ${maxLen}`
     );
-  if ("school" !== e.field_type && "major" !== e.field_type && "degree" !== e.field_type &&
-    "location" !== e.field_type && "company" !== e.field_type) throw y(
-    "request.field_type must equal school, major, degree, location, or company");
-  if ("company" === e.field_type && "kula" !== e.source) throw y("company requires source kula");
+  }
+  return value;
+}
+function normalizeOption(option) {
+  assertPlainObject(option, "option");
+  assertExactFields(option, OPTION_FIELDS, "option", [
+    "candidate_key",
+    "value",
+    "text"
+  ]);
   return {
-    source: e.source,
-    field_type: e.field_type,
-    question: E(e.question, l, "request.question"),
-    original_answer: E(e.original_answer, l, "request.original_answer")
-  }
+    candidate_key: requireBoundedString(
+      option.candidate_key,
+      MAX_KEY_LEN,
+      "option.candidate_key"
+    ),
+    value: requireBoundedString(option.value, MAX_VALUE_LEN, "option.value"),
+    text: requireBoundedString(option.text, MAX_TEXT_LEN, "option.text"),
+    ...Object.hasOwn(option, "domain") ? {
+      domain: requireBoundedString(
+        option.domain,
+        MAX_VALUE_LEN,
+        "option.domain"
+      )
+    } : {}
+  };
 }
-
-function k(e) {
-  v(e, "request");
-  let t = Reflect.ownKeys(e);
-  return t.includes("source") ? (w(e, h, "request"), A(e)) : (w(e, g, "request"), {
-    resolve_session_id: E(e.resolve_session_id, c, "request.resolve_session_id"),
-    round_id: E(e.round_id, c, "request.round_id"),
-    options: C(e.options)
-  })
-}
-
-function T(e, t) {
-  v(e, "response");
-  let r = S(e, "action", "response.action");
-  if ("REQUEST_SEARCH" === r) {
-    w(e, ["action", "resolve_session_id", "round_id", "search_input", "reason"],
-      "REQUEST_SEARCH response", ["action", "resolve_session_id", "round_id", "search_input"]);
-    let r = E(e.resolve_session_id, c, "response.resolve_session_id"),
-      n = E(e.round_id, c, "response.round_id");
-    if ("round_id" in t && t.round_id === n) throw y("REQUEST_SEARCH must use a fresh round_id");
-    let o = E(e.search_input, s, "response.search_input"),
-      i = {
-        action: "REQUEST_SEARCH",
-        resolve_session_id: r,
-        round_id: n,
-        search_input: o
-      };
-    return Object.prototype.hasOwnProperty.call(e, "reason") && (i.reason = E(e.reason, l,
-      "response.reason")), i
+function normalizeOptions(options) {
+  if (!Array.isArray(options)) {
+    throw invalidPayload("request.options must be an array");
   }
-  if ("SELECT_OPTIONS" === r) {
-    if (!("options" in t)) throw y("SELECT_OPTIONS is not allowed on a start request");
-    if (w(e, ["action", "selected_values", "round_id", "selected_candidate_key"],
-        "SELECT_OPTIONS response", ["action", "selected_values"]), !Array.isArray(e
-      .selected_values) || 1 !== e.selected_values.length) throw y(
-      "SELECT_OPTIONS response.selected_values must contain exactly one item");
-    let r = E(e.selected_values[0], l, "response.selected_values[0]");
-    if (Object.hasOwn(e, "round_id") || Object.hasOwn(e, "selected_candidate_key")) {
-      let n = E(e.round_id, c, "response.round_id"),
-        o = E(e.selected_candidate_key, c, "response.selected_candidate_key"),
-        i = t.options.filter(e => e.candidate_key === o && e.text === r);
-      if (n !== t.round_id || 1 !== i.length) throw y(
-        "SELECT_OPTIONS must reference current round and candidate identity");
+  if (options.length > MAX_OPTIONS) {
+    throw invalidPayload(`request.options cannot exceed ${MAX_OPTIONS}`);
+  }
+  const normalized = [];
+  const seen = /* @__PURE__ */ new Set();
+  for (const option of options) {
+    const item = normalizeOption(option);
+    if (seen.has(item.candidate_key)) {
+      throw invalidPayload("request.options contains a duplicate candidate_key");
+    }
+    seen.add(item.candidate_key);
+    normalized.push(item);
+  }
+  return normalized;
+}
+function normalizeStartRequest(request) {
+  if (request.source !== "icims" && request.source !== "phenom" && request.source !== "smartrecruiters" && request.source !== "avature" && request.source !== "oraclecloud" && request.source !== "jacobs" && request.source !== "ripplehire" && request.source !== "kula") {
+    throw invalidPayload(
+      "request.source must equal icims, phenom, smartrecruiters, avature, oraclecloud, jacobs, ripplehire, or kula"
+    );
+  }
+  if (request.field_type !== "school" && request.field_type !== "major" && request.field_type !== "degree" && request.field_type !== "location" && request.field_type !== "company") {
+    throw invalidPayload(
+      "request.field_type must equal school, major, degree, location, or company"
+    );
+  }
+  if (request.field_type === "company" && request.source !== "kula") {
+    throw invalidPayload("company requires source kula");
+  }
+  return {
+    source: request.source,
+    field_type: request.field_type,
+    question: requireBoundedString(
+      request.question,
+      MAX_TEXT_LEN,
+      "request.question"
+    ),
+    original_answer: requireBoundedString(
+      request.original_answer,
+      MAX_TEXT_LEN,
+      "request.original_answer"
+    )
+  };
+}
+function normalizeAutofillClientSearchStepRequest(request) {
+  assertPlainObject(request, "request");
+  const keys = Reflect.ownKeys(request);
+  if (keys.includes("source")) {
+    assertExactFields(request, START_FIELDS, "request");
+    return normalizeStartRequest(request);
+  }
+  assertExactFields(request, CONTINUE_FIELDS, "request");
+  return {
+    resolve_session_id: requireBoundedString(
+      request.resolve_session_id,
+      MAX_KEY_LEN,
+      "request.resolve_session_id"
+    ),
+    round_id: requireBoundedString(
+      request.round_id,
+      MAX_KEY_LEN,
+      "request.round_id"
+    ),
+    options: normalizeOptions(request.options)
+  };
+}
+function validateStepResponse(response, request) {
+  assertPlainObject(response, "response");
+  const action = readDataProperty(response, "action", "response.action");
+  if (action === "REQUEST_SEARCH") {
+    assertExactFields(
+      response,
+      ["action", "resolve_session_id", "round_id", "search_input", "reason"],
+      "REQUEST_SEARCH response",
+      ["action", "resolve_session_id", "round_id", "search_input"]
+    );
+    const resolveSessionId = requireBoundedString(
+      response.resolve_session_id,
+      MAX_KEY_LEN,
+      "response.resolve_session_id"
+    );
+    const roundId = requireBoundedString(
+      response.round_id,
+      MAX_KEY_LEN,
+      "response.round_id"
+    );
+    if ("round_id" in request && request.round_id === roundId) {
+      throw invalidPayload("REQUEST_SEARCH must use a fresh round_id");
+    }
+    const searchInput = requireBoundedString(
+      response.search_input,
+      MAX_SEARCH_INPUT_LEN,
+      "response.search_input"
+    );
+    const result = {
+      action: "REQUEST_SEARCH",
+      resolve_session_id: resolveSessionId,
+      round_id: roundId,
+      search_input: searchInput
+    };
+    if (Object.prototype.hasOwnProperty.call(response, "reason")) {
+      result.reason = requireBoundedString(
+        response.reason,
+        MAX_TEXT_LEN,
+        "response.reason"
+      );
+    }
+    return result;
+  }
+  if (action === "SELECT_OPTIONS") {
+    if (!("options" in request)) {
+      throw invalidPayload("SELECT_OPTIONS is not allowed on a start request");
+    }
+    assertExactFields(
+      response,
+      ["action", "selected_values", "round_id", "selected_candidate_key"],
+      "SELECT_OPTIONS response",
+      ["action", "selected_values"]
+    );
+    if (!Array.isArray(response.selected_values) || response.selected_values.length !== 1) {
+      throw invalidPayload(
+        "SELECT_OPTIONS response.selected_values must contain exactly one item"
+      );
+    }
+    const selectedText = requireBoundedString(
+      response.selected_values[0],
+      MAX_TEXT_LEN,
+      "response.selected_values[0]"
+    );
+    if (Object.hasOwn(response, "round_id") || Object.hasOwn(response, "selected_candidate_key")) {
+      const roundId = requireBoundedString(
+        response.round_id,
+        MAX_KEY_LEN,
+        "response.round_id"
+      );
+      const candidateKey = requireBoundedString(
+        response.selected_candidate_key,
+        MAX_KEY_LEN,
+        "response.selected_candidate_key"
+      );
+      const matches = request.options.filter(
+        (opt) => opt.candidate_key === candidateKey && opt.text === selectedText
+      );
+      if (roundId !== request.round_id || matches.length !== 1) {
+        throw invalidPayload(
+          "SELECT_OPTIONS must reference current round and candidate identity"
+        );
+      }
       return {
         action: "SELECT_OPTIONS",
-        selected_values: [i[0].text],
-        round_id: n,
-        selected_candidate_key: o
-      }
+        selected_values: [matches[0].text],
+        round_id: roundId,
+        selected_candidate_key: candidateKey
+      };
     }
-    let n = t.options.filter(e => e.text === r);
-    if (0 === n.length) throw y("SELECT_OPTIONS must reference exact text from current options");
-    if (1 !== new Set(n.map(e => e.value)).size) throw y(
-      "SELECT_OPTIONS text must identify one canonical native value");
+    const textMatches = request.options.filter(
+      (opt) => opt.text === selectedText
+    );
+    if (textMatches.length === 0) {
+      throw invalidPayload(
+        "SELECT_OPTIONS must reference exact text from current options"
+      );
+    }
+    if (new Set(textMatches.map((opt) => opt.value)).size !== 1) {
+      throw invalidPayload(
+        "SELECT_OPTIONS text must identify one canonical native value"
+      );
+    }
     return {
       action: "SELECT_OPTIONS",
-      selected_values: [n[0].text]
-    }
-  }
-  if ("RETURN_EMPTY" === r) {
-    if (w(e, ["action"], "RETURN_EMPTY response"), !("options" in t) && "school" !== t.field_type)
-      throw y("RETURN_EMPTY is not allowed on a start request");
-    return {
-      action: "RETURN_EMPTY"
-    }
-  }
-  if ("RETRYABLE_FAILURE" === r) {
-    w(e, ["action", "failure_code", "diagnostic_id", "retry_after_ms"],
-      "RETRYABLE_FAILURE response", ["action"]);
-    let t = Object.prototype.hasOwnProperty.call(e, "failure_code"),
-      r = Object.prototype.hasOwnProperty.call(e, "diagnostic_id"),
-      n = Object.prototype.hasOwnProperty.call(e, "retry_after_ms");
-    if (!t && !r && !n) return {
-      action: "RETRYABLE_FAILURE"
+      selected_values: [textMatches[0].text]
     };
-    if (!t || !r) throw y(
-      "RETRYABLE_FAILURE failure_code and diagnostic_id must be provided together");
-    let o = S(e, "failure_code", "response.failure_code"),
-      i = S(e, "diagnostic_id", "response.diagnostic_id");
-    if ("string" != typeof o || !p.has(o)) throw y("RETRYABLE_FAILURE failure_code is unsupported");
-    if ("string" != typeof i || !m.test(i)) throw y(
-      "RETRYABLE_FAILURE diagnostic_id must be a canonical lowercase UUID");
-    let a = {
+  }
+  if (action === "RETURN_EMPTY") {
+    assertExactFields(response, ["action"], "RETURN_EMPTY response");
+    if (!("options" in request) && request.field_type !== "school") {
+      throw invalidPayload("RETURN_EMPTY is not allowed on a start request");
+    }
+    return { action: "RETURN_EMPTY" };
+  }
+  if (action === "RETRYABLE_FAILURE") {
+    assertExactFields(
+      response,
+      ["action", "failure_code", "diagnostic_id", "retry_after_ms"],
+      "RETRYABLE_FAILURE response",
+      ["action"]
+    );
+    const hasFailureCode = Object.prototype.hasOwnProperty.call(
+      response,
+      "failure_code"
+    );
+    const hasDiagnosticId = Object.prototype.hasOwnProperty.call(
+      response,
+      "diagnostic_id"
+    );
+    const hasRetryAfter = Object.prototype.hasOwnProperty.call(
+      response,
+      "retry_after_ms"
+    );
+    if (!hasFailureCode && !hasDiagnosticId && !hasRetryAfter) {
+      return { action: "RETRYABLE_FAILURE" };
+    }
+    if (!hasFailureCode || !hasDiagnosticId) {
+      throw invalidPayload(
+        "RETRYABLE_FAILURE failure_code and diagnostic_id must be provided together"
+      );
+    }
+    const failureCode = readDataProperty(
+      response,
+      "failure_code",
+      "response.failure_code"
+    );
+    const diagnosticId = readDataProperty(
+      response,
+      "diagnostic_id",
+      "response.diagnostic_id"
+    );
+    if (typeof failureCode !== "string" || !FAILURE_CODES.has(failureCode)) {
+      throw invalidPayload("RETRYABLE_FAILURE failure_code is unsupported");
+    }
+    if (typeof diagnosticId !== "string" || !UUID_RE.test(diagnosticId)) {
+      throw invalidPayload(
+        "RETRYABLE_FAILURE diagnostic_id must be a canonical lowercase UUID"
+      );
+    }
+    const result = {
       action: "RETRYABLE_FAILURE",
-      failure_code: o,
-      diagnostic_id: i
+      failure_code: failureCode,
+      diagnostic_id: diagnosticId
     };
-    if (n) {
-      let t = S(e, "retry_after_ms", "response.retry_after_ms");
-      if ("number" != typeof t || !Number.isSafeInteger(t) || t < 0 || t > f) throw y(
-        `RETRYABLE_FAILURE retry_after_ms must be an integer between 0 and ${f}`);
-      a.retry_after_ms = t
+    if (hasRetryAfter) {
+      const retryAfterMs = readDataProperty(
+        response,
+        "retry_after_ms",
+        "response.retry_after_ms"
+      );
+      if (typeof retryAfterMs !== "number" || !Number.isSafeInteger(retryAfterMs) || retryAfterMs < 0 || retryAfterMs > MAX_RETRY_AFTER_MS) {
+        throw invalidPayload(
+          `RETRYABLE_FAILURE retry_after_ms must be an integer between 0 and ${MAX_RETRY_AFTER_MS}`
+        );
+      }
+      result.retry_after_ms = retryAfterMs;
     }
-    return a
+    return result;
   }
-  throw y("response.action is unsupported")
+  throw invalidPayload("response.action is unsupported");
 }
-
-function F(e, t) {
-  let r = k(t);
-  return T(e, r)
+function validateAutofillClientSearchStepResponse(response, request) {
+  const normalizedRequest = normalizeAutofillClientSearchStepRequest(request);
+  return validateStepResponse(response, normalizedRequest);
 }
-async function I(e) {
-  let t;
-  let r = k(e),
-    n = await fetch(`${o.API_DOMAIN}/swan/autofill/autofill-option-resolve/client-search-step`, {
+async function fetchAutofillClientSearchStep(request) {
+  const normalizedRequest = normalizeAutofillClientSearchStepRequest(request);
+  const response = await fetch(
+    `${API_DOMAIN}/swan/autofill/autofill-option-resolve/client-search-step`,
+    {
       credentials: "include",
       method: "POST",
       headers: {
@@ -58605,21 +58865,29 @@ async function I(e) {
         "cache-control": "no-cache",
         "Content-Type": "application/json"
       },
-      body: JSON.stringify(r)
-    });
-  if (!n.ok) throw Error(
-    `Failed to resolve autofill client-search step: ${n.status} ${n.statusText}`);
-  try {
-    t = await n.json()
-  } catch {
-    throw Error("Failed to parse autofill client-search response")
+      body: JSON.stringify(normalizedRequest)
+    }
+  );
+  if (!response.ok) {
+    throw new Error(
+      `Failed to resolve autofill client-search step: ${response.status} ${response.statusText}`
+    );
   }
-  if (v(t, "Swan response"), !Object.prototype.hasOwnProperty.call(t, "success") || !0 !== t
-    .success || !Object.prototype.hasOwnProperty.call(t, "result")) throw y(
-    "Swan response does not contain a successful result");
-  return F(t.result, r)
+  let body;
+  try {
+    body = await response.json();
+  } catch {
+    throw new Error("Failed to parse autofill client-search response");
+  }
+  assertPlainObject(body, "Swan response");
+  if (!Object.prototype.hasOwnProperty.call(body, "success") || body.success !== true || !Object.prototype.hasOwnProperty.call(body, "result")) {
+    throw invalidPayload("Swan response does not contain a successful result");
+  }
+  return validateAutofillClientSearchStepResponse(
+    body.result,
+    normalizedRequest
+  );
 }
-
 
     }
   }
@@ -76890,22 +77158,25 @@ class Dayforce extends baseFiller.BaseFiller {
     "@parcel/transformer-js/src/esmodule-helpers.js": "m2"
     },
     factory: function (e, r) {
-var n = e("@parcel/transformer-js/src/esmodule-helpers.js");
-n.defineInteropFlag(r), n.export(r, "SIGNUP_REGISTRATION_EMAIL_SECTION", () => o), n.export(r,
-  "resolveSignupRegistrationEmail", () => i), n.export(r,
-  "buildSignupRegistrationEmailUpdateBody", () => a);
-let o = "regenerationEmail",
-  i = e => {
-    let t = e?.regenerationEmail;
-    return "string" == typeof t && t.trim() ? t : ""
-  },
-  a = e => ({
-    updateSection: o,
-    structuredData: {
-      regenerationEmail: e.trim()
-    }
-  })
+var helpers = e("@parcel/transformer-js/src/esmodule-helpers.js");
+helpers.defineInteropFlag(r);
+helpers.export(r, "SIGNUP_REGISTRATION_EMAIL_SECTION", () => SIGNUP_REGISTRATION_EMAIL_SECTION);
+helpers.export(r, "buildSignupRegistrationEmailUpdateBody", () => buildSignupRegistrationEmailUpdateBody);
+helpers.export(r, "resolveSignupRegistrationEmail", () => resolveSignupRegistrationEmail);
 
+const SIGNUP_REGISTRATION_EMAIL_SECTION = "regenerationEmail";
+function resolveSignupRegistrationEmail(info) {
+  const value = info?.regenerationEmail;
+  return typeof value === "string" && value.trim() ? value : "";
+}
+function buildSignupRegistrationEmailUpdateBody(email) {
+  return {
+    updateSection: SIGNUP_REGISTRATION_EMAIL_SECTION,
+    structuredData: {
+      regenerationEmail: email.trim()
+    }
+  };
+}
 
     }
   }

@@ -319,4 +319,4 @@ const isMain =
 
 if (isMain) main()
 
-export { convertFile, TEN, filesForSite }
+export { convertFile, TEN, filesForSite, parcelSpecToEsm }
