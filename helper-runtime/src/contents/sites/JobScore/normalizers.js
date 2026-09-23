@@ -1,8 +1,0 @@
-/**
- * Parcel module id: bDNVv
- * Resolved path: src/contents/sites/JobScore/normalizers.js
- * Dependencies:
- *   @parcel/transformer-js/src/esmodule-helpers.js -> cHUbl  =>  @parcel/transformer-js/src/esmodule-helpers.js
- */
-
-var n=e("@parcel/transformer-js/src/esmodule-helpers.js");function o(e){return String(e.Employer??e.employer??e.Company??e.company??e["Company Name"]??e.companyName??e.Organization??e.organization??"").trim()}function i(e){return String(e.Title??e.title??e["Job Title"]??e.jobTitle??e.Position??e.position??e.Role??e.role??"").trim()}function a(e,t){for(let r of t){let t=e[r];if(null!=t&&""!==String(t).trim())return t}}function l(e){let t=a(e,["isCurrent","current","Current","Current Employer","Currently Work Here"]);return!0===t||"true"===String(t).toLowerCase()||"yes"===String(t).toLowerCase()||"present"===String(t).toLowerCase()}function s(e){let t={...e},r=o(e),n=i(e),s=a(e,["Start","start","Start Date","startDate","start_date","From","from"]),u=a(e,["End","end","End Date","endDate","end_date","To","to"]);return r&&!a(t,["Employer","employer"])&&(t.Employer=r),n&&!a(t,["Title","title"])&&(t.Title=n),s&&!a(t,["Start","start"])&&(t.Start=s),u&&!a(t,["End","end"])&&(t.End=u),l(t)&&(t.End="present"),t}function u(e){if(!Array.isArray(e)||0===e.length)return[];let t=e.map(s).filter(e=>o(e)&&i(e)),r=t.map(e=>{let t=l(e);return t?{...e,End:"present"}:e}),n=new Map;for(let e of r){let t=o(e);n.has(t)||n.set(t,[]),n.get(t).push(e)}return Array.from(n.values()).flat()}n.defineInteropFlag(r),n.export(r,"getEmployerFromRecord",()=>o),n.export(r,"getTitleFromRecord",()=>i),n.export(r,"isCurrentWorkExperienceRecord",()=>l),n.export(r,"normalizeJobScoreWorkExperienceRecord",()=>s),n.export(r,"normalizeWorkExperienceRecords",()=>u)

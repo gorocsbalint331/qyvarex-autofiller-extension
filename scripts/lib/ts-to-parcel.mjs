@@ -154,6 +154,45 @@ function resolveParcelSpec(spec, fromFile = "") {
     "hrmdirect",
     "hubspot",
     "icims",
+    "intuit",
+    "isolved",
+    "jacobs",
+    "jazzhr",
+    "jobdiva",
+    "JobScore",
+    "jobvite",
+    "kula",
+    "lever",
+    "metacareers",
+    "myworkday",
+    "okta",
+    "oraclecloud",
+    "paycomonline-v3",
+    "paylocity",
+    "personio",
+    "phenom",
+    "pinpointhq",
+    "polymer",
+    "recruitee",
+    "recruiterflow",
+    "ripplehire",
+    "rippling",
+    "smartrecruiters",
+    "successfactors",
+    "taleo",
+    "teamtailor",
+    "tesla",
+    "tiktok",
+    "trakstar",
+    "trinethire",
+    "uber",
+    "ultipro",
+    "walmart",
+    "workable",
+    "xcompany",
+    "ycombinator",
+    "zohorecruit",
+    "zohorecruit-v2",
   ])
   const sharedRoot = new Set([
     "falcon-response-accumulator",
@@ -209,14 +248,14 @@ function resolveParcelSpec(spec, fromFile = "") {
     ) {
       // Map ../adp-workforcenow/country from another site folder
       const cross = noExt.match(
-        /^\.\.\/(adobe|adp-myjobs|adp-recruiting|adp-workforcenow|amazon|apple|ashby|avature|bamboohr|brassring|breezy|bytedance|careerplug|careers-page|careers-toasttab|careers-withwaymo|catsone|cisco|comeet|dayforce|eightfold|freshteam|gem|gohire|google|greenhouse|gusto|hiringthing|hrmdirect|hubspot|icims)(\/.+)?$/,
+        /^\.\.\/(adobe|adp-myjobs|adp-recruiting|adp-workforcenow|amazon|apple|ashby|avature|bamboohr|brassring|breezy|bytedance|careerplug|careers-page|careers-toasttab|careers-withwaymo|catsone|cisco|comeet|dayforce|eightfold|freshteam|gem|gohire|google|greenhouse|gusto|hiringthing|hrmdirect|hubspot|icims|intuit|isolved|jacobs|jazzhr|jobdiva|JobScore|jobvite|kula|lever|metacareers|myworkday|okta|oraclecloud|paycomonline-v3|paylocity|personio|phenom|pinpointhq|polymer|recruitee|recruiterflow|ripplehire|rippling|smartrecruiters|successfactors|taleo|teamtailor|tesla|tiktok|trakstar|trinethire|uber|ultipro|walmart|workable|xcompany|ycombinator|zohorecruit|zohorecruit-v2)(\/.+)?$/,
       )
       if (cross) {
         return `~contents/sites/${cross[1]}${cross[2] || ""}`
       }
       // From sites/ashby.ts importing ./ashby/answer
       const nested = noExt.match(
-        /^\.\/(adobe|adp-myjobs|adp-recruiting|adp-workforcenow|amazon|apple|ashby|avature|bamboohr|brassring|breezy|bytedance|careerplug|careers-page|careers-toasttab|careers-withwaymo|catsone|cisco|comeet|dayforce|eightfold|freshteam|gem|gohire|google|greenhouse|gusto|hiringthing|hrmdirect|hubspot|icims)(\/.+)$/,
+        /^\.\/(adobe|adp-myjobs|adp-recruiting|adp-workforcenow|amazon|apple|ashby|avature|bamboohr|brassring|breezy|bytedance|careerplug|careers-page|careers-toasttab|careers-withwaymo|catsone|cisco|comeet|dayforce|eightfold|freshteam|gem|gohire|google|greenhouse|gusto|hiringthing|hrmdirect|hubspot|icims|intuit|isolved|jacobs|jazzhr|jobdiva|JobScore|jobvite|kula|lever|metacareers|myworkday|okta|oraclecloud|paycomonline-v3|paylocity|personio|phenom|pinpointhq|polymer|recruitee|recruiterflow|ripplehire|rippling|smartrecruiters|successfactors|taleo|teamtailor|tesla|tiktok|trakstar|trinethire|uber|ultipro|walmart|workable|xcompany|ycombinator|zohorecruit|zohorecruit-v2)(\/.+)$/,
       )
       if (nested) {
         return `~contents/sites/${nested[1]}${nested[2]}`
