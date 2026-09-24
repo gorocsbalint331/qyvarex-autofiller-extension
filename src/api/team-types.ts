@@ -21,6 +21,19 @@ export type ProfileSummary = {
   updatedAt: string
 }
 
+/** Mirrors team-site publicSavedJob() */
+export type SavedJob = {
+  id: string
+  profileId: string | null
+  title: string
+  company: string
+  url: string
+  description: string
+  source: string
+  createdAt: string
+  updatedAt: string
+}
+
 export type AutofillInfoPayload = {
   schemaVersion: 1
   profileId: string

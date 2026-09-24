@@ -8,14 +8,14 @@ import { useRequest } from "ahooks"
 import { AutoComplete, Input } from "antd"
 import { useEffect, useState } from "react"
 import { sendToBackground } from "@plasmohq/messaging"
-import { HOST_DOMAIN } from "../api/env-resolver.ts"
+import { COMPANY_FALLBACK_LOGO } from "./companyFallbackLogo.ts"
 import { useContainerStore } from "../store/container.ts"
 import { useExternalJobStore } from "../store/externalJob.ts"
 import Image from "../ui/Image.ts"
 import { isLinkedinDomain } from "../utils/checkLinkedin.ts"
 import { findCompanyMatch } from "./match.ts"
 
-const FALLBACK_LOGO = `${HOST_DOMAIN}/newimages/public/img_none.svg`
+const FALLBACK_LOGO = COMPANY_FALLBACK_LOGO
 
 function ImageWithFallback({ errorSrc, style, ...rest }) {
   const [src, setSrc] = useState(rest.src)

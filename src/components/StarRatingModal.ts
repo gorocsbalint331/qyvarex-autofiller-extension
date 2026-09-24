@@ -94,7 +94,7 @@ export default function StarRatingModal() {
               width: 48,
               height: 48,
               preview: false,
-              alt: "Jobright",
+              alt: "Qyvarex",
             }),
             jsx("span", {
               style: {

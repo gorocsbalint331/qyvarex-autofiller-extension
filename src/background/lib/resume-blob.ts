@@ -37,16 +37,25 @@ export async function resolveResumeBlobResponse(opts?: {
         ? opts.resumeId.trim()
         : null
 
-    if (!resumeId) {
+    const defaultResumeId = async () => {
       const info = await fetchAutofillInfo()
-      resumeId = info?.defaultResumeId ?? info?.resumes?.[0]?.id ?? null
+      return info?.defaultResumeId ?? info?.resumes?.[0]?.id ?? null
     }
 
+    if (!resumeId) resumeId = await defaultResumeId()
     if (!resumeId) {
       return { ok: false, message: "no_resume", base64URL: "" }
     }
 
-    const file = await fetchResumeBlob(resumeId)
+    let file = await fetchResumeBlob(resumeId)
+    if (!file) {
+      // Stored "last used" ids go stale when the hub profile or resume is replaced.
+      const fallbackId = await defaultResumeId()
+      if (fallbackId && fallbackId !== resumeId) {
+        resumeId = fallbackId
+        file = await fetchResumeBlob(resumeId)
+      }
+    }
     if (!file) {
       return { ok: false, message: "download_failed", base64URL: "" }
     }

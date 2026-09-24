@@ -2,6 +2,7 @@ import { useEffect, useState } from "react"
 import logoMark from "data-base64:~assets/logo-mark.png"
 
 import {
+  ensureSelectedProfile,
   getTeamSettings,
   listProfiles,
   saveTeamSettings,
@@ -31,6 +32,9 @@ function OptionsPage() {
           setStatus(`Signed in as ${conn.name} (${conn.email})`)
           const list = await listProfiles()
           setProfiles(list)
+          if ((await ensureSelectedProfile(list)) !== s.selectedProfileId) {
+            setSettings(await getTeamSettings())
+          }
         }
       }
     })()
@@ -62,9 +66,8 @@ function OptionsPage() {
       setStatus(
         `Signed in as ${result.user?.name} (${result.user?.email}) · ${list.length} profiles`
       )
-      if (!next.selectedProfileId && list[0]) {
-        const updated = await saveTeamSettings({ selectedProfileId: list[0].id })
-        setSettings(updated)
+      if ((await ensureSelectedProfile(list)) !== next.selectedProfileId) {
+        setSettings(await getTeamSettings())
       }
     } catch (err) {
       setError(err instanceof Error ? err.message : "Sign-in failed")

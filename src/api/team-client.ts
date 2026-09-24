@@ -5,7 +5,12 @@
 import { Storage } from "@plasmohq/storage"
 
 import { TEAM_SITE_URL, getHubUrl } from "~api/hub-env"
-import type { AutofillInfoPayload, ProfileSummary, TeamSettings } from "~api/team-types"
+import type {
+  AutofillInfoPayload,
+  ProfileSummary,
+  SavedJob,
+  TeamSettings
+} from "~api/team-types"
 
 const storage = new Storage({ area: "local" })
 
@@ -148,20 +153,48 @@ export async function listProfiles(): Promise<ProfileSummary[]> {
   return data.profiles
 }
 
+/**
+ * Keep `selectedProfileId` pointing at a profile that still exists on the hub
+ * (it goes stale when a profile is deleted or re-created). Falls back to the
+ * first listed profile. Pass `list` when the caller already fetched it.
+ */
+export async function ensureSelectedProfile(
+  list?: ProfileSummary[]
+): Promise<string | null> {
+  const settings = await getTeamSettings()
+  const profiles = list ?? (await listProfiles())
+  if (!profiles.length) return list ? null : settings.selectedProfileId
+  if (profiles.some((p) => p.id === settings.selectedProfileId)) {
+    return settings.selectedProfileId
+  }
+  const next = profiles[0].id
+  await saveTeamSettings({ selectedProfileId: next })
+  return next
+}
+
+async function loadAutofillInfo(id: string) {
+  return teamFetch<{
+    ok: boolean
+    autofillInfo?: AutofillInfoPayload
+  }>(`/api/v1/profiles/${encodeURIComponent(id)}?autofill=1`)
+}
+
 export async function fetchAutofillInfo(
   profileId?: string | null
 ): Promise<AutofillInfoPayload | null> {
   const settings = await getTeamSettings()
-  const id = profileId || settings.selectedProfileId
+  let id = profileId || settings.selectedProfileId
+  if (!id) id = await ensureSelectedProfile()
   if (!id) return null
 
-  const { ok, data } = await teamFetch<{
-    ok: boolean
-    autofillInfo?: AutofillInfoPayload
-  }>(`/api/v1/profiles/${encodeURIComponent(id)}?autofill=1`)
+  let res = await loadAutofillInfo(id)
+  if (res.status === 404 && id === settings.selectedProfileId) {
+    const repaired = await ensureSelectedProfile()
+    if (repaired && repaired !== id) res = await loadAutofillInfo(repaired)
+  }
 
-  if (!ok || !data.ok || !data.autofillInfo) return null
-  return data.autofillInfo
+  if (!res.ok || !res.data.ok || !res.data.autofillInfo) return null
+  return res.data.autofillInfo
 }
 
 export async function fetchResumeBlob(
@@ -298,6 +331,63 @@ export async function logApplication(row: {
     }
   }
   return { ok: true, tabName: data.tabName }
+}
+
+/** Save (or update, keyed by URL) a job posting to the hub's saved jobs. */
+export async function saveJobToHub(job: {
+  title: string
+  url: string
+  company?: string
+  description?: string
+  profileId?: string | null
+}): Promise<{ ok: boolean; job?: SavedJob; error?: string }> {
+  const settings = await getTeamSettings()
+  const profileId = job.profileId || settings.selectedProfileId
+  const { ok, data } = await teamFetch<{ ok: boolean; job?: SavedJob; error?: string }>(
+    "/api/v1/jobs",
+    {
+      method: "POST",
+      body: JSON.stringify({ ...job, profileId: profileId || undefined })
+    }
+  )
+  if (!ok || !data.ok || !data.job) {
+    return { ok: false, error: data.error || "save_failed" }
+  }
+  return { ok: true, job: data.job }
+}
+
+export async function fetchSavedJob(
+  id: string
+): Promise<{ ok: boolean; job?: SavedJob; error?: string; status?: number }> {
+  const { ok, status, data } = await teamFetch<{
+    ok: boolean
+    job?: SavedJob
+    error?: string
+  }>(`/api/v1/jobs/${encodeURIComponent(id)}`)
+  if (!ok || !data.ok || !data.job) {
+    return { ok: false, error: data.error || "fetch_failed", status }
+  }
+  return { ok: true, job: data.job }
+}
+
+/** Ask the hub's AI to pull title / company / description out of a page's HTML. */
+export async function parseJobPageWithHub(body: {
+  html: string
+  url?: string
+}): Promise<{
+  ok: boolean
+  job?: { title: string; company: string; description: string }
+  error?: string
+}> {
+  const { ok, data } = await teamFetch<{
+    ok: boolean
+    job?: { title: string; company: string; description: string }
+    error?: string
+  }>("/api/v1/ai/parse-job", { method: "POST", body: JSON.stringify(body) })
+  if (!ok || !data.ok || !data.job) {
+    return { ok: false, error: data.error || "parse_failed" }
+  }
+  return { ok: true, job: data.job }
 }
 
 export async function verifyTeamConnection(): Promise<{

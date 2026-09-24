@@ -34,12 +34,11 @@ const handler: PlasmoMessaging.MessageHandler = async (_req, res) => {
       return
     }
 
-    const hub = settings.selectedProfileId
-      ? await fetchAutofillInfo(settings.selectedProfileId)
-      : null
+    const hub = await fetchAutofillInfo()
+    const profileId = hub?.profileId || settings.selectedProfileId
 
     const userId =
-      settings.selectedProfileId ||
+      profileId ||
       conn.email ||
       settings.userEmail ||
       "team-user"
@@ -58,7 +57,7 @@ const handler: PlasmoMessaging.MessageHandler = async (_req, res) => {
       step: 5,
       email: conn.email || settings.userEmail || "",
       name: conn.name || settings.userName || "",
-      profileId: settings.selectedProfileId,
+      profileId,
       hasResume: Boolean(
         hub &&
           (Array.isArray((hub as { resumes?: unknown[] }).resumes)

@@ -4,6 +4,7 @@ import { sendToBackground } from "@plasmohq/messaging"
 
 import { getHubUrl } from "~api/hub-env"
 import {
+  ensureSelectedProfile,
   getTeamSettings,
   listProfiles,
   saveTeamSettings,
@@ -105,10 +106,7 @@ function IndexPopup() {
       try {
         const list = await listProfiles()
         setProfiles(list)
-        if (!settings.selectedProfileId && list[0]) {
-          await saveTeamSettings({ selectedProfileId: list[0].id })
-          setSelectedId(list[0].id)
-        }
+        setSelectedId(await ensureSelectedProfile(list))
       } catch {
         setProfiles([])
       }

@@ -163,13 +163,14 @@ export async function fetchPdfAsBlob(resumeRequest) {
       },
     })
     extension = "pdf"
-  } else if (resumeRequest.id) {
+  } else {
     console.log("[ResumeUploadDebug] fetchPdfAsBlob:branch-id-fallback", {
-      resumeId: resumeRequest.id,
+      resumeId: resumeRequest?.id,
     })
+    // Without an id the background resolves the hub profile's default resume.
     response = await sendToBackground({
       name: "getResumeBlob",
-      body: { resumeId: resumeRequest.id },
+      body: { resumeId: resumeRequest?.id },
     })
     extension = response?.extension
   }

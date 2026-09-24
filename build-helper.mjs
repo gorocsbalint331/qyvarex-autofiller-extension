@@ -23,6 +23,14 @@ const EXT_NM = path.join(EXT, "node_modules")
 const MESSAGING = path.join(SHIMS, "messaging.ts")
 const STORAGE_HOOK = path.join(SHIMS, "storage-hook.ts")
 
+// Helper stylesheets (compiled Jobright CSS). Inlined as data: URLs so the
+// runtime can read them without a network fetch (page CSP can block fetches).
+const STYLE_DIR = path.join(SRC, "assets", "styles")
+const HELPER_STYLES = {
+  "global.less": path.join(STYLE_DIR, "global.css"),
+  "inter.css": path.join(STYLE_DIR, "inter.css"),
+}
+
 const SITE_ENTRIES = new Set(
   fs.existsSync(SITES)
     ? fs
@@ -76,6 +84,10 @@ function resolveImport(args) {
     return STORAGE_HOOK
   }
 
+  if (args.path.startsWith("url:")) {
+    const style = HELPER_STYLES[path.basename(args.path.slice(4))]
+    if (style) return { styleFile: style }
+  }
   if (args.path.startsWith("url:") || args.path.startsWith("data-base64:")) {
     return { emptyAsset: true, key: args.path }
   }
@@ -134,10 +146,23 @@ const helperPlugin = {
       if (resolved.emptyBinary) {
         return { path: resolved.key, namespace: "helper-empty" }
       }
+      if (resolved.styleFile) {
+        return { path: resolved.styleFile, namespace: "helper-style" }
+      }
       return { path: resolved }
     })
 
-    // url:/css imports → empty CSS string (avoid data: fetch under page CSP)
+    build.onLoad({ filter: /.*/, namespace: "helper-style" }, (args) => {
+      const css = fs.readFileSync(args.path, "utf8")
+      const dataUrl = "data:text/css;charset=utf-8," + encodeURIComponent(css)
+      return {
+        contents: `export default ${JSON.stringify(dataUrl)}`,
+        loader: "js",
+        watchFiles: [args.path],
+      }
+    })
+
+    // Other url:/css imports → empty CSS string
     build.onLoad({ filter: /.*/, namespace: "helper-css" }, () => ({
       contents: 'export default ""',
       loader: "js",
@@ -185,6 +210,12 @@ async function main() {
     process.exit(1)
   }
   assertNoStrayContentScripts()
+  for (const file of Object.values(HELPER_STYLES)) {
+    if (!fs.existsSync(file)) {
+      console.error(`[build-helper] missing helper stylesheet ${path.relative(EXT, file)} — the helper UI would render unstyled`)
+      process.exit(1)
+    }
+  }
 
   const nodePaths = [EXT_NM]
   if (fs.existsSync(ENGINE_NM)) nodePaths.push(ENGINE_NM)

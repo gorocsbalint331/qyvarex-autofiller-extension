@@ -14,8 +14,9 @@ import Image from "../ui/Image.ts"
 import { formatPublishTimeDesc } from "./formatPublishTime.ts"
 import InsiderConnections from "./InsiderConnections.ts"
 import RoundedRingProgress from "./RoundedRingProgress.ts"
+import { COMPANY_FALLBACK_LOGO } from "./companyFallbackLogo.ts"
 
-const FALLBACK_LOGO = `${HOST_DOMAIN}/newimages/public/img_none.svg`
+const FALLBACK_LOGO = COMPANY_FALLBACK_LOGO
 
 export default function JobCard({
   data,
@@ -40,11 +41,12 @@ export default function JobCard({
     },
   )
 
+  const detailsUrl =
+    data?.jobResult?.detailsUrl ||
+    `${HOST_DOMAIN}${DETAIL_PATHNAME}/${data?.jobResult?.jobId}`
+
   function openDetails() {
-    window.open(
-      `${HOST_DOMAIN}${DETAIL_PATHNAME}/${data?.jobResult?.jobId}`,
-      "_blank",
-    )
+    window.open(detailsUrl, "_blank")
   }
 
   return jsxs(Flex, {
@@ -111,7 +113,7 @@ export default function JobCard({
           jsx(Flex, {
             vertical: true,
             children: jsx("a", {
-              href: `${HOST_DOMAIN}${DETAIL_PATHNAME}/${data?.jobResult?.jobId}`,
+              href: detailsUrl,
               target: "_blank",
               rel: "noreferrer",
               children: jsx(Typography.Title, {

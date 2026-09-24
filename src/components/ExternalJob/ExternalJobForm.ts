@@ -7,6 +7,7 @@ import { useEffect, useMemo, useState } from "react"
 import { jsx, jsxs } from "react/jsx-runtime"
 import { Flex, Form, Input, Typography } from "antd"
 import CompanyAutoComplete from "../CompanyAutoComplete.ts"
+import { scrapeGenericJobData } from "../../core/genericJobScraper.ts"
 import { scrapeJobPageData } from "../../core/jobPageScraper.ts"
 import { checkSupportStatus } from "../../core/utils.ts"
 import { useExternalJobStore } from "../../store/externalJob.ts"
@@ -71,17 +72,16 @@ export function ExternalJobForm({ jumpToInitPage, jumpToSuccessPage }) {
   const [isScanning, setIsScanning] = useState(true)
 
   const scrapeToastStatus = useMemo(() => {
-    if (scrapeFallbackStatus === "success") {
-      const { jobTitle, companyName, jobDescription } = formValues
-      const filledCount = [jobTitle, companyName, jobDescription].filter(
-        Boolean,
-      ).length
-      if (filledCount === 3) return "success"
-      if (filledCount > 0) return "partial"
-      return "error"
+    if (scrapeFallbackStatus !== "success" && scrapeFallbackStatus !== "error") {
+      return "none"
     }
-    if (scrapeFallbackStatus === "error") return "error"
-    return "none"
+    const { jobTitle, companyName, jobDescription } = formValues
+    const filledCount = [jobTitle, companyName, jobDescription].filter(
+      Boolean,
+    ).length
+    if (filledCount === 3) return "success"
+    if (filledCount > 0) return "partial"
+    return "error"
   }, [scrapeFallbackStatus, formValues])
 
   const backFunction = isAddingAnotherJob ? jumpToSuccessPage : jumpToInitPage
@@ -99,32 +99,33 @@ export function ExternalJobForm({ jumpToInitPage, jumpToSuccessPage }) {
       if (current.url === "") {
         updates.url = window.location.href
       }
-      if (ruleMatched) {
-        if (current.jobTitle === "" && data.jobTitle) {
-          updates.jobTitle = data.jobTitle
+      const fillMissing = (source) => {
+        let filled = false
+        for (const key of ["jobTitle", "companyName", "jobDescription"]) {
+          if (!current[key] && !updates[key] && source[key]) {
+            updates[key] = source[key]
+            filled = true
+          }
         }
-        if (current.companyName === "" && data.companyName) {
-          updates.companyName = data.companyName
-        }
-        if (current.jobDescription === "" && data.jobDescription) {
-          updates.jobDescription = data.jobDescription
-        }
+        return filled
       }
+
+      if (ruleMatched) fillMissing(data)
+      const hasMissing = () =>
+        ["jobTitle", "companyName", "jobDescription"].some(
+          (key) => !updates[key] && !current[key],
+        )
+      const usedGenericScrape = hasMissing() && fillMissing(scrapeGenericJobData())
 
       if (Object.keys(updates).length > 0) {
         setFormValues(updates)
       }
 
-      const nextJobTitle = updates.jobTitle || current.jobTitle
-      const nextCompanyName = updates.companyName || current.companyName
-      const nextJobDescription =
-        updates.jobDescription || current.jobDescription
-      const missingFields =
-        !nextJobTitle || !nextCompanyName || !nextJobDescription
-      const needsAiScrape = !ruleMatched || missingFields
-
+      const needsAiScrape = hasMissing()
       if (needsAiScrape) {
         await parsePageWithMarkdown()
+      } else if (usedGenericScrape) {
+        useExternalJobStore.setState({ scrapeFallbackStatus: "success" })
       }
 
       const after = useExternalJobStore.getState().formValues

@@ -938,6 +938,249 @@ export function lookupAnswer(
   return null
 }
 
+type SectionChild = { label: string; type: string; options: string[] }
+
+type SectionItem = {
+  org: string
+  title: string
+  degree: string
+  major: string
+  gpa: string
+  location: string
+  description: string
+  start: string | null
+  end: string | null
+  current: boolean
+}
+
+const MONTH_NAMES = [
+  "January",
+  "February",
+  "March",
+  "April",
+  "May",
+  "June",
+  "July",
+  "August",
+  "September",
+  "October",
+  "November",
+  "December"
+]
+
+function str(v: unknown): string {
+  return typeof v === "string" ? v.trim() : v != null ? String(v).trim() : ""
+}
+
+function toSectionYmd(raw: unknown): string | null {
+  const t = str(raw)
+  if (!t) return null
+  const parsed = parseYmd(t)
+  if (parsed) return parsed
+  const my = t.match(/^(\d{1,2})\/(\d{4})$/)
+  if (my) return `${my[2]}-${my[1].padStart(2, "0")}-01`
+  if (/^\d{4}$/.test(t)) return `${t}-01-01`
+  const iso = t.match(/^(\d{4}-\d{2}-\d{2})T/)
+  return iso ? iso[1] : null
+}
+
+function rawList(extras: Record<string, unknown>, keys: string[]): unknown[] {
+  for (const key of keys) {
+    const v = extras[key]
+    if (Array.isArray(v) && v.length) return v
+  }
+  return []
+}
+
+function itemDates(o: Record<string, unknown>) {
+  const dates =
+    o.dates && typeof o.dates === "object"
+      ? (o.dates as Record<string, unknown>)
+      : {}
+  const current = !!(o.isCurrent ?? dates.is_current)
+  return {
+    start: toSectionYmd(o.startDate ?? dates.start_date),
+    end: current ? null : toSectionYmd(o.endDate ?? dates.completion_date),
+    current
+  }
+}
+
+function workItems(extras: Record<string, unknown>): SectionItem[] {
+  return rawList(extras, ["workExperience", "engineWorkExperience", "employment"])
+    .filter((x): x is Record<string, unknown> => !!x && typeof x === "object")
+    .map((o) => {
+      const descriptions = Array.isArray(o.descriptions)
+        ? o.descriptions
+        : Array.isArray(o.job_descriptions)
+          ? o.job_descriptions
+          : []
+      const bullets = descriptions.map(str).filter(Boolean)
+      return {
+        org: str(o.companyName ?? o.organization),
+        title: str(o.jobTitle ?? o.job_title),
+        degree: "",
+        major: "",
+        gpa: "",
+        location: str(o.city ?? o.location),
+        description: str(o.summary) || bullets.join("\n"),
+        ...itemDates(o)
+      }
+    })
+}
+
+function educationItems(extras: Record<string, unknown>): SectionItem[] {
+  return rawList(extras, ["education", "engineEducation", "Education"])
+    .filter((x): x is Record<string, unknown> => !!x && typeof x === "object")
+    .map((o) => ({
+      org: str(o.schoolName ?? o.organization),
+      title: "",
+      degree: str(o.degree) || str(o.accreditation),
+      major: str(o.major),
+      gpa: str(o.gpa),
+      location: str(o.city ?? o.location),
+      description: "",
+      ...itemDates(o)
+    }))
+}
+
+function sectionChildren(elements: FillElement[], type: string): SectionChild[] {
+  const seen = new Map<string, SectionChild>()
+  for (const el of elements) {
+    if (el?.type !== type) continue
+    const lists = [el.options, el.children]
+    for (const list of lists) {
+      if (!Array.isArray(list)) continue
+      for (const child of list) {
+        if (!child || typeof child !== "object") continue
+        const c = child as Record<string, unknown>
+        const label = str(c.label)
+        if (!label || seen.has(label)) continue
+        seen.set(label, {
+          label,
+          type: str(c.type),
+          options: Array.isArray(c.options)
+            ? c.options.map(str).filter(Boolean)
+            : []
+        })
+      }
+    }
+  }
+  return Array.from(seen.values())
+}
+
+function formatSectionDate(
+  ymd: string | null,
+  child: SectionChild,
+  norm: string
+): string {
+  if (!ymd) return ""
+  const [y, m] = ymd.split("-")
+  const monthIdx = Number(m) - 1
+  if (/\bmonth\b/.test(norm) && !/\byear\b/.test(norm)) {
+    const name = MONTH_NAMES[monthIdx] || m
+    return child.options.length ? adaptToOptions(name, child.options) : name
+  }
+  if (/\byear\b/.test(norm) && !/\bmonth\b/.test(norm)) {
+    return child.options.length ? adaptToOptions(y, child.options) : y
+  }
+  if (child.type === "date") return ymd
+  return `${m}/${y}`
+}
+
+function resolveSectionChild(
+  item: SectionItem,
+  child: SectionChild,
+  kind: "work" | "education"
+): string | string[] {
+  const norm = normalizeLabel(child.label)
+  const fit = (v: string) =>
+    v && child.options.length ? adaptToOptions(v, child.options) : v
+
+  if (/\b(current|currently|present|still)\b/.test(norm)) {
+    if (hasYesNoOptions(child.options)) return pickYesNo(child.options, item.current)
+    if (child.type === "checkbox") return item.current ? [child.label] : "No"
+    return item.current ? "Yes" : "No"
+  }
+  const dateLike = child.type === "date" || norm.split(" ").length <= 5
+  if (dateLike && /\b(start|from|begin|began|since)\b/.test(norm)) {
+    return formatSectionDate(item.start, child, norm)
+  }
+  if (
+    dateLike &&
+    /\b(end|to|until|finish|graduation|graduated|completion)\b/.test(norm)
+  ) {
+    return item.current ? "" : formatSectionDate(item.end, child, norm)
+  }
+  if (/\b(location|city|where)\b/.test(norm)) return fit(item.location)
+
+  if (kind === "work") {
+    if (/\b(company|employer|organization|organisation|firm)\b/.test(norm)) {
+      return fit(item.org)
+    }
+    if (/\b(title|position|role|designation|occupation)\b/.test(norm)) {
+      return fit(item.title)
+    }
+    if (/\b(description|responsibilit|summary|duties|achievements)/.test(norm)) {
+      return item.description
+    }
+    return ""
+  }
+
+  if (/\b(school|university|institution|college|academy)\b/.test(norm)) {
+    return fit(item.org)
+  }
+  if (/\b(major|field|study|discipline|specialization|concentration)\b/.test(norm)) {
+    return fit(item.major || item.degree)
+  }
+  if (/\b(degree|qualification|diploma|level|accreditation)\b/.test(norm)) {
+    return fit(item.degree)
+  }
+  if (/\b(gpa|grade)\b/.test(norm)) return fit(item.gpa)
+  return ""
+}
+
+/**
+ * Section records keyed by the form's own child labels (the engine matches
+ * record keys to child labels by exact normalized equality), plus common
+ * aliases used by site-specific formatAnswer hooks.
+ */
+function buildSectionRecords(
+  items: SectionItem[],
+  children: SectionChild[],
+  kind: "work" | "education"
+): Record<string, unknown>[] {
+  return items.map((item) => {
+    const record: Record<string, unknown> =
+      kind === "work"
+        ? {
+            Company: item.org,
+            "Company Name": item.org,
+            Title: item.title,
+            "Job Title": item.title,
+            Location: item.location,
+            Description: item.description
+          }
+        : {
+            School: item.org,
+            "School Name": item.org,
+            Degree: item.degree,
+            Major: item.major,
+            Study: item.major,
+            "Field of Study": item.major,
+            GPA: item.gpa,
+            Location: item.location
+          }
+    if (item.start) record.Start = item.start
+    if (item.end) record.End = item.end
+    record.isCurrent = item.current
+    for (const child of children) {
+      const value = resolveSectionChild(item, child, kind)
+      if (Array.isArray(value) ? value.length : value) record[child.label] = value
+    }
+    return record
+  })
+}
+
 /**
  * Local stand-in for Jobright fill-v2 / getGptResults.
  * Builds fill_data_list from hub identity + answers + structured extras.
@@ -953,9 +1196,30 @@ export function buildLocalGptResults(
   const jobright = hubToJobrightAutofill(hub)
   const fill_data_list: Array<{ name: string; value: string }> = []
 
+  const extras = (hub.extras && typeof hub.extras === "object"
+    ? hub.extras
+    : {}) as Record<string, unknown>
+  const workChildren = sectionChildren(elements, "employment")
+  const eduChildren = sectionChildren(elements, "education")
+  if (workChildren.length) {
+    jobright.Employment = buildSectionRecords(
+      workItems(extras),
+      workChildren,
+      "work"
+    )
+  }
+  if (eduChildren.length) {
+    jobright.Education = buildSectionRecords(
+      educationItems(extras),
+      eduChildren,
+      "education"
+    )
+  }
+
   for (const el of elements) {
     const label = typeof el?.label === "string" ? el.label : ""
     if (!label) continue
+    if (el.type === "employment" || el.type === "education") continue
     const options = elementOptions(el)
     let value = lookupAnswer(hub, label, options)
 

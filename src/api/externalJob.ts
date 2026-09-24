@@ -12,26 +12,25 @@ export function pollingExternalJob({
   onSuccess,
   onError,
 }) {
-  const intervalId = setInterval(async () => {
-    const result = await api()
-    if (!result) return
-    if (checkSuccess(result)) {
-      onSuccess()
-      clearInterval(intervalId)
-      clearTimeout(timeoutId)
-    }
-    if (checkFailed(result)) {
-      onError()
-      clearInterval(intervalId)
-      clearTimeout(timeoutId)
-    }
-  }, 5000)
-
-  const timeoutId = setTimeout(() => {
-    if (intervalId) clearInterval(intervalId)
+  let done = false
+  const finish = (callback) => {
+    if (done) return
+    done = true
+    clearInterval(intervalId)
     clearTimeout(timeoutId)
-    onError()
-  }, 30000)
+    callback()
+  }
+  const tick = async () => {
+    if (done) return
+    const result = await api()
+    if (!result || done) return
+    if (checkSuccess(result)) finish(onSuccess)
+    else if (checkFailed(result)) finish(onError)
+  }
+
+  const intervalId = setInterval(tick, 5000)
+  const timeoutId = setTimeout(() => finish(onError), 30000)
+  tick()
 }
 
 export async function fetchImportExternalJobStatus(jobId) {

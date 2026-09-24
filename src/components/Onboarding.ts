@@ -43,7 +43,7 @@ export default function Onboarding() {
           }),
           jsx(Typography.Text, {
             className: "hint-main-title",
-            children: "Autofill with Jobright",
+            children: "Autofill with Qyvarex",
           }),
           jsx(Typography.Text, {
             className: "hint-description",

@@ -95,20 +95,25 @@ export const useExternalJobStore = zustand.create((set, get) => ({
       name: "postExternalJobImport",
       body: formPayload,
     })
-    importedJobId === httpEnums.HTTP_STATUS_CODES.INTERNAL_SERVER_ERROR &&
-      get().setAndBroadcastAnalyzeStatus("error"),
-      importedJobId &&
-        (checkLinkedin.isLinkedinDomain(window.top.location.href) &&
-          messaging.sendToBackground({
-            name: "saveExternalJobId",
-            body: {
-              linkedinJobId: checkLinkedin.getCurrentJobId(),
-              externalJobId: importedJobId,
-            },
-          }),
-        set({
-          jobId: importedJobId,
-        })),
+    if (
+      !importedJobId ||
+      importedJobId === httpEnums.HTTP_STATUS_CODES.INTERNAL_SERVER_ERROR
+    ) {
+      get().setAndBroadcastAnalyzeStatus("error")
+      get().setIsAddingAnotherJob(false)
+      return
+    }
+    checkLinkedin.isLinkedinDomain(window.top.location.href) &&
+      messaging.sendToBackground({
+        name: "saveExternalJobId",
+        body: {
+          linkedinJobId: checkLinkedin.getCurrentJobId(),
+          externalJobId: importedJobId,
+        },
+      }),
+      set({
+        jobId: importedJobId,
+      }),
       externalJobApi.pollingExternalJob({
         api: async () =>
           messaging.sendToBackground({
@@ -203,6 +208,7 @@ export const useExternalJobStore = zustand.create((set, get) => ({
             body: {
               html,
               iframeSrcs,
+              url: window.location.href,
             },
           }),
           new Promise((resolve) => setTimeout(() => resolve(null), parseTimeoutMs)),
