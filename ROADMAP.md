@@ -44,5 +44,4 @@ Activate / ATS match
 npm run bundle:helper   # node build-helper.mjs
 npm run dev             # plasmo --src-path=src
 npm run build
-npm test
 ```

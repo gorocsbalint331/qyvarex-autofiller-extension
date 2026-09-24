@@ -23,7 +23,6 @@ Then: extension **Options** → sign in with hub email/password → select a pro
 **Production hub:** [https://jobright-team-site.vercel.app](https://jobright-team-site.vercel.app)
 
 ```bash
-npm test           # crawler fixture tests
 npm run build      # build/chrome-mv3-prod
 npm run package    # build/chrome-mv3-prod.zip
 ```
@@ -49,7 +48,6 @@ extension/
                          #   + Jobright ATS engine / helper UI (bundled → helper-app.js)
   build-helper.mjs       # esbuild src/helper-entry.ts → assets/helper-app.js
   assets/helper-app.js   # injected fill runtime
-  tests/
 ```
 
 ## Team workflow
@@ -57,4 +55,3 @@ extension/
 1. Manage identity/resumes/answers on **team-site**.
 2. Everything lives in **`src/`**. Only `src/contents/bootstrap.ts` is a Plasmo content script; keep other files out of the top level of `src/contents/` (Plasmo registers each one as a content script).
 3. Prefer label→answer fixes in `src/lib/hub-to-jobright.ts` over crawler rewrites.
-4. Add ATS HTML fixtures under `tests/fixtures/` when hardening discovery.
