@@ -1,4 +1,4 @@
-﻿import type { PlasmoMessaging } from "@plasmohq/messaging"
+import type { PlasmoMessaging } from "@plasmohq/messaging"
 
 import { fetchAutofillInfo } from "~api/team-client"
 import { lookupAnswer } from "~lib/hub-to-jobright"

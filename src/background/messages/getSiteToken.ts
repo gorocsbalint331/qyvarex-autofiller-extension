@@ -1,4 +1,4 @@
-﻿import type { PlasmoMessaging } from "@plasmohq/messaging"
+import type { PlasmoMessaging } from "@plasmohq/messaging"
 
 /**
  * Site CSRF / session token — unused by team hub local fill path.

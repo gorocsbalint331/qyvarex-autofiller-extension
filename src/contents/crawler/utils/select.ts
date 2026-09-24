@@ -2,7 +2,7 @@ import {
   findExactChoice,
   fuzzyFindBest,
   normalizeChoiceText
-} from "~contents/methods/choice-match"
+} from "~contents/methods/native-choice-match"
 import { delay } from "~contents/crawler/utils/delay"
 
 export function findMatchOption(

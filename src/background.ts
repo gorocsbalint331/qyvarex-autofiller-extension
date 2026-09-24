@@ -3,7 +3,7 @@
  * Message handlers live in background/messages/*.
  */
 
-import { getHubUrl } from "~api/env-resolver"
+import { getHubUrl } from "~api/hub-env"
 import { saveTeamSettings } from "~api/team-client"
 
 chrome.runtime.onMessageExternal.addListener((message, _sender, sendResponse) => {

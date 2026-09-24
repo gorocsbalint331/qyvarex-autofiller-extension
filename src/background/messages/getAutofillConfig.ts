@@ -1,13 +1,21 @@
-﻿import type { PlasmoMessaging } from "@plasmohq/messaging"
+import type { PlasmoMessaging } from "@plasmohq/messaging"
 
-/** Stub — port from engine/background/src/background/messages/getAutofillConfig.js */
+/**
+ * Static autofill feature config — Jobright fetches this from cloud.
+ * Empty/default copy keeps payment banners from resolving to upsell text.
+ */
+const TEAM_AUTOFILL_CONFIG = {
+  autofillBannerCopy: { off: "" },
+  autofillStuBannerCopy: { off: "" },
+  autofillCreditsCopy: { off: "" },
+  enableAutofill: true,
+  enableResumeUpload: true,
+  enableCoverLetter: true,
+  teamHub: true
+}
+
 const handler: PlasmoMessaging.MessageHandler = async (_req, res) => {
-  res.send({
-    ok: false,
-    stub: true,
-    handler: "getAutofillConfig",
-    message: "Not implemented yet in the team fork"
-  })
+  res.send(TEAM_AUTOFILL_CONFIG)
 }
 
 export default handler

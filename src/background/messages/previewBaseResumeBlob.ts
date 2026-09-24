@@ -1,4 +1,4 @@
-﻿import type { PlasmoMessaging } from "@plasmohq/messaging"
+import type { PlasmoMessaging } from "@plasmohq/messaging"
 
 import { resolveResumeBlobResponse } from "~background/lib/resume-blob"
 

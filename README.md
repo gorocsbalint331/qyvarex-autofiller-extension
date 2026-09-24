@@ -1,11 +1,7 @@
 Buildable Chrome MV3 extension for the **internal team**. Profile data comes from **[`../team-site`](../team-site)** (Team Autofill Hub).
 
-The fill engine is injected as **`assets/helper-app.js`**:
+The fill engine is injected as **`assets/helper-app.js`**, built from the full Jobright helper (`src/bootstrapJobrightHelperRuntime.ts`) via [`build-helper.mjs`](./build-helper.mjs).
 
-- **Default:** Parcel dump vendored at [`vendor/helper-app`](./vendor/helper-app) (`npm run bundle:helper`)
-- **TS path:** [`src/engine`](./src/engine) + [`src/contents`](./src/contents) (`npm run bundle:helper:ts`)
-
-Monorepo `../engine` is optional. Confirm with `npm run check:engine-independent`, smoke Activate, then trash `../engine`. See **[ROADMAP.md](./ROADMAP.md)**.
 
 ## Setup
 
@@ -45,39 +41,20 @@ npm run package    # build/chrome-mv3-prod.zip
 
 Settings are stored in `chrome.storage.local` under `teamHubSettings`.
 
-## What’s ported (v0.4)
-
-| Area | Status |
-|------|--------|
-| Plasmo MV3 + team hub | ✅ |
-| Engine helper bundle (Parcel default) | ✅ |
-| Clean-TS fill in `src/contents` + `src/engine` | ✅ |
-| Popup Activate / Clean-TS fill | ✅ |
-| Ashby / Workday / Oracle widget modules + LOV capture | ✅ |
-| Fixture + widget unit tests | ✅ (`npm test`) |
-| Full helper UI / every Fiber edge case | ⬜ still in `engine/helper-app` |
-
 ## Layout
 
 ```
 extension/
-  src/
-    engine/              # TS helper entry (bundle:helper:ts)
-    contents/            # bootstrap + Clean-TS fill stack
-    api/                 # hub client + env
-    background/messages/ # Plasmo handlers (incl. injectHelperAppBundle)
-    crawler/             # fixture-facing discovers
-    lib/hub-to-jobright.ts
-    options.tsx / popup.tsx
-  vendor/helper-app/     # Parcel runtime (default bundle:helper)
+  src/                   # Plasmo --src-path: popup, options, background, Activate CS
+                         #   + Jobright ATS engine / helper UI (bundled → helper-app.js)
+  build-helper.mjs       # esbuild src/helper-entry.ts → assets/helper-app.js
   assets/helper-app.js   # injected fill runtime
-  tests/fixtures/
+  tests/
 ```
 
 ## Team workflow
 
 1. Manage identity/resumes/answers on **team-site**.
-2. Prefer new ATS work in **`src/contents`**; use Parcel bundle only for unported Fiber/UI.
-3. Prefer label→answer fixes in `hub-to-jobright.ts` over crawler rewrites.
+2. Everything lives in **`src/`**. Only `src/contents/bootstrap.ts` is a Plasmo content script; keep other files out of the top level of `src/contents/` (Plasmo registers each one as a content script).
+3. Prefer label→answer fixes in `src/lib/hub-to-jobright.ts` over crawler rewrites.
 4. Add ATS HTML fixtures under `tests/fixtures/` when hardening discovery.
-5. After parity, remove dependency on `../engine` and delete that folder.

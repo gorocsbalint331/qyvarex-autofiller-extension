@@ -1,13 +1,20 @@
-﻿import type { PlasmoMessaging } from "@plasmohq/messaging"
+import type { PlasmoMessaging } from "@plasmohq/messaging"
 
-/** Stub — port from engine/background/src/background/messages/getOpenRegions.js */
-const handler: PlasmoMessaging.MessageHandler = async (_req, res) => {
-  res.send({
-    ok: false,
-    stub: true,
-    handler: "getOpenRegions",
-    message: "Not implemented yet in the team fork"
-  })
+import { fetchOpenRegions } from "~api/team-client"
+
+/** Returns region array [{ code, name }] (Jobright shape). */
+const handler: PlasmoMessaging.MessageHandler = async (req, res) => {
+  try {
+    const country =
+      typeof req.body?.country === "string" ? req.body.country : ""
+    if (!country) {
+      res.send([])
+      return
+    }
+    res.send(await fetchOpenRegions(country))
+  } catch {
+    res.send([])
+  }
 }
 
 export default handler

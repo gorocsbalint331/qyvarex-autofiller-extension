@@ -2,7 +2,7 @@
  * Resolve ATS id from hostname/href using the Jobright site registry.
  */
 
-import { SITE_REGISTRY, type SiteDefinition } from "~core/supported-sites"
+import { SITE_REGISTRY, type SiteDefinition } from "~core/native-supported-sites"
 
 export type RegistryAtsId = string
 

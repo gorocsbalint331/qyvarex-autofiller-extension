@@ -1,13 +1,3 @@
-﻿import type { PlasmoMessaging } from "@plasmohq/messaging"
+import { softOk } from "~background/lib/soft-stub"
 
-/** Stub — port from engine/background/src/background/messages/saveExternalJobId.js */
-const handler: PlasmoMessaging.MessageHandler = async (_req, res) => {
-  res.send({
-    ok: false,
-    stub: true,
-    handler: "saveExternalJobId",
-    message: "Not implemented yet in the team fork"
-  })
-}
-
-export default handler
+export default softOk("saveExternalJobId")

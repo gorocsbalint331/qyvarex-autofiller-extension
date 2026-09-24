@@ -1,13 +1,14 @@
-﻿import type { PlasmoMessaging } from "@plasmohq/messaging"
+import type { PlasmoMessaging } from "@plasmohq/messaging"
 
-/** Stub — port from engine/background/src/background/messages/getMajorSuggestions.js */
-const handler: PlasmoMessaging.MessageHandler = async (_req, res) => {
-  res.send({
-    ok: false,
-    stub: true,
-    handler: "getMajorSuggestions",
-    message: "Not implemented yet in the team fork"
-  })
+import { fetchMajorSuggestions } from "~api/team-client"
+
+const handler: PlasmoMessaging.MessageHandler = async (req, res) => {
+  try {
+    const input = typeof req.body?.input === "string" ? req.body.input : ""
+    res.send(await fetchMajorSuggestions(input))
+  } catch {
+    res.send([])
+  }
 }
 
 export default handler

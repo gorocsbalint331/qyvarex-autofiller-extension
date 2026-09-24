@@ -1,8 +1,9 @@
-/** Exact / normalized choice matching (port of engine choice-match).
- * Oracle: engine/helper-app/src/contents/methods/choice-match.js
+// @ts-nocheck
+/**
+ * Exact choice matching for select / radio / checkbox labels.
  */
 
-export function normalizeChoiceText(value: unknown): string {
+export function normalizeChoiceText(value) {
   if (typeof value !== "string" && typeof value !== "number") return ""
   return String(value)
     .normalize("NFKC")
@@ -13,56 +14,25 @@ export function normalizeChoiceText(value: unknown): string {
     .toLowerCase()
 }
 
-export function isExactChoiceMatch(optionText: unknown, want: unknown): boolean {
-  const w = normalizeChoiceText(want)
-  return !!w && normalizeChoiceText(optionText) === w
+export function isExactChoiceMatch(candidate, target) {
+  const normalizedTarget = normalizeChoiceText(target)
+  return !!normalizedTarget && normalizeChoiceText(candidate) === normalizedTarget
 }
 
-export function findExactChoice<T>(
-  items: T[],
-  want: unknown,
-  getLabel: (item: T) => unknown,
-  getSecondary?: (item: T) => unknown
-): T | undefined {
-  if (!normalizeChoiceText(want)) return undefined
-  const byLabel = items.filter((item) => isExactChoiceMatch(getLabel(item), want))
-  if (byLabel.length === 1) return byLabel[0]
-  if (byLabel.length > 1 || !getSecondary) return undefined
-  const bySec = items.filter((item) =>
-    isExactChoiceMatch(getSecondary(item), want)
+export function findExactChoice(items, target, getPrimaryText, getFallbackText) {
+  if (!normalizeChoiceText(target)) return
+
+  const primaryHits = items.filter((item) =>
+    isExactChoiceMatch(getPrimaryText(item), target),
   )
-  return bySec.length === 1 ? bySec[0] : undefined
-}
-
-/** Simple fuzzy score 0–1 (token overlap + substring). */
-export function fuzzyScore(a: string, b: string): number {
-  const na = normalizeChoiceText(a)
-  const nb = normalizeChoiceText(b)
-  if (!na || !nb) return 0
-  if (na === nb) return 1
-  if (nb.includes(na) || na.includes(nb)) return 0.85
-  const at = new Set(na.split(" ").filter(Boolean))
-  const bt = nb.split(" ").filter(Boolean)
-  if (!bt.length) return 0
-  let hit = 0
-  for (const t of bt) if (at.has(t)) hit += 1
-  return hit / Math.max(at.size, bt.length)
-}
-
-export function fuzzyFindBest<T>(
-  items: T[],
-  want: string,
-  getLabel: (item: T) => string,
-  minScore = 0.45
-): T | undefined {
-  let best: T | undefined
-  let bestScore = 0
-  for (const item of items) {
-    const s = fuzzyScore(want, getLabel(item))
-    if (s > bestScore) {
-      bestScore = s
-      best = item
-    }
+  if (primaryHits.length) {
+    return primaryHits.length === 1 ? primaryHits[0] : undefined
   }
-  return bestScore >= minScore ? best : undefined
+
+  if (!getFallbackText) return
+
+  const fallbackHits = items.filter((item) =>
+    isExactChoiceMatch(getFallbackText(item), target),
+  )
+  return fallbackHits.length === 1 ? fallbackHits[0] : undefined
 }

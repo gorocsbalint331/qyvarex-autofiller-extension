@@ -1,108 +1,124 @@
+// @ts-nocheck
 /**
- * Cloudflare managed-challenge detection (ported from ~core/cloudflare-challenge).
+ * Readable TypeScript converted from Parcel dump (helper-runtime/src/core/cloudflare-challenge.js).
+ * Bundled directly by scripts/bundle-engine-helper.mjs.
  */
-
-const CF_RUNTIME_MARKER =
+const MANAGED_RUNTIME_RE =
   /(?:\/cdn-cgi\/challenge-platform\b|window\._cf_chl_opt|__cf_chl_|cf_chl_opt|cf_chl_)/i
-const CF_TITLE_HINT = /(?:just a moment|security verification|one more step)/i
-const CF_BODY_HINTS = [
+const CHALLENGE_TITLE_RE =
+  /(?:just a moment|security verification|one more step)/i
+const CHALLENGE_BODY_RES = [
   /performing security verification/i,
   /checking (?:if|that) (?:the )?(?:site )?connection is secure/i,
   /this website uses a security service to protect against malicious bots/i,
-  /this page is displayed while the website verifies you are not a bot/i
+  /this page is displayed while the website verifies you are not a bot/i,
 ]
-const CF_RAY_ID = /\b(?:cloudflare\s+)?ray id\s*:?\s*[a-f0-9]{12,}\b/i
-const CF_FOOTER = /performance and security by cloudflare/i
+const RAY_ID_RE = /\b(?:cloudflare\s+)?ray id\s*:?\s*[a-f0-9]{12,}\b/i
+const CF_FOOTER_RE = /performance and security by cloudflare/i
+const CHALLENGE_MARKER_SELECTOR =
+  '#challenge-stage,#cf-challenge-running,#cf-please-wait,.cf-browser-verification,.cf-challenge,form[action*="/cdn-cgi/challenge-platform/"]'
+const CHALLENGE_SCRIPT_SELECTOR = 'script[src*="/cdn-cgi/challenge-platform/"]'
 
-export type CloudflareProbe = {
-  title: string
-  bodyText: string
-  html?: string
-  managedRuntimeFound: boolean
-  challengeMarkerFound: boolean
-  interactiveElementCount: number
-}
-
-function normalizeWhitespace(text: string): string {
+function normalizeWhitespace(text) {
   return (text || "").replace(/\s+/g, " ").trim()
 }
 
-function bodyLooksLikeCloudflareChallenge(bodyText: string): boolean {
+function isJobrightUrl(url) {
+  if (!url) return false
+  try {
+    let { hostname } = new URL(url)
+    return "jobright.ai" === hostname || hostname.endsWith(".jobright.ai")
+  } catch {
+    return false
+  }
+}
+
+function hasChallengeBodyCopy(bodyText) {
   return (
-    CF_BODY_HINTS.some((re) => re.test(bodyText)) ||
+    !!CHALLENGE_BODY_RES.some((pattern) => pattern.test(bodyText)) ||
     (/verify you are human/i.test(bodyText) &&
       /cloudflare/i.test(bodyText) &&
       /(?:not a bot|malicious bots|security service)/i.test(bodyText))
   )
 }
 
-function hasCloudflareFooter(bodyText: string): boolean {
-  return CF_RAY_ID.test(bodyText) && CF_FOOTER.test(bodyText)
+function hasCloudflareFooterSignals(bodyText) {
+  return RAY_ID_RE.test(bodyText) && CF_FOOTER_RE.test(bodyText)
 }
 
-function isSparseChallengeDocument({
+function isSparseChallengePage({
   bodyText,
   interactiveElementCount,
-  allowFooterLinks = false
-}: {
-  bodyText: string
-  interactiveElementCount: number
-  allowFooterLinks?: boolean
-}): boolean {
-  const length = bodyText.length
-  const interactive = interactiveElementCount ?? 0
+  allowFooterLinks = false,
+}) {
+  let bodyLength = bodyText.length
+  let interactiveCount = interactiveElementCount ?? 0
   return allowFooterLinks
-    ? length <= 1500 && interactive <= 20
-    : length <= 2500 && interactive <= 4
+    ? bodyLength <= 1500 && interactiveCount <= 20
+    : bodyLength <= 2500 && interactiveCount <= 4
 }
 
-export function isCloudflareManagedChallengePage(probe: CloudflareProbe): boolean {
-  const title = normalizeWhitespace(probe.title)
-  const bodyText = normalizeWhitespace(probe.bodyText)
-  const html = probe.html || ""
-  const hasManagedRuntime =
-    !!probe.managedRuntimeFound || CF_RUNTIME_MARKER.test(html)
-  const hasFooter = hasCloudflareFooter(bodyText)
-  const hasChallengeSignal =
-    hasManagedRuntime || !!probe.challengeMarkerFound || hasFooter
-  const titleLooksLikeChallenge = CF_TITLE_HINT.test(title)
-  const copyLooksLikeChallenge =
-    bodyLooksLikeCloudflareChallenge(bodyText) ||
-    titleLooksLikeChallenge ||
-    hasFooter
-
+export function isCloudflareManagedChallengePage(probe) {
+  let title = normalizeWhitespace(probe.title)
+  let bodyText = normalizeWhitespace(probe.bodyText)
+  let html = probe.html || ""
+  let managedRuntimeFound =
+    !!probe.managedRuntimeFound || MANAGED_RUNTIME_RE.test(html)
+  let footerSignals = hasCloudflareFooterSignals(bodyText)
+  let hasPlatformSignals =
+    managedRuntimeFound || !!probe.challengeMarkerFound || footerSignals
+  let titleLooksLikeChallenge = CHALLENGE_TITLE_RE.test(title)
+  let bodyLooksLikeChallenge =
+    hasChallengeBodyCopy(bodyText) || titleLooksLikeChallenge || footerSignals
   return (
-    hasChallengeSignal &&
-    copyLooksLikeChallenge &&
-    isSparseChallengeDocument({
+    hasPlatformSignals &&
+    bodyLooksLikeChallenge &&
+    isSparseChallengePage({
       bodyText,
       interactiveElementCount: probe.interactiveElementCount,
-      allowFooterLinks: hasFooter || (hasManagedRuntime && titleLooksLikeChallenge)
+      allowFooterLinks: footerSignals || (managedRuntimeFound && titleLooksLikeChallenge),
     })
   )
 }
 
-export function collectCloudflareChallengePageProbe(
-  doc: Document
-): CloudflareProbe {
-  const title = doc.title
-  const challengeMarkerFound = !!doc.querySelector(
-    '#challenge-stage,#cf-challenge-running,#cf-please-wait,.cf-browser-verification,.cf-challenge,form[action*="/cdn-cgi/challenge-platform/"]'
+function looksLikePossibleChallengePage(probe) {
+  let title = normalizeWhitespace(probe.title)
+  let bodyText = normalizeWhitespace(probe.bodyText)
+  let html = probe.html || ""
+  let managedRuntimeFound =
+    !!probe.managedRuntimeFound || MANAGED_RUNTIME_RE.test(html)
+  let footerSignals = hasCloudflareFooterSignals(bodyText)
+  let hasPlatformSignals =
+    managedRuntimeFound || !!probe.challengeMarkerFound || footerSignals
+  let titleLooksLikeChallenge = CHALLENGE_TITLE_RE.test(title)
+  let bodyLooksLikeChallenge =
+    hasChallengeBodyCopy(bodyText) || titleLooksLikeChallenge || footerSignals
+  return (
+    !!hasPlatformSignals ||
+    !!titleLooksLikeChallenge ||
+    !!bodyLooksLikeChallenge ||
+    isSparseChallengePage({
+      bodyText,
+      interactiveElementCount: probe.interactiveElementCount,
+    })
   )
-  const win = doc.defaultView as (Window & { _cf_chl_opt?: unknown }) | null
-  const managedRuntimeFound = !!(
-    doc.querySelector('script[src*="/cdn-cgi/challenge-platform/"]') ||
-    win?._cf_chl_opt
+}
+
+export function collectCloudflareChallengePageProbe(doc) {
+  let title = doc.title
+  let challengeMarkerFound = !!doc.querySelector(CHALLENGE_MARKER_SELECTOR)
+  let defaultView = doc.defaultView
+  let managedRuntimeFound = !!(
+    doc.querySelector(CHALLENGE_SCRIPT_SELECTOR) || defaultView?._cf_chl_opt
   )
-  const interactiveElementCount = doc.querySelectorAll(
-    "button, input, select, textarea, a[href], [role='button']"
+  let interactiveElementCount = doc.querySelectorAll(
+    "button, input, select, textarea, a[href], [role='button']",
   ).length
-  const shouldReadBody =
+  let shouldReadBody =
     managedRuntimeFound ||
     challengeMarkerFound ||
-    CF_TITLE_HINT.test(normalizeWhitespace(title)) ||
+    CHALLENGE_TITLE_RE.test(normalizeWhitespace(title)) ||
     interactiveElementCount <= 4
-
   return {
     title,
     bodyText: shouldReadBody
@@ -110,90 +126,91 @@ export function collectCloudflareChallengePageProbe(
       : "",
     managedRuntimeFound,
     challengeMarkerFound,
-    interactiveElementCount
+    interactiveElementCount,
   }
 }
 
-export function isCurrentDocumentCloudflareManagedChallengePage(): boolean {
+export function isCurrentDocumentCloudflareManagedChallengePage() {
   return (
-    typeof document !== "undefined" &&
-    isCloudflareManagedChallengePage(collectCloudflareChallengePageProbe(document))
-  )
-}
-
-function isJobrightHostname(href?: string): boolean {
-  if (!href) return false
-  try {
-    const { hostname } = new URL(href)
-    return hostname === "jobright.ai" || hostname.endsWith(".jobright.ai")
-  } catch {
-    return false
-  }
-}
-
-function stillLooksLikePossibleChallenge(probe: CloudflareProbe): boolean {
-  const title = normalizeWhitespace(probe.title)
-  const bodyText = normalizeWhitespace(probe.bodyText)
-  const html = probe.html || ""
-  const hasManagedRuntime =
-    !!probe.managedRuntimeFound || CF_RUNTIME_MARKER.test(html)
-  const hasFooter = hasCloudflareFooter(bodyText)
-  const hasChallengeSignal =
-    hasManagedRuntime || !!probe.challengeMarkerFound || hasFooter
-  const titleLooksLikeChallenge = CF_TITLE_HINT.test(title)
-  const copyLooksLikeChallenge =
-    bodyLooksLikeCloudflareChallenge(bodyText) ||
-    titleLooksLikeChallenge ||
-    hasFooter
-  return (
-    !!hasChallengeSignal ||
-    !!titleLooksLikeChallenge ||
-    !!copyLooksLikeChallenge ||
-    isSparseChallengeDocument({
-      bodyText,
-      interactiveElementCount: probe.interactiveElementCount
-    })
+    "undefined" != typeof document &&
+    isCloudflareManagedChallengePage(
+      collectCloudflareChallengePageProbe(document),
+    )
   )
 }
 
 export async function waitForCloudflareManagedChallengePage({
   timeoutMs = 1500,
   intervalMs = 100,
-  currentUrl = typeof window === "undefined" ? undefined : window.location.href,
-  collectProbe
-}: {
-  timeoutMs?: number
-  intervalMs?: number
-  currentUrl?: string
-  collectProbe?: () => CloudflareProbe | null
-} = {}): Promise<boolean> {
-  if (isJobrightHostname(currentUrl)) return false
-
-  const probe =
+  currentUrl =
+    "undefined" == typeof window ? undefined : window.location.href,
+  collectProbe,
+} = {}) {
+  if (isJobrightUrl(currentUrl)) return false
+  let probeCollector =
     collectProbe ||
     (() =>
-      typeof document === "undefined"
+      "undefined" == typeof document
         ? null
         : collectCloudflareChallengePageProbe(document))
-  const deadline = Date.now() + timeoutMs
-
+  let deadline = Date.now() + timeoutMs
   for (;;) {
-    const snapshot = probe()
-    if (snapshot && isCloudflareManagedChallengePage(snapshot)) return true
+    let probe = probeCollector()
+    if (probe && isCloudflareManagedChallengePage(probe)) return true
     if (
-      (snapshot && !stillLooksLikePossibleChallenge(snapshot)) ||
+      (probe && !looksLikePossibleChallengePage(probe)) ||
       Date.now() >= deadline
-    ) {
+    )
       return false
-    }
-    await new Promise((resolve) => setTimeout(resolve, Math.max(0, intervalMs)))
+    await new Promise((resolve) =>
+      setTimeout(resolve, Math.max(0, intervalMs)),
+    )
   }
 }
 
-export function removeCloudflareChallengeInjectedHost(elementId: string): boolean {
-  if (typeof document === "undefined") return false
-  const el = document.getElementById(elementId)
-  if (!el) return false
-  el.remove()
-  return true
+export function removeCloudflareChallengeInjectedHost(hostId) {
+  if ("undefined" == typeof document) return false
+  let host = document.getElementById(hostId)
+  return !!host && (host.remove(), true)
+}
+
+export function startCloudflareChallengeInjectedHostCleanup(
+  hostId,
+  { timeoutMs = 5e3, intervalMs = 250 } = {},
+) {
+  if ("undefined" == typeof document)
+    return () => {}
+  let stopped = false
+  let timeoutHandle = null
+  let intervalHandle = null
+  let mutationObserver = null
+  let stop = () => {
+    stopped ||
+      ((stopped = true),
+      timeoutHandle && clearTimeout(timeoutHandle),
+      intervalHandle && clearInterval(intervalHandle),
+      mutationObserver?.disconnect())
+  }
+  let checkAndCleanup = () => {
+    !stopped &&
+      isCurrentDocumentCloudflareManagedChallengePage() &&
+      (removeCloudflareChallengeInjectedHost(hostId), stop())
+  }
+  return (
+    checkAndCleanup(),
+    !stopped &&
+      ((intervalHandle = setInterval(checkAndCleanup, intervalMs)),
+      (timeoutHandle = setTimeout(stop, timeoutMs)),
+      "undefined" != typeof MutationObserver &&
+        document.documentElement &&
+        (mutationObserver = new MutationObserver(checkAndCleanup)).observe(
+          document.documentElement,
+          {
+            childList: true,
+            subtree: true,
+            characterData: true,
+          },
+        )),
+    stop
+  )
 }

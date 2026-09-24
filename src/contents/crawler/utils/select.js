@@ -9,7 +9,7 @@
 var n = e("@parcel/transformer-js/src/esmodule-helpers.js");
 n.defineInteropFlag(r), n.export(r, "fuzzyFindBest", () => a), n.export(r, "findMatchOption", () =>
   l);
-var o = e("~contents/methods/choice-match");
+var o = e("~contents/methods/native-choice-match");
 
 function i(e, t) {
   if (0 === e.length) return t.length;

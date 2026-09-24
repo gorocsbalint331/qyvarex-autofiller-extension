@@ -5,13 +5,22 @@ const HELPER_BUNDLE = "assets/helper-app.js"
 /**
  * Activate the helper on a tab from the popup.
  *
- * "Receiving end does not exist" means no content script is listening
- * (page opened before the extension loaded, or CS not injected yet).
- * Re-injecting Plasmo's CS via scripting often still fails to attach
- * listeners, so we fall back to injecting the helper bundle directly.
+ * After an extension reload, a stale content script may still receive
+ * messages but cannot use chrome.* APIs. We require an explicit { ok: true }
+ * ACK; anything else falls back to injecting the helper bundle directly.
  */
-async function pingIconClicked(tabId: number) {
-  await chrome.tabs.sendMessage(tabId, { message: "iconClicked" })
+async function pingIconClicked(
+  tabId: number
+): Promise<{ ok: boolean; response?: unknown }> {
+  const response = await chrome.tabs.sendMessage(
+    tabId,
+    { message: "iconClicked" },
+    { frameId: 0 }
+  )
+  if (response && typeof response === "object" && (response as { ok?: boolean }).ok === true) {
+    return { ok: true }
+  }
+  return { ok: false, response }
 }
 
 async function injectHelperDirectly(tabId: number) {
@@ -29,9 +38,12 @@ async function injectHelperDirectly(tabId: number) {
         bootstrapJobrightHelperRuntime?: () => void | Promise<void>
         openJobrightHelperFromExtensionIcon?: () => void | Promise<void>
       }
-      const boot =
-        g.bootstrapJobrightHelperRuntime || g.openJobrightHelperFromExtensionIcon
-      if (typeof boot === "function") void boot()
+      const boot = g.bootstrapJobrightHelperRuntime
+      const open = g.openJobrightHelperFromExtensionIcon
+      void (async () => {
+        if (typeof boot === "function") await boot()
+        if (typeof open === "function") await open()
+      })()
     }
   })
 }
@@ -64,9 +76,15 @@ const handler: PlasmoMessaging.MessageHandler<{ tabId?: number }> = async (
     }
 
     try {
-      await pingIconClicked(tabId)
-      res.send({ success: true, mode: "content_script" })
-      return
+      const ack = await pingIconClicked(tabId)
+      if (ack.ok) {
+        res.send({ success: true, mode: "content_script" })
+        return
+      }
+      console.warn(
+        "[activateHelperOnTab] content script ACK failed — direct inject",
+        ack.response
+      )
     } catch (pingError) {
       console.warn(
         "[activateHelperOnTab] content script missing, injecting helper directly:",

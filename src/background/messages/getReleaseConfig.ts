@@ -1,12 +1,13 @@
-﻿import type { PlasmoMessaging } from "@plasmohq/messaging"
+import type { PlasmoMessaging } from "@plasmohq/messaging"
 
-/** Stub — port from engine/background/src/background/messages/getReleaseConfig.js */
+/** No forced update / what's-new from Jobright cloud. */
 const handler: PlasmoMessaging.MessageHandler = async (_req, res) => {
   res.send({
-    ok: false,
-    stub: true,
-    handler: "getReleaseConfig",
-    message: "Not implemented yet in the team fork"
+    version: chrome.runtime.getManifest().version,
+    hasWhatsNewContent: false,
+    whatsNew: { features: [], updates: [], improvements: [] },
+    releasedAt: null,
+    stub: true
   })
 }
 

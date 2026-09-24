@@ -1,13 +1,8 @@
-﻿import type { PlasmoMessaging } from "@plasmohq/messaging"
+import type { PlasmoMessaging } from "@plasmohq/messaging"
 
-/** Stub — port from engine/background/src/background/messages/countExternalJobIds.js */
+/** No LinkedIn↔external id store yet — report zero. */
 const handler: PlasmoMessaging.MessageHandler = async (_req, res) => {
-  res.send({
-    ok: false,
-    stub: true,
-    handler: "countExternalJobIds",
-    message: "Not implemented yet in the team fork"
-  })
+  res.send(0)
 }
 
 export default handler

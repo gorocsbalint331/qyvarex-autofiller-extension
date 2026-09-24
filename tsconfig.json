@@ -1,8 +1,8 @@
 {
   "$schema": "https://json.schemastore.org/tsconfig",
   "files": ["node_modules/plasmo/templates/plasmo.d.ts"],
-  "exclude": ["node_modules"],
-  "include": [".plasmo/index.d.ts", "./**/*.ts", "./**/*.tsx"],
+  "exclude": ["node_modules", "build", "assets"],
+  "include": [".plasmo/index.d.ts", "./src/**/*.ts", "./src/**/*.tsx", "./tests/**/*.ts"],
   "compilerOptions": {
     "strict": false,
     "skipLibCheck": true,

@@ -1,15 +1,224 @@
-.new-tab {
-  background-color: #f0f0f0;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
-  color: #333;
+@import url("https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap");
+
+:root {
+  --qx-teal: #0f766e;
+  --qx-teal-deep: #0d5c56;
+  --qx-teal-soft: #e6f5f3;
+  --qx-teal-border: #9fd5cf;
+  --qx-ink: #15202b;
+  --qx-muted: #5b6b7c;
+  --qx-line: #d9e2ec;
+  --qx-bg: #ffffff;
+  --qx-radius: 10px;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  background: var(--qx-bg);
+}
+
+.qx-popup {
+  box-sizing: border-box;
+  width: 320px;
+  padding: 18px 18px 16px;
+  font-family: "Plus Jakarta Sans", "Segoe UI", sans-serif;
+  color: var(--qx-ink);
+  background: var(--qx-bg);
+}
+
+.qx-popup *,
+.qx-popup *::before,
+.qx-popup *::after {
+  box-sizing: border-box;
+}
+
+.qx-brand {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+
+.qx-brand img {
   display: block;
-  font-size: 12px;
-  line-height: 16px;
-  margin: 0 0 10px;
-  padding: 10px;
-  position: relative;
-  text-decoration: none;
+  width: 28px;
+  height: 28px;
+  border-radius: 999px;
+}
+
+.qx-brand__name {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  text-transform: lowercase;
+  color: var(--qx-ink);
+}
+
+.qx-alert {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 10px 12px;
+  margin-bottom: 16px;
+  border: 1px solid var(--qx-teal-border);
+  border-radius: 8px;
+  background: var(--qx-teal-soft);
+  color: var(--qx-teal-deep);
+  font-size: 13px;
+  line-height: 1.35;
+  font-weight: 500;
+}
+
+.qx-alert svg {
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+.qx-alert--ok {
+  border-color: #b7e0c2;
+  background: #eef8f1;
+  color: #1b5e3b;
+}
+
+.qx-headline {
+  margin: 0 0 12px;
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.3;
+}
+
+.qx-benefits {
+  list-style: none;
+  margin: 0 0 18px;
+  padding: 0;
+  display: grid;
+  gap: 10px;
+}
+
+.qx-benefits li {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  font-size: 13.5px;
+  line-height: 1.35;
+  color: var(--qx-ink);
+}
+
+.qx-benefits svg {
+  flex-shrink: 0;
+  margin-top: 2px;
+  color: var(--qx-teal);
+}
+
+.qx-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
   width: 100%;
+  min-height: 42px;
+  padding: 10px 14px;
+  border: 0;
+  border-radius: 8px;
+  background: var(--qx-teal);
+  color: #fff;
+  font: inherit;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.qx-btn:hover {
+  background: var(--qx-teal-deep);
+}
+
+.qx-btn:disabled {
+  opacity: 0.65;
+  cursor: wait;
+}
+
+.qx-btn--ghost {
+  margin-top: 8px;
+  background: #fff;
+  color: var(--qx-ink);
+  border: 1px solid var(--qx-line);
+  font-weight: 600;
+}
+
+.qx-btn--ghost:hover {
+  background: #f7fafc;
+}
+
+.qx-footer {
+  margin-top: 14px;
+  text-align: center;
+  font-size: 12.5px;
+  color: var(--qx-muted);
+}
+
+.qx-footer a,
+.qx-footer button.link {
+  color: var(--qx-teal);
+  font-weight: 600;
+  text-decoration: none;
+  background: none;
+  border: 0;
+  padding: 0;
+  font: inherit;
+  cursor: pointer;
+}
+
+.qx-footer .ext-icon {
+  display: inline-block;
+  vertical-align: -2px;
+  margin-left: 2px;
+}
+
+.qx-label {
+  display: block;
+  margin-bottom: 12px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--qx-muted);
+}
+
+.qx-select {
+  display: block;
+  width: 100%;
+  margin-top: 6px;
+  padding: 9px 10px;
+  border: 1px solid var(--qx-line);
+  border-radius: 8px;
+  background: #fff;
+  font: inherit;
+  font-size: 13px;
+  color: var(--qx-ink);
+}
+
+.qx-meta {
+  margin: 0 0 12px;
+  padding: 8px 10px;
+  border-radius: 8px;
+  background: #f5f7fa;
+  font-size: 11px;
+  line-height: 1.4;
+  color: var(--qx-muted);
+  word-break: break-all;
+}
+
+.qx-status {
+  margin: 12px 0 0;
+  font-size: 12px;
+  color: var(--qx-muted);
+}
+
+.qx-loading {
+  margin: 8px 0 0;
+  font-size: 12px;
+  color: var(--qx-muted);
 }

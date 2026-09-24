@@ -1,9 +1,10 @@
+// @ts-nocheck
 /**
  * Decide whether the helper runtime should activate on this frame.
- * Ported from ~contents/shared/runtime-activation + ~core/supported-sites usage.
+ * Team fork: tight activation — ATS / apply surfaces only.
  */
 
-import { agentDomains } from "~api/env-resolver"
+import { agentDomains } from "../../api/env-resolver.ts"
 import {
   CONSTRAINED_SITE_RULES,
   IFRAME_CHECK_PATTERN,
@@ -11,8 +12,7 @@ import {
   QUERY_PARAM_LIST,
   SUPPORT_DOMAINS,
   SUPPORT_PATTERNS,
-  type ConstrainedSiteRule
-} from "~core/supported-sites"
+} from "../../core/supported-sites.ts"
 
 const POST_APPLY_PATH_REGEXES = [
   "confirmation",
@@ -21,40 +21,38 @@ const POST_APPLY_PATH_REGEXES = [
   "success(?:ful)?",
   "thank[_-]?you",
   "thanks",
-  "SuccessfulRegistration"
+  "SuccessfulRegistration",
 ].map((segment) => new RegExp(`/${segment}(?=/|$)`, "i"))
 
-export type RuntimeActivationReason =
-  | "jobright_domain"
-  | "linkedin_domain"
-  | "supported_top_url"
-  | "supported_query_param"
-  | "supported_page_source"
-  | "supported_embedded_frame"
-  | "supported_frame_url"
-  | "extension_icon"
+const SAFE_QUERY_PARAMS = new Set([
+  "gh_jid",
+  "gh_src",
+  "ashby_jid",
+  "LeverAppId",
+  "jobviteiframe",
+])
 
-function hostnameEqualsOrIsSubdomain(hostname: string, domain: string): boolean {
+const WORKABLE_HOST_RE = /workable\.com$/i
+const LINKEDIN_JOB_PATH_RE =
+  /^\/(?:jobs|job|easy-apply|in\/[^/]+\/overlay\/apply|hiring|talent)\b/i
+
+function hostnameEqualsOrIsSubdomain(hostname, domain) {
   return hostname === domain || hostname.endsWith(`.${domain}`)
 }
 
-function isPostApplyConfirmationPath(url: URL): boolean {
+function isPostApplyConfirmationPath(url) {
   return POST_APPLY_PATH_REGEXES.some((re) => re.test(url.pathname))
 }
 
-function siteRuleMatchesHost(
-  url: URL,
-  hostname: string,
-  rule: ConstrainedSiteRule
-): boolean {
+function siteRuleMatchesHost(url, hostname, rule) {
   return (
     rule.domains.some((domain) =>
-      hostnameEqualsOrIsSubdomain(hostname, domain)
+      hostnameEqualsOrIsSubdomain(hostname, domain),
     ) || rule.patterns.some((pattern) => pattern.includes(url.href))
   )
 }
 
-function siteRuleMatchesPath(url: URL, rule: ConstrainedSiteRule): boolean {
+function siteRuleMatchesPath(url, rule) {
   const full = `${url.pathname}${url.search}${url.hash}`
   return (
     (rule.pathRegex?.test(url.pathname) ?? false) ||
@@ -62,14 +60,15 @@ function siteRuleMatchesPath(url: URL, rule: ConstrainedSiteRule): boolean {
   )
 }
 
-function isConstrainedSiteButWrongPath(url: URL, hostname: string): boolean {
+function isConstrainedSiteButWrongPath(url, hostname) {
   return CONSTRAINED_SITE_RULES.some(
     (rule) =>
-      siteRuleMatchesHost(url, hostname, rule) && !siteRuleMatchesPath(url, rule)
+      siteRuleMatchesHost(url, hostname, rule) &&
+      !siteRuleMatchesPath(url, rule),
   )
 }
 
-export function isSupportedRuntimeFrameUrl(href: string | null | undefined): boolean {
+export function isSupportedRuntimeFrameUrl(href) {
   if (!href) return false
   try {
     if (isPostApplyConfirmationPath(new URL(href))) return false
@@ -79,66 +78,98 @@ export function isSupportedRuntimeFrameUrl(href: string | null | undefined): boo
   return IFRAME_CHECK_PATTERN.some((token) => href.includes(token))
 }
 
-function pageSourcesIndicateForeignAts(
-  pageHostname: string,
-  pageSourceUrls: string[]
-): boolean {
+function escapeRegExp(value) {
+  return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")
+}
+
+function sourceUrlIndicatesAts(sourceUrl, keyword, atsDomain) {
+  try {
+    const src = new URL(sourceUrl)
+    if (hostnameEqualsOrIsSubdomain(src.hostname, atsDomain)) return true
+    const hay = `${src.hostname}${src.pathname}`.toLowerCase()
+    const needle = keyword.toLowerCase()
+    if (needle.includes(".")) return hay.includes(needle)
+    return new RegExp(
+      `(?:^|[./_-])${escapeRegExp(needle)}(?:[./_-]|$)`,
+      "i",
+    ).test(hay)
+  } catch {
+    return false
+  }
+}
+
+function pageSourcesIndicateForeignAts(pageHostname, pageSourceUrls) {
   for (const sourceUrl of pageSourceUrls) {
-    if (
-      PAGE_SOURCE_ATS_LIST.some(
-        ([keyword, atsDomain]) =>
-          !hostnameEqualsOrIsSubdomain(pageHostname, atsDomain) &&
-          sourceUrl.includes(keyword)
-      )
-    ) {
+    for (const [keyword, atsDomain] of PAGE_SOURCE_ATS_LIST) {
+      if (hostnameEqualsOrIsSubdomain(pageHostname, atsDomain)) continue
+      if (sourceUrlIndicatesAts(sourceUrl, keyword, atsDomain)) return true
+    }
+  }
+  return false
+}
+
+function isSupportedTopLevelApplicationUrl(url) {
+  if (isPostApplyConfirmationPath(url)) return false
+  const hostname = url.hostname
+  if (isConstrainedSiteButWrongPath(url, hostname)) return false
+  return (
+    SUPPORT_DOMAINS.some((domain) =>
+      hostnameEqualsOrIsSubdomain(hostname, domain),
+    ) ||
+    SUPPORT_PATTERNS.some((pattern) => pattern.includes(url.href)) ||
+    CONSTRAINED_SITE_RULES.some(
+      (rule) =>
+        siteRuleMatchesHost(url, hostname, rule) &&
+        siteRuleMatchesPath(url, rule),
+    )
+  )
+}
+
+function hasSupportedEmbeddedFrame(iframeUrls) {
+  return iframeUrls.some((iframeUrl) => isSupportedRuntimeFrameUrl(iframeUrl))
+}
+
+function isLinkedInJobSurface(url) {
+  return (
+    hostnameEqualsOrIsSubdomain(url.hostname, "linkedin.com") &&
+    LINKEDIN_JOB_PATH_RE.test(url.pathname)
+  )
+}
+
+function hasSafeAtsQueryParam(url) {
+  for (const param of QUERY_PARAM_LIST) {
+    if (!url.searchParams.has(param)) continue
+    if (SAFE_QUERY_PARAMS.has(param)) return true
+    if (param === "selectedJobId" && WORKABLE_HOST_RE.test(url.hostname)) {
       return true
     }
   }
   return false
 }
 
-function isSupportedTopLevelApplicationUrl(url: URL): boolean {
-  if (isPostApplyConfirmationPath(url)) return false
-  const hostname = url.hostname
-  if (isConstrainedSiteButWrongPath(url, hostname)) return false
-  return (
-    SUPPORT_DOMAINS.some((domain) =>
-      hostnameEqualsOrIsSubdomain(hostname, domain)
-    ) ||
-    SUPPORT_PATTERNS.some((pattern) => pattern.includes(url.href)) ||
-    CONSTRAINED_SITE_RULES.some(
-      (rule) =>
-        siteRuleMatchesHost(url, hostname, rule) && siteRuleMatchesPath(url, rule)
-    )
+function isAgentProductHost(hostname) {
+  return agentDomains.some((domain) =>
+    hostnameEqualsOrIsSubdomain(hostname, domain),
   )
-}
-
-function hasSupportedEmbeddedFrame(iframeUrls: string[]): boolean {
-  return iframeUrls.some((iframeUrl) => isSupportedRuntimeFrameUrl(iframeUrl))
 }
 
 export function getRuntimeActivationReason({
   href,
   isTopFrame,
   iframeUrls = [],
-  pageSourceUrls = []
-}: {
-  href: string
-  isTopFrame: boolean
-  iframeUrls?: string[]
-  pageSourceUrls?: string[]
-}): RuntimeActivationReason | null {
-  let url: URL
+  pageSourceUrls = [],
+}) {
+  let url
   try {
     url = new URL(href)
   } catch {
     return null
   }
 
-  if (agentDomains.some((domain) => hostnameEqualsOrIsSubdomain(url.hostname, domain))) {
+  if (isAgentProductHost(url.hostname)) {
     return "jobright_domain"
   }
-  if (hostnameEqualsOrIsSubdomain(url.hostname, "linkedin.com")) {
+  if (isLinkedInJobSurface(url)) {
     return "linkedin_domain"
   }
   if (!isTopFrame) {
@@ -149,7 +180,7 @@ export function getRuntimeActivationReason({
   }
   if (
     !isConstrainedSiteButWrongPath(url, url.hostname) &&
-    QUERY_PARAM_LIST.some((param) => url.searchParams.has(param))
+    hasSafeAtsQueryParam(url)
   ) {
     return "supported_query_param"
   }
@@ -162,9 +193,7 @@ export function getRuntimeActivationReason({
   return null
 }
 
-function getActivationReasonFromElement(
-  element: Element
-): RuntimeActivationReason | null {
+function getActivationReasonFromElement(element) {
   if (element instanceof HTMLIFrameElement) {
     return isSupportedRuntimeFrameUrl(element.src)
       ? "supported_embedded_frame"
@@ -183,14 +212,12 @@ function getActivationReasonFromElement(
   return null
 }
 
-function getActivationReasonFromNode(
-  node: Node
-): RuntimeActivationReason | null {
+function getActivationReasonFromNode(node) {
   if (!(node instanceof Element)) return null
   const direct = getActivationReasonFromElement(node)
   if (direct) return direct
   for (const child of node.querySelectorAll(
-    "iframe[src], script[src], link[href]"
+    "iframe[src], script[src], link[href]",
   )) {
     const reason = getActivationReasonFromElement(child)
     if (reason) return reason
@@ -198,9 +225,7 @@ function getActivationReasonFromNode(
   return null
 }
 
-export function observeRuntimeActivationSignals(
-  onActivated: (reason: RuntimeActivationReason) => void
-): () => void {
+export function observeRuntimeActivationSignals(onActivated) {
   if (
     typeof MutationObserver === "undefined" ||
     typeof document === "undefined" ||
@@ -210,8 +235,8 @@ export function observeRuntimeActivationSignals(
     return () => {}
   }
 
-  let observer: MutationObserver | null = null
-  const activate = (reason: RuntimeActivationReason) => {
+  let observer = null
+  const activate = (reason) => {
     observer?.disconnect()
     observer = null
     onActivated(reason)
@@ -240,7 +265,7 @@ export function observeRuntimeActivationSignals(
     attributes: true,
     attributeFilter: ["src", "href"],
     childList: true,
-    subtree: true
+    subtree: true,
   })
 
   return () => {

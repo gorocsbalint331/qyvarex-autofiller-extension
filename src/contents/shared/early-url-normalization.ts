@@ -1,12 +1,15 @@
-/** Early URL normalization for GoHire / Life at TikTok (ported). */
+// @ts-nocheck
+/**
+ * Early URL normalization for GoHire trailing-slash and LifeAtTikTok jr_id bridges.
+ */
 
-export const JR_ID_PARAM = "jr_id"
+const JR_ID_PARAM = "jr_id"
 const GOHIRE_HOST = "jobs.gohire.io"
 const GOHIRE_JOB_PATH = /^\/[^/]+\/.+-\d+\/?$/
 const LIFE_AT_TIKTOK_HOST = "lifeattiktok.com"
 const LIFE_AT_TIKTOK_SEARCH_PATH = /^\/search\/\d+\/?$/
 
-function isLifeAtTikTokJobSearchUrl(url: URL): boolean {
+function isLifeAtTikTokJobDetail(url) {
   const hostname = url.hostname.toLowerCase()
   const isLifeAtTikTok =
     hostname === LIFE_AT_TIKTOK_HOST ||
@@ -14,114 +17,120 @@ function isLifeAtTikTokJobSearchUrl(url: URL): boolean {
   return isLifeAtTikTok && LIFE_AT_TIKTOK_SEARCH_PATH.test(url.pathname)
 }
 
-export function buildLifeAtTikTokApplyUrl(
-  currentHref: string,
-  anchorHref: string,
-  jobId: string
-): string | null {
+export function buildLifeAtTikTokApplyUrl(fromHref, toHref, jobId) {
   const trimmedJobId = jobId.trim()
   if (!trimmedJobId) return null
 
-  let currentUrl: URL
-  let applyUrl: URL
+  let fromUrl
+  let toUrl
   try {
-    currentUrl = new URL(currentHref)
-    applyUrl = new URL(anchorHref)
+    fromUrl = new URL(fromHref)
+    toUrl = new URL(toHref)
   } catch {
     return null
   }
 
-  const searchJobId = /^\/search\/(\d+)\/?$/.exec(currentUrl.pathname)?.[1]
-  const applyJobId = /^\/resume\/(\d+)\/apply\/?$/.exec(applyUrl.pathname)?.[1]
+  const fromJobId = /^\/search\/(\d+)\/?$/.exec(fromUrl.pathname)?.[1]
+  const toJobId = /^\/resume\/(\d+)\/apply\/?$/.exec(toUrl.pathname)?.[1]
 
   if (
-    !isLifeAtTikTokJobSearchUrl(currentUrl) ||
-    applyUrl.hostname.toLowerCase() !== "careers.tiktok.com" ||
-    !searchJobId ||
-    applyJobId !== searchJobId ||
-    applyUrl.searchParams.has(JR_ID_PARAM)
+    !isLifeAtTikTokJobDetail(fromUrl) ||
+    toUrl.hostname.toLowerCase() !== "careers.tiktok.com" ||
+    !fromJobId ||
+    toJobId !== fromJobId ||
+    toUrl.searchParams.has(JR_ID_PARAM)
   ) {
     return null
   }
 
-  applyUrl.searchParams.set(JR_ID_PARAM, trimmedJobId)
-  return applyUrl.toString()
+  toUrl.searchParams.set(JR_ID_PARAM, trimmedJobId)
+  return toUrl.toString()
 }
 
-export function shouldRetainLifeAtTikTokJobDetailJrId(href: string): boolean {
+export function shouldRetainLifeAtTikTokJobDetailJrId(href) {
+  let url
   try {
-    const url = new URL(href)
-    return (
-      isLifeAtTikTokJobSearchUrl(url) &&
-      !!url.searchParams.get(JR_ID_PARAM)?.trim()
-    )
+    url = new URL(href)
   } catch {
     return false
   }
+  return isLifeAtTikTokJobDetail(url) && !!url.searchParams.get(JR_ID_PARAM)?.trim()
 }
 
-export function shouldKeepLifeAtTikTokApplyBridge(
-  originalHref: string,
-  currentHref: string
-): boolean {
+export function shouldKeepLifeAtTikTokApplyBridge(fromHref, toHref) {
+  let fromUrl
+  let toUrl
   try {
-    const originalUrl = new URL(originalHref)
-    const currentUrl = new URL(currentHref)
-    const jobId = originalUrl.searchParams.get(JR_ID_PARAM)?.trim()
-    return (
-      !!jobId &&
-      originalUrl.hostname.toLowerCase() === currentUrl.hostname.toLowerCase() &&
-      originalUrl.pathname === currentUrl.pathname &&
-      currentUrl.searchParams.get(JR_ID_PARAM)?.trim() === jobId &&
-      isLifeAtTikTokJobSearchUrl(currentUrl)
-    )
+    fromUrl = new URL(fromHref)
+    toUrl = new URL(toHref)
   } catch {
     return false
   }
+  const jobId = fromUrl.searchParams.get(JR_ID_PARAM)?.trim()
+  return (
+    !!jobId &&
+    fromUrl.hostname.toLowerCase() === toUrl.hostname.toLowerCase() &&
+    fromUrl.pathname === toUrl.pathname &&
+    toUrl.searchParams.get(JR_ID_PARAM)?.trim() === jobId &&
+    isLifeAtTikTokJobDetail(toUrl)
+  )
 }
 
-export function shouldRecoverLifeAtTikTokJobDetailJrId(href: string): boolean {
+export function shouldRecoverLifeAtTikTokJobDetailJrId(href) {
+  let url
   try {
-    const url = new URL(href)
-    return isLifeAtTikTokJobSearchUrl(url) && !url.searchParams.has(JR_ID_PARAM)
+    url = new URL(href)
   } catch {
     return false
   }
+  return isLifeAtTikTokJobDetail(url) && !url.searchParams.has(JR_ID_PARAM)
 }
 
-export function buildLifeAtTikTokRecoveredUrl(
-  href: string,
-  jobId: string
-): string | null {
+export function buildLifeAtTikTokRecoveredUrl(href, jobId) {
   const trimmedJobId = jobId.trim()
-  if (!trimmedJobId || !shouldRecoverLifeAtTikTokJobDetailJrId(href)) return null
+  if (!trimmedJobId || !shouldRecoverLifeAtTikTokJobDetailJrId(href)) {
+    return null
+  }
   const url = new URL(href)
   url.searchParams.set(JR_ID_PARAM, trimmedJobId)
   return url.toString()
 }
 
-export function buildNormalizedEarlyUrl(href: string): string | null {
+export function buildNormalizedEarlyUrl(href) {
+  let url
   try {
-    const url = new URL(href)
-    if (
-      url.hostname.toLowerCase() !== GOHIRE_HOST ||
-      !url.searchParams.has(JR_ID_PARAM) ||
-      !url.pathname.endsWith("/") ||
-      !GOHIRE_JOB_PATH.test(url.pathname)
-    ) {
-      return null
-    }
-    url.pathname = url.pathname.replace(/\/+$/, "")
-    const normalized = url.toString()
-    return normalized === href ? null : normalized
+    url = new URL(href)
   } catch {
     return null
   }
+  if (
+    url.hostname.toLowerCase() !== GOHIRE_HOST ||
+    !url.searchParams.has(JR_ID_PARAM) ||
+    !url.pathname.endsWith("/") ||
+    !GOHIRE_JOB_PATH.test(url.pathname)
+  ) {
+    return null
+  }
+  url.pathname = url.pathname.replace(/\/+$/, "")
+  const normalized = url.toString()
+  return normalized === href ? null : normalized
 }
 
-export function normalizeEarlyJobrightUrl(win: Window = window): boolean {
+export function shouldResolveGoHireDroppedJobIdUrl(href) {
+  let url
+  try {
+    url = new URL(href)
+  } catch {
+    return false
+  }
+  return (
+    url.hostname.toLowerCase() === GOHIRE_HOST &&
+    !url.searchParams.has(JR_ID_PARAM) &&
+    GOHIRE_JOB_PATH.test(url.pathname)
+  )
+}
+
+export function normalizeEarlyJobrightUrl(win = window) {
   const normalized = buildNormalizedEarlyUrl(win.location.href)
-  if (!normalized) return false
-  win.location.replace(normalized)
-  return true
+  return !!normalized && (win.location.replace(normalized), true)
 }

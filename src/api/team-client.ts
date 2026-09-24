@@ -4,7 +4,7 @@
 
 import { Storage } from "@plasmohq/storage"
 
-import { TEAM_SITE_URL, getHubUrl } from "~api/env-resolver"
+import { TEAM_SITE_URL, getHubUrl } from "~api/hub-env"
 import type { AutofillInfoPayload, ProfileSummary, TeamSettings } from "~api/team-types"
 
 const storage = new Storage({ area: "local" })
@@ -316,4 +316,233 @@ export async function verifyTeamConnection(): Promise<{
     return { ok: false, error: data.error || "unauthorized" }
   }
   return { ok: true, email: data.user.email, name: data.user.name }
+}
+
+/** LLM regenerate a form-field answer via hub. */
+export async function regenerateAnswer(body: {
+  profileId?: string | null
+  question: string
+  promptList?: string[]
+  fieldInput?: string | null
+  uniqueId?: string | null
+  jobId?: string | null
+  jobContext?: {
+    title?: string
+    company?: string
+    url?: string
+    description?: string
+  }
+}): Promise<{
+  ok: boolean
+  answer?: string
+  uniqueId?: string | null
+  regenerated?: boolean
+  error?: string
+  status?: number
+}> {
+  const settings = await getTeamSettings()
+  const { ok, status, data } = await teamFetch<{
+    ok?: boolean
+    answer?: string
+    uniqueId?: string | null
+    regenerated?: boolean
+    error?: string
+  }>("/api/v1/ai/regenerate-answer", {
+    method: "POST",
+    body: JSON.stringify({
+      ...body,
+      profileId: body.profileId || settings.selectedProfileId || undefined
+    })
+  })
+  if (!ok || !data?.ok || !data.answer) {
+    return {
+      ok: false,
+      error: data?.error || "regenerate_failed",
+      status
+    }
+  }
+  return {
+    ok: true,
+    answer: data.answer,
+    uniqueId: data.uniqueId ?? null,
+    regenerated: !!data.regenerated
+  }
+}
+
+/** Generate cover letter markdown via hub LLM. */
+export async function generateCoverLetter(body: {
+  profileId?: string | null
+  jobId: string
+  userPrompt: string
+  resumeId?: string | number
+  tailorId?: string | number
+  coverLetterId?: string
+  currentCoverLetter?: string
+  jobContext?: {
+    title?: string
+    company?: string
+    url?: string
+    description?: string
+  }
+}): Promise<{
+  ok: boolean
+  data?: {
+    markdown: string
+    coverLetterId?: string
+    jobId?: string
+    resumeId?: string | null
+  }
+  error?: string
+  status?: number
+}> {
+  const settings = await getTeamSettings()
+  const { ok, status, data } = await teamFetch<{
+    ok?: boolean
+    data?: {
+      markdown: string
+      coverLetterId?: string
+      jobId?: string
+      resumeId?: string | null
+    }
+    result?: {
+      markdown: string
+      coverLetterId?: string
+      jobId?: string
+      resumeId?: string | null
+    }
+    error?: string
+  }>("/api/v1/ai/cover-letter", {
+    method: "POST",
+    body: JSON.stringify({
+      ...body,
+      profileId: body.profileId || settings.selectedProfileId || undefined
+    })
+  })
+  const payload = data?.data || data?.result
+  if (!ok || !payload?.markdown) {
+    return {
+      ok: false,
+      error: data?.error || "cover_letter_failed",
+      status
+    }
+  }
+  return { ok: true, data: payload }
+}
+
+export async function fetchDegreeSuggestions(input: string): Promise<string[]> {
+  const { ok, data } = await teamFetch<{
+    ok?: boolean
+    result?: string[]
+    results?: string[]
+  }>("/api/v1/suggestions/degrees", {
+    method: "POST",
+    body: JSON.stringify({ input })
+  })
+  if (!ok) return []
+  return data.results || data.result || []
+}
+
+export async function fetchMajorSuggestions(input: string): Promise<string[]> {
+  const { ok, data } = await teamFetch<{
+    ok?: boolean
+    result?: string[]
+    results?: string[]
+  }>("/api/v1/suggestions/majors", {
+    method: "POST",
+    body: JSON.stringify({ input })
+  })
+  if (!ok) return []
+  return data.results || data.result || []
+}
+
+export async function fetchCompanyNameList(
+  input: string,
+  companyId?: string
+): Promise<
+  Array<{
+    companyName: string
+    linkedin_company_id: string
+    llogoUrl?: string
+  }>
+> {
+  const { ok, data } = await teamFetch<{
+    ok?: boolean
+    result?: Array<{
+      companyName: string
+      linkedin_company_id: string
+      llogoUrl?: string
+    }>
+    results?: Array<{
+      companyName: string
+      linkedin_company_id: string
+      llogoUrl?: string
+    }>
+  }>("/api/v1/suggestions/companies", {
+    method: "POST",
+    body: JSON.stringify({ input, companyId })
+  })
+  if (!ok) return []
+  return data.results || data.result || []
+}
+
+export async function fetchAddressSuggestions(body: {
+  input: string
+  sessionToken?: string
+  countryCodes?: string[]
+  limit?: number
+}): Promise<Array<{ placeId: string; displayAddress: string }>> {
+  const { ok, data } = await teamFetch<{
+    ok?: boolean
+    result?: Array<{ placeId: string; displayAddress: string }>
+    suggestions?: Array<{ placeId: string; displayAddress: string }>
+  }>("/api/v1/address/autocomplete", {
+    method: "POST",
+    body: JSON.stringify(body)
+  })
+  if (!ok) return []
+  return data.suggestions || data.result || []
+}
+
+export async function resolveAddressSuggestion(body: {
+  placeId: string
+  sessionToken?: string
+}): Promise<Record<string, unknown> | null> {
+  const { ok, data } = await teamFetch<{
+    ok?: boolean
+    result?: Record<string, unknown> | null
+  }>("/api/v1/address/resolve", {
+    method: "POST",
+    body: JSON.stringify(body)
+  })
+  if (!ok) return null
+  return data.result ?? null
+}
+
+export async function fetchOpenRegions(
+  country: string
+): Promise<Array<{ code: string; name: string }>> {
+  const { ok, data } = await teamFetch<{
+    ok?: boolean
+    result?: Array<{ code: string; name: string }>
+  }>("/api/v1/geo/regions", {
+    method: "POST",
+    body: JSON.stringify({ country })
+  })
+  if (!ok) return []
+  return data.result || []
+}
+
+export async function fetchOpenCitiesByRegion(
+  country: string,
+  region: string
+): Promise<string[]> {
+  const { ok, data } = await teamFetch<{
+    ok?: boolean
+    result?: string[]
+  }>("/api/v1/geo/cities", {
+    method: "POST",
+    body: JSON.stringify({ country, region })
+  })
+  if (!ok) return []
+  return data.result || []
 }

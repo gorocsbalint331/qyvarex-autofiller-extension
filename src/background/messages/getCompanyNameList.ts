@@ -1,13 +1,20 @@
-﻿import type { PlasmoMessaging } from "@plasmohq/messaging"
+import type { PlasmoMessaging } from "@plasmohq/messaging"
 
-/** Stub — port from engine/background/src/background/messages/getCompanyNameList.js */
-const handler: PlasmoMessaging.MessageHandler = async (_req, res) => {
-  res.send({
-    ok: false,
-    stub: true,
-    handler: "getCompanyNameList",
-    message: "Not implemented yet in the team fork"
-  })
+import { fetchCompanyNameList } from "~api/team-client"
+
+const handler: PlasmoMessaging.MessageHandler = async (req, res) => {
+  try {
+    const input = typeof req.body?.input === "string" ? req.body.input : ""
+    const companyId =
+      typeof req.body?.linkedinCompanyId === "string"
+        ? req.body.linkedinCompanyId
+        : typeof req.body?.companyId === "string"
+          ? req.body.companyId
+          : undefined
+    res.send(await fetchCompanyNameList(input, companyId))
+  } catch {
+    res.send([])
+  }
 }
 
 export default handler

@@ -12,11 +12,11 @@ import {
   findExactChoice,
   isExactChoiceMatch,
   normalizeChoiceText
-} from "~contents/methods/choice-match"
+} from "~contents/methods/native-choice-match"
 import {
   getRadioCheckText,
   normalizeRadioCheckText
-} from "~contents/methods/checkbox-label"
+} from "~contents/methods/native-checkbox-label"
 import { isMatched } from "~contents/methods/native-answer"
 import { MESSAGE_EVENTS } from "~core/enums"
 

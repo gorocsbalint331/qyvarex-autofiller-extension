@@ -1,13 +1,23 @@
-﻿import type { PlasmoMessaging } from "@plasmohq/messaging"
+import type { PlasmoMessaging } from "@plasmohq/messaging"
 
-/** Stub — port from engine/background/src/background/messages/reloadExtension.js */
+/** Reload the extension (after update apply). */
 const handler: PlasmoMessaging.MessageHandler = async (_req, res) => {
-  res.send({
-    ok: false,
-    stub: true,
-    handler: "reloadExtension",
-    message: "Not implemented yet in the team fork"
-  })
+  try {
+    res.send({ ok: true })
+    // Defer so the response can flush
+    setTimeout(() => {
+      try {
+        chrome.runtime.reload()
+      } catch {
+        /* ignore */
+      }
+    }, 50)
+  } catch (err) {
+    res.send({
+      ok: false,
+      message: err instanceof Error ? err.message : "reload_failed"
+    })
+  }
 }
 
 export default handler

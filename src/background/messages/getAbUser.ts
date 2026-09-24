@@ -1,12 +1,10 @@
-﻿import type { PlasmoMessaging } from "@plasmohq/messaging"
+import type { PlasmoMessaging } from "@plasmohq/messaging"
 
-/** Stub — port from engine/background/src/background/messages/getAbUser.js */
+/** Control cohort — no Jobright A/B experiments. */
 const handler: PlasmoMessaging.MessageHandler = async (_req, res) => {
   res.send({
-    ok: false,
-    stub: true,
-    handler: "getAbUser",
-    message: "Not implemented yet in the team fork"
+    config: {},
+    stub: true
   })
 }
 

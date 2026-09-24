@@ -1,4 +1,4 @@
-import { isExactChoiceMatch } from "~contents/methods/choice-match"
+import { isExactChoiceMatch } from "~contents/methods/native-choice-match"
 import { delay } from "~contents/crawler/utils/delay"
 
 export async function fillCheckbox(

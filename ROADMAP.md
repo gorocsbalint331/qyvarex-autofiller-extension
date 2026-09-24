@@ -1,57 +1,48 @@
 # Extension fork roadmap
 
-**Goal:** extension owns the fill engine. Monorepo `../engine` is disposable once `vendor/helper-app` + `src/` cover you.
+**Goal:** Jobright fill engine **is** `src/`, which is also the Plasmo source root (`--src-path=src`).
+
+## Layout
+
+```
+src/               ← Plasmo shell (popup, options, background, hub client, Activate CS)
+                     + Jobright ATS SoT → assets/helper-app.js (injected)
+build-helper.mjs   ← esbuild IIFE → assets/helper-app.js
+assets/            ← helper-app.js + store icons
+```
+
+`~` maps to `src/`. Popup/options/background must not import the helper UI — Activate injects the helper bundle.
+Shell-only variants of helper modules use `native-*` / `hub-env` names (e.g. `core/native-supported-sites.ts`).
+
+- ATS fill code: edit under **`src/`**, then `npm run bundle:helper` (also runs on `dev`/`build`).
+- Only `src/contents/bootstrap.ts` may sit at the top level of `src/contents/` (Plasmo registers each top-level file as a content script).
 
 ## Status
 
 | # | Item | Status |
 |---|------|--------|
-| 1–20 | Hub, Clean-TS fill, Ashby/Workday/Oracle widgets | ✅ |
-| 21 | Full Parcel ATS/UI (Fiber, React-select, …) | ✅ vendored + **ported into `helper-runtime/`** |
-| 22 | TS engine entry `src/engine` + fill stack `src/contents` | ✅ |
-| 23 | Site registry detect + cancellation/observer ports | ✅ |
-| 24 | Extension independent of `../engine` for shipping | ✅ `npm run check:engine-independent` |
-| 25 | All ~70 ATS site modules under `helper-runtime/` | ✅ `npm run port:vendor-helper` |
-| 26 | Default Activate runtime = ported `HELPER_RUNTIME=ts` | ✅ |
+| 1–26 | Hub + Jobright Activate | ✅ |
+| 28–29 | Dedupe + retire Clean-TS popup | ✅ |
+| 30 | Promote helper-runtime → `src/`, shell → `plasmo/` | ✅ |
+| 31 | Replace `scripts/` Parcel linker with esbuild | ✅ |
+| 32 | Merge `plasmo/` shell into `src/` | ✅ |
 | 27 | Trash monorepo `engine/` after smoke | ⬜ you |
 
 ## Runtime
 
 ```
 Activate / ATS match
-  → contents/bootstrap.ts
+  → src/contents/bootstrap.ts
   → inject assets/helper-app.js
-  → bootstrapJobrightHelperRuntime()
-       → helper-runtime factory → site.fillForm()
-
-Default:  HELPER_RUNTIME=ts   (extension/helper-runtime)
-Fallback: HELPER_RUNTIME=parcel (vendor/helper-app)
-Opt-in:   HELPER_RUNTIME=phase1 (identity-only)
-Clean-TS: contents/clean-fill.ts / popup → native-filler.ts
+  → bootstrapJobrightHelperRuntime()  (src/helper-entry.ts)
+       → src/contents/crawler/factory → site.fillForm()
 ```
-
-**Important:** Parcel `e()` modules must stay in `helper-runtime/` — never under
-Plasmo `src/` (popup will throw `e is not defined`).
-
-## Delete `engine/` when ready
-
-```bash
-cd extension
-npm run check:engine-independent   # must pass
-# smoke: Activate on Greenhouse + Personio + Workday
-# then move ../engine to trash (or delete)
-```
-
-Keep `extension/vendor/helper-app` as reference / linker fallback until you no longer need it.
 
 ## Commands
 
 ```bash
-npm run port:vendor-helper
-npm run bundle:helper
-npm run bundle:helper:ts
-npm run bundle:helper:parcel
-npm run check:engine-independent
-npm run dev
+npm run bundle:helper   # node build-helper.mjs
+npm run dev             # plasmo --src-path=src
+npm run build
 npm test
 ```

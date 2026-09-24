@@ -2,7 +2,7 @@ import { useEffect, useState } from "react"
 import logoMark from "data-base64:~assets/logo-mark.png"
 import { sendToBackground } from "@plasmohq/messaging"
 
-import { getHubUrl } from "~api/env-resolver"
+import { getHubUrl } from "~api/hub-env"
 import {
   getTeamSettings,
   listProfiles,
@@ -10,6 +10,69 @@ import {
   signOut
 } from "~api/team-client"
 import type { ProfileSummary } from "~api/team-types"
+
+import "~style.css"
+
+function BellIcon() {
+  return (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden>
+      <path
+        d="M15 17H9m6 0a3 3 0 0 1-6 0m6 0h2.5a1.5 1.5 0 0 0 1.4-2l-.7-2.1A6 6 0 0 1 6.8 13L6.1 15a1.5 1.5 0 0 0 1.4 2H9"
+        stroke="currentColor"
+        strokeWidth="1.7"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M12 4a4.5 4.5 0 0 1 4.5 4.5v2.2c0 .5.1 1 .3 1.5l.7 2"
+        stroke="currentColor"
+        strokeWidth="1.7"
+        strokeLinecap="round"
+      />
+    </svg>
+  )
+}
+
+function CheckIcon() {
+  return (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden>
+      <path
+        d="M20 6 9 17l-5-5"
+        stroke="currentColor"
+        strokeWidth="2.2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  )
+}
+
+function ExternalIcon({ color = "currentColor" }: { color?: string }) {
+  return (
+    <svg
+      className="ext-icon"
+      width="13"
+      height="13"
+      viewBox="0 0 24 24"
+      fill="none"
+      aria-hidden>
+      <path
+        d="M14 4h6v6M20 4 10 14"
+        stroke={color}
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M10 4H6a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-4"
+        stroke={color}
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  )
+}
 
 function IndexPopup() {
   const [tabUrl, setTabUrl] = useState("")
@@ -32,7 +95,6 @@ function IndexPopup() {
         setUserLabel("")
         return
       }
-      // Token present → show signed-in shell immediately (avoid Sign-in flash)
       setSignedIn(true)
       setUserLabel(
         settings.userName
@@ -48,7 +110,6 @@ function IndexPopup() {
           setSelectedId(list[0].id)
         }
       } catch {
-        // Keep signed-in UI; profile list may be empty until hub is reachable
         setProfiles([])
       }
     } finally {
@@ -70,6 +131,11 @@ function IndexPopup() {
     const hub = getHubUrl().replace(/\/+$/, "")
     const url = `${hub}/extension/connect?ext=${chrome.runtime.id}`
     void chrome.tabs.create({ url })
+  }
+
+  function openHubSignUp() {
+    const hub = getHubUrl().replace(/\/+$/, "")
+    void chrome.tabs.create({ url: `${hub}/?mode=register` })
   }
 
   async function onSignOut() {
@@ -119,39 +185,6 @@ function IndexPopup() {
     }
   }
 
-  async function runCleanFill() {
-    const [tab] = await chrome.tabs.query({ active: true, currentWindow: true })
-    if (!tab?.id) {
-      setStatus("No active tab")
-      return
-    }
-    if (!signedIn || !selectedId) {
-      setStatus("Sign in and select a profile first")
-      return
-    }
-    setActivating(true)
-    setStatus("Clean-TS fill…")
-    try {
-      const result = await chrome.tabs.sendMessage(tab.id, {
-        name: "runCleanTsFill"
-      })
-      if (!result?.ok) {
-        setStatus(result?.message || "Clean fill failed — reload the page")
-        return
-      }
-      const r = result.report
-      setStatus(
-        `Filled ${r?.filled ?? 0}/${r?.discovered ?? 0} (${r?.site})${
-          r?.resumeUploaded ? " · resume" : ""
-        }${r?.coverLetterUploaded ? " · cover" : ""}`
-      )
-    } catch {
-      setStatus("Clean fill unavailable — reload the application page")
-    } finally {
-      setActivating(false)
-    }
-  }
-
   async function onSelectProfile(id: string) {
     setSelectedId(id)
     await saveTeamSettings({ selectedProfileId: id })
@@ -159,54 +192,36 @@ function IndexPopup() {
   }
 
   return (
-    <div
-      style={{
-        padding: 16,
-        width: 340,
-        fontFamily: "Segoe UI, system-ui, sans-serif",
-        color: "#102a43"
-      }}>
-      <div
-        style={{
-          display: "flex",
-          alignItems: "center",
-          gap: 10,
-          marginBottom: 8
-        }}>
-        <img
-          src={logoMark}
-          alt="Qyvarex"
-          width={36}
-          height={36}
-          style={{ display: "block" }}
-        />
-        <h2 style={{ margin: 0, fontSize: 16 }}>Qyvarex Autofill</h2>
+    <div className="qx-popup">
+      <div className="qx-brand">
+        <img src={logoMark} alt="" width={28} height={28} />
+        <p className="qx-brand__name">qyvarex</p>
       </div>
 
       {!sessionReady ? (
-        <p style={{ margin: "8px 0 0", fontSize: 12, opacity: 0.75 }}>
-          Loading…
-        </p>
+        <p className="qx-loading">Loading…</p>
       ) : signedIn ? (
         <>
-          <p style={{ margin: "0 0 12px", fontSize: 12, opacity: 0.85 }}>
-            {userLabel || "Signed in to team hub"}
-          </p>
+          <div className="qx-alert qx-alert--ok" role="status">
+            <BellIcon />
+            <span>Qyvarex is active on this browser.</span>
+          </div>
+
+          <p className="qx-headline">Ready to autofill applications</p>
+
+          {userLabel ? (
+            <p className="qx-meta" style={{ marginBottom: 10 }}>
+              {userLabel}
+            </p>
+          ) : null}
 
           {profiles.length > 0 ? (
-            <label style={{ display: "block", fontSize: 12, marginBottom: 12 }}>
+            <label className="qx-label">
               Active profile
               <select
+                className="qx-select"
                 value={selectedId || ""}
-                onChange={(e) => void onSelectProfile(e.target.value)}
-                style={{
-                  display: "block",
-                  width: "100%",
-                  marginTop: 6,
-                  padding: 8,
-                  borderRadius: 6,
-                  border: "1px solid #bcccdc"
-                }}>
+                onChange={(e) => void onSelectProfile(e.target.value)}>
                 {profiles.map((p) => (
                   <option key={p.id} value={p.id}>
                     {p.label}
@@ -219,93 +234,64 @@ function IndexPopup() {
             </label>
           ) : null}
 
-          <p
-            style={{
-              margin: "0 0 12px",
-              fontSize: 11,
-              wordBreak: "break-all",
-              background: "#f0f4f8",
-              padding: 8,
-              borderRadius: 6
-            }}>
-            {tabUrl || "…"}
-          </p>
+          <p className="qx-meta">{tabUrl || "No active tab URL"}</p>
 
           <button
+            type="button"
+            className="qx-btn"
             onClick={() => void activateHelper()}
-            disabled={activating}
-            style={{
-              width: "100%",
-              padding: "10px 12px",
-              border: 0,
-              borderRadius: 8,
-              background: "#0b6e4f",
-              color: "white",
-              fontWeight: 600,
-              cursor: activating ? "wait" : "pointer",
-              marginBottom: 8,
-              opacity: activating ? 0.7 : 1
-            }}>
-            {activating ? "Working…" : "Activate helper on this tab"}
+            disabled={activating}>
+            {activating ? "Working…" : "Activate on this tab"}
           </button>
 
           <button
-            onClick={() => void runCleanFill()}
-            disabled={activating || !signedIn}
-            style={{
-              width: "100%",
-              padding: "10px 12px",
-              border: 0,
-              borderRadius: 8,
-              background: "#102a43",
-              color: "white",
-              fontWeight: 600,
-              cursor: activating ? "wait" : "pointer",
-              marginBottom: 8,
-              opacity: activating || !signedIn ? 0.7 : 1
-            }}>
-            Clean-TS fill (Personio / Greenhouse / Lever)
-          </button>
-
-          <button
+            type="button"
+            className="qx-btn qx-btn--ghost"
             onClick={() => void onSignOut()}
-            disabled={busy}
-            style={{
-              width: "100%",
-              padding: "8px 12px",
-              border: "1px solid #bcccdc",
-              borderRadius: 8,
-              background: "#fff",
-              cursor: "pointer"
-            }}>
+            disabled={busy}>
             Sign out
           </button>
         </>
       ) : (
         <>
-          <p style={{ margin: "0 0 12px", fontSize: 12, opacity: 0.85 }}>
-            Sign in on the Team Hub to connect this extension.
-          </p>
-          <button
-            onClick={openHubSignIn}
-            style={{
-              width: "100%",
-              padding: "10px 12px",
-              border: 0,
-              borderRadius: 8,
-              background: "#0b6e4f",
-              color: "white",
-              fontWeight: 600,
-              cursor: "pointer"
-            }}>
+          <div className="qx-alert" role="status">
+            <BellIcon />
+            <span>Qyvarex is installed, but your hub account isn’t connected.</span>
+          </div>
+
+          <p className="qx-headline">Sign in now to unlock the following:</p>
+
+          <ul className="qx-benefits">
+            <li>
+              <CheckIcon />
+              <span>Team profiles and resumes from your hub</span>
+            </li>
+            <li>
+              <CheckIcon />
+              <span>One-click autofill on supported job sites</span>
+            </li>
+            <li>
+              <CheckIcon />
+              <span>Saved answers reused across applications</span>
+            </li>
+          </ul>
+
+          <button type="button" className="qx-btn" onClick={openHubSignIn}>
             Sign in
+            <ExternalIcon color="#fff" />
           </button>
+
+          <p className="qx-footer">
+            Don&apos;t have an account?{" "}
+            <button type="button" className="link" onClick={openHubSignUp}>
+              Sign up
+              <ExternalIcon color="currentColor" />
+            </button>
+          </p>
         </>
       )}
 
-      {status ? (
-        <p style={{ margin: "10px 0 0", fontSize: 12 }}>{status}</p>
-      ) : null}
+      {status ? <p className="qx-status">{status}</p> : null}
     </div>
   )
 }

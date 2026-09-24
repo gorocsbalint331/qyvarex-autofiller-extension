@@ -9,13 +9,12 @@ import {
   fuzzyFindBest,
   isExactChoiceMatch,
   normalizeChoiceText
-} from "../src/contents/methods/choice-match"
+} from "../src/contents/methods/native-choice-match"
 import { planOracleEducationClientSearchStep } from "../src/lib/oracle-education-plan"
 
 const sitesRoot = path.join(
   path.dirname(fileURLToPath(import.meta.url)),
   "..",
-  "helper-runtime",
   "src",
   "contents",
   "sites"
@@ -41,18 +40,20 @@ test("choice-match exact and fuzzy", () => {
 
 test("ported heavy-site companion modules exist", () => {
   const required = [
-    "myworkday/education-operation.js",
-    "ashby/location-operation.js",
-    "oraclecloud/education-lov-candidates.js",
-    "oraclecloud/operations.js",
-    "paycomonline-v3/operations.js",
-    "personio/operations.js",
-    "greenhouse/operations.js"
+    "myworkday/education-operation",
+    "ashby/location-operation",
+    "oraclecloud/education-lov-candidates",
+    "oraclecloud/operations",
+    "paycomonline-v3/operations",
+    "personio/operations",
+    "greenhouse/operations"
   ]
   for (const rel of required) {
+    const tsPath = path.join(sitesRoot, `${rel}.ts`)
+    const jsPath = path.join(sitesRoot, `${rel}.js`)
     assert.ok(
-      fs.existsSync(path.join(sitesRoot, rel)),
-      `missing ${rel}`
+      fs.existsSync(tsPath) || fs.existsSync(jsPath),
+      `missing ${rel}.{ts,js}`
     )
   }
 })

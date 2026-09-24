@@ -1,44 +1,42 @@
+// @ts-nocheck
 /**
- * Checkbox / radio label helpers (clean-TS).
- * Oracle: engine/helper-app/src/contents/methods/checkbox-label.js
+ * Resolve visible text for checkbox / radio controls.
  */
 
-function textOf(el: Element | null | undefined): string {
-  return (el?.textContent || "").trim()
+function readNodeText(node) {
+  return (node?.innerText || node?.textContent || "").trim()
 }
 
-function labelForInput(input: HTMLInputElement): HTMLLabelElement | null {
+function findLabelForInput(input) {
   if (!input.id || typeof document === "undefined") return null
+  const escapedId = input.id.replace(/\\/g, "\\\\").replace(/"/g, '\\"')
   try {
-    return document.querySelector(`label[for="${CSS.escape(input.id)}"]`)
+    return document.querySelector(`label[for="${escapedId}"]`)
   } catch {
     return null
   }
 }
 
-/** Visible label text for a checkbox/radio. */
-export function getRadioCheckText(input: HTMLInputElement): string {
-  const parent = input.parentElement
-  const grand = parent?.parentElement
-  const candidates: Array<Element | null | undefined> = [
+export function getRadioCheckText(input) {
+  const parent = input.parentElement ?? input.parentNode
+  const grandparent = parent?.parentElement ?? input.parentNode?.parentNode
+  const candidates = [
     typeof input.closest === "function" ? input.closest("label") : null,
-    labelForInput(input),
+    findLabelForInput(input),
     parent,
     parent?.nextElementSibling,
     parent?.previousElementSibling,
-    grand
+    grandparent,
   ]
-  for (const el of candidates) {
-    const t = textOf(el)
-    if (t) return t
+
+  for (const candidate of candidates) {
+    const text = readNodeText(candidate)
+    if (text) return text
   }
-  return (
-    input.getAttribute("aria-label") ||
-    input.value ||
-    ""
-  )
+
+  return ""
 }
 
-export function normalizeRadioCheckText(text: string): string {
+export function normalizeRadioCheckText(text) {
   return text.toLowerCase().trim().replace("*", "")
 }

@@ -1,4 +1,4 @@
-﻿import type { PlasmoMessaging } from "@plasmohq/messaging"
+import type { PlasmoMessaging } from "@plasmohq/messaging"
 
 import { fetchAutofillInfo, fetchCoverLetterBlob } from "~api/team-client"
 

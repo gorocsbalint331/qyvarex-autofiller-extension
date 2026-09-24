@@ -1,3 +1,3 @@
-﻿import { softOk } from "~background/lib/soft-stub"
+import { softOk } from "~background/lib/soft-stub"
 
 export default softOk("reportAutofillFirstUseAttribution")

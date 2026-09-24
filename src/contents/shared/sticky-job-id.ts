@@ -1,23 +1,17 @@
-/** Keep jr_id in the URL across SPA redirects (ported from sticky-job-id). */
+// @ts-nocheck
+/**
+ * Keep jr_id in the URL across SPA redirects.
+ */
 
 const JR_ID_PARAM = "jr_id"
+const DEFAULT_DURATION_MS = 3000
+const DEFAULT_INTERVAL_MS = 100
+const DEFAULT_MAX_RESTORATIONS = 5
 
-export type KeepJobIdOptions = {
-  originalHost: string
-  allowedPathname?: string
-  durationMs?: number
-  intervalMs?: number
-  maxRestorations?: number
-  onRestore?: (info: { pathname: string; restorationCount: number }) => void
-}
-
-export function keepJobIdInUrl(
-  jobId: string,
-  options: KeepJobIdOptions
-): () => void {
-  const durationMs = options.durationMs ?? 3000
-  const intervalMs = options.intervalMs ?? 100
-  const maxRestorations = options.maxRestorations ?? 5
+export function keepJobIdInUrl(jobId, options) {
+  const durationMs = options.durationMs ?? DEFAULT_DURATION_MS
+  const intervalMs = options.intervalMs ?? DEFAULT_INTERVAL_MS
+  const maxRestorations = options.maxRestorations ?? DEFAULT_MAX_RESTORATIONS
   const startedAt = Date.now()
   let restorationCount = 0
 

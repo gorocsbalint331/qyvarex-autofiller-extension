@@ -85,24 +85,26 @@ describe("ported ATS sites", () => {
     const root = path.join(
       path.dirname(fileURLToPath(import.meta.url)),
       "..",
-      "helper-runtime",
       "src",
       "contents"
     )
-    const factorySrc = fs.readFileSync(
-      path.join(root, "crawler", "factory.js"),
-      "utf8"
-    )
+    const factoryPathTs = path.join(root, "crawler", "factory.ts")
+    const factoryPathJs = path.join(root, "crawler", "factory.js")
+    const factoryPath = fs.existsSync(factoryPathTs)
+      ? factoryPathTs
+      : factoryPathJs
+    const factorySrc = fs.readFileSync(factoryPath, "utf8")
     // Spot-check that factory pulls in the major site modules
     for (const site of ["personio", "greenhouse", "myworkday", "ashby"]) {
       assert.match(
         factorySrc,
-        new RegExp(`~contents/sites/${site}`),
+        new RegExp(`sites/${site}\\.ts|~contents/sites/${site}`),
         `factory missing import for ${site}`
       )
       assert.ok(
-        fs.existsSync(path.join(root, "sites", `${site}.js`)),
-        `missing sites/${site}.js`
+        fs.existsSync(path.join(root, "sites", `${site}.ts`)) ||
+          fs.existsSync(path.join(root, "sites", `${site}.js`)),
+        `missing sites/${site}.{ts,js}`
       )
     }
   })

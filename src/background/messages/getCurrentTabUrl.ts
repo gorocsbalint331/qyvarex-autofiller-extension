@@ -1,13 +1,8 @@
-﻿import type { PlasmoMessaging } from "@plasmohq/messaging"
+import type { PlasmoMessaging } from "@plasmohq/messaging"
 
-/** Stub — port from engine/background/src/background/messages/getCurrentTabUrl.js */
 const handler: PlasmoMessaging.MessageHandler = async (_req, res) => {
-  res.send({
-    ok: false,
-    stub: true,
-    handler: "getCurrentTabUrl",
-    message: "Not implemented yet in the team fork"
-  })
+  const tabs = await chrome.tabs.query({ active: true, currentWindow: true })
+  res.send(tabs[0]?.url ?? null)
 }
 
 export default handler

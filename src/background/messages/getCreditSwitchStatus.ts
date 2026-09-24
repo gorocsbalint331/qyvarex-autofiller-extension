@@ -1,13 +1,8 @@
-﻿import type { PlasmoMessaging } from "@plasmohq/messaging"
+import type { PlasmoMessaging } from "@plasmohq/messaging"
 
-/** Stub — port from engine/background/src/background/messages/getCreditSwitchStatus.js */
+/** Credits UI off — team hub does not sell Turbo. */
 const handler: PlasmoMessaging.MessageHandler = async (_req, res) => {
-  res.send({
-    ok: false,
-    stub: true,
-    handler: "getCreditSwitchStatus",
-    message: "Not implemented yet in the team fork"
-  })
+  res.send(false)
 }
 
 export default handler

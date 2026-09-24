@@ -1,35 +1,32 @@
+// @ts-nocheck
 /**
- * Environment / host config for the team fork.
- * Override via .env (PLASMO_PUBLIC_*).
- *
- * Autofill profile data comes from the Team Autofill Hub (team-site),
- * not Jobright cloud — see ~api/team-client and extension Options.
+ * Host / API constants for the helper runtime (team fork).
+ * Keep self-contained — this tree is bundled without Plasmo aliases.
+ * Override by rebuilding after changing TEAM_HUB below (or Options for API calls
+ * that go through background → team-client).
  */
 
-const PROD_HUB = "https://jobright-team-site.vercel.app"
+const TEAM_HUB = "https://jobright-team-site.vercel.app"
 const DEV_HUB = "http://localhost:3210"
 
-export const TEAM_SITE_URL =
-  process.env.PLASMO_PUBLIC_TEAM_SITE_URL ?? PROD_HUB
-
-/** Hub URL for the current build: localhost in plasmo dev, prod URL in builds. */
-export function getHubUrl() {
-  if (process.env.NODE_ENV === "development") return DEV_HUB
-  return TEAM_SITE_URL || PROD_HUB
+function resolveDomains() {
+  const isLocal =
+    typeof location !== "undefined" &&
+    (location.hostname === "localhost" || location.hostname === "127.0.0.1")
+  // Prefer prod hub in injected pages; local hub only when developing against localhost hub.
+  const hub = (isLocal ? DEV_HUB : TEAM_HUB).replace(/\/+$/, "")
+  return {
+    apiDomain: hub,
+    hostDomain: hub,
+    cookieDomain: ""
+  }
 }
 
-/** @deprecated Prefer TEAM_SITE_URL — kept for older stubs */
-export const API_DOMAIN =
-  process.env.PLASMO_PUBLIC_API_DOMAIN ?? TEAM_SITE_URL
+const domains = resolveDomains()
 
-export const HOST_DOMAIN =
-  process.env.PLASMO_PUBLIC_HOST_DOMAIN ?? TEAM_SITE_URL
+export const API_DOMAIN = domains.apiDomain
+export const HOST_DOMAIN = domains.hostDomain
+export const COOKIE_DOMAIN = domains.cookieDomain
 
-export const COOKIE_DOMAIN =
-  process.env.PLASMO_PUBLIC_COOKIE_DOMAIN ?? "localhost"
-
-/** Origins treated as the team / agent UI host. */
-export const agentDomains = [
-  "localhost",
-  "127.0.0.1"
-] as const
+/** Team hub host only — not localhost (avoids activating on unrelated local apps). */
+export const agentDomains = ["jobright-team-site.vercel.app"]

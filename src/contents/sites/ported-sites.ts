@@ -1,7 +1,7 @@
 /**
  * Auto-generated inventory of ported Parcel ATS site modules.
- * Source: helper-runtime/src/contents/sites
- * Re-run: node scripts/port-vendor-helper-to-src.mjs
+ * Source: src/helper-runtime/contents/sites
+ * Ported ATS site registry for Clean-TS / discovery helpers.
  */
 export const PORTED_ATS_SITES = [
   "JobScore",

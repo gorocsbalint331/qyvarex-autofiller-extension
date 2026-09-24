@@ -1,13 +1,18 @@
-﻿import type { PlasmoMessaging } from "@plasmohq/messaging"
+import type { PlasmoMessaging } from "@plasmohq/messaging"
 
-/** Stub — port from engine/background/src/background/messages/getTailorResumeFileName.js */
+import { fetchAutofillInfo } from "~api/team-client"
+
+/** Filename for tailor resume UI — team hub uses base resume name. */
 const handler: PlasmoMessaging.MessageHandler = async (_req, res) => {
-  res.send({
-    ok: false,
-    stub: true,
-    handler: "getTailorResumeFileName",
-    message: "Not implemented yet in the team fork"
-  })
+  try {
+    const info = await fetchAutofillInfo()
+    const def =
+      info?.resumes?.find((r) => r.id === info.defaultResumeId) ??
+      info?.resumes?.[0]
+    res.send(def?.fileName || def?.displayName || null)
+  } catch {
+    res.send(null)
+  }
 }
 
 export default handler

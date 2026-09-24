@@ -1,13 +1,7 @@
-﻿import type { PlasmoMessaging } from "@plasmohq/messaging"
+import type { PlasmoMessaging } from "@plasmohq/messaging"
 
-/** Stub — port from engine/background/src/background/messages/getCurrentTabId.js */
-const handler: PlasmoMessaging.MessageHandler = async (_req, res) => {
-  res.send({
-    ok: false,
-    stub: true,
-    handler: "getCurrentTabId",
-    message: "Not implemented yet in the team fork"
-  })
+const handler: PlasmoMessaging.MessageHandler = async (req, res) => {
+  res.send(req.sender?.tab?.id ?? null)
 }
 
 export default handler

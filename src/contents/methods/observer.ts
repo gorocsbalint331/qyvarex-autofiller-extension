@@ -1,51 +1,54 @@
+// @ts-nocheck
 /**
- * waitForCondition — MutationObserver-backed poll (clean TS).
- * Parcel reference: contents/methods/observer.js
+ * Wait until a predicate is true (MutationObserver + optional poll fallback).
  */
 
-export type WaitForConditionOptions = {
-  timeout?: number
-  interval?: number
-  observeTarget?: Node | null
-  observeOptions?: MutationObserverInit
-}
-
-export function waitForCondition(
-  predicate: () => boolean,
-  options: WaitForConditionOptions = {}
-): Promise<boolean> {
-  const timeout = options.timeout ?? 5000
-  const interval = options.interval ?? 100
-  const observeTarget = options.observeTarget ?? null
-  const observeOptions = options.observeOptions ?? {
-    childList: true,
-    subtree: true,
-    attributes: true
-  }
-
-  if (predicate()) return Promise.resolve(true)
+export const waitForCondition = (condition, options = {}) => {
+  const {
+    timeout = 2000,
+    interval = 50,
+    observeTarget,
+    observerInit = {
+      childList: true,
+      subtree: true,
+      attributes: true,
+      characterData: true,
+    },
+    pollFallback = true,
+  } = options
 
   return new Promise((resolve) => {
-    const cleanups: Array<() => void> = []
-    const done = (ok: boolean) => {
-      for (const c of cleanups) c()
-      resolve(ok)
+    if (condition()) {
+      resolve(true)
+      return
     }
 
-    const timer = setTimeout(() => done(false), timeout)
-    cleanups.push(() => clearTimeout(timer))
+    let settled = false
+    const cleanups = []
 
-    const tick = setInterval(() => {
-      if (predicate()) done(true)
-    }, interval)
-    cleanups.push(() => clearInterval(tick))
+    function finish(result) {
+      if (settled) return
+      settled = true
+      cleanups.forEach((cleanup) => cleanup())
+      resolve(result)
+    }
 
-    if (observeTarget && typeof MutationObserver !== "undefined") {
-      const obs = new MutationObserver(() => {
-        if (predicate()) done(true)
+    const timeoutId = setTimeout(() => finish(false), timeout)
+    cleanups.push(() => clearTimeout(timeoutId))
+
+    if (observeTarget && typeof MutationObserver === "function") {
+      const observer = new MutationObserver(() => {
+        if (condition()) finish(true)
       })
-      obs.observe(observeTarget, observeOptions)
-      cleanups.push(() => obs.disconnect())
+      observer.observe(observeTarget, observerInit)
+      cleanups.push(() => observer.disconnect())
+    }
+
+    if (pollFallback) {
+      const intervalId = setInterval(() => {
+        if (condition()) finish(true)
+      }, interval)
+      cleanups.push(() => clearInterval(intervalId))
     }
   })
 }

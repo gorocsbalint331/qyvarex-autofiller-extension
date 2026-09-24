@@ -1,4 +1,4 @@
-﻿import type { PlasmoMessaging } from "@plasmohq/messaging"
+import type { PlasmoMessaging } from "@plasmohq/messaging"
 
 /**
  * Inject MAIN-world helper that stamps Ashby field metadata onto inputs
