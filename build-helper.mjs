@@ -31,6 +31,15 @@ const HELPER_STYLES = {
   "inter.css": path.join(STYLE_DIR, "inter.css"),
 }
 
+const DATA_MIME = {
+  ".svg": "image/svg+xml",
+  ".png": "image/png",
+  ".jpg": "image/jpeg",
+  ".jpeg": "image/jpeg",
+  ".gif": "image/gif",
+  ".webp": "image/webp",
+}
+
 const SITE_ENTRIES = new Set(
   fs.existsSync(SITES)
     ? fs
@@ -87,6 +96,13 @@ function resolveImport(args) {
   if (args.path.startsWith("url:")) {
     const style = HELPER_STYLES[path.basename(args.path.slice(4))]
     if (style) return { styleFile: style }
+  }
+  if (args.path.startsWith("data-base64:")) {
+    const spec = args.path.slice("data-base64:".length)
+    const file = spec.startsWith("~")
+      ? path.join(SRC, spec.replace(/^~\/?/, ""))
+      : path.resolve(path.dirname(args.importer || SRC), spec)
+    if (fs.existsSync(file)) return { dataFile: file }
   }
   if (args.path.startsWith("url:") || args.path.startsWith("data-base64:")) {
     return { emptyAsset: true, key: args.path }
@@ -149,7 +165,20 @@ const helperPlugin = {
       if (resolved.styleFile) {
         return { path: resolved.styleFile, namespace: "helper-style" }
       }
+      if (resolved.dataFile) {
+        return { path: resolved.dataFile, namespace: "helper-data" }
+      }
       return { path: resolved }
+    })
+
+    build.onLoad({ filter: /.*/, namespace: "helper-data" }, (args) => {
+      const mime = DATA_MIME[path.extname(args.path).toLowerCase()] || "application/octet-stream"
+      const dataUrl = `data:${mime};base64,${fs.readFileSync(args.path).toString("base64")}`
+      return {
+        contents: `export default ${JSON.stringify(dataUrl)}`,
+        loader: "js",
+        watchFiles: [args.path],
+      }
     })
 
     build.onLoad({ filter: /.*/, namespace: "helper-style" }, (args) => {

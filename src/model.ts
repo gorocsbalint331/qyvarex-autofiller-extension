@@ -119,7 +119,14 @@ export const buildAutofillInfoData = (payload) => {
       sponsorshipStatus: employmentInfo.sponsorshipStatus ?? "",
       lgbt: employmentInfo.lgbt ?? "",
       hispanic: employmentInfo.hispanic ?? "",
-      sexual: Array.isArray(employmentInfo.sexual) ? employmentInfo.sexual : [],
+      sexual: Array.isArray(employmentInfo.sexual)
+        ? employmentInfo.sexual
+        : typeof employmentInfo.sexualOrientation === "string"
+          ? employmentInfo.sexualOrientation
+              .split(",")
+              .map((value) => value.trim())
+              .filter(Boolean)
+          : [],
     },
     pronouns: payload?.pronouns ?? "",
     preference: {

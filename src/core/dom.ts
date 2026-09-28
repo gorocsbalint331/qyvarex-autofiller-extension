@@ -242,6 +242,50 @@ function findFocusTargetByLabel(label) {
   return matchingRule ? findVisibleFocusTarget(matchingRule) : null;
 }
 
+const UNREADABLE_INPUT_TYPES = new Set(["hidden", "button", "submit", "reset", "image"]);
+
+function isChoiceInput(element) {
+  return element?.tagName === "INPUT" && (element.type === "radio" || element.type === "checkbox");
+}
+
+function collectRuleChoiceInputs(rule) {
+  let choices = new Set();
+  for (let key of ["$radios", "$checkboxs", "$input"])
+    for (let element of [].concat(rule[key] ?? [])) isChoiceInput(element) && choices.add(element);
+  for (let key of ["$radioParent", "$fieldRow"]) {
+    let root = rule[key];
+    if ("function" == typeof root?.querySelectorAll)
+      root.querySelectorAll('input[type="radio"], input[type="checkbox"]').forEach((element) => choices.add(element));
+  }
+  return [...choices].filter((element) => false !== element.isConnected);
+}
+
+/**
+ * Current on-page state of a tracked field: true (has a value), false (empty),
+ * or null when it can't be read reliably (sections, custom comboboxes, etc.).
+ */
+export function getRuleFieldFilledState(label) {
+  let normalizedLabel = fieldLabel.normalizeFieldLabel(label);
+  if (!normalizedLabel) return null;
+  let rule =
+    fieldFocusRules.find((entry) => fieldLabel.normalizeFieldLabel(entry.label ?? "") === normalizedLabel) ??
+    fieldFocusRuleTargets.get(normalizedLabel);
+  if (!rule || (Array.isArray(rule.children) && rule.children.length)) return null;
+
+  let choices = collectRuleChoiceInputs(rule);
+  if (choices.length) return choices.some((element) => element.checked);
+
+  let input = rule.$input;
+  if (!isDomElementLike(input) || false === input.isConnected) return null;
+  let tagName = input.tagName;
+  if ("INPUT" === tagName && "file" === input.type) return input.files?.length > 0 ? true : null;
+  if ("INPUT" === tagName && UNREADABLE_INPUT_TYPES.has(input.type)) return null;
+  if ("combobox" === input.getAttribute?.("role")) return null;
+  if ("SELECT" === tagName || "TEXTAREA" === tagName || "INPUT" === tagName)
+    return String(input.value ?? "").trim() !== "";
+  return null;
+}
+
 function focusSectionResultTarget(type, index, fieldLabelText) {
   if (!Number.isInteger(index) || index < 0) return;
   let record = sectionResultFocusRules.get(type)?.[index];

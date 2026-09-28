@@ -1,6 +1,7 @@
 import type { PlasmoMessaging } from "@plasmohq/messaging"
 
 import { fetchAutofillInfo } from "~api/team-client"
+import { getJobSalaryRange } from "~background/lib/job-salary"
 import {
   resolveOperationLocally,
   type OperationPayload
@@ -72,7 +73,8 @@ const handler: PlasmoMessaging.MessageHandler = async (req, res) => {
     const result = await resolveOperationLocally(
       hub,
       operation,
-      typeof body.source === "string" ? body.source : "generic"
+      typeof body.source === "string" ? body.source : "generic",
+      () => getJobSalaryRange(req.sender)
     )
 
     res.send({

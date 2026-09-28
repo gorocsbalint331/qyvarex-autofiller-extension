@@ -11,6 +11,7 @@ import numeral from "numeral"
 import * as arrDownSvg from "../assets/inline/images/arr_down.svg.js"
 import * as editSvg from "../assets/inline/images/edit.svg.js"
 import * as accountFlow from "../contents/pre-autofill-flow/account-flow.ts"
+import { useManualFieldSync } from "../hooks/useManualFieldSync.ts"
 import { useAutofillResultStore } from "../store/autofillResult.ts"
 import { useProfileStore } from "../store/profile.ts"
 import { useResumeStore } from "../store/resume.ts"
@@ -323,6 +324,10 @@ export default function FillProgress({
     const frame = requestAnimationFrame(() => setIsOpenAnimated(true))
     return () => cancelAnimationFrame(frame)
   }, [isOpen])
+
+  useManualFieldSync(
+    !isFilling && hasVisibleResult && fillingMode !== "signup_autofill_flow",
+  )
 
   if (!isFilling && !hasVisibleResult) return null
 

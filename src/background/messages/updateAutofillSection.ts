@@ -40,6 +40,13 @@ const handler: PlasmoMessaging.MessageHandler = async (req, res) => {
     }
 
     const patch: Record<string, unknown> = {}
+    const structured =
+      body.structuredData && typeof body.structuredData === "object"
+        ? (body.structuredData as Record<string, unknown>)
+        : null
+    if (structured && typeof structured.regenerationEmail === "string") {
+      patch.loginEmail = structured.regenerationEmail.trim()
+    }
     if (body.extras && typeof body.extras === "object") patch.extras = body.extras
     if (body.data && typeof body.data === "object") {
       const d = body.data as Record<string, unknown>
@@ -63,15 +70,22 @@ const handler: PlasmoMessaging.MessageHandler = async (req, res) => {
     }
 
     if (!Object.keys(patch).length) {
-      res.send({ ok: true, skipped: true })
+      res.send({ ok: true, success: true, result: true, status: 200, skipped: true })
       return
     }
 
-    const { ok, data } = await teamFetch<{ ok: boolean; error?: string }>(
+    const { ok, status, data } = await teamFetch<{ ok: boolean; error?: string }>(
       `/api/v1/profiles/${encodeURIComponent(id)}`,
       { method: "PATCH", body: JSON.stringify(patch) }
     )
-    res.send({ ok: ok && !!data?.ok, error: data?.error })
+    const saved = ok && !!data?.ok
+    res.send({
+      ok: saved,
+      success: saved,
+      result: saved,
+      status: saved ? 200 : status,
+      error: data?.error
+    })
   } catch (err) {
     res.send({
       ok: false,

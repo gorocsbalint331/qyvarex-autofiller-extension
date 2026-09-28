@@ -1,7 +1,8 @@
 import type { PlasmoMessaging } from "@plasmohq/messaging"
 
 import { fetchAutofillInfo } from "~api/team-client"
-import { buildLocalGptResults } from "~lib/hub-to-jobright"
+import { getJobSalaryRange } from "~background/lib/job-salary"
+import { buildLocalGptResults, isSalaryQuestion } from "~lib/hub-to-jobright"
 
 /**
  * Local fill-v2 stand-in: map extracted form labels → hub answers / identity.
@@ -26,7 +27,16 @@ const handler: PlasmoMessaging.MessageHandler = async (req, res) => {
       return
     }
 
-    const result = buildLocalGptResults(hub, elements)
+    const asksSalary = elements.some(
+      (el) =>
+        typeof el?.label === "string" &&
+        isSalaryQuestion(
+          el.label,
+          Array.isArray(el.options) ? el.options.map((o: unknown) => String(o ?? "")) : []
+        )
+    )
+    const salaryRange = asksSalary ? await getJobSalaryRange(req.sender) : null
+    const result = buildLocalGptResults(hub, elements, { salaryRange })
     res.send({
       ok: true,
       data: result

@@ -1,4 +1,17 @@
 import type { AutofillInfoPayload } from "~api/team-types"
+import {
+  formatSalary,
+  isSalaryExpectationQuestion,
+  pickSalaryOption,
+  salaryTarget,
+  type SalaryRange
+} from "~lib/salary"
+
+export type AnswerContext = {
+  /** Salary range advertised in the job description, if one was found. */
+  salaryRange?: SalaryRange | null
+  fieldType?: string
+}
 
 type HubEducation = {
   schoolName?: string
@@ -853,13 +866,37 @@ const ANSWER_RESOLVERS: AnswerResolver[] = [
   }
 ]
 
+export function isSalaryQuestion(label: string, options: string[] = []): boolean {
+  const norm = normalizeLabel(label)
+  return (
+    !!norm &&
+    isSalaryExpectationQuestion(norm) &&
+    !isLegalEligibilityQuestion(norm) &&
+    !hasYesNoOptions(options)
+  )
+}
+
+function salaryAnswer(options: string[], context: AnswerContext): string {
+  const target = salaryTarget(context.salaryRange)
+  if (options.length) {
+    return (
+      pickSalaryOption(target.amount, options) ??
+      adaptToOptions(formatSalary(target), options)
+    )
+  }
+  return formatSalary(target, context.fieldType)
+}
+
 export function lookupAnswer(
   hub: AutofillInfoPayload,
   label: string,
-  options: string[] = []
+  options: string[] = [],
+  context: AnswerContext = {}
 ): string | null {
   const norm = normalizeLabel(label)
   if (!norm) return null
+
+  if (isSalaryQuestion(label, options)) return salaryAnswer(options, context)
 
   // Explicit Q&A from hub first (exact / careful contains)
   let bestAnswer: string | null = null
@@ -1187,7 +1224,8 @@ function buildSectionRecords(
  */
 export function buildLocalGptResults(
   hub: AutofillInfoPayload,
-  elements: FillElement[]
+  elements: FillElement[],
+  context: Pick<AnswerContext, "salaryRange"> = {}
 ): {
   fill_data_list: Array<{ name: string; value: string }>
   profile_data: Record<string, unknown>
@@ -1221,7 +1259,10 @@ export function buildLocalGptResults(
     if (!label) continue
     if (el.type === "employment" || el.type === "education") continue
     const options = elementOptions(el)
-    let value = lookupAnswer(hub, label, options)
+    let value = lookupAnswer(hub, label, options, {
+      ...context,
+      fieldType: typeof el.type === "string" ? el.type : undefined
+    })
 
     // Fallback: applicationSummary from hub extras (team-site derived)
     if (!value) {

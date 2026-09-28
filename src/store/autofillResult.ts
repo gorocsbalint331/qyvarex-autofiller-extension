@@ -5,6 +5,7 @@
 
 import { create } from "zustand"
 import { applyAutofillProgressMessage } from "../core/autofill-progress-protocol.js"
+import { normalizeFieldLabel } from "../utils/fieldLabel.ts"
 
 export const useAutofillResultStore = create((set) => ({
   isFilling: false,
@@ -43,6 +44,31 @@ export const useAutofillResultStore = create((set) => ({
     set({
       autoFillResult,
       progressSessionId: null,
+    }),
+  /** Reconcile filled/missing lists with on-page state (`readState` returns true/false/null). */
+  syncFieldFilledStates: (readState) =>
+    set((state) => {
+      const result = state.autoFillResult
+      if (!result?.fieldRequiredStatus?.length) return state
+      let filledFields = [...(result.filledFields || [])]
+      let missingFields = [...(result.missingFields || [])]
+      let changed = false
+      for (const step of result.fieldRequiredStatus) {
+        const label = step?.label
+        if (!label) continue
+        const filledNow = readState(label)
+        if (filledNow == null) continue
+        const key = normalizeFieldLabel(label)
+        const matches = (field) => normalizeFieldLabel(field) === key
+        if (filledNow === filledFields.some(matches)) continue
+        filledFields = filledFields.filter((field) => !matches(field))
+        missingFields = missingFields.filter((field) => !matches(field))
+        ;(filledNow ? filledFields : missingFields).push(label)
+        changed = true
+      }
+      return changed
+        ? { autoFillResult: { ...result, filledFields, missingFields } }
+        : state
     }),
   applyAutoFillProgressMessage: (message) =>
     set((state) => {

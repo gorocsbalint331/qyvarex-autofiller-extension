@@ -3,7 +3,12 @@
  */
 
 import type { AutofillInfoPayload } from "~api/team-types"
-import { lookupAnswer } from "~lib/hub-to-jobright"
+import {
+  isSalaryQuestion,
+  lookupAnswer,
+  type AnswerContext
+} from "~lib/hub-to-jobright"
+import type { SalaryRange } from "~lib/salary"
 
 function norm(s: string) {
   return (s || "")
@@ -171,21 +176,30 @@ export async function fetchSearchSchemaOptions(
   }
 }
 
-function desiredFromHub(
-  hub: AutofillInfoPayload,
-  operation: OperationPayload
-): string | null {
-  const label =
+function operationLabel(operation: OperationPayload): string {
+  return (
     (typeof operation.label === "string" && operation.label) ||
     (typeof operation.question === "string" && operation.question) ||
     (typeof operation.field === "string" && operation.field) ||
     ""
+  )
+}
 
-  const options = [
+function operationOptions(operation: OperationPayload): string[] {
+  return [
     ...asStringList(operation.options),
     ...asStringList(operation.candidates),
     ...asStringList(operation.values)
   ]
+}
+
+function desiredFromHub(
+  hub: AutofillInfoPayload,
+  operation: OperationPayload,
+  context: AnswerContext = {}
+): string | null {
+  const label = operationLabel(operation)
+  const options = operationOptions(operation)
 
   const query =
     (typeof operation.query === "string" && operation.query) ||
@@ -193,8 +207,8 @@ function desiredFromHub(
     ""
 
   let desired =
-    (label && lookupAnswer(hub, label, options)) ||
-    (query && lookupAnswer(hub, query, options)) ||
+    (label && lookupAnswer(hub, label, options, context)) ||
+    (query && lookupAnswer(hub, query, options, context)) ||
     query ||
     null
 
@@ -235,9 +249,15 @@ function desiredFromHub(
 export async function resolveOperationLocally(
   hub: AutofillInfoPayload,
   operation: OperationPayload,
-  source = "generic"
+  source = "generic",
+  loadSalaryRange?: () => Promise<SalaryRange | null>
 ): Promise<ResolveResult> {
-  const desired = desiredFromHub(hub, operation)
+  const salaryRange =
+    loadSalaryRange &&
+    isSalaryQuestion(operationLabel(operation), operationOptions(operation))
+      ? await loadSalaryRange()
+      : null
+  const desired = desiredFromHub(hub, operation, { salaryRange })
 
   let options = [
     ...asStringList(operation.options),

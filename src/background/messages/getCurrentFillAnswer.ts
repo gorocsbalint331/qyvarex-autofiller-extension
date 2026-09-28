@@ -1,7 +1,8 @@
 import type { PlasmoMessaging } from "@plasmohq/messaging"
 
 import { fetchAutofillInfo } from "~api/team-client"
-import { lookupAnswer } from "~lib/hub-to-jobright"
+import { getJobSalaryRange } from "~background/lib/job-salary"
+import { isSalaryQuestion, lookupAnswer } from "~lib/hub-to-jobright"
 
 /**
  * Local stand-in for Jobright company-answer API.
@@ -35,7 +36,10 @@ const handler: PlasmoMessaging.MessageHandler = async (req, res) => {
       return
     }
 
-    const value = lookupAnswer(hub, label, options)
+    const salaryRange = isSalaryQuestion(label, options)
+      ? await getJobSalaryRange(req.sender)
+      : null
+    const value = lookupAnswer(hub, label, options, { salaryRange })
     res.send({
       ok: true,
       data: value,
