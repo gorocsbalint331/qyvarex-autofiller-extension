@@ -2,7 +2,7 @@
 /**
  * Scrape job title / description / company from the current page via XPath rules.
  */
-import * as matchPatterns from "@webext-core/match-patterns"
+import * as matchPatterns from "./match-patterns.ts"
 import {
   getFirstOrderedNode
 } from "./xpath.ts"

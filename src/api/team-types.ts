@@ -38,6 +38,8 @@ export type AutofillInfoPayload = {
   schemaVersion: 1
   profileId: string
   profileLabel: string
+  /** Hub `updatedAt` (ms); echoed back as `expectedRevision` on save. */
+  revision?: number
   identity: {
     firstName: string
     lastName: string

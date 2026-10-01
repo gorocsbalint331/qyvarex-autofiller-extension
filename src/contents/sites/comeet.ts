@@ -101,7 +101,7 @@ export class Comeet extends BaseFiller {
   async doFillForm(forceRefetch = false) {
     if (!rules.isRunningInComeetIframe()) {
       return await new Promise((resolve) => {
-        const timeoutMs = 10000
+        const timeoutMs = 75000
         const startedAt = Date.now()
         const cleanup = () => {
           window.removeEventListener("message", onMessage)
@@ -136,9 +136,9 @@ export class Comeet extends BaseFiller {
         }
         window.addEventListener("message", onMessage)
         const timeoutId = window.setTimeout(() => {
-          console.warn("[Comeet] parent fillForm wait timeout", {
-            waitedMs: Date.now() - startedAt,
-          })
+          console.warn(
+            `[Comeet] parent fillForm wait timeout after ${Date.now() - startedAt}ms`,
+          )
           finish()
         }, timeoutMs)
       })

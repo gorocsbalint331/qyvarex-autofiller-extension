@@ -24,6 +24,7 @@ import AutoFillRuleGroup from "./AutoFillRuleGroup.ts"
 import CheckedIcon from "./CheckedIcon.ts"
 import { AnalyzeStarIcon } from "./ExternalJob/ExternalJobIcon.ts"
 import LoadingIcon from "./LoadingIcon.ts"
+import LogApplicationButton from "./LogApplicationButton.ts"
 import UnCheckedIcon from "./UnCheckedIcon.ts"
 import {
   SIGNUP_CREATING_ACCOUNT_LABEL,
@@ -551,6 +552,9 @@ export default function FillProgress({
                           ],
                         }),
                   }),
+                !isFilling &&
+                  !isSignupFlow &&
+                  jsx(LogApplicationButton, {}),
               ],
             }),
       ],

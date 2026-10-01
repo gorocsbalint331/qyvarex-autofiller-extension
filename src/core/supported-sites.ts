@@ -3,7 +3,7 @@
  * Readable TypeScript converted from Parcel dump (helper-runtime/src/core/supported-sites.js).
  * Bundled directly by scripts/bundle-engine-helper.mjs.
  */
-import * as matchPatterns from "@webext-core/match-patterns";
+import * as matchPatterns from "./match-patterns.ts";
 
 export const PINPOINTHQ_CAREERS_CDN = "d2n5ied94mazop.cloudfront.net";
 export const EIGHTFOLD_CAREERHUB_JOB_PATH_REGEX_SOURCE =

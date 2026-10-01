@@ -36,6 +36,7 @@ type HubProfile = {
   address1?: string
   address2?: string
   extras?: Obj
+  revision?: number
 }
 
 /** Previous hub item with the same key, so hub-only fields (degree, major, jobType…) survive. */
@@ -184,18 +185,31 @@ export function structuredDataToHubPatch(structured: Obj, current: HubProfile) {
   return patch
 }
 
+/**
+ * `expectedRevision` is the hub revision the Editor loaded; when the profile was
+ * changed since (e.g. on the team site) the hub answers 409 and nothing is written.
+ */
 export async function saveStructuredAutofillInfo(
   profileId: string,
-  structured: Obj
+  structured: Obj,
+  expectedRevision?: number
 ): Promise<{ ok: boolean; status: number; error?: string }> {
   const path = `/api/v1/profiles/${encodeURIComponent(profileId)}`
   const current = await teamFetch<{ ok: boolean; profile?: HubProfile; error?: string }>(path)
   if (!current.ok || !current.data?.ok || !current.data.profile) {
     return { ok: false, status: current.status, error: current.data?.error || "load_failed" }
   }
+  const profile = current.data.profile
+  const checkRevision = typeof expectedRevision === "number"
+  if (checkRevision && typeof profile.revision === "number" && profile.revision !== expectedRevision) {
+    return { ok: false, status: 409, error: "conflict" }
+  }
   const saved = await teamFetch<{ ok: boolean; error?: string }>(path, {
     method: "PATCH",
-    body: JSON.stringify(structuredDataToHubPatch(structured, current.data.profile))
+    body: JSON.stringify({
+      ...structuredDataToHubPatch(structured, profile),
+      ...(checkRevision ? { expectedRevision } : {})
+    })
   })
   return {
     ok: saved.ok && !!saved.data?.ok,

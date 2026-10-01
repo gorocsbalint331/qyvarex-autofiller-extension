@@ -7,7 +7,8 @@ import { useEffect } from "react"
 import { getRuleFieldFilledState } from "../core/dom.ts"
 import { useAutofillResultStore } from "../store/autofillResult.ts"
 
-const PAGE_EVENTS = ["change", "input", "click"]
+// keyup/focusout cover dropdown options picked with the keyboard.
+const PAGE_EVENTS = ["change", "input", "click", "keyup", "focusout"]
 const SYNC_DELAY_MS = 150
 
 export function useManualFieldSync(enabled) {
@@ -27,6 +28,7 @@ export function useManualFieldSync(enabled) {
     for (const type of PAGE_EVENTS) {
       document.addEventListener(type, schedule, true)
     }
+    schedule()
     return () => {
       window.clearTimeout(timeoutId)
       for (const type of PAGE_EVENTS) {

@@ -106,12 +106,15 @@ function collectAutofillChangedFields(previousInfo, nextInfo) {
   return changedFields
 }
 
+const LOAD_FAILED_MESSAGE = "Couldn't load your profile from the team hub."
+
 export const useAutofillInfoStore = create((set) => ({
   autofillInfo: null,
   country: "",
   city: "",
   autoUpdate: true,
   revision: null,
+  loadError: "",
   fetchAutofillInfo: async (forceRefresh = false) => {
     try {
       const response = await sendToBackground({
@@ -151,9 +154,14 @@ export const useAutofillInfoStore = create((set) => ({
           country: autofillInfo.location?.country ?? "",
           city: autofillInfo.location?.city ?? "",
           autoUpdate,
+          loadError: "",
         })
         return autofillInfo
       }
+      const loadError =
+        typeof response?.message === "string" && response.message
+          ? response.message
+          : LOAD_FAILED_MESSAGE
       if (response) {
         set({
           autofillInfo: null,
@@ -161,6 +169,7 @@ export const useAutofillInfoStore = create((set) => ({
           country: "",
           city: "",
           autoUpdate,
+          loadError,
         })
       } else {
         set({
@@ -168,15 +177,20 @@ export const useAutofillInfoStore = create((set) => ({
           revision: null,
           country: "",
           city: "",
+          loadError,
         })
       }
       return null
-    } catch {
+    } catch (error) {
       set({
         autofillInfo: null,
         revision: null,
         country: "",
         city: "",
+        loadError:
+          error instanceof Error && error.message
+            ? `${LOAD_FAILED_MESSAGE} ${error.message}`
+            : LOAD_FAILED_MESSAGE,
       })
       return null
     }

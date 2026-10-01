@@ -179,22 +179,49 @@ async function loadAutofillInfo(id: string) {
   }>(`/api/v1/profiles/${encodeURIComponent(id)}?autofill=1`)
 }
 
+/** Like `fetchAutofillInfo`, but says why nothing came back (shown in the Editor). */
+export async function loadAutofillInfoWithReason(
+  profileId?: string | null
+): Promise<{ info: AutofillInfoPayload | null; error?: string }> {
+  const settings = await getTeamSettings()
+  if (!settings.apiToken) {
+    return { info: null, error: "Not signed in to the team hub. Sign in from the extension options." }
+  }
+  try {
+    let id = profileId || settings.selectedProfileId
+    if (!id) id = await ensureSelectedProfile()
+    if (!id) {
+      return { info: null, error: "No profile selected. Choose a profile in the extension options." }
+    }
+
+    let res = await loadAutofillInfo(id)
+    if (res.status === 404 && id === settings.selectedProfileId) {
+      const repaired = await ensureSelectedProfile()
+      if (repaired && repaired !== id) res = await loadAutofillInfo(repaired)
+    }
+
+    if (res.ok && res.data.ok && res.data.autofillInfo) {
+      return { info: res.data.autofillInfo }
+    }
+    if (res.status === 401) {
+      return { info: null, error: "Your team hub session expired. Sign in again from the extension options." }
+    }
+    if (res.status === 404) {
+      return { info: null, error: "The selected profile no longer exists on the team hub." }
+    }
+    return { info: null, error: `The team hub returned an error (${res.status}). Try again.` }
+  } catch {
+    return {
+      info: null,
+      error: `Can't reach the team hub at ${settings.siteUrl}. Check that it is running, then try again.`
+    }
+  }
+}
+
 export async function fetchAutofillInfo(
   profileId?: string | null
 ): Promise<AutofillInfoPayload | null> {
-  const settings = await getTeamSettings()
-  let id = profileId || settings.selectedProfileId
-  if (!id) id = await ensureSelectedProfile()
-  if (!id) return null
-
-  let res = await loadAutofillInfo(id)
-  if (res.status === 404 && id === settings.selectedProfileId) {
-    const repaired = await ensureSelectedProfile()
-    if (repaired && repaired !== id) res = await loadAutofillInfo(repaired)
-  }
-
-  if (!res.ok || !res.data.ok || !res.data.autofillInfo) return null
-  return res.data.autofillInfo
+  return (await loadAutofillInfoWithReason(profileId)).info
 }
 
 export async function fetchResumeBlob(

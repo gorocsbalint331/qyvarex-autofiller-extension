@@ -12,9 +12,9 @@ import { sendToBackground } from "@plasmohq/messaging"
 import { scrapeApplicationMeta } from "../contents/shared/application-log-watcher.ts"
 
 const LABELS = {
-  idle: "Log Application to Google Sheet",
+  idle: "Mark as Applied (log to Google Sheet)",
   logging: "Logging to Google Sheet...",
-  logged: "Logged to Google Sheet",
+  logged: "Marked as applied - logged to Google Sheet",
   duplicate: "Already logged today - click to log again",
   error: "Could not log to Google Sheet - retry",
 }

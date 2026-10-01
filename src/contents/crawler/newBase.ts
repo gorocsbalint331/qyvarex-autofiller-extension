@@ -4,7 +4,7 @@
  */
 
 import { isExactChoiceMatch } from "../methods/choice-match.ts"
-import dataUrlToBlob from "dataurl-to-blob"
+import { dataUrlToBlob } from "../methods/data-url.ts"
 import { omit, intersection, isEmpty, isNil } from "lodash-es"
 import { sendToBackground } from "@plasmohq/messaging"
 import { Storage } from "@plasmohq/storage"
@@ -420,7 +420,16 @@ export class AutoFillBase {
       const blobParts = dataUrlToBlob(base64URL)
       const blob = new Blob([blobParts])
       const dataTransfer = new DataTransfer()
-      const resumeBaseName = this.resumeInfo.resumeName.replace(/\.[^/.]+$/, "")
+      const requestedBase = String(this.resumeInfo?.resumeName ?? "")
+        .replace(/\.[^/.]+$/, "")
+        .trim()
+      const storedBase = String(response?.fileName ?? "")
+        .replace(/\.[^/.]+$/, "")
+        .trim()
+      const resumeBaseName =
+        requestedBase && !/^resume$/i.test(requestedBase)
+          ? requestedBase
+          : storedBase || requestedBase || "resume"
 
       dataTransfer.items.add(
         new File([blob], `${resumeBaseName}.${extension}`, {

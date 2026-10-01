@@ -20,6 +20,7 @@ import { useResumeStore } from "../store/resume.ts"
 import { useUrlStore } from "../store/url.ts"
 import { extractJobIdFromUrl } from "../utils/job-id.ts"
 import { isCoverLetterTextarea } from "./fieldFilter.ts"
+import { resolveJobContext } from "../lib/job-context.ts"
 import { extractDescription, extractVisibleLabel } from "./labelExtraction.ts"
 
 export function useGenerateField() {
@@ -102,17 +103,40 @@ export function useGenerateField() {
         const seed = buildEditWithAiCoverLetterSeed(data)
         if (seed) useResumeStore.getState().setEditWithAiCoverLetterSeed(seed)
       } else {
-        const jobId = extractJobIdFromUrl(
-          useUrlStore.getState().currentTabUrl || window.location.href,
-        )
+        const pageUrl =
+          useUrlStore.getState().currentTabUrl || window.location.href
+        const jobId = extractJobIdFromUrl(pageUrl)
+        let heading = ""
+        try {
+          heading = document.querySelector("h1")?.textContent || ""
+        } catch {
+          heading = ""
+        }
+        const jobContext = resolveJobContext({
+          url: pageUrl,
+          h1: heading,
+          docTitle: document.title || "",
+        })
         const response = await sendToBackground({
           name: "regenerateAnswer",
           body: {
             jobId: jobId ?? null,
             question,
-            promptList: prompts,
+            promptList: jobContext.title
+              ? [
+                  `Write this answer for the role "${jobContext.title}".`,
+                  ...prompts,
+                ]
+              : prompts,
             uniqueId: uniqueIdByElement.current.get(element) ?? null,
             fieldInput: element.value || null,
+            jobContext: jobContext.title
+              ? {
+                  title: jobContext.title,
+                  company: jobContext.company || undefined,
+                  url: jobContext.url || undefined,
+                }
+              : undefined,
           },
         })
 

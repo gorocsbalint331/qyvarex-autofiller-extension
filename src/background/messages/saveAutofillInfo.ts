@@ -24,7 +24,13 @@ const handler: PlasmoMessaging.MessageHandler = async (req, res) => {
 
     if (body.structuredData && typeof body.structuredData === "object") {
       if (!profileId) return fail(400, "no_profile")
-      const saved = await saveStructuredAutofillInfo(profileId, body.structuredData)
+      const expectedRevision =
+        typeof body.expectedRevision === "number" ? body.expectedRevision : undefined
+      const saved = await saveStructuredAutofillInfo(
+        profileId,
+        body.structuredData,
+        expectedRevision
+      )
       if (!saved.ok) return fail(saved.status || 500, saved.error || "save_failed")
       res.send({ ok: true, success: true, result: true, status: 200 })
       return

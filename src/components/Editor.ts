@@ -91,6 +91,7 @@ export default function Editor() {
     (state) => state.saveSnapshotToStorage,
   )
   const autoUpdate = useAutofillInfoStore((state) => state.autoUpdate)
+  const loadError = useAutofillInfoStore((state) => state.loadError)
   const autofillChangedFields = useResumeStore(
     (state) => state.autofillChangedFields,
   )
@@ -201,6 +202,63 @@ export default function Editor() {
     setSkillInputValue("")
     setInitialData(next)
   }, [open, autofillInfo, revision, isLoading])
+
+  const hasChangesRef = useRef(false)
+  hasChangesRef.current = changeSummary.hasChanges
+
+  // The profile can also be edited on the team site; pick that up when the
+  // user comes back to this tab instead of saving over it later.
+  useEffect(() => {
+    if (!open || isLoading) return
+    let checking = false
+    const syncWithHub = async () => {
+      if (document.visibilityState !== "visible" || checking) return
+      const baseline = baselineRef.current
+      if (!baseline?.usesRevision || isSavingRef.current) return
+      checking = true
+      try {
+        const generation = loadGenerationRef.current
+        await fetchAutofillInfo(true)
+        if (generation !== loadGenerationRef.current) return
+        const { autofillInfo: latest, revision: latestRevision } =
+          useAutofillInfoStore.getState()
+        if (
+          !latest ||
+          !isAutofillInfoRevision(latestRevision) ||
+          latestRevision === baselineRef.current?.revision
+        ) {
+          return
+        }
+        if (hasChangesRef.current) {
+          setHasConflict(true)
+          return
+        }
+        baselineRef.current = {
+          data: structuredClone(latest),
+          revision: latestRevision,
+          usesRevision: true,
+        }
+        const next = buildAutofillInfoData(latest)
+        setAutofillInfo(next)
+        setInitialData(next)
+        setErrorFields(new Set())
+      } finally {
+        checking = false
+      }
+    }
+    window.addEventListener("focus", syncWithHub)
+    document.addEventListener("visibilitychange", syncWithHub)
+    return () => {
+      window.removeEventListener("focus", syncWithHub)
+      document.removeEventListener("visibilitychange", syncWithHub)
+    }
+  }, [open, isLoading])
+
+  const handleRetryLoad = async () => {
+    setIsLoading(true)
+    await fetchAutofillInfo(true)
+    setIsLoading(false)
+  }
 
   const handleReloadLatest = async () => {
     const generation = loadGenerationRef.current
@@ -550,9 +608,10 @@ export default function Editor() {
       if (hasRegularChanges || hasRegistrationEmailChanges) {
         await fetchAutofillInfo(true)
         setInitialData(data)
+        const savedRevision = useAutofillInfoStore.getState().revision
         baselineRef.current = {
           data: saveBody.structuredData,
-          revision: null,
+          revision: isAutofillInfoRevision(savedRevision) ? savedRevision : null,
           usesRevision: baselineRef.current.usesRevision,
         }
       }
@@ -742,6 +801,25 @@ export default function Editor() {
                         type: "link",
                         onClick: () => setReloadConfirmOpen(true),
                         children: "Reload latest information",
+                      }),
+                    ],
+                  }),
+                }),
+              !isLoading &&
+                !baselineRef.current &&
+                loadError &&
+                jsx(Alert, {
+                  type: "error",
+                  showIcon: true,
+                  message: "Couldn't load your autofill information",
+                  description: jsxs(Fragment, {
+                    children: [
+                      loadError,
+                      jsx("br", {}),
+                      jsx(Button, {
+                        type: "link",
+                        onClick: () => void handleRetryLoad(),
+                        children: "Try again",
                       }),
                     ],
                   }),

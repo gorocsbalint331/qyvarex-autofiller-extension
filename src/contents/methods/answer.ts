@@ -3,7 +3,7 @@
  * Answer / profile / resume fetch + section fill orchestration.
  */
 
-import dataUrlToBlob from "dataurl-to-blob"
+import { dataUrlToBlob } from "./data-url.ts"
 import { isArray, isEqual, omit } from "lodash-es"
 import { sendToBackground } from "@plasmohq/messaging"
 import {
@@ -52,9 +52,14 @@ const OMIT_FROM_GPT_ELEMENT = [
 function prepareElementForGpt(field) {
   const cleaned = omit(field, ...OMIT_FROM_GPT_ELEMENT)
   if (field?.optionsMode === "searchable") delete cleaned.options
-  if (typeof cleaned.label !== "string") return cleaned
+  const tag = field?.$input?.tagName
+  const inputTag = typeof tag === "string" ? tag.toLowerCase() : ""
+  if (typeof cleaned.label !== "string") {
+    return inputTag ? { ...cleaned, inputTag } : cleaned
+  }
   return {
     ...cleaned,
+    ...(inputTag ? { inputTag } : {}),
     type: isNumberInput(field) ? "number" : cleaned.type,
     label: formatFieldLabelForDisplay(cleaned.label),
   }
@@ -200,8 +205,18 @@ export async function fetchPdfAsBlob(resumeRequest) {
   }
 
   if (!extension) extension = "pdf"
+  const requestedBase = String(resumeRequest?.resumeName ?? "")
+    .replace(/\.[^/.]+$/, "")
+    .trim()
+  const storedBase = String(response?.fileName ?? "")
+    .replace(/\.[^/.]+$/, "")
+    .trim()
+  // "resume" is the placeholder used when the fill has no name. Prefer the
+  // file's real name from the hub (e.g. Balint_Viktor_Resume.docx).
   const baseName =
-    resumeRequest.resumeName?.replace(/\.[^/.]+$/, "") || "resume"
+    requestedBase && !/^resume$/i.test(requestedBase)
+      ? requestedBase
+      : storedBase || requestedBase || "resume"
 
   console.log("[ResumeUploadDebug] fetchPdfAsBlob:success", {
     extension,
