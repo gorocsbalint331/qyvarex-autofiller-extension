@@ -361,6 +361,29 @@ function pickYesNo(options: string[], yes: boolean): string {
 }
 
 /** Pull leading year-range numbers from strings like "5-7 years" / "10+". */
+function experienceYearsNumber(text: string): string {
+  const raw = text.trim()
+  const range = raw.match(/(\d+)\s*[-–—to]+\s*(\d+)/i)
+  if (range) {
+    return String(Math.round((Number(range[1]) + Number(range[2])) / 2))
+  }
+  const single = raw.match(/(\d+)/)
+  return single ? single[1] : ""
+}
+
+function noticePeriodWeeks(text: string): string {
+  const raw = text.trim().toLowerCase()
+  if (!raw || /immediate|none|no notice|asap/.test(raw)) return "0"
+  const amount = raw.match(/(\d+(?:\.\d+)?)/)
+  if (!amount) return "4"
+  const value = Number(amount[1])
+  if (!Number.isFinite(value)) return "4"
+  if (/month/.test(raw)) return String(Math.round(value * 4))
+  if (/day/.test(raw)) return String(Math.max(0, Math.round(value / 7)))
+  if (/year/.test(raw)) return String(Math.round(value * 52))
+  return String(Math.round(value))
+}
+
 function yearRangeParts(text: string): { lo: number; hi: number } | null {
   const n = normalizeLabel(text)
   const plus = n.match(/^(\d+)\s*\+\s*(years?)?$/)
@@ -721,7 +744,8 @@ const ANSWER_RESOLVERS: AnswerResolver[] = [
       if (isLegalEligibilityQuestion(labelNorm)) return ""
       const v = extrasString(h, "yearsOfExperience")
       if (!v) return ""
-      return options.length ? adaptToOptions(v, options) : v
+      if (options.length) return adaptToOptions(v, options)
+      return experienceYearsNumber(v) || v
     }
   },
   {
@@ -1217,7 +1241,9 @@ function answerFromResume(
   }
   if (/notice period/.test(norm) && !options.length) {
     const notice = extrasString(hub, "noticePeriod") || extrasString(hub, "notice")
-    if (notice.trim()) return notice.trim()
+    const raw = notice.trim() || "1 month"
+    if (/week/.test(norm)) return noticePeriodWeeks(raw)
+    return raw
   }
   return null
 }
@@ -1300,13 +1326,23 @@ function workItems(extras: Record<string, unknown>): SectionItem[] {
           : []
       const bullets = descriptions.map(str).filter(Boolean)
       return {
-        org: str(o.companyName ?? o.organization),
-        title: str(o.jobTitle ?? o.job_title),
+        org: str(
+          o.companyName ?? o.organization ?? o.company ?? o.employer ?? o.employerName
+        ),
+        title: str(
+          o.jobTitle ??
+            o.job_title ??
+            o.title ??
+            o.position ??
+            o.role ??
+            o.occupation ??
+            o.designation
+        ),
         degree: "",
         major: "",
         gpa: "",
         location: str(o.city ?? o.location),
-        description: str(o.summary) || bullets.join("\n"),
+        description: bullets.length ? bullets.join("\n") : str(o.summary),
         ...itemDates(o)
       }
     })
@@ -1441,6 +1477,8 @@ function buildSectionRecords(
             "Company Name": item.org,
             Title: item.title,
             "Job Title": item.title,
+            "Occupation / Title": item.title,
+            "Occupation/Title": item.title,
             Location: item.location,
             Description: item.description
           }

@@ -6,7 +6,7 @@
 import { isEightfoldCareerHubJobPath } from "../sites/eightfold/careerhub/route.js"
 import { PINPOINTHQ_CAREERS_CDN } from "../../core/supported-sites.ts"
 import { pageLooksLikeNewJobSite } from "../sites/default/detect.ts"
-import { isDomainMatch, isDomainOrEmbedded } from "../../core/utils.ts"
+import { checkPageSourceContains, isDomainMatch, isDomainOrEmbedded } from "../../core/utils.ts"
 
 const HIRINGTHING_DOMAINS = [
   "hiringthing.com",
@@ -235,7 +235,9 @@ export function getTargetName() {
   if (
     isDomainMatch(hostname, "successfactors.com") ||
     isDomainMatch(hostname, "successfactors.eu") ||
-    isDomainMatch(hostname, "sapsf.com")
+    isDomainMatch(hostname, "sapsf.com") ||
+    isDomainMatch(hostname, "sapsf.eu") ||
+    checkPageSourceContains("rmkcdn.successfactors.com")
   ) {
     return "successfactors"
   }

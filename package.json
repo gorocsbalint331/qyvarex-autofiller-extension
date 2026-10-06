@@ -1,7 +1,7 @@
 {
   "name": "jobright-fork-extension",
   "displayName": "Qyvarex Autofill",
-  "version": "0.5.5",
+  "version": "0.5.6",
   "description": "Autofill job applications from your Qyvarex team profiles, resumes, and saved answers.",
   "author": "Qyvarex",
   "homepage": "https://jobright-team-site.vercel.app",

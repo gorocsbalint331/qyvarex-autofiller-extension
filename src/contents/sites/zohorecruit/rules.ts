@@ -62,6 +62,52 @@ function normalizeLabelKey(value) {
     .toLowerCase()
 }
 
+function zohoFieldRequired(row, control) {
+  const labelText = row?.querySelector("label")?.textContent || ""
+  if (/[*\uFF0A]/.test(labelText)) return true
+  if (row?.querySelector(".crc-form-mandatory, .crm-star, .cxMandatory")) {
+    return true
+  }
+  const hosts = [control, control?.closest?.("crux-text-component, crux-number-component, crux-picklist-component, crux-text-area-component, crux-phone-component, lyte-input")]
+  for (const host of hosts) {
+    if (!host?.getAttribute) continue
+    if (
+      host.getAttribute("cx-prop-required") === "true" ||
+      host.getAttribute("cx-prop-mandatory") === "true" ||
+      host.getAttribute("aria-required") === "true" ||
+      host.getAttribute("required") != null ||
+      host.required === true
+    ) {
+      return true
+    }
+  }
+  return !!row?.querySelector(
+    "[cx-prop-required='true'], [cx-prop-mandatory='true'], [aria-required='true'], input[required], textarea[required]",
+  )
+}
+
+function isShownControl(element) {
+  if (!(element instanceof HTMLElement)) return false
+  const type = (element.getAttribute("type") || "").toLowerCase()
+  if (["hidden", "checkbox", "radio", "file", "button", "submit"].includes(type)) {
+    return false
+  }
+  const style = window.getComputedStyle(element)
+  if (style.display === "none" || style.visibility === "hidden") return false
+  const rect = element.getBoundingClientRect()
+  return rect.width > 0 && rect.height > 0
+}
+
+function tabularTextControl(fieldRow) {
+  const textareas = Array.from(fieldRow.querySelectorAll("textarea"))
+  const shownTextarea = textareas.find((element) => isShownControl(element))
+  if (shownTextarea) return shownTextarea
+  const inputs = Array.from(
+    fieldRow.querySelectorAll("lyte-input .lyteField input, lyte-input input"),
+  )
+  return inputs.find((element) => isShownControl(element)) || null
+}
+
 function inferZohoSemanticType(rule) {
   const key = normalizeLabelKey(`${rule?.label || ""} ${rule?.name || ""}`)
   return rule?.isPhone || key.includes("mobile") || key.includes("phone")
@@ -109,21 +155,27 @@ export async function getRules() {
   const rules = []
   const rows = document.querySelectorAll(".crc-form-row")
   for (const row of rows) {
-    const tabular = row.querySelector("rec-tabular-component")
-    const addButton = row.querySelector("button.tabular-group-add")
+    const tabular = row.querySelector("rec-tabular-component, .tabular-main-div")
+    const addButton =
+      row.querySelector("button.tabular-group-add, button[id*='add-row']") ||
+      Array.from(row.querySelectorAll("button, lyte-button, a")).find((element) =>
+        /^\+?\s*add$/i.test(
+          (element.textContent || "").replace(/\s+/g, " ").trim(),
+        ),
+      )
     if (tabular && addButton) {
       row.getAttribute("aria-label") ||
         row.querySelector(".cw-section-title")?.textContent?.trim()
       let sectionType = "additional_info"
-      const className = row.className.toLowerCase()
-      if (className.includes("education")) {
+      const sectionName = `${row.className} ${row.getAttribute("aria-label") || ""} ${row.querySelector(".cw-section-title")?.textContent || ""}`.toLowerCase()
+      if (sectionName.includes("education")) {
         sectionType = "education"
         const educationRules = await extractTabularSectionRules(
           row,
           "Education",
         )
         if (educationRules) rules.push(...educationRules)
-      } else if (className.includes("experience")) {
+      } else if (sectionName.includes("experience")) {
         sectionType = "workExperience"
         const experienceRules = await extractTabularSectionRules(
           row,
@@ -135,21 +187,63 @@ export async function getRules() {
       continue
     }
     if (
-      row.querySelector(".wbf-doublewrapper") ||
-      row.querySelector(".wdb-doublewrapper") ||
-      row.classList.contains("crc-form-sec")
+      row.classList.contains("crc-form-sec") &&
+      row.querySelector(".crc-form-row")
     ) {
       continue
     }
+    if (row.querySelector(".crc-form-row")) continue
+    const fieldHosts = zohoFieldHosts(row)
+    for (const host of fieldHosts) {
+      appendZohoField(rules, host)
+    }
+  }
+  const resumeField = findZohoResumeField()
+  if (
+    resumeField?.input &&
+    !rules.some((rule) => /resume|\bcv\b/i.test(rule.label || ""))
+  ) {
+    rules.push({
+      type: "FILE",
+      label: resumeField.label || "Resume",
+      name: "resume",
+      $input: resumeField.input,
+      required: resumeField.required !== false,
+    })
+  }
+  return rules
+    .filter(
+      (rule) => rule.$input || rule.type === enums.FIELD_TYPE.SELECT,
+    )
+    .map((rule) => annotateZohoRule(rule))
+}
+
+function zohoFieldHosts(row) {
+  const labels = Array.from(row.querySelectorAll("label.crm-from-label"))
+  if (labels.length <= 1) return [row]
+  return labels.map((label) => {
+    let node = label.parentElement
+    let host = node || row
+    while (node && node !== row.parentElement) {
+      const count = node.querySelectorAll("label.crm-from-label").length
+      if (count !== 1) break
+      host = node
+      node = node.parentElement
+    }
+    return host
+  })
+}
+
+function appendZohoField(rules, row) {
     const labelEl = row.querySelector("label.crm-from-label")
-    if (!labelEl) continue
+    if (!labelEl) return
     const labelText = labelEl.textContent?.replace("*", "").trim() || ""
-    const required = !!row.querySelector(".crc-form-mandatory")
+    const required = zohoFieldRequired(row, row)
     if (
       row.querySelector("rec-captcha-component") ||
       /captcha/i.test(labelText)
     ) {
-      continue
+      return
     }
     const component = row.querySelector(`crux-phone-component, crux-email-component, crux-text-component, 
        crux-number-component, crux-website-component, crux-picklist-component,
@@ -191,7 +285,7 @@ export async function getRules() {
                 .filter(Boolean)
             : void 0,
       })
-      continue
+      return
     }
     const checkboxes = Array.from(
       row.querySelectorAll("input[type='checkbox']"),
@@ -226,7 +320,7 @@ export async function getRules() {
                 .filter(Boolean)
             : void 0,
       })
-      continue
+      return
     }
     if (row.querySelector(".cnl-firstname-row")) {
       const nameParts = row.querySelectorAll(
@@ -264,7 +358,7 @@ export async function getRules() {
           }
         }
       })
-      continue
+      return
     }
     const dropdown = row.querySelector("lyte-dropdown")
     if (dropdown) {
@@ -282,7 +376,7 @@ export async function getRules() {
           fieldName,
           required,
         )
-      } else {
+      } else if (row.querySelector("lyte-autocomplete") && !row.querySelector("crux-picklist-component")) {
         const searchInput = findVisibleDropdownSearchInput(dropdown)
         if (searchInput) {
           rules.push({
@@ -293,8 +387,10 @@ export async function getRules() {
             $label: labelEl,
             required,
           })
-          continue
+          return
         }
+      }
+      if (!row.querySelector("crux-phone-component")) {
         const dropButton = dropdown.querySelector("lyte-drop-button")
         if (dropButton) {
           dropButton.dispatchEvent(
@@ -327,7 +423,7 @@ export async function getRules() {
           options: options.length > 0 ? options : void 0,
         })
       }
-      continue
+      return
     }
     const textarea = row.querySelector("textarea")
     if (textarea) {
@@ -339,7 +435,7 @@ export async function getRules() {
         $label: labelEl,
         required,
       })
-      continue
+      return
     }
     const skillInput = row.querySelector(
       "rec-skills-component input.skillset-input, skills-tag #addSkills",
@@ -352,11 +448,17 @@ export async function getRules() {
         required: required || !!row.querySelector(".crm-star"),
         name: skillInput.getAttribute("name") || "",
       })
-      continue
+      return
     }
-    const textInput = row.querySelector("lyte-input input")
+    const textInput =
+      Array.from(row.querySelectorAll("lyte-input .lyteField input, lyte-input input")).find(
+        (element) => isShownControl(element),
+      ) || row.querySelector("lyte-input input")
     if (textInput) {
       const placeholder = textInput.getAttribute("placeholder")
+      const numeric =
+        !!row.querySelector("crux-number-component") ||
+        (textInput instanceof HTMLInputElement && textInput.type === "number")
       if (placeholder === "MM/DD/YYYY") {
         rules.push({
           type: enums.FIELD_TYPE.DATE,
@@ -373,30 +475,11 @@ export async function getRules() {
           name: fieldName,
           $input: textInput,
           $label: labelEl,
+          numeric,
           required,
         })
       }
-      continue
     }
-  }
-  const resumeField = findZohoResumeField()
-  if (
-    resumeField?.input &&
-    !rules.some((rule) => /resume|\bcv\b/i.test(rule.label || ""))
-  ) {
-    rules.push({
-      type: "FILE",
-      label: resumeField.label || "Resume",
-      name: "resume",
-      $input: resumeField.input,
-      required: resumeField.required !== false,
-    })
-  }
-  return rules
-    .filter(
-      (rule) => rule.$input || rule.type === enums.FIELD_TYPE.SELECT,
-    )
-    .map((rule) => annotateZohoRule(rule))
 }
 
 export function appendZohoPhoneRulesForTests(
@@ -446,9 +529,13 @@ async function extractTabularSectionRules(sectionRow, sectionLabel) {
     const children = []
     fieldRows.forEach((fieldRow) => {
       const labelEl = fieldRow.querySelector("label")
-      const rowLabel =
-        labelEl?.textContent?.replace(/\s+/g, " ").trim() || ""
-      if (rowLabel.includes("Duration")) {
+      const rowLabel = (labelEl?.textContent || "")
+        .replace(/\s+/g, " ")
+        .replace(/\bdelete\b/gi, "")
+        .replace(/[*\uFF0A]/g, "")
+        .trim()
+      const rowLabelLower = rowLabel.toLowerCase()
+      if (rowLabelLower.includes("duration")) {
         const dropdowns = Array.from(
           fieldRow.querySelectorAll("lyte-dropdown"),
         )
@@ -467,10 +554,22 @@ async function extractTabularSectionRules(sectionRow, sectionLabel) {
             name: dropdown.id || `${rowLabel}_${dropdownIndex}`,
             $input: dropdown,
             $label: labelEl,
-            required: false,
+            required: zohoFieldRequired(fieldRow, dropdown),
           })
         })
-      } else if (rowLabel.includes("Currently")) {
+        const currentBox = fieldRow.querySelector('input[type="checkbox"]')
+        if (currentBox) {
+          children.push({
+            type: enums.FIELD_TYPE.CHECKBOX,
+            label: "I currently work here",
+            name: currentBox.getAttribute("name") || "I currently work here",
+            $input: currentBox,
+            $label: labelEl,
+            required: false,
+            options: ["Yes"],
+          })
+        }
+      } else if (rowLabelLower.includes("currently")) {
         const checkbox = fieldRow.querySelector('input[type="checkbox"]')
         if (checkbox) {
           children.push({
@@ -479,15 +578,16 @@ async function extractTabularSectionRules(sectionRow, sectionLabel) {
             name: checkbox.getAttribute("name") || rowLabel,
             $input: checkbox,
             $label: labelEl,
-            required: false,
+            required: zohoFieldRequired(fieldRow, checkbox),
             options: ["Yes"],
           })
         }
       } else {
-        const input = fieldRow.querySelector(
-          "input, textarea, lyte-dropdown",
-        )
+        const dropdown = fieldRow.querySelector("lyte-dropdown")
+        const input = tabularTextControl(fieldRow) || dropdown
         if (rowLabel && input) {
+          const numeric = !!fieldRow.querySelector("crux-number-component") ||
+            (input instanceof HTMLInputElement && input.type === "number")
           children.push({
             type:
               input.tagName === "LYTE-DROPDOWN"
@@ -497,7 +597,8 @@ async function extractTabularSectionRules(sectionRow, sectionLabel) {
             name: input.getAttribute("name") || rowLabel,
             $input: input,
             $label: labelEl,
-            required: false,
+            numeric,
+            required: zohoFieldRequired(fieldRow, input),
           })
         }
       }

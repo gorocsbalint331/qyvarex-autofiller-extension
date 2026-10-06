@@ -189,24 +189,43 @@ function showToast(message: string) {
 }
 
 async function confirmSubmission() {
+  let lastMessage = ""
+  for (let attempt = 0; attempt < 3; attempt++) {
+    try {
+      const result = await sendToBackground({
+        name: "confirmApplicationLog",
+        body: scrapeApplicationMeta(),
+      })
+      if (result?.ok && !result.duplicate) {
+        showToast(`Logged to Google Sheet${result.tabName ? ` (${result.tabName})` : ""}`)
+        return
+      }
+      if (result?.ok) return
+      lastMessage = result?.message || ""
+      if (lastMessage === "not_armed") return
+    } catch (error) {
+      const message = error instanceof Error ? error.message : String(error)
+      if (/extension context invalidated|receiving end does not exist/i.test(message)) {
+        showToast("Refresh this page, then submit again to log the application")
+        return
+      }
+      lastMessage = message
+      console.warn("[qyvarex] application log failed", message)
+    }
+    await new Promise((resolve) => window.setTimeout(resolve, 800 * (attempt + 1)))
+  }
+  if (lastMessage) showToast(`Could not log to Google Sheet: ${lastMessage}`)
+}
+
+function leftApplyForm(startHref: string) {
+  if (!startHref || window.location.href === startHref) return false
   try {
-    const result = await sendToBackground({
-      name: "confirmApplicationLog",
-      body: scrapeApplicationMeta(),
-    })
-    if (result?.ok && !result.duplicate) {
-      showToast(`Logged to Google Sheet${result.tabName ? ` (${result.tabName})` : ""}`)
-    } else if (result?.ok === false && result.message && result.message !== "not_armed") {
-      console.warn("[qyvarex] application log failed", result.message)
-      showToast(`Could not log to Google Sheet: ${result.message}`)
-    }
-  } catch (error) {
-    const message = error instanceof Error ? error.message : String(error)
-    if (/extension context invalidated|receiving end does not exist/i.test(message)) {
-      showToast("Refresh this page, then submit again to log the application")
-      return
-    }
-    console.warn("[qyvarex] application log failed", message)
+    const before = new URL(startHref)
+    const after = new URL(window.location.href)
+    const applyPath = /\/(apply|application)\/?$/i
+    return applyPath.test(before.pathname) && !applyPath.test(after.pathname)
+  } catch {
+    return false
   }
 }
 
@@ -219,7 +238,8 @@ function watchForSuccess(
   durationMs: number,
   baseline: Set<string>,
   startHref: string,
-  allowEmailConfirm = false
+  allowEmailConfirm = false,
+  logOnLeave = false
 ) {
   const until = Date.now() + durationMs
   let lastCheck = 0
@@ -249,7 +269,8 @@ function watchForSuccess(
       allowEmailConfirm && emailConfirmPhrases(text).some((phrase) => !baseline.has(phrase))
     const movedToSuccessUrl =
       window.location.href !== startHref && SUCCESS_URL_RE.test(window.location.pathname)
-    if (fresh || emailConfirm || movedToSuccessUrl) {
+    const movedOffApply = logOnLeave && leftApplyForm(startHref)
+    if (fresh || emailConfirm || movedToSuccessUrl || movedOffApply) {
       stop()
       void confirmSubmission()
     }
@@ -277,6 +298,7 @@ export function armSubmittedApplication() {
     WATCH_AFTER_SUBMIT_MS,
     new Set([...successPhrases(text), ...emailConfirmPhrases(text)]),
     window.location.href,
+    true,
     true
   )
 }
@@ -314,6 +336,7 @@ export function startApplicationLogWatcher(isApplicationPage: () => boolean) {
         WATCH_AFTER_SUBMIT_MS,
         new Set([...successPhrases(text), ...emailConfirmPhrases(text)]),
         window.location.href,
+        true,
         true
       )
     },

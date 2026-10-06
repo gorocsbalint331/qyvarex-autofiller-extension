@@ -288,7 +288,8 @@ async function fillUnansweredFromResume(
         "When choices are listed, copy the matching choice exactly. If the question allows more than one, list every matching choice separated by commas.",
         "For YES or NO questions, reply YES or NO.",
         "For privacy, consent, and whether the CV was submitted in English, reply YES.",
-        "For a notice period that is not stated on the resume, reply: 1 month.",
+        "For a notice period that is not stated on the resume, reply with a whole number of weeks when the question says weeks (1 month = 4). Otherwise reply: 1 month.",
+        "When a question asks for years of experience as a number, reply with one integer, not a range and not the word years.",
         "Keep each answer to a single short line."
       ]
     })

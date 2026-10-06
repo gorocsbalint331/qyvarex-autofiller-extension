@@ -90,7 +90,19 @@ function resumeCandidateScore(labelText, blob, required) {
   return score
 }
 
-export function findZohoResumeField() {
+function pushResumeCandidate(candidates, input, container, labelText, blob, required) {
+  if (!input || candidates.some((candidate) => candidate.input === input)) return
+  candidates.push({
+    input,
+    container,
+    label: /^resume$|^cv$/i.test(labelText) ? labelText : "Resume",
+    blob,
+    required,
+    score: resumeCandidateScore(labelText, blob, required),
+  })
+}
+
+export function listZohoResumeFields() {
   const candidates = []
   const components = document.querySelectorAll("rec-file-upload-component")
   for (const component of components) {
@@ -113,13 +125,7 @@ export function findZohoResumeField() {
     )[0]
     if (!input) continue
     const required = resumeFieldRequired(row, input, blob)
-    candidates.push({
-      input,
-      container: component,
-      label: /^resume$|^cv$/i.test(labelText) ? labelText : "Resume",
-      required,
-      score: resumeCandidateScore(labelText, blob, required),
-    })
+    pushResumeCandidate(candidates, input, component, labelText, blob, required)
   }
 
   const inputs = queryDeep(document, "input[type='file'], input.fileuploadInput")
@@ -135,29 +141,32 @@ export function findZohoResumeField() {
     const blob = `${labelText} ${row?.innerText || ""} ${input.getAttribute("name") || ""} ${input.id || ""}`.toLowerCase()
     if (!/\bresume\b|\bcv\b/.test(blob) || /\bcover\b/.test(blob)) continue
     const required = resumeFieldRequired(row, input, blob)
-    candidates.push({
-      input,
-      container: row,
-      label: /^resume$|^cv$/i.test(labelText) ? labelText : "Resume",
-      required,
-      score: resumeCandidateScore(labelText, blob, required),
-    })
+    pushResumeCandidate(candidates, input, row, labelText, blob, required)
   }
-
-  candidates.sort((left, right) => right.score - left.score)
-  return candidates[0] || null
+  return candidates
 }
 
-export async function uploadResume(
-  resumeInfo,
-  updateRequired,
-  updateFilled,
-) {
-  const field = findZohoResumeField()
-  const label = field?.label || "Resume"
-  updateRequired?.({ label, required: field?.required !== false })
-  if (!field?.input || !resumeInfo) return { ok: false, label }
+export function findZohoResumeField() {
+  const fields = listZohoResumeFields()
+  return (
+    fields.find((field) =>
+      /upload your resume|drag and drop|autofill application/.test(field.blob || ""),
+    ) ||
+    fields[0] ||
+    null
+  )
+}
 
+export function findZohoCvField() {
+  const fields = listZohoResumeFields()
+  const resume = findZohoResumeField()
+  return (
+    [...fields].reverse().find((field) => field.input !== resume?.input) || null
+  )
+}
+
+async function uploadIntoFileField(field, fileList, updateRequired, updateFilled, label) {
+  if (!field?.input || !fileList) return false
   const removeButtons = Array.from(
     field.container?.querySelectorAll?.(FILE_REMOVE_SELECTOR) ?? [],
   )
@@ -167,21 +176,78 @@ export async function uploadResume(
   }
   await dom.uploadFiles(
     field.input,
+    fileList,
+    updateRequired,
+    updateFilled,
+    label,
+  )
+  return (
+    (field.input.files?.length || 0) > 0 ||
+    /\.pdf\b|\.docx?\b/i.test(field.container?.innerText || "")
+  )
+}
+
+export async function uploadResume(
+  resumeInfo,
+  updateRequired,
+  updateFilled,
+  coverLetter,
+) {
+  const field = findZohoResumeField()
+  const label = "Resume"
+  updateRequired?.({ label, required: true })
+  if (!field?.input || !resumeInfo) return { ok: false, label }
+  const uploaded = await uploadIntoFileField(
+    field,
     await answerMethods.fetchPdfAsBlob(resumeInfo),
     updateRequired,
     updateFilled,
     label,
   )
-  const uploaded =
-    (field.input.files?.length || 0) > 0 ||
-    /\.pdf\b/i.test(field.container?.innerText || "")
+  const cvField = findZohoCvField()
+  if (cvField?.input && coverLetter?.coverLetterId) {
+    await uploadIntoFileField(
+      cvField,
+      await answerMethods.fetchCoverLetterPdfAsBlob(coverLetter),
+      updateRequired,
+      updateFilled,
+      "CV",
+    )
+  }
   return { ok: uploaded, label }
 }
 
-export async function addEducationRow(rowIndex) {
-  const section = document.querySelector(
-    '.crc-form-row[aria-label="Educational Details"]',
+function findZohoSection(label) {
+  const byAria = document.querySelector(
+    `.crc-form-row[aria-label="${label}"]`,
   )
+  if (byAria) return byAria
+  const heading = Array.from(
+    document.querySelectorAll(".crc-form-row, .cw-section-title"),
+  ).find((element) =>
+    (element.textContent || "")
+      .replace(/\s+/g, " ")
+      .trim()
+      .toLowerCase()
+      .startsWith(label.toLowerCase()),
+  )
+  return heading?.closest(".crc-form-row") || heading || null
+}
+
+function findSectionAddButton(section) {
+  return (
+    section.querySelector("button.tabular-group-add, button[id*='add-row']") ||
+    Array.from(section.querySelectorAll("button, lyte-button, a")).find((element) =>
+      /^\+?\s*add$/i.test(
+        (element.textContent || "").replace(/\s+/g, " ").trim(),
+      ),
+    ) ||
+    null
+  )
+}
+
+export async function addEducationRow(rowIndex) {
+  const section = findZohoSection("Educational Details")
   if (!section) {
     console.error("[Zoho-Ops] 未找到教育经历板块容器")
     return
@@ -190,7 +256,7 @@ export async function addEducationRow(rowIndex) {
     const existing = section.querySelectorAll(".tabular-main-div")
     if (existing.length > rowIndex) return
   }
-  const addButton = section.querySelector("button.tabular-group-add")
+  const addButton = findSectionAddButton(section)
   if (addButton) {
     addButton.click()
     await new Promise((resolve) => setTimeout(resolve, 800))
@@ -201,9 +267,212 @@ export async function addEducationRow(rowIndex) {
   }
 }
 
+function monthAliases(value) {
+  const full = [
+    "january",
+    "february",
+    "march",
+    "april",
+    "may",
+    "june",
+    "july",
+    "august",
+    "september",
+    "october",
+    "november",
+    "december",
+  ]
+  const short = [
+    "jan",
+    "feb",
+    "mar",
+    "apr",
+    "may",
+    "jun",
+    "jul",
+    "aug",
+    "sep",
+    "oct",
+    "nov",
+    "dec",
+  ]
+  const text = String(value ?? "").trim().toLowerCase()
+  let index = -1
+  if (/^\d{1,2}$/.test(text)) {
+    const num = Number(text)
+    if (num >= 1 && num <= 12) index = num - 1
+  } else {
+    index = full.findIndex((name) => name === text || name.startsWith(text))
+    if (index < 0) index = short.indexOf(text.slice(0, 3))
+  }
+  if (index < 0) return [text]
+  return [
+    String(index + 1),
+    String(index + 1).padStart(2, "0"),
+    short[index],
+    full[index],
+  ]
+}
+
+function pickZohoDropdownItem(rule, items, optionText) {
+  const exact = items.find((item) =>
+    zohoDropdownOptionMatches(rule, item.textContent, optionText),
+  )
+  if (exact) return exact
+  const wanted = String(optionText ?? "").trim().toLowerCase()
+  if (wanted.length < 3) return null
+  const mentioned = items
+    .map((item) => ({
+      item,
+      text: String(item.textContent ?? "").replace(/\s+/g, " ").trim(),
+    }))
+    .filter((entry) => {
+      const token = entry.text.toLowerCase()
+      if (token.length < 3 || token === "-none-") return false
+      const escaped = token.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")
+      return new RegExp(
+        `(?:^|[^a-z0-9])${escaped}(?:$|[^a-z0-9])`,
+        "i",
+      ).test(wanted)
+    })
+    .sort((a, b) => b.text.length - a.text.length)
+  return mentioned[0]?.item || null
+}
+
+function zohoDropdownOptionMatches(rule, itemText, optionText) {
+  const left = String(itemText ?? "").trim().toLowerCase()
+  const right = String(optionText ?? "").trim().toLowerCase()
+  if (!left || left === "-none-") return false
+  if (left === right) return true
+  if (!/month/i.test(rule?.label || "")) return false
+  return monthAliases(optionText).includes(left)
+}
+
+function blankDropdownLabel(value) {
+  return (
+    !String(value || "").trim() ||
+    /^-none-$|^none$|^select$/i.test(String(value).trim())
+  )
+}
+
+function dropdownItemLabel(item) {
+  const attr = (
+    item?.getAttribute?.("data-value") ||
+    item?.getAttribute?.("lt-prop-value") ||
+    ""
+  )
+    .replace(/\s+/g, " ")
+    .trim()
+  const visible = (item?.innerText || item?.textContent || "")
+    .replace(/\s+/g, " ")
+    .trim()
+  return attr || visible
+}
+
+export function committedDropdownLabel(dropdown) {
+  if (!dropdown) return ""
+  const visible = (
+    dropdown.querySelector?.(".lyteMarginRight")?.textContent ||
+    dropdown.querySelector?.("lyte-drop-button")?.innerText ||
+    ""
+  )
+    .replace(/\s+/g, " ")
+    .trim()
+  return blankDropdownLabel(visible) ? "" : visible
+}
+
+function dropdownLabelsMatch(shown, wanted) {
+  const left = String(shown || "")
+    .replace(/\s+/g, " ")
+    .trim()
+    .toLowerCase()
+  const right = String(wanted || "")
+    .replace(/\s+/g, " ")
+    .trim()
+    .toLowerCase()
+  if (!left || !right || blankDropdownLabel(left)) return false
+  return (
+    left === right ||
+    left.startsWith(`${right} `) ||
+    left.startsWith(`${right}-`) ||
+    left.startsWith(`${right}(`)
+  )
+}
+
+function clickDropItem(item) {
+  if (typeof item.scrollIntoView === "function") {
+    item.scrollIntoView({ block: "nearest" })
+  }
+  if (typeof item.click === "function") item.click()
+  item.dispatchEvent(
+    new MouseEvent("mousedown", { bubbles: true, cancelable: true }),
+  )
+  item.dispatchEvent(
+    new MouseEvent("mouseup", { bubbles: true, cancelable: true }),
+  )
+  item.dispatchEvent(
+    new MouseEvent("click", { bubbles: true, cancelable: true }),
+  )
+}
+
+function openDropdownItems(dropdown) {
+  const controlsId = dropdown
+    .querySelector(".lyteDummyEventContainer")
+    ?.getAttribute("aria-controls")
+  const dropBody = controlsId ? document.getElementById(controlsId) : null
+  const scoped = dropBody
+    ? Array.from(dropBody.querySelectorAll("lyte-drop-item"))
+    : []
+  const boxes = scoped.length
+    ? scoped
+    : Array.from(document.querySelectorAll("lyte-drop-box, lyte-drop-body"))
+        .filter((box) => {
+          const rect = box.getBoundingClientRect()
+          return rect.width > 0 && rect.height > 0
+        })
+        .flatMap((box) => Array.from(box.querySelectorAll("lyte-drop-item")))
+  return boxes.filter((item) => {
+    if (!(item instanceof HTMLElement)) return false
+    const rect = item.getBoundingClientRect()
+    const text = dropdownItemLabel(item)
+    return rect.width > 0 && rect.height > 0 && text && !blankDropdownLabel(text)
+  })
+}
+
+function findDropdownItem(rule, items, optionText) {
+  const exact = items.find((item) =>
+    dropdownLabelsMatch(dropdownItemLabel(item), optionText),
+  )
+  if (exact) return exact
+  return pickZohoDropdownItem(rule, items, optionText)
+}
+
+function commitDropdownValue(dropdown, optionText) {
+  const picklist = dropdown.closest("crux-picklist-component")
+  try {
+    if (typeof dropdown.ltProp === "function") {
+      dropdown.ltProp("selected", optionText)
+    }
+    if (typeof dropdown.setData === "function") {
+      dropdown.setData("ltPropSelected", optionText)
+    }
+    if (typeof picklist?.setData === "function") {
+      picklist.setData("cxPropValue", optionText)
+    }
+  } catch (error) {
+    console.info("[ZohoRecruit] dropdown commit skipped", error)
+  }
+  dropdown.setAttribute("lt-prop-selected", optionText)
+  picklist?.setAttribute("cx-prop-value", optionText)
+  const label =
+    dropdown.querySelector(".lyteMarginRight") ||
+    dropdown.querySelector(".lyteDropdownLabel") ||
+    dropdown.querySelector("lyte-drop-button span")
+  if (label) label.textContent = optionText
+}
+
 export async function fillZohoDropdownDirectly(rule, value) {
   const dropdown = rule.$input
-  await clearAllPopups()
   let optionText = value.toString().trim()
   if (/month/i.test(rule.label)) {
     const monthMap = {
@@ -250,46 +519,39 @@ export async function fillZohoDropdownDirectly(rule, value) {
     )
     return true
   }
-  let controlsId = dropdown
-    .querySelector(".lyteDummyEventContainer")
-    ?.getAttribute("aria-controls")
-  let dropBody = controlsId
-    ? document.querySelector(`lyte-drop-body[id="${controlsId}"]`)
-    : null
-  let items = Array.from(dropBody?.querySelectorAll("lyte-drop-item") || [])
-  if (items.length === 0) {
-    const trigger = dropdown.querySelector(
-      ".lyteDummyEventContainer, lyte-drop-button",
-    )
-    if (trigger) {
-      openDropdownTrigger(trigger)
-      await new Promise((resolve) => setTimeout(resolve, 300))
-      controlsId = dropdown
-        .querySelector(".lyteDummyEventContainer")
-        ?.getAttribute("aria-controls")
-      dropBody = controlsId ? document.getElementById(controlsId) : dropBody
-      items = Array.from(
-        dropBody?.querySelectorAll("lyte-drop-item") ||
-          document.querySelectorAll("lyte-drop-item"),
-      )
-    }
+  if (
+    !isPhoneCountryCode &&
+    dropdownLabelsMatch(committedDropdownLabel(dropdown), optionText)
+  ) {
+    return true
   }
-  const matchedItem = isPhoneCountryCode
-    ? zohoPhoneCountryCode.findZohoPhoneCountryOption(items, optionText)
-    : items.find((item) => {
-        const text = item.textContent?.trim() || ""
-        return text.toLowerCase() === optionText.toLowerCase()
-      })
+  const trigger = dropdown.querySelector(
+    ".lyteDummyEventContainer, lyte-drop-button",
+  )
+  if (trigger) openDropdownTrigger(trigger)
+  const search = dropdown.querySelector("lyte-input input, input[type='text']")
+  if (
+    !isPhoneCountryCode &&
+    search instanceof HTMLInputElement &&
+    optionText
+  ) {
+    search.focus()
+    await setNativeInputValue(search, optionText)
+    search.dispatchEvent(new Event("input", { bubbles: true }))
+    search.dispatchEvent(new KeyboardEvent("keyup", { bubbles: true }))
+  }
+  let matchedItem = null
+  let items = []
+  for (let attempt = 0; attempt < 12; attempt++) {
+    items = openDropdownItems(dropdown)
+    matchedItem = isPhoneCountryCode
+      ? zohoPhoneCountryCode.findZohoPhoneCountryOption(items, optionText)
+      : findDropdownItem(rule, items, optionText)
+    if (matchedItem) break
+    await new Promise((resolve) => setTimeout(resolve, 120))
+  }
   if (matchedItem) {
-    matchedItem.dispatchEvent(
-      new MouseEvent("mousedown", { bubbles: true, cancelable: true }),
-    )
-    matchedItem.dispatchEvent(
-      new MouseEvent("mouseup", { bubbles: true, cancelable: true }),
-    )
-    matchedItem.dispatchEvent(
-      new MouseEvent("click", { bubbles: true, cancelable: true }),
-    )
+    clickDropItem(matchedItem)
     await new Promise((resolve) => setTimeout(resolve, 200))
     if (isPhoneCountryCode) {
       const matched = matchesPhoneCountryReadback()
@@ -299,7 +561,16 @@ export async function fillZohoDropdownDirectly(rule, value) {
       )
       return matched
     }
+  }
+  if (dropdownLabelsMatch(committedDropdownLabel(dropdown), optionText)) {
     return true
+  }
+  if (!isPhoneCountryCode && optionText) {
+    commitDropdownValue(dropdown, optionText)
+    await new Promise((resolve) => setTimeout(resolve, 50))
+    if (dropdownLabelsMatch(committedDropdownLabel(dropdown), optionText)) {
+      return true
+    }
   }
   console.info("[ZohoRecruit][section-field] dropdown-option-missing", {
     label: rule.label,
@@ -534,24 +805,15 @@ export async function fillAutocompleteField(rule, value) {
   const input = rule.$input
   if (!input) return
   await clearAllPopups()
-  const isAutocomplete =
-    input.closest("lyte-autocomplete") ||
-    rule.label.toLowerCase().includes("city") ||
-    rule.label.toLowerCase().includes("state") ||
-    rule.label.toLowerCase().includes("zip")
+  const isAutocomplete = !!input.closest("lyte-autocomplete")
   if (isAutocomplete) {
     const selected = await selectZohoAutocompleteOption(rule, value)
-    if (!selected) {
-      throw new filler.FillError(
-        `No matching autocomplete option for label: ${rule.label} with value: ${value}`,
-      )
-    }
-  } else {
-    await setNativeInputValue(input, value)
-    input.dispatchEvent(new Event("input", { bubbles: true }))
-    input.dispatchEvent(new Event("change", { bubbles: true }))
-    input.dispatchEvent(new Event("blur", { bubbles: true }))
+    if (selected) return
   }
+  await setNativeInputValue(input, value)
+  input.dispatchEvent(new Event("input", { bubbles: true }))
+  input.dispatchEvent(new Event("change", { bubbles: true }))
+  input.dispatchEvent(new Event("blur", { bubbles: true }))
 }
 
 export async function fillZohoDateField(rule, value) {
@@ -830,30 +1092,69 @@ export async function fillMultiCheckbox(rule, values) {
   }
 }
 
+const ZOHO_SKILL_LIMIT = 50
+
+function skillHost(input) {
+  return (
+    input.closest("rec-skills-component, skills-tag, .crc-form-row") ||
+    input.parentElement
+  )
+}
+
+function selectedSkillNodes(input) {
+  const host = skillHost(input)
+  if (!host) return []
+  const names = host.querySelectorAll(
+    ".skl-selected-skill li .skl-tag-name, .skl-tag-name",
+  )
+  if (names.length) return Array.from(names)
+  const items = host.querySelectorAll(
+    ".skl-selected-skill li, .skl-selected-skill-li, lyte-tag, .lyteTag",
+  )
+  if (items.length) return Array.from(items)
+  return Array.from(
+    host.querySelectorAll(
+      ".skl-tag-remove, .lyteCloseIcon, .tag-close, [class*='skill-remove']",
+    ),
+  )
+}
+
+function selectedSkillCount(input) {
+  return selectedSkillNodes(input).length
+}
+
+function skillLimitWarningVisible() {
+  const boxes = document.querySelectorAll(
+    "lyte-messagebox, .lyteMessageBox, .lyte-messagebox, [class*='Message'], [class*='messagebox'], [role='alert']",
+  )
+  for (const box of boxes) {
+    const text = box.textContent || ""
+    if (text.length < 240 && /maximum of 50 skills/i.test(text)) return true
+  }
+  return false
+}
+
 export async function fillZohoSkillSetField(rule, skills) {
   const input = rule?.$input
   if (!input || !Array.isArray(skills) || skills.length === 0) {
     return false
   }
-  let filledCount = 0
-  for (const skill of skills.slice(0, 20)) {
+  let filledCount = selectedSkillCount(input)
+  const queue = skills.slice(0, Math.max(0, ZOHO_SKILL_LIMIT - filledCount))
+  for (const skill of queue) {
+    if (filledCount >= ZOHO_SKILL_LIMIT || skillLimitWarningVisible()) break
     const skillText = String(skill || "").trim()
     if (!skillText || hasSelectedSkill(input, skillText)) continue
     await setNativeInputValue(input, skillText)
     input.focus()
-    input.dispatchEvent(new MouseEvent("mousedown", { bubbles: true }))
-    input.dispatchEvent(new MouseEvent("mouseup", { bubbles: true }))
-    input.dispatchEvent(new MouseEvent("click", { bubbles: true }))
     input.dispatchEvent(new Event("input", { bubbles: true }))
+    if (skillLimitWarningVisible() || selectedSkillCount(input) >= ZOHO_SKILL_LIMIT) {
+      break
+    }
     const suggestion = await waitForSkillSuggestion(input, skillText)
-    if (!suggestion) {
-      input.dispatchEvent(
-        new KeyboardEvent("keydown", {
-          key: "Escape",
-          bubbles: true,
-          cancelable: true,
-        }),
-      )
+    if (!suggestion || skillLimitWarningVisible()) {
+      await setNativeInputValue(input, "")
+      if (skillLimitWarningVisible()) break
       continue
     }
     suggestion.dispatchEvent(
@@ -866,11 +1167,11 @@ export async function fillZohoSkillSetField(rule, skills) {
       new MouseEvent("click", { bubbles: true, cancelable: true }),
     )
     await cancellation.cancellableDelay(250)
-    if (hasSelectedSkill(input, skillText)) filledCount += 1
+    filledCount = Math.max(filledCount + 1, selectedSkillCount(input))
+    if (skillLimitWarningVisible() || filledCount >= ZOHO_SKILL_LIMIT) break
   }
   await setNativeInputValue(input, "")
   input.dispatchEvent(new Event("input", { bubbles: true }))
-  await clearAllPopups()
   return filledCount > 0
 }
 
@@ -890,6 +1191,7 @@ async function waitForSkillSuggestion(input, skillText) {
       return normalizeAutocompleteText(label) === normalized
     })
     if (match) return match
+    if (skillLimitWarningVisible()) return null
     await cancellation.cancellableDelay(150)
   }
   return null
@@ -908,12 +1210,8 @@ function extractSkillSuggestionLabel(item) {
 }
 
 function hasSelectedSkill(input, skillText) {
-  const container =
-    input.closest("skills-tag, rec-skills-component") || document
   const normalized = normalizeAutocompleteText(skillText)
-  return Array.from(
-    container.querySelectorAll(".skl-selected-skill-li"),
-  ).some((item) => {
+  return selectedSkillNodes(input).some((item) => {
     const label =
       item.querySelector("span")?.getAttribute("aria-label") ||
       item.querySelector("span")?.getAttribute("lt-prop-title") ||

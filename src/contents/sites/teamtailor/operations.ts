@@ -108,7 +108,7 @@ export async function fillInputTextField(input, value, phoneCountryAnswer) {
     value = `${year}-${month}-${day}`
   }
 
-  const isTelInput = input instanceof HTMLInputElement && input.type === "tel"
+  const isTelInput = input instanceof HTMLInputElement && (input.type === "tel" || input.name === "candidate[phone]")
   if (isTelInput) {
     value = phoneCountryCode.toNationalPhoneValue(value, phoneCountryAnswer)
   }
@@ -140,6 +140,15 @@ export async function fillInputTextField(input, value, phoneCountryAnswer) {
 
   if (valueSetter) valueSetter.call(input, value)
   else input.value = value
+  const telInput = input.iti || input._iti
+  if (isTelInput && typeof telInput?.setNumber === "function") {
+    const international = phoneCountryCode.toInternationalPhoneValue(value, phoneCountryAnswer)
+    try {
+      telInput.setNumber(international || value)
+    } catch {
+      /* the typed national number still stands */
+    }
+  }
   input.dispatchEvent(new Event("input", { bubbles: true, composed: true }))
   input.dispatchEvent(new Event("change", { bubbles: true, composed: true }))
   input.dispatchEvent(new KeyboardEvent("keydown", { bubbles: true }))

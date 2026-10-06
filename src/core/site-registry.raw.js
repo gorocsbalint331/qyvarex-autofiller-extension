@@ -89,7 +89,7 @@ export const SITE_REGISTRY = {
     patterns: ["*://careers.withwaymo.com/jobs/*"],
     pathRegex: "^/jobs/(?!search(?:/|$))[^/]+"
   },
-  successfactors: { domains: ["successfactors.eu", "successfactors.com", "sapsf.com"] },
+  successfactors: { domains: ["successfactors.eu", "successfactors.com", "sapsf.com", "sapsf.eu"] },
   clearcompany: {
     domains: ["clearcompany.com"],
     patterns: ["*://*.hrmdirect.com/employment/job-opening.php*"]

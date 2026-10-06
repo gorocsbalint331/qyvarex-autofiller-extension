@@ -121,7 +121,7 @@ export const SITE_REGISTRY = {
     pathRegex: "^/jobs/(?!search(?:/|$))[^/]+",
   },
   successfactors: {
-    domains: ["successfactors.eu", "successfactors.com", "sapsf.com"],
+    domains: ["successfactors.eu", "successfactors.com", "sapsf.com", "sapsf.eu"],
   },
   clearcompany: {
     domains: ["clearcompany.com"],

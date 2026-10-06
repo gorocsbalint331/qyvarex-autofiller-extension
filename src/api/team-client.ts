@@ -5,6 +5,7 @@
 import { Storage } from "@plasmohq/storage"
 
 import { TEAM_SITE_URL, getHubUrl } from "~api/hub-env"
+import { ensureDevice } from "~lib/device"
 import type {
   AutofillInfoPayload,
   ProfileSummary,
@@ -58,6 +59,8 @@ export async function teamFetch<T = unknown>(
 
   const headers = new Headers(init.headers || {})
   headers.set("Authorization", `Bearer ${settings.apiToken}`)
+  const device = await ensureDevice()
+  headers.set("X-Qyvarex-Device", device.key)
   if (init.body && !(init.body instanceof FormData) && !headers.has("Content-Type")) {
     headers.set("Content-Type", "application/json")
   }
@@ -74,6 +77,7 @@ export async function teamFetch<T = unknown>(
   } else {
     data = (await res.text()) as T
   }
+  if (res.status === 401) await signOut()
 
   return { ok: res.ok, status: res.status, data }
 }
@@ -100,10 +104,16 @@ export async function signInWithPassword(opts: {
     return { ok: false, error: "Email and password required" }
   }
 
+  const device = await ensureDevice()
   const res = await fetch(joinUrl(siteUrl, "/api/auth/login"), {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ email, password })
+    body: JSON.stringify({
+      email,
+      password,
+      deviceKey: device.key,
+      label: device.label
+    })
   })
 
   const data = (await res.json().catch(() => null)) as {
@@ -118,6 +128,30 @@ export async function signInWithPassword(opts: {
     if (err === "invalid_credentials") {
       return { ok: false, error: "Wrong email or password" }
     }
+    if (err === "device_revoked") {
+      return {
+        ok: false,
+        error: "This browser was removed. Allow it again under Devices, then sign in."
+      }
+    }
+    if (err === "device_pending") {
+      return {
+        ok: false,
+        error: "Nathan or R32 still need to tap Approve in Telegram. After they do, sign in again."
+      }
+    }
+    if (err === "device_denied") {
+      return {
+        ok: false,
+        error: "Nathan or R32 denied this browser in Telegram."
+      }
+    }
+    if (err === "device_notify_failed") {
+      return {
+        ok: false,
+        error: "Could not send the request to Telegram. Try signing in again."
+      }
+    }
     return { ok: false, error: err || "Sign-in failed" }
   }
 
@@ -131,6 +165,37 @@ export async function signInWithPassword(opts: {
   return {
     ok: true,
     user: { email: data.user.email, name: data.user.name }
+  }
+}
+
+/** Clears a saved sign-in unless Nathan or R32 have approved this browser. */
+export async function readDeviceAccess(): Promise<{ approved: boolean; message: string }> {
+  const settings = await getTeamSettings()
+  if (!settings.apiToken) return { approved: false, message: "" }
+  const device = await ensureDevice()
+  const res = await fetch(joinUrl(settings.siteUrl, "/api/v1/devices/status"), {
+    headers: {
+      Authorization: `Bearer ${settings.apiToken}`,
+      "X-Qyvarex-Device": device.key
+    }
+  })
+  const data = (await res.json().catch(() => null)) as { status?: string } | null
+  // The live hub does not have device approval until it is deployed. A missing
+  // status route must not wipe a sign-in that just succeeded.
+  if (res.status === 404 || data?.status === "approved") return { approved: true, message: "" }
+  if (data?.status !== "pending" && data?.status !== "missing" && data?.status !== "denied" && data?.status !== "revoked") {
+    return { approved: true, message: "" }
+  }
+  await signOut()
+  if (data?.status === "denied") {
+    return { approved: false, message: "Nathan or R32 denied this browser. The extension stays locked." }
+  }
+  if (data?.status === "revoked") {
+    return { approved: false, message: "This browser was removed. The extension stays locked." }
+  }
+  return {
+    approved: false,
+    message: "This browser is not approved yet. The extension stays locked until Nathan or R32 tap Approve in Telegram."
   }
 }
 
@@ -230,10 +295,14 @@ export async function fetchResumeBlob(
   const settings = await getTeamSettings()
   if (!settings.apiToken) return null
 
+  const device = await ensureDevice()
   const res = await fetch(
     joinUrl(settings.siteUrl, `/api/v1/resumes/${encodeURIComponent(resumeId)}/download`),
     {
-      headers: { Authorization: `Bearer ${settings.apiToken}` }
+      headers: {
+        Authorization: `Bearer ${settings.apiToken}`,
+        "X-Qyvarex-Device": device.key
+      }
     }
   )
   if (!res.ok) return null
@@ -254,13 +323,17 @@ export async function fetchCoverLetterBlob(
   const settings = await getTeamSettings()
   if (!settings.apiToken) return null
 
+  const device = await ensureDevice()
   const res = await fetch(
     joinUrl(
       settings.siteUrl,
       `/api/v1/cover-letters/${encodeURIComponent(coverLetterId)}/download`
     ),
     {
-      headers: { Authorization: `Bearer ${settings.apiToken}` }
+      headers: {
+        Authorization: `Bearer ${settings.apiToken}`,
+        "X-Qyvarex-Device": device.key
+      }
     }
   )
   if (!res.ok) return null
@@ -334,7 +407,7 @@ export async function logApplication(row: {
   other?: string
   appliedDate?: string
   tabName?: string
-}): Promise<{ ok: boolean; error?: string; message?: string; tabName?: string }> {
+}): Promise<{ ok: boolean; error?: string; message?: string; tabName?: string; duplicate?: boolean }> {
   const settings = await getTeamSettings()
   const profileId = row.profileId || settings.selectedProfileId
   const { ok, data } = await teamFetch<{
@@ -342,6 +415,7 @@ export async function logApplication(row: {
     error?: string
     message?: string
     tabName?: string
+    duplicate?: boolean
   }>("/api/v1/applications/log", {
     method: "POST",
     body: JSON.stringify({
@@ -358,7 +432,11 @@ export async function logApplication(row: {
       tabName: data.tabName
     }
   }
-  return { ok: true, tabName: data.tabName }
+  return {
+    ok: true,
+    tabName: data.tabName,
+    duplicate: data.duplicate === true
+  }
 }
 
 export type SharedApplyJob = {

@@ -7,6 +7,7 @@ import {
   ensureSelectedProfile,
   getTeamSettings,
   listProfiles,
+  readDeviceAccess,
   saveTeamSettings,
   signOut
 } from "~api/team-client"
@@ -104,6 +105,14 @@ function IndexPopup() {
         setSignedIn(false)
         setProfiles([])
         setUserLabel("")
+        return
+      }
+      const access = await readDeviceAccess()
+      if (!access.approved) {
+        setSignedIn(false)
+        setProfiles([])
+        setUserLabel("")
+        setStatus(access.message)
         return
       }
       setSignedIn(true)

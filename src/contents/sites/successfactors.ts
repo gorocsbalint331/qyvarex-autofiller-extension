@@ -25,6 +25,17 @@ import * as registrationPrivacy from "./successfactors/registration-privacy.ts"
 import * as rules from "./successfactors/rules.ts"
 import * as signInCredentials from "./successfactors/signin-credentials.ts"
 const SITE_NAME = "successfactors";
+function openRecruitingMarketingApplication() {
+  const link = [...document.querySelectorAll("a")].find((element) => {
+    const href = element.getAttribute("href") || "";
+    if (!/\/talentcommunity\/apply\//i.test(href)) return false;
+    const text = (element.innerText || "").replace(/\s+/g, " ").trim();
+    return /^apply now$/i.test(text) || element.classList.contains("unify-apply-now");
+  });
+  if (!link) return false;
+  link.click();
+  return true;
+}
 function isCountryRule(e) {
   return e.label?.replace(/[*:]/g, " ").replace(/\s+/g, " ").trim().toLowerCase() === "country";
 }
@@ -33,6 +44,7 @@ class SuccessFactors extends BaseFiller {
     super(), this.cachedRules = null, this.cachedRulesPageSignature = null, this.nextButtonHandler = null;
   }
   async doFillForm(e = false) {
+    if (!signInCredentials.findSuccessFactorsSignInFields() && openRecruitingMarketingApplication()) return;
     if (signInCredentials.findSuccessFactorsSignInFields()) {
       this.resetFalconResponseAccumulator(), this.answer = {
         education: [],

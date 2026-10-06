@@ -28,8 +28,22 @@ function findSuccessFactorsSignInFields(root = document, isVisibleFn = isVisible
   const form = forms[0]
   const loginNs = form.querySelector("input#login_ns")?.value?.trim()
   if (loginNs && "login" !== loginNs) return null
-  const email = findUniqueInputById(form, "username")
-  const password = findUniqueInputById(form, "password")
+  let email = findUniqueInputById(form, "username")
+  let password = findUniqueInputById(form, "password")
+  if (!email || !password) {
+    const passwords = [...form.querySelectorAll("input")].filter(
+      (input) => input.type?.toLowerCase() === "password" && isVisibleFn(input),
+    )
+    const texts = [...form.querySelectorAll("input")].filter((input) => {
+      const type = input.type?.toLowerCase() || "text"
+      return ["text", "email"].includes(type) && isVisibleFn(input)
+    })
+    if (passwords.length === 1) password = password || passwords[0]
+    email =
+      email ||
+      texts.find((input) => /user|email|mail/i.test(`${input.id} ${input.name}`)) ||
+      (texts.length === 1 ? texts[0] : null)
+  }
   return isVisibleFn(form) && email && password
     ? { email, password }
     : null

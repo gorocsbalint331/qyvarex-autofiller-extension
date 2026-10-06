@@ -38,6 +38,52 @@ export async function waitForApplicationFormReady() {
   })
 }
 
+const PHONE_INPUT_SELECTOR =
+  'input[data-controller="phone-input"], input[name="candidate[phone]"], input[data-careersite--form-target="phone"]'
+
+function queryPhoneInput(container) {
+  return container?.querySelector(
+    `${PHONE_INPUT_SELECTOR}, input[type="tel"]:not(.iti__search-input)`,
+  )
+}
+
+function phoneLabelElement(input, container) {
+  if (input?.id) {
+    const explicit = document.querySelector(`label[for="${CSS.escape(input.id)}"]`)
+    if (explicit) return explicit
+  }
+  return findFieldLabel(container) || findFieldLabel(input?.parentElement)
+}
+
+function phoneRulesForInput(input) {
+  if (!input) return null
+  const container = input.closest(".iti, .z-phone-input-flag") || input.parentElement
+  const labelEl = phoneLabelElement(input, container)
+  const label = labelEl?.textContent?.trim().split("*")[0]?.replace(/\s+/g, " ").trim()
+  if (!label) return null
+  const required = isRequiredLabel(labelEl)
+  const phoneRule = {
+    label: label || "Phone",
+    type: enums.FIELD_TYPE.TEXT,
+    required,
+    $input: input,
+    $label: labelEl,
+  }
+  const countryTrigger = findPhoneCountryTrigger(container, input)
+  if (!countryTrigger) return phoneRule
+  return [
+    {
+      label: "Phone Country Code",
+      type: enums.FIELD_TYPE.SELECT,
+      required,
+      options: getPhoneCountryOptions(countryTrigger),
+      $input: countryTrigger,
+      $label: labelEl,
+    },
+    phoneRule,
+  ]
+}
+
 export async function extractRules() {
   await waitForApplicationFormReady()
   const rules = []
@@ -50,6 +96,13 @@ export async function extractRules() {
       if (Array.isArray(rule)) rules.push(...rule)
       else rules.push(rule)
     }
+  }
+  for (const input of document.querySelectorAll(PHONE_INPUT_SELECTOR)) {
+    if (rules.some((rule) => rule.$input === input)) continue
+    const rule = phoneRulesForInput(input)
+    if (!rule) continue
+    if (Array.isArray(rule)) rules.push(...rule)
+    else rules.push(rule)
   }
   return rules
 }
@@ -74,11 +127,12 @@ export async function getTeamtailorRuleForTests(container) {
   const label = labelEl.textContent?.trim().split("*")[0]
   if (!label) return null
 
-  const isPhoneFlag = container.classList.contains("z-phone-input-flag")
-  if (isPhoneFlag) {
-    const phoneInput = container.querySelector(
-      'input[data-controller="phone-input"]',
-    )
+  const isPhoneFlag =
+    container.classList.contains("z-phone-input-flag") ||
+    container.classList.contains("iti") ||
+    !!queryPhoneInput(container)
+  if (isPhoneFlag && !container.getAttribute("data-controller")?.includes("forms--inputs")) {
+    const phoneInput = queryPhoneInput(container)
     if (!phoneInput) return null
     const required = isRequiredLabel(labelEl)
     const countryTrigger = findPhoneCountryTrigger(container, phoneInput)
@@ -192,9 +246,7 @@ function getPhoneCountryOptions(trigger) {
 }
 
 export function getTeamtailorPhoneSnapshotForTests(container, phoneLabel) {
-  const phoneInput = container.querySelector(
-    '[data-controller="phone-input"]',
-  )
+  const phoneInput = queryPhoneInput(container)
   const snapshot = {}
   const countryTrigger = findPhoneCountryTrigger(container, phoneInput)
   if (countryTrigger) {

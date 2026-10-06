@@ -146,6 +146,11 @@ const SITE_PATTERNS = [
     predicate: matchesSuccessFactorsApplyButton,
   },
   {
+    label: "sapsf-eu",
+    domain: "sapsf.eu",
+    predicate: matchesSuccessFactorsApplyButton,
+  },
+  {
     label: "deloitte-avature-register-edit",
     domain: "apply.deloitte.com",
     predicate: matchesDeloitteAvatureRegisterEdit,

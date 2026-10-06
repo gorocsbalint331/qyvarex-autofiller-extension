@@ -21,6 +21,83 @@ import * as sectionResults from "../methods/section-results.ts"
 import * as zohoSectionResults from "./zohorecruit/section-results.ts"
 import * as trace from "../../utils/trace.js"
 
+function expandZohoProgressRules(formRules) {
+  const expanded = []
+  for (const rule of formRules) {
+    if (
+      rule.type === enums.FIELD_TYPE.EMPLOYMENT ||
+      rule.type === enums.FIELD_TYPE.EDUCATION
+    ) {
+      for (const child of rule.children || []) {
+        expanded.push({
+          label: child.label,
+          required: child.required === true,
+          type: child.type,
+        })
+      }
+      continue
+    }
+    expanded.push(rule)
+  }
+  return expanded
+}
+
+const PROFIL_FIELDS_TO_KEEP =
+  /english level|years total experience|open to modality|notice period/i
+
+function zohoDisplayedValue(rule) {
+  const input = rule?.$input
+  if (!input) return ""
+  if (input.tagName === "LYTE-DROPDOWN") {
+    return operations.committedDropdownLabel(input)
+  }
+  if (
+    input instanceof HTMLInputElement ||
+    input instanceof HTMLTextAreaElement
+  ) {
+    return input.value.trim()
+  }
+  return ""
+}
+
+function blankZohoValue(value) {
+  return !String(value || "").trim() || /^-none-$|^none$|^select$/i.test(String(value).trim())
+}
+
+function snapshotProfilFields(formRules) {
+  return formRules
+    .filter((rule) => PROFIL_FIELDS_TO_KEEP.test(rule.label || ""))
+    .map((rule) => ({ rule, value: zohoDisplayedValue(rule) }))
+    .filter((item) => !blankZohoValue(item.value))
+}
+
+async function restoreProfilFields(saved, operationConfig) {
+  for (const item of saved) {
+    if (!blankZohoValue(zohoDisplayedValue(item.rule))) continue
+    await operationConfig[item.rule.type]?.(item.rule, {
+      [item.rule.label]: item.value,
+    })
+  }
+}
+
+async function refillProfilDropdowns(formRules, regular) {
+  for (const rule of formRules) {
+    if (!/english level|open to modality/i.test(rule.label || "")) continue
+    if (rule?.$input?.tagName !== "LYTE-DROPDOWN") continue
+    if (!blankZohoValue(operations.committedDropdownLabel(rule.$input))) continue
+    let value = ""
+    try {
+      value = answerMethods.findValueInRecord(rule.label, regular || {})
+    } catch {
+      value = ""
+    }
+    if (Array.isArray(value)) value = value[0]
+    value = String(value || "").trim()
+    if (!value) continue
+    await operations.fillZohoDropdownDirectly(rule, value)
+  }
+}
+
 function hasCrcFormRows() {
   return document.querySelectorAll(".crc-form-row").length > 0
 }
@@ -47,15 +124,52 @@ function isEducationCurrentlyPursuing(record) {
 }
 
 function isExperienceCurrentlyWorking(record) {
-  return "isCurrent" in record
-    ? coerceBooleanFlag(record.isCurrent)
-    : isPresentEndDate(record["End date"] || record.To || record.End)
+  const dates =
+    record?.dates && typeof record.dates === "object" ? record.dates : {}
+  if (
+    coerceBooleanFlag(record?.isCurrent) ||
+    coerceBooleanFlag(dates.is_current)
+  ) {
+    return true
+  }
+  const end = [
+    record?.["End date"],
+    record?.To,
+    record?.End,
+    record?.endDate,
+    dates.completion_date,
+  ].find((value) => String(value ?? "").trim())
+  if (isPresentEndDate(end)) return true
+  const start =
+    record?.Start ||
+    record?.startDate ||
+    dates.start_date ||
+    record?.["Start date"]
+  return !!String(start ?? "").trim() && !String(end ?? "").trim()
+}
+
+function currentWorkCheckbox(block) {
+  if (!block?.querySelectorAll) return null
+  return (
+    Array.from(block.querySelectorAll("input[type='checkbox']")).find((input) =>
+      /currently/.test(
+        (
+          input.closest(".crc-form-tabularrow, lyte-checkbox, label")
+            ?.innerText || ""
+        ).toLowerCase(),
+      ),
+    ) || null
+  )
 }
 
 function syncCheckboxChecked(input, checked) {
-  if (input instanceof HTMLInputElement && input.checked !== checked) {
-    input.click()
-  }
+  if (!(input instanceof HTMLInputElement) || input.checked === checked) return
+  const lyte = input.closest("lyte-checkbox")
+  const target = lyte || input.closest("label") || input
+  target.dispatchEvent(
+    new MouseEvent("click", { bubbles: true, cancelable: true }),
+  )
+  if (input.checked !== checked) input.click()
 }
 
 async function clickImInterestedButton() {
@@ -271,7 +385,13 @@ function createAddressClusterFill(
         resolved = hasAddressClusterValues(cluster)
       }
     }
-    if (!resolved && cityRule && cityAnswer && !isCityAutocomplete) {
+    if (
+      !resolved &&
+      cityRule &&
+      cityAnswer &&
+      !isCityAutocomplete &&
+      cityRule.$input?.closest?.("lyte-autocomplete")
+    ) {
       resolved = await operations.selectZohoAutocompleteOption(
         cityRule,
         cityAnswer,
@@ -456,7 +576,19 @@ class ZohoRecruit extends BaseFiller {
               this.answer?.country,
             )
           } else {
-            await operations.fillAutocompleteField(rule, value)
+            const maxLength =
+              rule.$input instanceof HTMLInputElement ||
+              rule.$input instanceof HTMLTextAreaElement
+                ? rule.$input.maxLength
+                : 0
+            const numericAnswer =
+              rule.numeric ||
+              (/notice/.test(labelLower) && /week/.test(labelLower)) ||
+              (/year/.test(labelLower) && /experience/.test(labelLower))
+            const next = numericAnswer
+              ? zohoAnswer.coerceRegularValue(rule.label, value, maxLength)
+              : value
+            await operations.fillAutocompleteField(rule, next || value)
           }
         },
         options: {
@@ -516,7 +648,9 @@ class ZohoRecruit extends BaseFiller {
     await this.initializeFillForm()
     const formRules = await this.extractFormRules()
     this.snapshotRules = formRules
-    this.progressTracker.setFieldsRequiredStatus(formRules)
+    this.progressTracker.setFieldsRequiredStatus(
+      expandZohoProgressRules(formRules),
+    )
     const fetchResult = await this.fetchFormAnswers(
       formRules,
       skipFetch,
@@ -546,6 +680,7 @@ class ZohoRecruit extends BaseFiller {
           this.resumeInfo,
           this.progressTracker.updateFieldRequiredStatus,
           this.progressTracker.updateFilledProgress,
+          this.coverLetter,
         )
         if (!uploaded?.ok) {
           this.progressTracker.updateMissedProgress(uploaded?.label || "Resume")
@@ -562,6 +697,7 @@ class ZohoRecruit extends BaseFiller {
       })
     }
     await this.taskQueue.run()
+    const savedProfilFields = snapshotProfilFields(formRules)
     const skillRule = formRules.find(
       (rule) =>
         rule.type === "SKILL_SET" ||
@@ -601,6 +737,10 @@ class ZohoRecruit extends BaseFiller {
         this.progressTracker.updateMissedProgress(skillLabel)
       }
     }
+    await restoreProfilFields(savedProfilFields, this.operationConfig)
+    if (this.answer.education?.length) {
+      await operations.addEducationRow(0)
+    }
     for (let index = 1; index < this.answer.education.length; index++) {
       await operations.addEducationRow(index)
     }
@@ -626,6 +766,11 @@ class ZohoRecruit extends BaseFiller {
           record,
           educationReporter,
         )
+        for (const child of children) {
+          if (record[child.label]) continue
+          const aligned = zohoAnswer.valueForEducationLabel(child.label, record)
+          if (aligned) record[child.label] = aligned
+        }
         const textRules = children.filter(
           (child) => child.type === enums.FIELD_TYPE.TEXT,
         )
@@ -737,6 +882,20 @@ class ZohoRecruit extends BaseFiller {
           record,
           employmentReporter,
         )
+        for (const child of children) {
+          const labelNorm = String(child.label || "").toLowerCase()
+          if (/\b(summary|description|duties|responsibilit)\b/.test(labelNorm)) {
+            const resumeSummary = zohoAnswer.resumeWorkSummary(record)
+            if (resumeSummary) record[child.label] = resumeSummary
+            continue
+          }
+          if (record[child.label]) continue
+          const aligned = zohoAnswer.valueForExperienceLabel(
+            child.label,
+            record,
+          )
+          if (aligned) record[child.label] = aligned
+        }
         const textRules = children.filter(
           (child) => child.type === enums.FIELD_TYPE.TEXT,
         )
@@ -806,16 +965,25 @@ class ZohoRecruit extends BaseFiller {
             child.label.toLowerCase().includes("currently work") ||
             child.name.toLowerCase().includes("is_current"),
         )
-        if (currentlyWorking && currentlyWorking.$input) {
-          const checked = isExperienceCurrentlyWorking(record)
-          await recordResult.run(currentlyWorking, checked, () => {
-            const input = currentlyWorking.$input
-            syncCheckboxChecked(input, checked)
-            return (
-              input instanceof HTMLInputElement &&
-              input.checked === checked
-            )
-          })
+        const checked = isExperienceCurrentlyWorking(record)
+        const currentInput =
+          currentlyWorking?.$input ||
+          currentWorkCheckbox(sectionRule.$input)
+        if (currentInput) {
+          await recordResult.run(
+            currentlyWorking || {
+              label: "I currently work here",
+              type: enums.FIELD_TYPE.CHECKBOX,
+            },
+            checked,
+            () => {
+              syncCheckboxChecked(currentInput, checked)
+              return (
+                currentInput instanceof HTMLInputElement &&
+                currentInput.checked === checked
+              )
+            },
+          )
         }
       }
     }
@@ -828,13 +996,11 @@ class ZohoRecruit extends BaseFiller {
       this.progressTracker.updateFilledProgress("Employment")
     }
     this.taskQueue.add(async () => {
-      const inputs = document.querySelectorAll("input")
-      inputs.forEach((input) =>
-        input.dispatchEvent(new Event("blur")),
-      )
       await operations.fillAgreementCheckbox()
     })
     await this.taskQueue.run()
+    await restoreProfilFields(savedProfilFields, this.operationConfig)
+    await refillProfilDropdowns(formRules, this.answer?.regular)
     const finalizeResult = await this.finalizeFillForm()
     await this.bindSubmitButtonTracking(formRules)
     return finalizeResult

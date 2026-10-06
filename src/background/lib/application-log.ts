@@ -32,7 +32,7 @@ function postingLink(link: string): string {
   try {
     const url = new URL(link)
     url.pathname = url.pathname.replace(/\/(thanks|thank-you|confirmation|success)\/?$/i, "")
-    url.hash = ""
+    if (!url.hash || url.hash === "#") url.hash = ""
     return url.toString()
   } catch {
     return link
@@ -59,7 +59,8 @@ export function applicationKey(link: string): string {
       .sort(([a], [b]) => a.localeCompare(b))
       .map(([k, v]) => `${k}=${v}`)
       .join("&")
-    return `${u.origin.toLowerCase()}${path}${params ? `?${params}` : ""}`
+    const hash = u.hash && u.hash !== "#" ? u.hash : ""
+    return `${u.origin.toLowerCase()}${path}${params ? `?${params}` : ""}${hash}`
   } catch {
     return link.trim()
   }
@@ -155,16 +156,15 @@ async function writeApplication(
   meta: ApplicationMeta,
   link: string,
   key: string,
-  force: boolean
+  _force: boolean
 ): Promise<ApplicationLogResult> {
   const title = (meta.title || "").trim() || "Untitled role"
-  if (!force) {
+  if (!_force) {
     const loggedAt = (await readLogged())[key]
     if (loggedAt && Date.now() - loggedAt < DUPLICATE_WINDOW_MS) {
       return { ok: true, duplicate: true }
     }
   }
-
   const result = await logApplication({
     title: title.slice(0, 200),
     link,
@@ -179,8 +179,8 @@ async function writeApplication(
   if (!result.ok) {
     return { ok: false, message: result.message || result.error, tabName: result.tabName }
   }
-  await markLogged(key)
-  return { ok: true, tabName: result.tabName }
+  if (!result.duplicate) await markLogged(key)
+  return { ok: true, duplicate: result.duplicate === true, tabName: result.tabName }
 }
 
 /** Remember a submitted-but-unconfirmed application for a tab (survives navigation). */
@@ -190,12 +190,19 @@ export async function armPendingApplication(tabId: number, meta: ApplicationMeta
   })
 }
 
-export async function takePendingApplication(tabId: number): Promise<ApplicationMeta | null> {
+export async function peekPendingApplication(tabId: number): Promise<ApplicationMeta | null> {
   const key = `${PENDING_PREFIX}${tabId}`
   const stored = (await chrome.storage.session.get(key))[key] as
     | { meta: ApplicationMeta; armedAt: number }
     | undefined
   if (!stored) return null
-  await chrome.storage.session.remove(key)
-  return Date.now() - stored.armedAt < PENDING_TTL_MS ? stored.meta : null
+  if (Date.now() - stored.armedAt >= PENDING_TTL_MS) {
+    await chrome.storage.session.remove(key)
+    return null
+  }
+  return stored.meta
+}
+
+export async function clearPendingApplication(tabId: number) {
+  await chrome.storage.session.remove(`${PENDING_PREFIX}${tabId}`)
 }
