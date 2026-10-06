@@ -4,6 +4,7 @@
  * Bundled directly by scripts/bundle-engine-helper.mjs.
  */
 import * as appEnums from "../enums.js";
+import { pageLooksLikeNewJobSite } from "../contents/sites/default/detect.ts";
 import * as supportedSites from "./supported-sites.js";
 
 let iframeLoadedState = /* @__PURE__ */ new WeakMap();
@@ -326,7 +327,10 @@ export function checkSupportDomain() {
   let url = new URL(window.location.href);
   if (isExcludedPage(url)) return false;
   let hostname = url.hostname;
-  return !supportedSites.IFRAME_ONLY_DOMAINS.some((domain) => isDomainMatch(hostname, domain)) && isSupportedByDomainPatternOrAts(url, hostname);
+  return (
+    !supportedSites.IFRAME_ONLY_DOMAINS.some((domain) => isDomainMatch(hostname, domain)) &&
+    (isSupportedByDomainPatternOrAts(url, hostname) || pageLooksLikeNewJobSite(url))
+  );
 }
 
 export function checkSupportStatus(urlArg) {
@@ -336,6 +340,7 @@ export function checkSupportStatus(urlArg) {
     let hostname = url.hostname;
     if (isConstrainedButWrongPath(url, hostname)) return false;
     if (isSupportedByDomainOrQueryParam(url, hostname)) return true;
+    if (pageLooksLikeNewJobSite(url)) return true;
     if (supportedSites.IFRAME_CHECK_PATTERN.some((pattern) => isDomainMatch(hostname, pattern))) return false;
     let iframes = document.getElementsByTagName("iframe");
     for (let iframe of iframes) if (iframe.src && checkSupportIframeSrc(iframe.src)) return true;

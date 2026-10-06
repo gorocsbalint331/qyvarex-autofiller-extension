@@ -4,6 +4,7 @@
  * Bundled directly by scripts/bundle-engine-helper.mjs.
  */
 import { useCallback, useEffect } from "react"
+import { sendToBackground } from "@plasmohq/messaging"
 import { agentDomains } from "../api/env-resolver.js"
 import { getAutofillInstance } from "../helper-shims/host.ts"
 import { CancelledError } from "../contents/methods/cancellation.ts"
@@ -135,6 +136,13 @@ export default function useStartAutofill(options = {}) {
         }
         refreshCreditsLeft()
         setIsFilling(false)
+        if (wasSuccessful) {
+          const pageUrl = window.top?.location?.href || window.location.href
+          void sendToBackground({
+            name: "advanceBatch",
+            body: { url: pageUrl }
+          }).catch(() => undefined)
+        }
         return wasSuccessful
       }
     } catch (error) {

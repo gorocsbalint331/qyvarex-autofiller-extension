@@ -5,6 +5,7 @@
  */
 
 import { agentDomains } from "~api/hub-env"
+import { pageLooksLikeNewJobSite } from "../sites/default/detect.ts"
 import {
   CONSTRAINED_SITE_RULES,
   IFRAME_CHECK_PATTERN,
@@ -112,6 +113,7 @@ function isSupportedTopLevelApplicationUrl(url) {
   if (isPostApplyConfirmationPath(url)) return false
   const hostname = url.hostname
   if (isConstrainedSiteButWrongPath(url, hostname)) return false
+  if (pageLooksLikeNewJobSite(url)) return true
   return (
     SUPPORT_DOMAINS.some((domain) =>
       hostnameEqualsOrIsSubdomain(hostname, domain),

@@ -44,6 +44,39 @@ export const resolveCountryCode = (countryInput) => {
   return COUNTRY_CODE_MAP[lookupKey] ?? ""
 }
 
+function editorChoice(stored, kind) {
+  const text = String(stored ?? "").trim()
+  const t = text.toLowerCase()
+  if (!t) return ""
+  if (t === "yes" || t === "no") return t === "yes" ? "Yes" : "No"
+  if (t.includes("prefer not") || t.includes("decline")) return "Decline to state"
+  if (kind === "workAuthorization") {
+    if (t.includes("not authorized") || t.includes("need sponsorship")) return "No"
+    if (t.includes("authorized")) return "Yes"
+  }
+  if (kind === "sponsorshipStatus") {
+    if (t.includes("will not require") || t.includes("not require")) return "No"
+    if (t.includes("require")) return "Yes"
+  }
+  if (kind === "disability") {
+    if (t.includes("do not have") || t.startsWith("no")) return "No"
+    if (t.includes("disability") || t.startsWith("yes")) return "Yes"
+  }
+  if (kind === "veteran") {
+    if (t.includes("not a veteran")) return "No"
+    if (t.includes("veteran")) return "Yes"
+  }
+  if (kind === "gender") {
+    if (t === "male") return "Male"
+    if (t === "female") return "Female"
+    if (t.includes("non")) return "Non-binary"
+  }
+  if (kind === "ethnicity" && t.includes("alaska")) {
+    return "American Indian or Alaskan Native"
+  }
+  return text
+}
+
 export const buildAutofillInfoData = (payload) => {
   let personalInfo = payload?.personalInfo ?? {}
   let workExperienceList = payload?.workExperience ?? []
@@ -111,14 +144,20 @@ export const buildAutofillInfoData = (payload) => {
         : [createWorkItem()],
     skill: Array.isArray(skillList) && skillList.length > 0 ? skillList : [],
     equalEmployment: {
-      gender: employmentInfo.gender ?? "",
-      ethnicity: employmentInfo.race ?? "",
-      veteran: employmentInfo.veteran ?? "",
-      disability: employmentInfo.disability ?? "",
-      workAuthorization: employmentInfo.workAuthorization ?? "",
-      sponsorshipStatus: employmentInfo.sponsorshipStatus ?? "",
-      lgbt: employmentInfo.lgbt ?? "",
-      hispanic: employmentInfo.hispanic ?? "",
+      gender: editorChoice(employmentInfo.gender, "gender"),
+      ethnicity: editorChoice(employmentInfo.race, "ethnicity"),
+      veteran: editorChoice(employmentInfo.veteran, "veteran"),
+      disability: editorChoice(employmentInfo.disability, "disability"),
+      workAuthorization: editorChoice(
+        employmentInfo.workAuthorization,
+        "workAuthorization",
+      ),
+      sponsorshipStatus: editorChoice(
+        employmentInfo.sponsorshipStatus,
+        "sponsorshipStatus",
+      ),
+      lgbt: editorChoice(employmentInfo.lgbt, "yesno"),
+      hispanic: editorChoice(employmentInfo.hispanic, "yesno"),
       sexual: Array.isArray(employmentInfo.sexual)
         ? employmentInfo.sexual
         : typeof employmentInfo.sexualOrientation === "string"

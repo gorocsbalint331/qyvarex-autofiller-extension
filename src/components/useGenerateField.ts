@@ -122,12 +122,13 @@ export function useGenerateField() {
           body: {
             jobId: jobId ?? null,
             question,
-            promptList: jobContext.title
-              ? [
-                  `Write this answer for the role "${jobContext.title}".`,
-                  ...prompts,
-                ]
-              : prompts,
+            promptList: [
+              "Write only in English, even if the question or job posting is in another language.",
+              ...(jobContext.title
+                ? [`Write this answer for the role "${jobContext.title}".`]
+                : []),
+              ...prompts,
+            ],
             uniqueId: uniqueIdByElement.current.get(element) ?? null,
             fieldInput: element.value || null,
             jobContext: jobContext.title

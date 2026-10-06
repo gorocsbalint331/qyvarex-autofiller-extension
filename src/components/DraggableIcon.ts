@@ -113,7 +113,7 @@ export default function DraggableIcon({ hostId, domainSupport, helperReady }) {
             style: {
               position: "fixed",
               right: 0,
-              top: openCard ? 0 : 120,
+              top: openCard ? 0 : 16,
               zIndex: 1000,
               fontFamily: "Inter",
               visibility: agentDomains.includes(window.location.hostname)

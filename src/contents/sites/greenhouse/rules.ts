@@ -795,6 +795,52 @@ async function getSearchRules(e, t = false, r = true) {
   }
   return n
 }
+function readCommittedSearchValue(root) {
+  if (!root || typeof root.querySelector !== "function") return ""
+  const scopes = [root]
+  const selectRoot = root.closest?.(".select__container, .select")
+  if (selectRoot && selectRoot !== root) scopes.push(selectRoot)
+  const inner = root.querySelector(".select__container, .select")
+  if (inner && !scopes.includes(inner)) scopes.push(inner)
+
+  for (const scope of scopes) {
+    const singleText = scope
+      .querySelector(".select__single-value")
+      ?.textContent?.replace(/\s+/g, " ")
+      .trim()
+    if (singleText) return singleText
+
+    const multi = Array.from(
+      scope.querySelectorAll(".select__multi-value__label"),
+    )
+      .map((node) => node.textContent?.trim())
+      .filter(Boolean)
+    if (multi.length > 0) return multi
+
+    const valueContainer = scope.querySelector(".select__value-container")
+    if (valueContainer) {
+      const placeholder =
+        valueContainer
+          .querySelector(".select__placeholder")
+          ?.textContent?.replace(/\s+/g, " ")
+          .trim() ?? ""
+      const text = valueContainer.textContent?.replace(/\s+/g, " ").trim() ?? ""
+      if (text && text !== placeholder && text !== "Select...") return text
+    }
+
+    const typed = scope
+      .querySelector(
+        "input.select__input, input[role='combobox'], input[type='text'], input:not([type])",
+      )
+      ?.value?.trim()
+    if (typed) return typed
+  }
+
+  return ""
+}
+
+export { readCommittedSearchValue }
+
 export async function getFormSnapshot(rules, _context) {
   const snapshot = {};
   for (const rule of rules)
@@ -835,24 +881,8 @@ export async function getFormSnapshot(rules, _context) {
       }
       if (rule.type === enums.FIELD_TYPE.SEARCH) {
         if (!rule.$input) continue;
-        const singleValue = xpath.getFirstOrderedNodeSafe(
-          ".//div[contains(@class, 'select__single-value')]",
-          rule.$input,
-        );
-        if (singleValue) {
-          snapshot[rule.label] = (singleValue?.textContent?.trim() || "").replace(/\s+/g, " ");
-          continue
-        }
-        const selectedValues = xpath.getOrderedNodesSafe(
-          ".//div[contains(@class, 'select__multi-value__label')]",
-          rule.$input,
-        );
-        if (selectedValues && selectedValues.length > 0) {
-          snapshot[rule.label] = selectedValues
-            .map((value) => value?.textContent?.trim())
-            .filter((value) => !!value);
-          continue
-        }
+        const committed = readCommittedSearchValue(rule.$input)
+        if (committed) snapshot[rule.label] = committed
       }
     } return snapshot
 }

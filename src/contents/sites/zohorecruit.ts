@@ -403,6 +403,35 @@ function markFilledAddressFields(cluster, progressTracker) {
   }
 }
 
+function isSalutationRule(rule) {
+  if (rule?.type !== enums.FIELD_TYPE.SELECT) return false
+  const label = String(rule.label || "").toLowerCase()
+  if (/salutation|honorific|name prefix/.test(label)) return true
+  return (rule.options || []).some((option) =>
+    /^mr\.?$/i.test(String(option).trim()),
+  )
+}
+
+async function fillDefaultSalutation(formRules, progressTracker) {
+  const rule = formRules.find((candidate) => isSalutationRule(candidate))
+  if (!rule?.$input) return
+  const shown = String(
+    rule.$input.querySelector("lyte-drop-button")?.textContent || "",
+  )
+    .replace(/\s+/g, " ")
+    .trim()
+  if (shown && !/^(-none-|none|select\.\.\.|select)$/i.test(shown)) {
+    progressTracker.updateFilledProgress(rule.label)
+    return
+  }
+  const mr =
+    (rule.options || []).find((option) =>
+      /^mr\.?$/i.test(String(option).trim()),
+    ) || "Mr."
+  const filled = await operations.fillZohoDropdownDirectly(rule, mr)
+  if (filled) progressTracker.updateFilledProgress(rule.label)
+}
+
 async function fillRuleIfEmpty(rule, regularAnswer, operationConfig) {
   if (rule && !readInputValue(rule)) {
     await operationConfig[rule.type]?.(rule, regularAnswer)
@@ -504,15 +533,23 @@ class ZohoRecruit extends BaseFiller {
     )
     for (const op of fillOps) this.taskQueue.add(op)
     await this.taskQueue.run()
+    await fillDefaultSalutation(formRules, this.progressTracker)
     if (this.disableUploadResume) {
-      this.progressTracker.updateMissedProgress("Resume/CV")
+      this.progressTracker.updateFieldRequiredStatus({
+        label: "Resume",
+        required: true,
+      })
+      this.progressTracker.updateMissedProgress("Resume")
     } else {
       this.taskQueue.add(async () => {
-        await operations.uploadResume(
+        const uploaded = await operations.uploadResume(
           this.resumeInfo,
           this.progressTracker.updateFieldRequiredStatus,
           this.progressTracker.updateFilledProgress,
         )
+        if (!uploaded?.ok) {
+          this.progressTracker.updateMissedProgress(uploaded?.label || "Resume")
+        }
       })
     }
     if (this.coverLetter?.coverLetterId) {
@@ -524,6 +561,7 @@ class ZohoRecruit extends BaseFiller {
         )
       })
     }
+    await this.taskQueue.run()
     const skillRule = formRules.find(
       (rule) =>
         rule.type === "SKILL_SET" ||

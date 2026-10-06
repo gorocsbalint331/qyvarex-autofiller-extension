@@ -2,8 +2,8 @@
 /**
  * Country dial-code records from intl-tel-input.
  */
-import * as intlTelInputData from "intl-tel-input/data"
-import * as intlTelInputEn from "intl-tel-input/i18n/en"
+import * as intlTelInputData from "intl-tel-input/build/js/data.js"
+import * as intlTelInputEn from "intl-tel-input/build/js/i18n/en/index.js"
 
 const intlTelInputDataInterop = { default: intlTelInputData?.default ?? intlTelInputData }
 let translations = intlTelInputEn.countryTranslations

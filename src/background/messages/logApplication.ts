@@ -1,6 +1,8 @@
 import type { PlasmoMessaging } from "@plasmohq/messaging"
 
 import { recordApplication } from "~background/lib/application-log"
+import { getJobSalaryRange } from "~background/lib/job-salary"
+import { formatSalaryRangeLabel } from "~lib/salary"
 
 /**
  * Append a row to the configured Google Sheet via the team hub (manual
@@ -10,13 +12,18 @@ import { recordApplication } from "~background/lib/application-log"
 const handler: PlasmoMessaging.MessageHandler = async (req, res) => {
   try {
     const body = req.body ?? {}
+    let cost = typeof body.cost === "string" ? body.cost.trim() : ""
+    if (!cost) {
+      const range = await getJobSalaryRange(req.sender)
+      if (range) cost = formatSalaryRangeLabel(range)
+    }
     const result = await recordApplication(
       {
         title: typeof body.title === "string" ? body.title : "",
         company: typeof body.company === "string" ? body.company : "",
         link:
           (typeof body.link === "string" && body.link) || req.sender?.tab?.url || "",
-        cost: typeof body.cost === "string" ? body.cost : "",
+        cost,
         resume: typeof body.resume === "string" ? body.resume : "",
         country: typeof body.country === "string" ? body.country : "",
         other: typeof body.other === "string" ? body.other : ""

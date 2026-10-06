@@ -281,6 +281,12 @@ function findMatchingOption(options, candidates, allowPartialMatch = true) {
     const match = normalizedOptions.find(({ text }) => text === candidate)
     if (match) return match.option
   }
+  for (const candidate of normalizedCandidates) {
+    const match = normalizedOptions.find(
+      ({ text }) => text.replace(/\s*\+\d{1,4}$/, "").trim() === candidate,
+    )
+    if (match) return match.option
+  }
   if (!allowPartialMatch) return null
 
   for (const candidate of normalizedCandidates) {
@@ -968,8 +974,25 @@ export async function fillCurrentEmploymentCheckboxes(employments) {
   }
 }
 
-export async function fillCountryFieldFirstOption(country, existingValue) {
-  if (String(existingValue ?? "").trim()) return
+function phoneCountryOptionText(value) {
+  return String(value ?? "")
+    .replace(/[^\p{L}\p{N}+ ]+/gu, " ")
+    .replace(/\s+/g, " ")
+    .trim()
+    .toLowerCase()
+}
+
+function matchesPhoneCountryOption(optionText, countryName) {
+  const text = phoneCountryOptionText(optionText)
+  const country = phoneCountryOptionText(countryName)
+  if (!text || !country) return false
+  const withoutCode = text.replace(/\s*\+\d{1,4}$/, "").trim()
+  return withoutCode === country || text === country
+}
+
+export async function fillCountryFieldFirstOption(country) {
+  const countryName = String(country ?? "").trim()
+  if (!countryName) return
 
   const countryContainer = document.querySelector(".phone-input__country")
   if (!countryContainer) return
@@ -977,7 +1000,15 @@ export async function fillCountryFieldFirstOption(country, existingValue) {
   const input = countryContainer.querySelector("input#country")
   if (!input) return
 
-  const countryName = country === "Canada" ? "Canada" : "United States"
+  const selected = countryContainer.querySelector(".select__single-value")
+  if (
+    selected &&
+    matchesPhoneCountryOption(selected.textContent, countryName) &&
+    /\+\d/.test(selected.textContent || "")
+  ) {
+    return
+  }
+
   input.focus()
   input.value = ""
   await typeIntoReactSelectInput(input, countryName)
@@ -1015,11 +1046,22 @@ export async function fillCountryFieldFirstOption(country, existingValue) {
       observeTarget: listbox,
     },
   )
-  const firstOption = listbox.querySelector(
-    ".select__option:not([aria-disabled='true']), .select__option",
+  const options = Array.from(
+    listbox.querySelectorAll(
+      ".select__option:not([aria-disabled='true']), .select__option",
+    ),
   )
-  if (firstOption) {
-    firstOption.click()
+  const match =
+    options.find(
+      (option) =>
+        matchesPhoneCountryOption(option.textContent, countryName) &&
+        /\+\d/.test(option.textContent || ""),
+    ) ||
+    options.find((option) =>
+      matchesPhoneCountryOption(option.textContent, countryName),
+    )
+  if (match) {
+    match.click()
     await delay(200)
     input.blur()
   }

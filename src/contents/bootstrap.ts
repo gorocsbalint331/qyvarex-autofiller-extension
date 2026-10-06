@@ -18,6 +18,7 @@ import {
   type RuntimeActivationReason
 } from "~contents/shared/native-runtime-activation"
 import { startApplicationLogWatcher } from "~contents/shared/application-log-watcher"
+import { startManualAnswerSync } from "~contents/shared/manual-answer-sync"
 import { keepJobIdInUrl } from "~contents/shared/sticky-job-id"
 
 // Plasmo statically analyzes this object — keep exclude_matches as a literal.
@@ -288,6 +289,7 @@ function watchForLaterActivation() {
   startApplicationLogWatcher(
     () => helperStarted || getCurrentRuntimeActivationReason() != null
   )
+  startManualAnswerSync()
 
   const reason = getCurrentRuntimeActivationReason()
   if (!reason) {

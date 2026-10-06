@@ -550,6 +550,7 @@ export class BaseFiller {
   }
 
   async bindSubmitButtonTracking(rules) {
+    if (typeof this.getAutofillSnapshot !== "function") return
     let autofillSnapshot = cloneDeep(await this.getAutofillSnapshot(rules))
     let additionalAutofillData = cloneDeep(
       this.getAdditionalAutofillSnapshotData?.(rules) || {},

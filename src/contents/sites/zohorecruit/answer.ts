@@ -7,16 +7,50 @@ import * as dayjs from "dayjs"
 
 const dayjsDefault = { default: dayjs?.default ?? dayjs }
 
+function profileCountry(answer, country) {
+  const candidates = [
+    country,
+    answer?.profileData?.location?.country,
+    answer?.profile_data?.location?.country,
+    answer?.location?.country,
+  ]
+  for (const candidate of candidates) {
+    const value = String(candidate ?? "").trim()
+    if (value) return value
+  }
+  return ""
+}
+
+function salaryDigitsForLabel(label, rawValue) {
+  const raw = String(rawValue ?? "")
+  const digits = raw.replace(/[^0-9]/g, "")
+  if (!digits) return ""
+  const labelLower = label.toLowerCase()
+  const asksMonth = labelLower.includes("month") && !labelLower.includes("hour")
+  const valueSaysYear = /annual|per year|yearly|annum/i.test(raw)
+  const valueSaysMonth = /per month|monthly/i.test(raw)
+  const amount = Number(digits)
+  if (
+    asksMonth &&
+    Number.isFinite(amount) &&
+    (valueSaysYear || (!valueSaysMonth && amount >= 24000))
+  ) {
+    return String(Math.round(amount / 12))
+  }
+  return digits
+}
+
 export function formatAnswer(answer, country) {
   if (answer.regular) {
-    const defaultCountry = country || "United States"
+    const savedCountry = profileCountry(answer, country)
     Object.keys(answer.regular).forEach((key) => {
       const keyLower = key.toLowerCase()
       if (
         (keyLower.includes("country") || keyLower.includes("pays")) &&
         !isPhoneCountryCodeLabel(keyLower)
       ) {
-        answer.regular[key] = defaultCountry
+        const existing = String(answer.regular[key] ?? "").trim()
+        if (!existing && savedCountry) answer.regular[key] = savedCountry
       }
       if (
         (keyLower.includes("salary") ||
@@ -25,7 +59,7 @@ export function formatAnswer(answer, country) {
           keyLower.includes("expected salary")) &&
         typeof answer.regular[key] == "string"
       ) {
-        answer.regular[key] = answer.regular[key].replace(/[^0-9]/g, "")
+        answer.regular[key] = salaryDigitsForLabel(key, answer.regular[key])
       }
     })
     if (answer.regular?.["Available Start Date"]) {

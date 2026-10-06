@@ -23,6 +23,7 @@ import { Catsone } from "../sites/catsone.ts"
 import { Cisco } from "../sites/cisco.ts"
 import { Comeet } from "../sites/comeet.ts"
 import { Dayforce } from "../sites/dayforce.ts"
+import { DefaultFiller } from "../sites/default.ts"
 import { Eightfold } from "../sites/eightfold.ts"
 import { EightfoldCareerHub } from "../sites/eightfold/careerhub.ts"
 import { Freshteam } from "../sites/freshteam.ts"
@@ -152,6 +153,7 @@ const TARGET_CLASS_MAP = {
   jacobs: Jacobs,
   careerstoasttab: CareersToasttab,
   jobdiva: Jobdiva,
+  default: DefaultFiller,
 }
 
 let lastInstance = null

@@ -332,6 +332,7 @@ export async function logApplication(row: {
   cost?: string
   status?: string
   other?: string
+  appliedDate?: string
   tabName?: string
 }): Promise<{ ok: boolean; error?: string; message?: string; tabName?: string }> {
   const settings = await getTeamSettings()
@@ -358,6 +359,34 @@ export async function logApplication(row: {
     }
   }
   return { ok: true, tabName: data.tabName }
+}
+
+export type SharedApplyJob = {
+  urlKey: string
+  url: string
+  title: string
+  company: string
+  sharedAt: string
+  appliedCount: number
+  sharedBy: string
+}
+
+/** Jobs other profiles applied to, which the selected profile has not applied to yet. */
+export async function fetchSharedJobs(profileId?: string | null): Promise<{
+  ok: boolean
+  jobs?: SharedApplyJob[]
+  error?: string
+}> {
+  const settings = await getTeamSettings()
+  const id = profileId || settings.selectedProfileId
+  if (!id) return { ok: false, error: "Choose a profile in Settings first." }
+  const { ok, data } = await teamFetch<{
+    ok: boolean
+    jobs?: SharedApplyJob[]
+    error?: string
+  }>(`/api/v1/jobs/shared?profileId=${encodeURIComponent(id)}`)
+  if (!ok || !data.ok) return { ok: false, error: data.error || "Could not load shared jobs" }
+  return { ok: true, jobs: data.jobs || [] }
 }
 
 /** Save (or update, keyed by URL) a job posting to the hub's saved jobs. */

@@ -28,6 +28,10 @@ const PLATFORM_NAMES = new Set(
     "recruitee",
     "recruiterflow",
     "smartrecruiters",
+    "spark hire",
+    "spark hire recruit",
+    "spark hire recruit jobs",
+    "comeet",
     "taleo",
     "workable",
     "workday",
@@ -130,7 +134,9 @@ function scrapeTitle(): string {
 
   for (const h1 of document.querySelectorAll("h1")) {
     const text = visibleText(h1)
-    if (text.length >= 3 && text.length <= 200) return text
+    if (text.length < 3 || text.length > 200) continue
+    if (/^(apply|application|new application|job application|careers?|jobs?)$/i.test(text)) continue
+    return text
   }
   const ogTitle = metaContent('meta[property="og:title"]')
   return splitTitle(ogTitle || document.title)[0] || ""
@@ -146,17 +152,18 @@ function scrapeCompany(jobTitle: string): string {
   const siteName =
     metaContent('meta[property="og:site_name"]') ||
     metaContent('meta[name="application-name"]')
-  if (siteName && !isPlatformName(siteName)) return siteName
+  if (siteName && !isPlatformName(siteName) && !/^(jobs by|careers at)\b/i.test(siteName)) return siteName
 
   const parts = splitTitle(metaContent('meta[property="og:title"]') || document.title)
   const titleLower = jobTitle.trim().toLowerCase()
-  const candidate = parts.find(
-    (part) =>
-      part.toLowerCase() !== titleLower &&
-      !isPlatformName(part) &&
-      !/^(careers?|jobs?|job details|apply)$/i.test(part)
-  )
-  return candidate || ""
+  const candidates = parts.filter((part) => {
+    const lower = part.toLowerCase()
+    if (!lower || isPlatformName(part) || /^(jobs by|careers at)\b/i.test(part)) return false
+    if (/^(careers?|jobs?|job details|apply)$/i.test(part)) return false
+    if (!titleLower) return true
+    return lower !== titleLower && !titleLower.includes(lower) && !lower.includes(titleLower)
+  })
+  return candidates[candidates.length - 1] || ""
 }
 
 function scrapeDescription(): string {

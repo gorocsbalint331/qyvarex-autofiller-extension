@@ -43,11 +43,13 @@ const handler: PlasmoMessaging.MessageHandler = async (_req, res) => {
       settings.userEmail ||
       "team-user"
 
+    const profileEmail = hub?.identity?.email?.trim() || ""
+
     const userStage = {
       logined: true,
       userId,
       currentStage: FILTE_RESUME_READY,
-      email: conn.email || settings.userEmail || null,
+      email: profileEmail || null,
       name: conn.name || settings.userName || null,
       siteUrl: settings.siteUrl
     }
@@ -55,7 +57,7 @@ const handler: PlasmoMessaging.MessageHandler = async (_req, res) => {
     // step 5 = Jobright "ready to autofill" onboarding step
     const userProfile = {
       step: 5,
-      email: conn.email || settings.userEmail || "",
+      email: profileEmail,
       name: conn.name || settings.userName || "",
       profileId,
       hasResume: Boolean(

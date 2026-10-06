@@ -5,6 +5,7 @@
 
 import { isEightfoldCareerHubJobPath } from "../sites/eightfold/careerhub/route.js"
 import { PINPOINTHQ_CAREERS_CDN } from "../../core/supported-sites.ts"
+import { pageLooksLikeNewJobSite } from "../sites/default/detect.ts"
 import { isDomainMatch, isDomainOrEmbedded } from "../../core/utils.ts"
 
 const HIRINGTHING_DOMAINS = [
@@ -87,6 +88,9 @@ export function getTargetName() {
     isDomainMatch(hostname, "workable.com") ||
     isDomainMatch(hostname, "careers.arbor-education.com")
   ) {
+    // jobs.workable.com is the public board. Its form is a normal labeled form
+    // that appears after Apply now, not the apply.workable.com section markup.
+    if (isDomainMatch(hostname, "jobs.workable.com")) return "default"
     return "workable"
   }
   if (
@@ -242,7 +246,9 @@ export function getTargetName() {
   if (isDomainMatch(hostname, "careers.toasttab.com")) return "careerstoasttab"
   if (isDomainMatch(hostname, "jobdiva.com")) return "jobdiva"
 
-  return url.searchParams.get("gh_src") || url.searchParams.get("gh_jid")
-    ? "greenhouse"
-    : null
+  if (url.searchParams.get("gh_src") || url.searchParams.get("gh_jid")) {
+    return "greenhouse"
+  }
+  if (pageLooksLikeNewJobSite(url)) return "default"
+  return null
 }

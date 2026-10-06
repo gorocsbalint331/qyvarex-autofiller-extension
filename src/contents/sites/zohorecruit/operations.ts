@@ -49,31 +49,133 @@ export async function preFillForm() {
   }
 }
 
+function queryDeep(root, selector) {
+  const found = []
+  const visit = (node) => {
+    if (!node?.querySelectorAll) return
+    node.querySelectorAll(selector).forEach((element) => found.push(element))
+    node.querySelectorAll("*").forEach((element) => {
+      if (element.shadowRoot) visit(element.shadowRoot)
+    })
+  }
+  visit(root)
+  return found
+}
+
+function resumeFieldRequired(row, input, blob) {
+  if (/\boptional\b/i.test(blob || "")) return false
+  if (row?.querySelector(".crc-form-mandatory, .crm-star")) return true
+  if (/[*\uFF0A]/.test(row?.querySelector("label")?.textContent || "")) return true
+  if (input?.required || input?.getAttribute("aria-required") === "true") return true
+  const component = input?.closest?.("rec-file-upload-component")
+  if (
+    component?.getAttribute("cx-prop-mandatory") === "true" ||
+    component?.getAttribute("cx-prop-required") === "true"
+  ) {
+    return true
+  }
+  return /^resume$|^cv$/i.test(
+    String(blob || "")
+      .replace(/[*\uFF0A]/g, "")
+      .trim(),
+  )
+}
+
+function resumeCandidateScore(labelText, blob, required) {
+  let score = 0
+  if (/^resume$|^cv$/i.test(labelText)) score += 20
+  if (required) score += 40
+  if (/\boptional\b/.test(blob)) score -= 50
+  if (/upload your resume/.test(blob)) score -= 15
+  return score
+}
+
+export function findZohoResumeField() {
+  const candidates = []
+  const components = document.querySelectorAll("rec-file-upload-component")
+  for (const component of components) {
+    const zcqa = component.getAttribute("cx-prop-zcqa") || ""
+    const propLabel = component.getAttribute("cx-prop-label") || ""
+    const row = component.closest(".crc-form-row") || component.parentElement
+    const labelText = (
+      row?.querySelector("label")?.textContent ||
+      propLabel ||
+      ""
+    )
+      .replace(/[*\uFF0A]/g, "")
+      .replace(/\s+/g, " ")
+      .trim()
+    const blob = `${zcqa} ${propLabel} ${labelText} ${row?.innerText || ""}`.toLowerCase()
+    if (!/\bresume\b|\bcv\b/.test(blob) || /\bcover\b/.test(blob)) continue
+    const input = queryDeep(
+      component,
+      "input.fileuploadInput, input[type='file']",
+    )[0]
+    if (!input) continue
+    const required = resumeFieldRequired(row, input, blob)
+    candidates.push({
+      input,
+      container: component,
+      label: /^resume$|^cv$/i.test(labelText) ? labelText : "Resume",
+      required,
+      score: resumeCandidateScore(labelText, blob, required),
+    })
+  }
+
+  const inputs = queryDeep(document, "input[type='file'], input.fileuploadInput")
+  for (const input of inputs) {
+    if (candidates.some((candidate) => candidate.input === input)) continue
+    const row =
+      input.closest(".crc-form-row, .crc-form-field, fieldset") ||
+      input.parentElement
+    const labelText = (row?.querySelector("label")?.textContent || "")
+      .replace(/[*\uFF0A]/g, "")
+      .replace(/\s+/g, " ")
+      .trim()
+    const blob = `${labelText} ${row?.innerText || ""} ${input.getAttribute("name") || ""} ${input.id || ""}`.toLowerCase()
+    if (!/\bresume\b|\bcv\b/.test(blob) || /\bcover\b/.test(blob)) continue
+    const required = resumeFieldRequired(row, input, blob)
+    candidates.push({
+      input,
+      container: row,
+      label: /^resume$|^cv$/i.test(labelText) ? labelText : "Resume",
+      required,
+      score: resumeCandidateScore(labelText, blob, required),
+    })
+  }
+
+  candidates.sort((left, right) => right.score - left.score)
+  return candidates[0] || null
+}
+
 export async function uploadResume(
   resumeInfo,
   updateRequired,
   updateFilled,
 ) {
-  const container = document.querySelector(
-    'rec-file-upload-component[cx-prop-zcqa="manual_RESUME"]',
-  )
-  const input = container?.querySelector("input.fileuploadInput")
+  const field = findZohoResumeField()
+  const label = field?.label || "Resume"
+  updateRequired?.({ label, required: field?.required !== false })
+  if (!field?.input || !resumeInfo) return { ok: false, label }
+
   const removeButtons = Array.from(
-    container?.querySelectorAll?.(FILE_REMOVE_SELECTOR) ?? [],
+    field.container?.querySelectorAll?.(FILE_REMOVE_SELECTOR) ?? [],
   )
   if (removeButtons.length) {
     removeButtons.forEach((button) => button.click())
     await new Promise((resolve) => setTimeout(resolve, 1e3))
   }
-  if (input && resumeInfo) {
-    await dom.uploadFiles(
-      input,
-      await answerMethods.fetchPdfAsBlob(resumeInfo),
-      updateRequired,
-      updateFilled,
-      "Resume/CV",
-    )
-  }
+  await dom.uploadFiles(
+    field.input,
+    await answerMethods.fetchPdfAsBlob(resumeInfo),
+    updateRequired,
+    updateFilled,
+    label,
+  )
+  const uploaded =
+    (field.input.files?.length || 0) > 0 ||
+    /\.pdf\b/i.test(field.container?.innerText || "")
+  return { ok: uploaded, label }
 }
 
 export async function addEducationRow(rowIndex) {
@@ -148,15 +250,30 @@ export async function fillZohoDropdownDirectly(rule, value) {
     )
     return true
   }
-  const controlsId = dropdown
+  let controlsId = dropdown
     .querySelector(".lyteDummyEventContainer")
     ?.getAttribute("aria-controls")
-  const dropBody = document.querySelector(
-    `lyte-drop-body[id="${controlsId}"]`,
-  )
-  const items = Array.from(
-    dropBody?.querySelectorAll("lyte-drop-item") || [],
-  )
+  let dropBody = controlsId
+    ? document.querySelector(`lyte-drop-body[id="${controlsId}"]`)
+    : null
+  let items = Array.from(dropBody?.querySelectorAll("lyte-drop-item") || [])
+  if (items.length === 0) {
+    const trigger = dropdown.querySelector(
+      ".lyteDummyEventContainer, lyte-drop-button",
+    )
+    if (trigger) {
+      openDropdownTrigger(trigger)
+      await new Promise((resolve) => setTimeout(resolve, 300))
+      controlsId = dropdown
+        .querySelector(".lyteDummyEventContainer")
+        ?.getAttribute("aria-controls")
+      dropBody = controlsId ? document.getElementById(controlsId) : dropBody
+      items = Array.from(
+        dropBody?.querySelectorAll("lyte-drop-item") ||
+          document.querySelectorAll("lyte-drop-item"),
+      )
+    }
+  }
   const matchedItem = isPhoneCountryCode
     ? zohoPhoneCountryCode.findZohoPhoneCountryOption(items, optionText)
     : items.find((item) => {
@@ -194,11 +311,13 @@ export async function addExperienceRow(rowIndex) {
   const section = document.querySelector(
     '.crc-form-row[aria-label="Experience Details"]',
   )
+  if (!section) return
   if (typeof rowIndex == "number") {
     const existing = section.querySelectorAll(".tabular-main-div")
     if (existing.length > rowIndex) return
   }
   const addButton = section.querySelector("button.tabular-group-add")
+  if (!addButton) return
   addButton.click()
   await new Promise((resolve) => setTimeout(resolve, 800))
 }

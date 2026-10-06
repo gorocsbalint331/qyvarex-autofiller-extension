@@ -9,7 +9,7 @@ import { FIELD_TYPE } from "../../core/enums.ts"
 import { resolveCurrentJobId } from "../../utils/current-job-id.ts"
 
 export let DEFAULT_AUTOFILL_COVER_LETTER_PROMPT =
-  "Write a tailored cover letter for this job application using the candidate's resume and the job description. Keep it concise, specific, and employer-facing: open with clear interest in the role, connect the candidate's most relevant experience to the company's needs, and close with a confident next step. Do not invent facts, do not include placeholders, and output only the cover letter text."
+  "Write a tailored cover letter for this job application using the candidate's resume and the job description. Write only in English, even if the job posting is in another language. Keep it concise, specific, and employer-facing: open with clear interest in the role, connect the candidate's most relevant experience to the company's needs, and close with a confident next step. Do not invent facts, do not include placeholders, and output only the cover letter text."
 
 function normalizeLabelKey(value) {
   return value.toLowerCase().replace(/[^a-z0-9]+/g, " ").trim()

@@ -118,6 +118,16 @@ export function extractSalaryRange(input: string): SalaryRange | null {
   return { min, max, currency, period }
 }
 
+export function formatSalaryRangeLabel(range: SalaryRange): string {
+  return [
+    `${range.min}-${range.max}`,
+    range.currency,
+    range.period === "year" ? "" : `per ${range.period}`
+  ]
+    .filter(Boolean)
+    .join(" ")
+}
+
 export function salaryTarget(range: SalaryRange | null | undefined): SalaryTarget {
   if (!range) return DEFAULT_SALARY
   return {
@@ -127,16 +137,110 @@ export function salaryTarget(range: SalaryRange | null | undefined): SalaryTarge
   }
 }
 
-/** Free-form questions asking for an expected / desired salary figure. */
+/** Questions that ask for a salary figure, including current and expected pay. */
 export function isSalaryExpectationQuestion(norm: string): boolean {
-  const strong = /\b(salary|salaries|compensation|remuneration|ctc)\b/.test(norm)
+  const strong = /\b(salary|salaries|compensation|remuneration|ctc|gehalt\w*)\b/.test(norm)
   const weak =
     /\b(pay|wage|wages|rate)\b/.test(norm) &&
-    /\b(expect\w*|desired|require\w*|looking for)\b/.test(norm)
+    /\b(expect\w*|desired|require\w*|looking for|current|gross)\b/.test(norm)
   if (!strong && !weak) return false
-  if (/\b(current|previous|last|present|currency)\b/.test(norm)) return false
+  if (
+    /\bcurrency\b/.test(norm) &&
+    !/\b(amount|gross|net|expect|desired|minimum|current|per)\b/.test(norm)
+  ) {
+    return false
+  }
   if (/^(are|do|does|is|would|will|can|could|have|did)\b/.test(norm)) return false
   return true
+}
+
+const USD_PER_UNIT: Record<string, number> = {
+  USD: 1,
+  EUR: 1.08,
+  GBP: 1.27,
+  CAD: 0.73,
+  AUD: 0.66,
+  CHF: 1.13,
+  PLN: 0.27,
+  INR: 0.012,
+  SEK: 0.095,
+  NOK: 0.093,
+  DKK: 0.145
+}
+
+const SINGLE_AMOUNT_RE = new RegExp(
+  `(${CURRENCY_PATTERN})?\\s?${AMOUNT_PATTERN}\\s?(${CURRENCY_PATTERN})?`,
+  "i"
+)
+
+/** "70000EUR" or "5,000 EUR per month" → amount, currency, and period. */
+export function parseSalaryText(input: string): SalaryTarget | null {
+  const text = normalizeText(input).trim()
+  if (!text) return null
+  const match = text.match(SINGLE_AMOUNT_RE)
+  if (!match) return null
+  const amount = parseAmount(match[2], !!match[3])
+  if (!(amount > 0)) return null
+  const currency = toCurrencyCode(match[1] || match[4]) || "EUR"
+  const period =
+    detectPeriod(text) ?? (amount >= 20000 ? "year" : amount >= 500 ? "month" : "hour")
+  return { amount, currency, period }
+}
+
+/** Currency the question itself asks for, such as "in USD". */
+export function askedCurrency(label: string): string | null {
+  const text = label.toLowerCase()
+  if (/\b(usd|us dollars?|us\$)\b/.test(text) || /\bin usd\b/.test(text)) return "USD"
+  if (/\b(eur|euros?)\b/.test(text) || text.includes("€")) return "EUR"
+  if (/\b(gbp|pounds?)\b/.test(text) || text.includes("£")) return "GBP"
+  if (/\b(cad|canadian dollars?)\b/.test(text)) return "CAD"
+  if (/\b(aud|australian dollars?)\b/.test(text)) return "AUD"
+  return null
+}
+
+export function convertSalaryAmount(
+  target: SalaryTarget,
+  currency: string | null
+): SalaryTarget {
+  if (!currency) return target
+  if (!target.currency || target.currency === currency) {
+    return { ...target, currency }
+  }
+  const from = USD_PER_UNIT[target.currency]
+  const to = USD_PER_UNIT[currency]
+  if (!from || !to) return { ...target, currency }
+  return {
+    ...target,
+    amount: Math.round((target.amount * from) / to),
+    currency
+  }
+}
+
+/**
+ * When the question already says the currency and the period, return digits
+ * only so a USD monthly field is not filled with "5000 EUR per month".
+ */
+export function formatSalaryForQuestion(
+  target: SalaryTarget,
+  label: string,
+  fieldType?: string
+): string {
+  const text = label.toLowerCase()
+  const named = !!askedCurrency(label)
+  const periodNamed =
+    /\b(month|year|annual|annum|hour|hourly|monat\w*|jahr\w*|brutto)\b/.test(text) ||
+    /j[aä]hrlich/.test(text)
+  if (
+    (fieldType && /number|numeric|currency|integer/i.test(fieldType)) ||
+    (named && periodNamed)
+  ) {
+    return String(target.amount)
+  }
+  if (named) {
+    const period = PERIOD_WORDS[target.period]
+    return period ? `${target.amount} ${period}` : String(target.amount)
+  }
+  return formatSalary(target, fieldType)
 }
 
 function optionBounds(option: string): [number, number] | null {

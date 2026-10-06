@@ -20,6 +20,7 @@ import { focusLabelElement, focusSectionResultRow } from "../core/dom.ts"
 import { useSkipTimer } from "../hooks/useSkipTimer.ts"
 import {
   buildNormalizedFieldLabelSet,
+  englishFieldLabel,
   normalizeFieldLabel,
 } from "../utils/fieldLabel.ts"
 import { trackEvent } from "../utils/trace.ts"
@@ -250,7 +251,7 @@ export default function AutoFillRuleGroup({ autoFillResult, isFilling }) {
                 : jsx(LoadingIcon, {}),
             jsx("span", {
               className: "auto-fill-field-item-text-label",
-              children: fieldStatus?.label,
+              children: englishFieldLabel(fieldStatus?.label),
             }),
             showPartialDetails &&
               jsxs("button", {

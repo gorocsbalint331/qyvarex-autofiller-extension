@@ -4,6 +4,7 @@
  */
 
 import * as enums from "../../../core/enums.js"
+import { findZohoResumeField } from "./operations.ts"
 
 function extractDropdownOptions(dropdown, zcqaHint) {
   const dropButton = dropdown.querySelector("lyte-drop-button")
@@ -377,6 +378,19 @@ export async function getRules() {
       }
       continue
     }
+  }
+  const resumeField = findZohoResumeField()
+  if (
+    resumeField?.input &&
+    !rules.some((rule) => /resume|\bcv\b/i.test(rule.label || ""))
+  ) {
+    rules.push({
+      type: "FILE",
+      label: resumeField.label || "Resume",
+      name: "resume",
+      $input: resumeField.input,
+      required: resumeField.required !== false,
+    })
   }
   return rules
     .filter(

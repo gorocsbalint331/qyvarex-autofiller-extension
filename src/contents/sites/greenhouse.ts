@@ -43,6 +43,16 @@ function normalizeLabel(value) {
     .replace(/\s+/g, " ");
 }
 
+function countryFromLocationCity(value) {
+  const text = firstNonEmpty(value)
+  if (!text) return ""
+  const parts = text
+    .split(",")
+    .map((part) => part.trim())
+    .filter(Boolean)
+  return parts.length ? parts[parts.length - 1] : ""
+}
+
 function greenhouseLocationFromProfile(answer) {
   return trimStr(
     answer?.profileData?.greenhouseLocation ??
@@ -114,33 +124,6 @@ function resolveLocationAnswer(answer, rule) {
     value: "",
     source: "",
   };
-}
-
-function resolvePhoneCountryCode(answer) {
-  let labelSet = new Set(
-    [
-      "Phone Country Code",
-      "Country Phone Code",
-      "Country Code",
-      "phoneCountryCode",
-      "phone_country_code",
-    ].map((label) => normalizeLabel(label)),
-  );
-  let regular = answer?.regular ?? {};
-
-  for (let [key, rawValue] of Object.entries(regular)) {
-    if (!labelSet.has(normalizeLabel(key))) continue;
-    let value = firstNonEmpty(rawValue);
-    if (value) return value;
-  }
-
-  for (let entry of answer?.fillDataList ?? []) {
-    if (!labelSet.has(normalizeLabel(entry?.name))) continue;
-    let value = firstNonEmpty(entry?.value);
-    if (value) return value;
-  }
-
-  return "";
 }
 
 function logLocation(message, data) {
@@ -631,9 +614,12 @@ class Greenhouse extends BaseFiller {
       this.answer.workExperience,
     );
     this.taskQueue.add(async () => {
+      const location = resolveLocationAnswer(this.answer, {
+        label: "Location (City)",
+      }).value
+      const fromCity = countryFromLocationCity(location)
       await operations.fillCountryFieldFirstOption(
-        this.answer.country,
-        resolvePhoneCountryCode(this.answer),
+        fromCity || String(this.answer.country || "").trim(),
       );
     });
     await this.taskQueue.run();
@@ -929,7 +915,22 @@ class Greenhouse extends BaseFiller {
     return this.cachedRules.find((rule) => isLocationSearchField(rule)) ?? null;
   }
 
+  fieldShowsCommittedValue(entry) {
+    if (entry.fieldType === "location") {
+      let locationRule = this.findLocationValidationRule();
+      let inputRoot = locationRule
+        ? resolveLocationInputRoot(locationRule)
+        : null;
+      return Boolean(
+        rules.readCommittedSearchValue(inputRoot || locationRule?.$input),
+      );
+    }
+    let educationRule = this.findEducationValidationRule(entry);
+    return Boolean(rules.readCommittedSearchValue(educationRule?.$input));
+  }
+
   async clearRuntimeValidationField(entry) {
+    if (this.fieldShowsCommittedValue(entry)) return false;
     if (entry.fieldType === "location") {
       let locationRule = this.findLocationValidationRule();
       return operations.clearGreenhouseAutocompleteField(
@@ -997,7 +998,11 @@ class Greenhouse extends BaseFiller {
       .getGreenhouseRuntimeValidationLogEntries(
         this.runtimeValidationTrackingData,
       )
-      .filter((entry) => this.isRuntimeValidationRetryCandidate(entry));
+      .filter(
+        (entry) =>
+          this.isRuntimeValidationRetryCandidate(entry) &&
+          !this.fieldShowsCommittedValue(entry),
+      );
 
     if (retryCandidates.length === 0) {
       return;
@@ -1073,22 +1078,11 @@ class Greenhouse extends BaseFiller {
         this.runtimeValidationTrackingData,
       )
       .forEach((entry) => {
-        let message = `[Greenhouse] ${entry.fieldLabel} validation ${entry.status}`;
-        let details = {
-          ...(typeof entry.index === "number"
-            ? {
-                index: entry.index,
-              }
-            : {}),
-          fieldType: entry.fieldType,
-          committedValue: entry.committedValue,
-          attemptedCandidates: entry.attemptedCandidates,
-        };
-        if (entry.level === "info") {
-          console.info(message, details);
-        } else {
-          console.warn(message, details);
-        }
+        if (entry.level === "info") return;
+        let committed = entry.committedValue ? ` (${entry.committedValue})` : "";
+        console.debug(
+          `[Greenhouse] ${entry.fieldLabel} validation ${entry.status}${committed}`,
+        );
       });
   }
 

@@ -943,19 +943,28 @@ function getPhoneCountryCodeOptionElements(select) {
 function findPhoneCountryCodeOption(options, value) {
   const normalized = normalizePhoneCountryText(value)
   if (!normalized) return null
+  const dial = (String(value || "").match(/\+\d{1,4}/) || [""])[0].toLowerCase()
+  const countryName = dial ? normalized.replace(dial, "").trim() : ""
   const annotated = options.map((option) => ({
     option,
     text: normalizePhoneCountryText(option.textContent || ""),
   }))
-  return (
+  const exact =
     annotated.find(({ text }) => text === normalized)?.option ||
     annotated.find(({ text }) => {
       const withoutDial = text.replace(/\s+\+\d+$/, "")
       return withoutDial === normalized
-    })?.option ||
-    annotated.find(({ text }) => text.includes(normalized))?.option ||
-    null
-  )
+    })?.option
+  if (exact) return exact
+  if (dial) {
+    const dialMatches = annotated.filter(({ text }) => text.includes(dial))
+    const named = countryName
+      ? dialMatches.find(({ text }) => text.includes(countryName))?.option
+      : null
+    if (named) return named
+    if (dialMatches[0]) return dialMatches[0].option
+  }
+  return annotated.find(({ text }) => text.includes(normalized))?.option || null
 }
 
 function normalizePhoneCountryText(value) {

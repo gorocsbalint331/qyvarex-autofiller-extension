@@ -1021,16 +1021,13 @@ export function createOperationHandlerFactory(onFilled, onMissed) {
           }
           throw err
         }
-        if (err instanceof ValueError) {
-          console.warn(
-            `[OperationHandler] "${label}" ValueError:`,
-            err.message
-          )
-        } else {
-          console.error(
-            `[OperationHandler] "${label}" unexpected error:`,
-            err
-          )
+        const expectedMiss =
+          err instanceof ValueError ||
+          err?.name === "ValueError" ||
+          err?.name === "FillError"
+        if (!expectedMiss) {
+          const message = err instanceof Error ? err.message : String(err)
+          console.error(`[OperationHandler] "${label}" ${message}`)
         }
         if (updateCurrentFieldFlag) onMissed(rule.label)
         return false

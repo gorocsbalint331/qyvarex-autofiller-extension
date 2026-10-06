@@ -19,6 +19,7 @@ import * as smartRecruitersAnswer from "./smartrecruiters/answer.ts"
 import * as locationOperation from "./smartrecruiters/location-operation.ts"
 import * as educationOperation from "./smartrecruiters/education-operation.ts"
 import * as optionResolveRollout from "../shared/option-resolve-rollout.js"
+import { toNationalPhoneValue } from "../../core/phone-country-code.ts"
 
 const SUBMIT_BUTTON_TEXT_RE =
   /^(?:continue(?:\s+to\s+the\s+next\s+page|\s+application)?|next|submit(?:\s+application)?|apply(?:\s+now)?|review\s+and\s+submit|finish)$/i
@@ -70,6 +71,12 @@ function findAnswerValueByLabel(answer, label) {
       return entry.value
     }
   }
+}
+
+function nationalPhoneDigits(value) {
+  const national = toNationalPhoneValue(String(value ?? ""))
+  const digits = String(national || "").replace(/\D/g, "")
+  return digits || String(value ?? "")
 }
 
 function isPhoneCountryCodeLabel(label) {
@@ -455,10 +462,11 @@ class SmartRecruiters extends BaseFiller {
           }
         }
         if (value) {
-          return operations.fillInputTextField(
-            rule.$input,
-            String(value ?? ""),
-          )
+          const text =
+            rule.label === rules.SMARTRECRUITERS_PHONE_LABEL
+              ? nationalPhoneDigits(value)
+              : String(value ?? "")
+          return operations.fillInputTextField(rule.$input, text)
         }
       },
       [enums.FIELD_TYPE.SELECT]: async (rule, values) =>

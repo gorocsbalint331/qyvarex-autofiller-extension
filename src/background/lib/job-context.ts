@@ -1,5 +1,4 @@
-import type { JobContext } from "~lib/job-context"
-import { resolveJobContext } from "~lib/job-context"
+import { resolveJobContext, type JobContext } from "../../lib/job-context"
 
 async function readTopFrameHeading(
   tabId: number

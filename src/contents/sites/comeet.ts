@@ -101,8 +101,7 @@ export class Comeet extends BaseFiller {
   async doFillForm(forceRefetch = false) {
     if (!rules.isRunningInComeetIframe()) {
       return await new Promise((resolve) => {
-        const timeoutMs = 75000
-        const startedAt = Date.now()
+        let timeoutId = 0
         const cleanup = () => {
           window.removeEventListener("message", onMessage)
           clearTimeout(timeoutId)
@@ -118,29 +117,26 @@ export class Comeet extends BaseFiller {
               },
           )
         }
+        const arm = (ms) => {
+          clearTimeout(timeoutId)
+          timeoutId = window.setTimeout(() => finish(), ms)
+        }
         const onMessage = (event) => {
-          if (
-            event?.data?.type ===
-            enums.MESSAGE_EVENTS.autoFillResultFromIframe
-          ) {
+          const type = event?.data?.type
+          if (type === enums.MESSAGE_EVENTS.autoFillResultFromIframe) {
             finish(event.data.data)
             return
           }
-          if (
-            event?.data?.type ===
-            enums.MESSAGE_EVENTS.autoFillCompleteFromIframe
-          ) {
+          if (type === enums.MESSAGE_EVENTS.autoFillCompleteFromIframe) {
             finish()
             return
           }
+          if (type === enums.MESSAGE_EVENTS.agentStartFillingFields) {
+            arm(90000)
+          }
         }
         window.addEventListener("message", onMessage)
-        const timeoutId = window.setTimeout(() => {
-          console.warn(
-            `[Comeet] parent fillForm wait timeout after ${Date.now() - startedAt}ms`,
-          )
-          finish()
-        }, timeoutMs)
+        arm(20000)
       })
     }
 

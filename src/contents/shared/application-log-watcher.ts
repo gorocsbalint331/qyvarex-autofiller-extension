@@ -7,15 +7,20 @@
 import { sendToBackground } from "@plasmohq/messaging"
 
 import { scrapeGenericJobData } from "~core/genericJobScraper"
-import { extractSalaryRange } from "~lib/salary"
+import { companyBesideTitle } from "~lib/job-context"
+import { extractSalaryRange, formatSalaryRangeLabel } from "~lib/salary"
 
 const SUBMIT_LABEL_RE =
-  /^(submit|apply|send application|submit application|submit my application|finish|complete application)\b|\b(submit application|apply now|send application)\b/i
+  /^(submit|apply|send application|submit application|submit my application|finish|complete application|enviar solicitud|enviar candidatura)\b|\b(submit application|apply now|send application|enviar solicitud|bewerben|bewerbung absenden)\b/i
 const SUCCESS_RE =
-  /thank(s| you) for (applying|your application|submitting)|application (has been |was )?(successfully )?(received|submitted|sent|completed?)|we('ve| have) received your application|successfully (applied|submitted)|your application (is on its way|has been sent)|you('ve| have) (successfully )?applied/i
+  /thank(s| you) for (applying|your application|submitting)|application (has been |was )?(successfully )?(received|submitted|sent|completed?)|we('ve| have) received your application|successfully (applied|submitted)|your application (is on its way|has been sent)|you('ve| have) successfully applied|vielen dank für (?:deine|ihre) bewerbung|bewerbung (?:wurde|ist) (?:erfolgreich )?(?:eingereicht|gesendet|abgeschickt|übermittelt)|deine bewerbung ist (?:unterwegs|eingegangen)/i
+const EMAIL_CONFIRM_RE =
+  /check your (?:e-?mail|inbox)|verify your (?:e-?mail|email address)|confirmation (?:e-?mail|email)|we(?:'ve| have) sent (?:you )?an? (?:e-?mail|email)|te hemos enviado|revisa tu correo|confirma tu (?:correo|e-?mail)|correo de confirmaci[oó]n/i
+const FAILURE_RE =
+  /couldn'?t submit|could not submit|cannot submit|can'?t submit|unable to submit|was not submitted|not been submitted|limiting applications|you cannot submit|did not go through|error submitting/i
 const SUCCESS_URL_RE = /thank|success|confirmation|submitted|application-complete/i
 const PLATFORM_NAME_RE =
-  /^(ashby|bamboohr|breezy hr|greenhouse|icims|jobvite|lever|linkedin|recruitee|smartrecruiters|taleo|workable|workday|careers?|jobs?|job details|apply)$/i
+  /^(ashby|bamboohr|breezy hr|comeet|greenhouse|icims|jobvite|lever|linkedin|pinpoint(?:hq)?|recruitee|smartrecruiters|spark hire(?: recruit(?: jobs)?)?|taleo|workable|workday|careers?|jobs?|job details|apply|application|new application)$/i
 const TITLE_SELECTORS = [
   '[data-automation-id="jobPostingHeader"]',
   ".posting-headline h2",
@@ -42,38 +47,121 @@ function successPhrases(text: string): Set<string> {
   return new Set([...text.matchAll(global)].map((m) => m[0].toLowerCase()))
 }
 
+function emailConfirmPhrases(text: string): string[] {
+  return [...text.matchAll(new RegExp(EMAIL_CONFIRM_RE.source, "gi"))].map((match) =>
+    match[0].toLowerCase()
+  )
+}
+
+function isGenericTitle(text: string) {
+  return PLATFORM_NAME_RE.test(text)
+}
+
+function companyFromHost(): string {
+  const host = location.hostname.toLowerCase()
+  const pinpoint = host.match(/^([a-z0-9-]+)\.pinpointhq\.com$/)
+  if (!pinpoint || pinpoint[1] === "www" || pinpoint[1] === "app") return ""
+  return pinpoint[1]
+    .split("-")
+    .filter(Boolean)
+    .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
+    .join(" ")
+}
+
 function scrapeTitle(): string {
   for (const selector of TITLE_SELECTORS) {
-    const el = document.querySelector<HTMLElement>(selector)
-    const text = cleanText(el?.innerText)
-    if (el && !el.closest('[id^="jobright"], plasmo-csui') && text.length >= 3 && text.length <= 200) {
+    for (const el of document.querySelectorAll<HTMLElement>(selector)) {
+      const text = cleanText(el.innerText)
+      if (el.closest('[id^="jobright"], plasmo-csui')) continue
+      if (text.length < 3 || text.length > 200 || isGenericTitle(text)) continue
       return text
     }
   }
-  return cleanText(scrapeGenericJobData().jobTitle)
+  const ogTitle = cleanText(
+    document.querySelector<HTMLMetaElement>('meta[property="og:title"]')?.content
+  )
+  if (ogTitle && !isGenericTitle(ogTitle)) return ogTitle
+  const scraped = cleanText(scrapeGenericJobData().jobTitle)
+  return isGenericTitle(scraped) ? "" : scraped
 }
 
 function scrapeCompany(title: string): string {
+  const fromHost = companyFromHost()
+  if (fromHost) return fromHost
   const siteName = cleanText(
     document.querySelector<HTMLMetaElement>('meta[property="og:site_name"]')?.content
   )
-  if (siteName && !PLATFORM_NAME_RE.test(siteName)) return siteName
+  if (
+    siteName &&
+    !PLATFORM_NAME_RE.test(siteName) &&
+    !/^(jobs by|careers at)\b/i.test(siteName) &&
+    siteName.toLowerCase() !== title.toLowerCase()
+  ) {
+    return siteName
+  }
   const heading =
     document.querySelector<HTMLMetaElement>('meta[property="og:title"]')?.content ||
     document.title
-  const part = heading
-    .split(/\s+[-–—|·•]\s+|\s+at\s+/i)
-    .map(cleanText)
-    .find((p) => p && p.toLowerCase() !== title.toLowerCase() && !PLATFORM_NAME_RE.test(p))
-  return part || cleanText(scrapeGenericJobData().companyName)
+  return companyBesideTitle(heading, title) || cleanText(scrapeGenericJobData().companyName)
+}
+
+function controlLabel(control: HTMLElement): string {
+  const id = control.getAttribute("id")
+  if (id) {
+    const label = document.querySelector(`label[for="${CSS.escape(id)}"]`)
+    const text = cleanText(label?.textContent)
+    if (text) return text
+  }
+  const row = control.closest(
+    ".crc-form-row, .field, .form-group, fieldset, [class*='form-field'], [class*='question']"
+  )
+  return cleanText(row?.querySelector("label, legend")?.textContent)
+}
+
+function scrapeEmbeddedJobSalary(): string {
+  for (const script of document.scripts) {
+    const text = script.textContent || ""
+    if (!/Salary/.test(text)) continue
+    const match = text.match(/["']Salary["']\s*:\s*(null|"([^"]*)"|\\?"([^"\\]*)\\?")/)
+    const value = cleanText(match?.[2] || match?.[3] || "")
+    if (!value || value === "null" || !/\d/.test(value)) continue
+    const range = extractSalaryRange(value)
+    return range ? formatSalaryRangeLabel(range) : value.slice(0, 80)
+  }
+  return ""
+}
+
+function scrapeFilledSalary(): string {
+  const controls = document.querySelectorAll("input, textarea")
+  for (const control of controls) {
+    if (
+      !(control instanceof HTMLInputElement || control instanceof HTMLTextAreaElement) ||
+      control.disabled ||
+      /hidden|file|checkbox|radio|password/.test(control.type)
+    ) {
+      continue
+    }
+    const value = cleanText(control.value)
+    if (!value || !/\d/.test(value)) continue
+    const label = controlLabel(control).toLowerCase()
+    if (!/\b(salary|compensation|ctc|remuneration)\b/.test(label)) continue
+    if (/\b(current|previous|last)\b/.test(label)) continue
+    const amount = value.replace(/[^\d.]/g, "")
+    if (!amount) continue
+    const period = /\bmonth/.test(label)
+      ? "per month"
+      : /\bhour/.test(label)
+        ? "per hour"
+        : ""
+    return [amount, period].filter(Boolean).join(" ")
+  }
+  return ""
 }
 
 function scrapeSalaryText(): string {
   const range = extractSalaryRange(pageText())
-  if (!range) return ""
-  return [`${range.min}-${range.max}`, range.currency, range.period === "year" ? "" : `per ${range.period}`]
-    .filter(Boolean)
-    .join(" ")
+  if (range) return formatSalaryRangeLabel(range)
+  return scrapeEmbeddedJobSalary() || scrapeFilledSalary()
 }
 
 export function scrapeApplicationMeta() {
@@ -102,7 +190,10 @@ function showToast(message: string) {
 
 async function confirmSubmission() {
   try {
-    const result = await sendToBackground({ name: "confirmApplicationLog" })
+    const result = await sendToBackground({
+      name: "confirmApplicationLog",
+      body: scrapeApplicationMeta(),
+    })
     if (result?.ok && !result.duplicate) {
       showToast(`Logged to Google Sheet${result.tabName ? ` (${result.tabName})` : ""}`)
     } else if (result?.ok === false && result.message && result.message !== "not_armed") {
@@ -110,12 +201,26 @@ async function confirmSubmission() {
       showToast(`Could not log to Google Sheet: ${result.message}`)
     }
   } catch (error) {
-    console.warn("[qyvarex] application log failed", error)
+    const message = error instanceof Error ? error.message : String(error)
+    if (/extension context invalidated|receiving end does not exist/i.test(message)) {
+      showToast("Refresh this page, then submit again to log the application")
+      return
+    }
+    console.warn("[qyvarex] application log failed", message)
   }
 }
 
 /** Watch for a success message that wasn't on the page when watching started. */
-function watchForSuccess(durationMs: number, baseline: Set<string>, startHref: string) {
+function applicationWasRejected(text: string) {
+  return FAILURE_RE.test(text)
+}
+
+function watchForSuccess(
+  durationMs: number,
+  baseline: Set<string>,
+  startHref: string,
+  allowEmailConfirm = false
+) {
   const until = Date.now() + durationMs
   let lastCheck = 0
   let done = false
@@ -137,10 +242,14 @@ function watchForSuccess(durationMs: number, baseline: Set<string>, startHref: s
       return
     }
     lastCheck = now
-    const fresh = [...successPhrases(pageText())].some((p) => !baseline.has(p))
+    const text = pageText()
+    if (applicationWasRejected(text)) return
+    const fresh = [...successPhrases(text)].some((phrase) => !baseline.has(phrase))
+    const emailConfirm =
+      allowEmailConfirm && emailConfirmPhrases(text).some((phrase) => !baseline.has(phrase))
     const movedToSuccessUrl =
       window.location.href !== startHref && SUCCESS_URL_RE.test(window.location.pathname)
-    if (fresh || movedToSuccessUrl) {
+    if (fresh || emailConfirm || movedToSuccessUrl) {
       stop()
       void confirmSubmission()
     }
@@ -157,6 +266,21 @@ function watchForSuccess(durationMs: number, baseline: Set<string>, startHref: s
  * @param isApplicationPage whether this frame is a job application page
  *   (submit clicks elsewhere are ignored).
  */
+/** Remember this page as a submitted application and watch for the confirmation. */
+export function armSubmittedApplication() {
+  void sendToBackground({
+    name: "armApplicationLog",
+    body: scrapeApplicationMeta()
+  }).catch(() => {})
+  const text = pageText()
+  watchForSuccess(
+    WATCH_AFTER_SUBMIT_MS,
+    new Set([...successPhrases(text), ...emailConfirmPhrases(text)]),
+    window.location.href,
+    true
+  )
+}
+
 export function startApplicationLogWatcher(isApplicationPage: () => boolean) {
   if ((globalThis as any).__qyvarexApplicationLogWatcher) return
   ;(globalThis as any).__qyvarexApplicationLogWatcher = true
@@ -185,7 +309,13 @@ export function startApplicationLogWatcher(isApplicationPage: () => boolean) {
         name: "armApplicationLog",
         body: scrapeApplicationMeta()
       }).catch(() => {})
-      watchForSuccess(WATCH_AFTER_SUBMIT_MS, successPhrases(pageText()), window.location.href)
+      const text = pageText()
+      watchForSuccess(
+        WATCH_AFTER_SUBMIT_MS,
+        new Set([...successPhrases(text), ...emailConfirmPhrases(text)]),
+        window.location.href,
+        true
+      )
     },
     true
   )

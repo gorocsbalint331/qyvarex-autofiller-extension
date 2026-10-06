@@ -1,4 +1,5 @@
 import { logApplication } from "~api/team-client"
+import { resolveJobContext } from "../../lib/job-context"
 
 export type ApplicationMeta = {
   title?: string
@@ -18,15 +19,36 @@ export type ApplicationLogResult = {
 }
 
 const LOGGED_KEY = "qx-logged-applications"
+const logInFlight = new Map<string, Promise<ApplicationLogResult>>()
 const PENDING_PREFIX = "qx-pending-application:"
 const DUPLICATE_WINDOW_MS = 24 * 60 * 60 * 1000
 const LOGGED_RETENTION_MS = 7 * 24 * 60 * 60 * 1000
-const PENDING_TTL_MS = 5 * 60 * 1000
+const PENDING_TTL_MS = 24 * 60 * 60 * 1000
 
 const TRACKING_PARAMS = /^(utm_|gh_src$|source$|ref$|lever-|src$|jr_id$|fbclid$|gclid$)/i
 
+/** Drop a confirmation suffix so the sheet stores the posting, not /thanks. */
+function postingLink(link: string): string {
+  try {
+    const url = new URL(link)
+    url.pathname = url.pathname.replace(/\/(thanks|thank-you|confirmation|success)\/?$/i, "")
+    url.hash = ""
+    return url.toString()
+  } catch {
+    return link
+  }
+}
+
+function localAppliedDate() {
+  const now = new Date()
+  const y = now.getFullYear()
+  const m = String(now.getMonth() + 1).padStart(2, "0")
+  const d = String(now.getDate()).padStart(2, "0")
+  return `${y}-${m}-${d}`
+}
+
 /** Same job → same key, whether logged from the form, the /apply URL, or a manual click. */
-function applicationKey(link: string): string {
+export function applicationKey(link: string): string {
   try {
     const u = new URL(link)
     const path = u.pathname
@@ -59,15 +81,83 @@ async function markLogged(key: string) {
   })
 }
 
+const BAD_TITLE = /^(null|undefined|untitled(?: role)?|careers?|jobs?|apply|application)$/i
+const PLATFORM_COMPANY =
+  /spark hire|comeet|greenhouse|lever\b|ashby|workday|workable|smartrecruiters|jobvite|icims/i
+
+function pinpointCompany(link: string): string {
+  try {
+    const host = new URL(link).hostname.toLowerCase().match(/^([a-z0-9-]+)\.pinpointhq\.com$/)
+    if (!host || host[1] === "www" || host[1] === "app") return ""
+    return host[1]
+      .split("-")
+      .filter(Boolean)
+      .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
+      .join(" ")
+  } catch {
+    return ""
+  }
+}
+
+/** Comeet (and similar) pages brand the ATS, not the employer. Prefer the posting URL. */
+function withPostingIdentity(meta: ApplicationMeta): ApplicationMeta {
+  const link = (meta.link || "").trim()
+  const fromUrl = resolveJobContext({ url: link })
+  const title = (meta.title || "").trim()
+  const company = (meta.company || "").trim()
+  const comeet = /comeet\.com|comeet\.co/i.test(link)
+  const hostCompany = pinpointCompany(link)
+  const nextTitle =
+    (comeet || !title || BAD_TITLE.test(title)) && fromUrl.title ? fromUrl.title : title
+  const companyIsTitle =
+    !!fromUrl.company &&
+    !!company &&
+    !!title &&
+    (company.toLowerCase() === title.toLowerCase() ||
+      title.toLowerCase().startsWith(company.toLowerCase()) ||
+      company.toLowerCase().startsWith(title.toLowerCase()))
+  let nextCompany =
+    (comeet || !company || companyIsTitle || PLATFORM_COMPANY.test(company)) && fromUrl.company
+      ? fromUrl.company
+      : company
+  if (hostCompany && BAD_TITLE.test(nextTitle) && nextCompany && !BAD_TITLE.test(nextCompany)) {
+    return { ...meta, title: nextCompany, company: hostCompany }
+  }
+  if (
+    hostCompany &&
+    (!nextCompany || nextCompany.toLowerCase() === nextTitle.toLowerCase() || BAD_TITLE.test(nextCompany))
+  ) {
+    nextCompany = hostCompany
+  }
+  return { ...meta, title: nextTitle, company: nextCompany }
+}
+
 export async function recordApplication(
   meta: ApplicationMeta,
-  { force = false }: { force?: boolean } = {}
+  options: { force?: boolean } = {}
 ): Promise<ApplicationLogResult> {
-  const link = (meta.link || "").trim()
-  const title = (meta.title || "").trim() || "Untitled role"
+  meta = withPostingIdentity(meta)
+  const link = postingLink((meta.link || "").trim())
   if (!link) return { ok: false, message: "link_required" }
-
   const key = applicationKey(link)
+  const current = logInFlight.get(key)
+  if (current) return current
+  const run = writeApplication(meta, link, key, options.force === true)
+  logInFlight.set(key, run)
+  try {
+    return await run
+  } finally {
+    logInFlight.delete(key)
+  }
+}
+
+async function writeApplication(
+  meta: ApplicationMeta,
+  link: string,
+  key: string,
+  force: boolean
+): Promise<ApplicationLogResult> {
+  const title = (meta.title || "").trim() || "Untitled role"
   if (!force) {
     const loggedAt = (await readLogged())[key]
     if (loggedAt && Date.now() - loggedAt < DUPLICATE_WINDOW_MS) {
@@ -83,6 +173,7 @@ export async function recordApplication(
     resume: meta.resume || "",
     country: meta.country || "",
     other: meta.other || "",
+    appliedDate: localAppliedDate(),
     status: "applied"
   })
   if (!result.ok) {

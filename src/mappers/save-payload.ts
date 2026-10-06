@@ -10,6 +10,31 @@ function asObject(value) {
   return value && typeof value === "object" && !Array.isArray(value) ? value : {}
 }
 
+function hubChoice(ui, kind) {
+  const value = String(ui ?? "").trim()
+  if (kind === "workAuthorization") {
+    if (value === "Yes") return "Authorized to work in the US"
+    if (value === "No") return "Not authorized"
+  }
+  if (kind === "sponsorshipStatus") {
+    if (value === "Yes") return "Will require sponsorship now"
+    if (value === "No") return "Will not require sponsorship"
+  }
+  if (kind === "disability") {
+    if (value === "Yes") return "Yes, I have a disability"
+    if (value === "No") return "No, I do not have a disability"
+  }
+  if (kind === "veteran") {
+    if (value === "Yes") return "I am a veteran"
+    if (value === "No") return "I am not a veteran"
+  }
+  if (kind === "ethnicity" && value === "American Indian or Alaskan Native") {
+    return "American Indian or Alaska Native"
+  }
+  if (value === "Decline to state") return "Prefer not to say"
+  return value
+}
+
 export function isAutofillInfoSnapshot(value) {
   return !!value && typeof value === "object" && "personalInfo" in value
 }
@@ -91,14 +116,20 @@ export function buildAutofillInfoSaveBody(
         })),
         employmentInfo: {
           ...asObject(baseSnapshot.employmentInfo),
-          gender: equalEmployment.gender,
-          race: equalEmployment.ethnicity,
-          veteran: equalEmployment.veteran,
-          disability: equalEmployment.disability,
-          workAuthorization: equalEmployment.workAuthorization,
-          sponsorshipStatus: equalEmployment.sponsorshipStatus,
-          lgbt: equalEmployment.lgbt,
-          hispanic: equalEmployment.hispanic,
+          gender: hubChoice(equalEmployment.gender, "gender"),
+          race: hubChoice(equalEmployment.ethnicity, "ethnicity"),
+          veteran: hubChoice(equalEmployment.veteran, "veteran"),
+          disability: hubChoice(equalEmployment.disability, "disability"),
+          workAuthorization: hubChoice(
+            equalEmployment.workAuthorization,
+            "workAuthorization",
+          ),
+          sponsorshipStatus: hubChoice(
+            equalEmployment.sponsorshipStatus,
+            "sponsorshipStatus",
+          ),
+          lgbt: hubChoice(equalEmployment.lgbt, "yesno"),
+          hispanic: hubChoice(equalEmployment.hispanic, "yesno"),
           sexual: equalEmployment.sexual,
         },
         pronouns,

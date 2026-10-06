@@ -43,39 +43,25 @@ export async function preFillForm() {
 
 export async function syncEducationHistorySections(desiredCount) {
   let target = Math.max(desiredCount, 1)
+  if (!rules.getAshbyEducationHistoryContainer()) {
+    let addButton = await waitForAddEducationButton({ maxWaitMs: 400 })
+    if (!addButton) return
+  }
   let safety = 0
 
   while (countEducationRows() < target) {
-    if (safety++ > target + 5) {
-      console.warn("[Ashby][Education] safety break", {
-        rows: countEducationRows(),
-        desiredCount: target,
-      })
-      break
-    }
+    if (safety++ > target + 5) break
 
     let rowsBefore = countEducationRows()
     let addButton = await waitForAddEducationButton({ maxWaitMs: 1500 })
-    if (!addButton) {
-      console.warn("[Ashby][Education] Add education button not found", {
-        rows: rowsBefore,
-        desiredCount: target,
-      })
-      break
-    }
+    if (!addButton) break
 
     addButton.click()
     let rowsAfter = await waitForEducationRowCount(rowsBefore, {
       maxWaitMs: 2000,
       intervalMs: 100,
     })
-    if (rowsAfter <= rowsBefore) {
-      console.warn("[Ashby][Education] click had no effect after 2s", {
-        rowsBefore,
-        rowsAfter,
-      })
-      break
-    }
+    if (rowsAfter <= rowsBefore) break
   }
 
   safety = 0
@@ -87,10 +73,7 @@ export async function syncEducationHistorySections(desiredCount) {
     if (rows.length <= target || rows.length <= 1) break
 
     let deleteButton = findEducationActionButton(rows[rows.length - 1], "delete")
-    if (!deleteButton) {
-      console.warn("[Ashby][Education] Delete education button not found")
-      break
-    }
+    if (!deleteButton) break
     deleteButton.click()
     await delay.delay(300)
   }
@@ -329,21 +312,44 @@ export async function uploadCoverLetter(
 }
 
 export async function fillCheckboxField(rule, values) {
+  let roots = []
+  for (let node of [].concat(rule.$checkboxs ?? [], rule.$input ?? [])) {
+    if (node) roots.push(node)
+  }
+  let entry = rule.$input?.closest?.(".ashby-application-form-field-entry")
+  if (entry) roots.push(entry)
+
   for (let value of values) {
-    let button = xpath.getFirstOrderedNodeSafe(
-      './button[text()="' + value + '"]',
-      rule.$input,
-    )
-    if (button) {
-      let el = button
-      if (!el.className.includes("active")) {
-        el.click()
-        await delay.delay(500)
-      }
-    } else {
+    let wanted = String(value ?? "")
+      .replace(/\s+/g, " ")
+      .trim()
+      .toLowerCase()
+    let button = null
+    for (let root of roots) {
+      let candidates = root.querySelectorAll
+        ? root.querySelectorAll("button, [role='radio'], [role='button']")
+        : []
+      button =
+        Array.from(candidates).find((el) => {
+          let text = String(el.textContent ?? "")
+            .replace(/\s+/g, " ")
+            .trim()
+            .toLowerCase()
+          return text === wanted
+        }) ?? null
+      if (button) break
+    }
+    if (!button) {
       throw new filler.FillError(
         `No matching checkbox option for label: ${rule.label} with value: ${value}`,
       )
+    }
+    let pressed =
+      button.getAttribute?.("aria-pressed") === "true" ||
+      String(button.className ?? "").includes("active")
+    if (!pressed) {
+      button.click()
+      await delay.delay(200)
     }
   }
 }
@@ -794,42 +800,156 @@ async function waitForExactComboboxOption(wanted, input) {
   return null
 }
 
+const US_STATE_BY_ABBR = {
+  al: "alabama",
+  ak: "alaska",
+  az: "arizona",
+  ar: "arkansas",
+  ca: "california",
+  co: "colorado",
+  ct: "connecticut",
+  de: "delaware",
+  dc: "district of columbia",
+  fl: "florida",
+  ga: "georgia",
+  hi: "hawaii",
+  id: "idaho",
+  il: "illinois",
+  in: "indiana",
+  ia: "iowa",
+  ks: "kansas",
+  ky: "kentucky",
+  la: "louisiana",
+  me: "maine",
+  md: "maryland",
+  ma: "massachusetts",
+  mi: "michigan",
+  mn: "minnesota",
+  ms: "mississippi",
+  mo: "missouri",
+  mt: "montana",
+  ne: "nebraska",
+  nv: "nevada",
+  nh: "new hampshire",
+  nj: "new jersey",
+  nm: "new mexico",
+  ny: "new york",
+  nc: "north carolina",
+  nd: "north dakota",
+  oh: "ohio",
+  ok: "oklahoma",
+  or: "oregon",
+  pa: "pennsylvania",
+  ri: "rhode island",
+  sc: "south carolina",
+  sd: "south dakota",
+  tn: "tennessee",
+  tx: "texas",
+  ut: "utah",
+  vt: "vermont",
+  va: "virginia",
+  wa: "washington",
+  wv: "west virginia",
+  wi: "wisconsin",
+  wy: "wyoming",
+}
+
+function locationAlias(value) {
+  return normalizeComboboxText(value)
+    .replace(/\bunited states of america\b/g, "usa")
+    .replace(/\bunited states\b/g, "usa")
+    .replace(/\bu s a\b/g, "usa")
+    .replace(/\bu s\b/g, "usa")
+}
+
+function samePlace(a, b) {
+  let left = locationAlias(a).replace(/^us$/, "usa")
+  let right = locationAlias(b).replace(/^us$/, "usa")
+  if (left === right) return true
+  return (US_STATE_BY_ABBR[left] || left) === (US_STATE_BY_ABBR[right] || right)
+}
+
+function locationSearchQueries(text) {
+  let parts = String(text)
+    .split(",")
+    .map((part) => part.trim())
+    .filter(Boolean)
+  let queries = [text]
+  if (parts.length > 2) queries.push(parts.slice(0, -1).join(", "))
+  if (parts.length > 1) queries.push(parts.slice(0, 2).join(", "))
+  if (parts[0] && parts[0] !== text) queries.push(parts[0])
+  return Array.from(new Set(queries))
+}
+
+function listboxOptions(input) {
+  let controlsId = input?.getAttribute?.("aria-controls")
+  let listbox = controlsId ? document.getElementById(controlsId) : null
+  let scoped = listbox
+    ? Array.from(listbox.querySelectorAll('[role="option"]'))
+    : []
+  if (scoped.length) return scoped
+  return Array.from(
+    document.querySelectorAll('div[role="listbox"] [role="option"]'),
+  )
+}
+
+function pickLocationOption(wanted, options) {
+  let wantedParts = String(wanted)
+    .split(",")
+    .map((part) => part.trim())
+    .filter(Boolean)
+  if (!wantedParts.length || !options.length) return null
+  let city = wantedParts[0]
+  let state = wantedParts[1] || ""
+  let best = null
+  let bestScore = 0
+  for (let opt of options) {
+    let optParts = String(opt.textContent ?? "")
+      .split(",")
+      .map((part) => part.trim())
+      .filter(Boolean)
+    if (!optParts.length || !samePlace(optParts[0], city)) continue
+    if (state && optParts[1] && !samePlace(optParts[1], state)) continue
+    let score = 50 + (state && optParts[1] ? 30 : 0)
+    if (score > bestScore) {
+      bestScore = score
+      best = opt
+    }
+  }
+  return best
+}
+
+async function waitForLocationOption(wanted, input) {
+  for (let attempt = 0; attempt < 12; attempt++) {
+    let options = listboxOptions(input)
+    let exact = findExactAshbyComboboxOption(wanted, options)
+    if (exact) return exact
+    let close = pickLocationOption(wanted, options)
+    if (close) return close
+    await delay.delay(100)
+  }
+  return null
+}
+
 export async function fillResolvedLocationCombobox(rule, resolvedValue) {
   let text = String(resolvedValue ?? "").trim()
   if (!text) throw new filler.FillError("Resolved Ashby location value is empty")
 
-  console.info("[Ashby][GeoLocation] exact-fill-start", {
-    label: rule.label,
-    targetLength: text.length,
-  })
   rule.$input.setAttribute?.("data-jr-ashby-resolve-stage", "exact-fill")
-  await typeComboboxValue(rule.$input, text)
-
-  let option = await waitForExactComboboxOption(text, rule.$input)
-  if (option) {
+  for (let query of locationSearchQueries(text)) {
+    await typeComboboxValue(rule.$input, query)
+    let option = await waitForLocationOption(text, rule.$input)
+    if (!option) continue
     option.click()
     await delay.delay(200)
-    console.info("[Ashby][GeoLocation] exact-fill-committed", {
-      label: rule.label,
-      committedLength: String(rule.$input.value ?? "").length,
-    })
     rule.$input.setAttribute?.("data-jr-ashby-resolve-stage", "committed")
     return
   }
 
-  console.warn("[Ashby][GeoLocation] exact-fill-failed", {
-    label: rule.label,
-    reason: "no-exact-option",
-    targetLength: text.length,
-    expanded: rule.$input.getAttribute("aria-expanded"),
-  })
-  rule.$input.setAttribute?.(
-    "data-jr-ashby-resolve-stage",
-    "no-exact-option",
-  )
+  rule.$input.setAttribute?.("data-jr-ashby-resolve-stage", "no-exact-option")
   clearComboboxInput(rule.$input)
   throw new filler.FillError(
-    `No exact combobox option for label: ${rule.label} with resolved value: ${text}`,
+    `No combobox option for label: ${rule.label} with resolved value: ${text}`,
   )
 }
 

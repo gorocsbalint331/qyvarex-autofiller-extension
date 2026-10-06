@@ -11,6 +11,7 @@ import {
   signOut
 } from "~api/team-client"
 import type { ProfileSummary } from "~api/team-types"
+import BatchApplyPanel from "~components/BatchApplyPanel"
 
 import "~style.css"
 
@@ -75,7 +76,16 @@ function ExternalIcon({ color = "currentColor" }: { color?: string }) {
   )
 }
 
+type PopupPage = "apply" | "batch" | "settings"
+
+const pages: { id: PopupPage; label: string }[] = [
+  { id: "apply", label: "Apply" },
+  { id: "batch", label: "Batch" },
+  { id: "settings", label: "Settings" }
+]
+
 function IndexPopup() {
+  const [page, setPage] = useState<PopupPage>("apply")
   const [tabUrl, setTabUrl] = useState("")
   const [status, setStatus] = useState("")
   const [profiles, setProfiles] = useState<ProfileSummary[]>([])
@@ -200,55 +210,73 @@ function IndexPopup() {
         <p className="qx-loading">Loading…</p>
       ) : signedIn ? (
         <>
-          <div className="qx-alert qx-alert--ok" role="status">
-            <BellIcon />
-            <span>Qyvarex is active on this browser.</span>
-          </div>
+          <nav className="qx-pages" aria-label="Extension pages">
+            {pages.map((item) => (
+              <button
+                key={item.id}
+                type="button"
+                className={page === item.id ? "is-active" : ""}
+                onClick={() => setPage(item.id)}>
+                {item.label}
+              </button>
+            ))}
+          </nav>
 
-          <p className="qx-headline">Ready to autofill applications</p>
+          {page === "apply" ? (
+            <>
+              <div className="qx-alert qx-alert--ok" role="status">
+                <BellIcon />
+                <span>Qyvarex is active on this browser.</span>
+              </div>
 
-          {userLabel ? (
-            <p className="qx-meta" style={{ marginBottom: 10 }}>
-              {userLabel}
-            </p>
+              <p className="qx-headline">Ready to autofill applications</p>
+              <p className="qx-meta">{tabUrl || "No active tab URL"}</p>
+
+              <button
+                type="button"
+                className="qx-btn"
+                onClick={() => void activateHelper()}
+                disabled={activating}>
+                {activating ? "Working…" : "Activate on this tab"}
+              </button>
+            </>
           ) : null}
 
-          {profiles.length > 0 ? (
-            <label className="qx-label">
-              Active profile
-              <select
-                className="qx-select"
-                value={selectedId || ""}
-                onChange={(e) => void onSelectProfile(e.target.value)}>
-                {profiles.map((p) => (
-                  <option key={p.id} value={p.id}>
-                    {p.label}
-                    {p.firstName || p.lastName
-                      ? ` — ${[p.firstName, p.lastName].filter(Boolean).join(" ")}`
-                      : ""}
-                  </option>
-                ))}
-              </select>
-            </label>
+          {page === "batch" ? <BatchApplyPanel compact /> : null}
+
+          {page === "settings" ? (
+            <>
+              <p className="qx-headline">Settings</p>
+              {userLabel ? <p className="qx-meta">{userLabel}</p> : null}
+              {profiles.length > 0 ? (
+                <label className="qx-label">
+                  Active profile
+                  <select
+                    className="qx-select"
+                    value={selectedId || ""}
+                    onChange={(e) => void onSelectProfile(e.target.value)}>
+                    {profiles.map((p) => (
+                      <option key={p.id} value={p.id}>
+                        {p.label}
+                        {p.firstName || p.lastName
+                          ? ` — ${[p.firstName, p.lastName].filter(Boolean).join(" ")}`
+                          : ""}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+              ) : (
+                <p className="qx-meta">No profiles on this account yet.</p>
+              )}
+              <button
+                type="button"
+                className="qx-btn qx-btn--ghost"
+                onClick={() => void onSignOut()}
+                disabled={busy}>
+                Sign out
+              </button>
+            </>
           ) : null}
-
-          <p className="qx-meta">{tabUrl || "No active tab URL"}</p>
-
-          <button
-            type="button"
-            className="qx-btn"
-            onClick={() => void activateHelper()}
-            disabled={activating}>
-            {activating ? "Working…" : "Activate on this tab"}
-          </button>
-
-          <button
-            type="button"
-            className="qx-btn qx-btn--ghost"
-            onClick={() => void onSignOut()}
-            disabled={busy}>
-            Sign out
-          </button>
         </>
       ) : (
         <>

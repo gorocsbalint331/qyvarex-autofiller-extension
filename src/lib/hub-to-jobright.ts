@@ -1,15 +1,25 @@
 import type { AutofillInfoPayload } from "~api/team-types"
 import {
-  formatSalary,
+  decomposePhone,
+  getCountryByIso2
+} from "../core/phone-country-code"
+import {
+  askedCurrency,
+  convertSalaryAmount,
+  formatSalaryForQuestion,
   isSalaryExpectationQuestion,
+  parseSalaryText,
   pickSalaryOption,
   salaryTarget,
-  type SalaryRange
+  type SalaryRange,
+  type SalaryTarget
 } from "~lib/salary"
 
 export type AnswerContext = {
   /** Salary range advertised in the job description, if one was found. */
   salaryRange?: SalaryRange | null
+  /** Candidate's own salary from the profile, before currency conversion. */
+  profileSalary?: SalaryTarget | null
   fieldType?: string
 }
 
@@ -414,6 +424,21 @@ function adaptToOptions(value: string, options: string[]): string {
   return bestScore >= 40 ? best : value
 }
 
+function isApplicationEmailLabel(norm: string): boolean {
+  if (!/\bemail\b/.test(norm)) return false
+  return !/\b(notify|notification|updates|newsletter|marketing|consent|opt)\b/.test(
+    norm
+  )
+}
+
+function phoneCountryAnswer(hub: AutofillInfoPayload): string {
+  const explicit = extrasString(hub, "phoneCountryCode")
+  const parts = decomposePhone(hub.identity.phone || "", explicit)
+  if (!parts.dialCode) return explicit
+  const country = parts.iso2 ? getCountryByIso2(parts.iso2)?.name || "" : ""
+  return country ? `+${parts.dialCode} ${country}` : `+${parts.dialCode}`
+}
+
 function labelMatches(norm: string, keys: string[]): boolean {
   for (const key of keys) {
     if (norm === key) return true
@@ -522,12 +547,17 @@ const ANSWER_RESOLVERS: AnswerResolver[] = [
     }
   },
   {
-    keys: ["email", "e mail", "email address", "work email"],
+    keys: ["email", "e mail", "email address", "work email", "confirm your email", "confirm email"],
     get: (h) => h.identity.email
   },
   {
+    keys: ["phone country code", "country phone code", "dial code", "phone code"],
+    priority: 45,
+    get: (h, labelNorm) => (/\b(code|dial)\b/.test(labelNorm) ? phoneCountryAnswer(h) : "")
+  },
+  {
     keys: ["phone", "phone number", "mobile", "mobile phone", "cell", "telephone"],
-    get: (h) => h.identity.phone
+    get: (h, labelNorm) => (/\b(code|dial)\b/.test(labelNorm) ? "" : h.identity.phone)
   },
   {
     keys: ["linkedin", "linkedin url", "linkedin profile", "linkedin link"],
@@ -586,7 +616,10 @@ const ANSWER_RESOLVERS: AnswerResolver[] = [
   },
   {
     keys: ["country", "country region", "nation"],
-    get: (h) => h.identity.address.country
+    get: (h, labelNorm) => {
+      if (/\bphone\b|\bdial\b|\bcode\b/.test(labelNorm)) return ""
+      return h.identity.address.country
+    }
   },
   {
     keys: ["county"],
@@ -713,6 +746,7 @@ const ANSWER_RESOLVERS: AnswerResolver[] = [
       "availability date",
       "earliest start",
       "start date",
+      "startdatum",
       "hiring date",
       "availability"
     ],
@@ -731,6 +765,8 @@ const ANSWER_RESOLVERS: AnswerResolver[] = [
       "source",
       "job portal",
       "how did you hear",
+      "where did you hear",
+      "hear about this job",
       "referral source",
       "application source"
     ],
@@ -744,6 +780,22 @@ const ANSWER_RESOLVERS: AnswerResolver[] = [
       if (linkedin) return "LinkedIn"
       const other = options.find((o) => /^other$/i.test(o.trim()))
       return other || extrasString(h, "additionalApplicationInfo") || "Other"
+    }
+  },
+  {
+    keys: [
+      "open to relocating",
+      "willing to relocate",
+      "relocating to either",
+      "located in nyc"
+    ],
+    priority: 36,
+    get: (_h, labelNorm, options) => {
+      if (!/relocat|\bnyc\b|\bsf\b|san francisco/.test(labelNorm)) return ""
+      if (!options.length) return "Yes"
+      return (
+        options.find((option) => /^yes\b/i.test(option.trim())) || "Yes"
+      )
     }
   },
   {
@@ -876,15 +928,47 @@ export function isSalaryQuestion(label: string, options: string[] = []): boolean
   )
 }
 
-function salaryAnswer(options: string[], context: AnswerContext): string {
-  const target = salaryTarget(context.salaryRange)
+function salaryForQuestionPeriod(label: string, target: SalaryTarget): SalaryTarget {
+  const norm = label.toLowerCase()
+  const asksMonth = /\bmonth/.test(norm) && !/\bhour/.test(norm)
+  const asksHour = /\bhour/.test(norm)
+  const asksYear = /\b(year|annual|annum|jahr\w*)/.test(norm) || /j[aä]hrlich/.test(norm)
+  if (asksMonth && !asksYear && target.period === "year") {
+    return { ...target, amount: Math.round(target.amount / 12), period: "month" }
+  }
+  if (asksHour && target.period === "year") {
+    return { ...target, amount: Math.round(target.amount / 2080), period: "hour" }
+  }
+  if (asksYear && !asksMonth && target.period === "month") {
+    return { ...target, amount: Math.round(target.amount * 12), period: "year" }
+  }
+  return target
+}
+
+function profileSalaryTarget(hub: AutofillInfoPayload): SalaryTarget | null {
+  const summary =
+    hub.extras?.applicationSummary &&
+    typeof hub.extras.applicationSummary === "object" &&
+    !Array.isArray(hub.extras.applicationSummary)
+      ? (hub.extras.applicationSummary as Record<string, unknown>)
+      : null
+  const raw =
+    extrasString(hub, "salary") ||
+    (typeof summary?.salary === "string" ? summary.salary : "")
+  return parseSalaryText(raw)
+}
+
+function salaryAnswer(label: string, options: string[], context: AnswerContext): string {
+  const base = context.profileSalary || salaryTarget(context.salaryRange)
+  const timed = salaryForQuestionPeriod(label, base)
+  const target = convertSalaryAmount(timed, askedCurrency(label))
   if (options.length) {
     return (
       pickSalaryOption(target.amount, options) ??
-      adaptToOptions(formatSalary(target), options)
+      adaptToOptions(formatSalaryForQuestion(target, label), options)
     )
   }
-  return formatSalary(target, context.fieldType)
+  return formatSalaryForQuestion(target, label, context.fieldType)
 }
 
 export function lookupAnswer(
@@ -896,7 +980,22 @@ export function lookupAnswer(
   const norm = normalizeLabel(label)
   if (!norm) return null
 
-  if (isSalaryQuestion(label, options)) return salaryAnswer(options, context)
+  if (isApplicationEmailLabel(norm)) {
+    return hub.identity.email?.trim() || null
+  }
+
+  if (isSalaryQuestion(label, options)) {
+    return salaryAnswer(label, options, {
+      ...context,
+      profileSalary: context.profileSalary ?? profileSalaryTarget(hub)
+    })
+  }
+
+  if (isCurrentEmployerQuestion(norm)) {
+    const employer = currentEmployerName(hub)
+    if (!employer) return ""
+    return options.length ? adaptToOptions(employer, options) : employer
+  }
 
   // Explicit Q&A from hub first (exact / careful contains)
   let bestAnswer: string | null = null
@@ -972,6 +1071,154 @@ export function lookupAnswer(
     return options.length ? adaptToOptions(bestAnswer, options) : bestAnswer
   }
 
+  const fromResume = answerFromResume(hub, norm, options)
+  if (fromResume) {
+    if (options.length > 2 && fromResume.includes(",")) return fromResume
+    return options.length ? adaptToOptions(fromResume, options) : fromResume
+  }
+
+  return null
+}
+
+function resumeBlob(hub: AutofillInfoPayload): string {
+  const extras = hub.extras && typeof hub.extras === "object" ? hub.extras : {}
+  return JSON.stringify(extras).toLowerCase()
+}
+
+function careerYears(hub: AutofillInfoPayload): number | null {
+  const extras = (hub.extras && typeof hub.extras === "object"
+    ? hub.extras
+    : {}) as Record<string, unknown>
+  const items = workItems(extras)
+  const starts = items.map((item) => item.start).filter((value): value is string => !!value)
+  if (!starts.length) return null
+  const startMs = Math.min(...starts.map((value) => Date.parse(value)))
+  const endMs = Math.max(
+    ...items.map((item) =>
+      item.current || !item.end ? Date.now() : Date.parse(item.end)
+    )
+  )
+  if (!Number.isFinite(startMs) || !Number.isFinite(endMs) || endMs <= startMs) return null
+  return (endMs - startMs) / (365.25 * 24 * 3600 * 1000)
+}
+
+function pickYearsOption(years: number, options: string[]): string | null {
+  const want =
+    years < 0.4
+      ? /no experience|\bnone\b/i
+      : years < 2
+        ? /less than 2|under 2|< ?2/i
+        : years < 5
+          ? /3\s*[-–to]+\s*4/i
+          : years < 7
+            ? /5\s*[-–to]+\s*6/i
+            : /7\s*(\+|or more)|or more/i
+  return options.find((option) => want.test(option)) || null
+}
+
+export function isCurrentEmployerQuestion(norm: string): boolean {
+  if (!norm || isLegalEligibilityQuestion(norm)) return false
+  if (/\b(previous|past|former|last employer|last company)\b/.test(norm)) return false
+  return (
+    norm === "company" ||
+    norm === "org" ||
+    /\b(current company|current employer|employer name|company name|present employer)\b/.test(norm)
+  )
+}
+
+function looksLikeEmployerName(value: string): boolean {
+  const text = value.trim()
+  if (!text || text.length > 60) return false
+  if (/^\d+\s*[.)]/.test(text)) return false
+  if (/[–—]/.test(text) && text.split(/\s+/).length > 5) return false
+  if (/\b(experience|resume|curriculum vitae)\b/i.test(text)) return false
+  return true
+}
+
+function currentEmployerName(hub: AutofillInfoPayload): string {
+  const extras = (hub.extras && typeof hub.extras === "object"
+    ? hub.extras
+    : {}) as Record<string, unknown>
+  const jobs = workItems(extras)
+  const current = jobs.find((job) => job.current && looksLikeEmployerName(job.org))
+  const named = current || jobs.find((job) => looksLikeEmployerName(job.org))
+  if (named?.org) return named.org.trim()
+  const explicit = extrasString(hub, "currentCompany") || extrasString(hub, "company")
+  return looksLikeEmployerName(explicit) ? explicit.trim() : ""
+}
+
+function yesOption(options: string[], yes: boolean): string {
+  if (hasYesNoOptions(options)) return pickYesNo(options, yes)
+  return yes ? "Yes" : "No"
+}
+
+/** Choice and short answers inferred from the parsed resume when no saved answer fits. */
+function answerFromResume(
+  hub: AutofillInfoPayload,
+  norm: string,
+  options: string[]
+): string | null {
+  if (
+    /privacy notice|consent to the processing|i have read|i agree|i accept/.test(norm) &&
+    !isLegalEligibilityQuestion(norm)
+  ) {
+    return yesOption(options, true)
+  }
+  if (/(cv|resume)/.test(norm) && /english/.test(norm)) {
+    return yesOption(options, true)
+  }
+  if (/overlap|business hours|working schedule/.test(norm) && /comfort|adjust|willing|able/.test(norm)) {
+    return yesOption(options, true)
+  }
+
+  const blob = resumeBlob(hub)
+  const years = careerYears(hub)
+
+  if (/years? of experience|how many years/.test(norm) && options.length && years != null) {
+    const picked = pickYearsOption(years, options)
+    if (picked) return picked
+  }
+  if (/years?/.test(norm) && /\.net|c#|dotnet/.test(norm) && !options.length && years != null) {
+    if (/\.net|c#|dotnet/.test(blob)) return `${Math.max(1, Math.round(years))} years`
+  }
+
+  const asksYesNo = hasYesNoOptions(options) || /^(do|have|did|are|would)\b/.test(norm)
+  if (asksYesNo && /\.net|c#|dotnet/.test(norm) && /\.net|c#|dotnet|csharp/.test(blob)) {
+    return yesOption(options, true)
+  }
+  if (
+    asksYesNo &&
+    /javascript framework|js framework|frontend/.test(norm) &&
+    /react|vue|angular|next\.?js|javascript|typescript/.test(blob)
+  ) {
+    return yesOption(options, true)
+  }
+  if (asksYesNo && /microservice/.test(norm) && /microservice|micro-service/.test(blob)) {
+    return yesOption(options, true)
+  }
+  if (/javascript framework|js framework/.test(norm) && options.length > 2) {
+    const picked = options.filter((option) => {
+      const text = option.toLowerCase()
+      if (/don't|do not|no experience|\bnone\b/.test(text)) return false
+      const key = text.replace(/\.js\b/g, "").replace(/[^a-z0-9#+]+/g, "")
+      return key.length >= 3 && blob.includes(key)
+    })
+    if (picked.length) return picked.join(", ")
+  }
+  if (/english (communication|level|proficiency|skills)/.test(norm) && options.length) {
+    if (/native|fluent/.test(blob)) {
+      return options.find((option) => /fluent/i.test(option)) || null
+    }
+    return (
+      options.find((option) => /professional/i.test(option)) ||
+      options.find((option) => /fluent/i.test(option)) ||
+      null
+    )
+  }
+  if (/notice period/.test(norm) && !options.length) {
+    const notice = extrasString(hub, "noticePeriod") || extrasString(hub, "notice")
+    if (notice.trim()) return notice.trim()
+  }
   return null
 }
 
@@ -1280,7 +1527,16 @@ export function buildLocalGptResults(
           typeof summary.salary === "string" &&
           summary.salary.trim()
         ) {
-          value = summary.salary.trim()
+          const parsed = parseSalaryText(summary.salary)
+          value = parsed
+            ? formatSalaryForQuestion(
+                convertSalaryAmount(
+                  salaryForQuestionPeriod(label, parsed),
+                  askedCurrency(label)
+                ),
+                label
+              )
+            : summary.salary.trim()
         } else if (
           /available from|available date|hiring date|earliest start|^availability$/.test(
             norm

@@ -55,6 +55,19 @@ function isRestrictedUrl(url?: string) {
   )
 }
 
+export async function activateHelperTab(tabId: number): Promise<boolean> {
+  const tab = await chrome.tabs.get(tabId)
+  if (isRestrictedUrl(tab.url)) return false
+  try {
+    const ack = await pingIconClicked(tabId)
+    if (ack.ok) return true
+  } catch {
+    /* content script is not ready yet */
+  }
+  await injectHelperDirectly(tabId)
+  return true
+}
+
 const handler: PlasmoMessaging.MessageHandler<{ tabId?: number }> = async (
   req,
   res
@@ -75,25 +88,8 @@ const handler: PlasmoMessaging.MessageHandler<{ tabId?: number }> = async (
       return
     }
 
-    try {
-      const ack = await pingIconClicked(tabId)
-      if (ack.ok) {
-        res.send({ success: true, mode: "content_script" })
-        return
-      }
-      console.warn(
-        "[activateHelperOnTab] content script ACK failed — direct inject",
-        ack.response
-      )
-    } catch (pingError) {
-      console.warn(
-        "[activateHelperOnTab] content script missing, injecting helper directly:",
-        pingError instanceof Error ? pingError.message : pingError
-      )
-    }
-
-    await injectHelperDirectly(tabId)
-    res.send({ success: true, mode: "direct_inject" })
+    const ok = await activateHelperTab(tabId)
+    res.send(ok ? { success: true } : { success: false, error: "activate_failed" })
   } catch (error) {
     console.error("[activateHelperOnTab] failed:", error)
     res.send({
