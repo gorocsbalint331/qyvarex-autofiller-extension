@@ -1,6 +1,6 @@
 import type { PlasmoMessaging } from "@plasmohq/messaging"
 
-import { recordApplication } from "~background/lib/application-log"
+import { recordApplication, withAutofillPosting } from "~background/lib/application-log"
 import { getJobSalaryRange } from "~background/lib/job-salary"
 import { formatSalaryRangeLabel } from "~lib/salary"
 
@@ -17,19 +17,17 @@ const handler: PlasmoMessaging.MessageHandler = async (req, res) => {
       const range = await getJobSalaryRange(req.sender)
       if (range) cost = formatSalaryRangeLabel(range)
     }
-    const result = await recordApplication(
-      {
-        title: typeof body.title === "string" ? body.title : "",
-        company: typeof body.company === "string" ? body.company : "",
-        link:
-          (typeof body.link === "string" && body.link) || req.sender?.tab?.url || "",
-        cost,
-        resume: typeof body.resume === "string" ? body.resume : "",
-        country: typeof body.country === "string" ? body.country : "",
-        other: typeof body.other === "string" ? body.other : ""
-      },
-      { force: body.force === true }
-    )
+    const bodyLink = typeof body.link === "string" ? body.link.trim() : ""
+    const meta = await withAutofillPosting(req.sender?.tab?.id, {
+      title: typeof body.title === "string" ? body.title : "",
+      company: typeof body.company === "string" ? body.company : "",
+      link: /^https?:/i.test(bodyLink) ? bodyLink : req.sender?.tab?.url || bodyLink,
+      cost,
+      resume: typeof body.resume === "string" ? body.resume : "",
+      country: typeof body.country === "string" ? body.country : "",
+      other: typeof body.other === "string" ? body.other : ""
+    })
+    const result = await recordApplication(meta, { force: body.force === true })
     res.send(result)
   } catch (err) {
     res.send({

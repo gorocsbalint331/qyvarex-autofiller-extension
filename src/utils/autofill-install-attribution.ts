@@ -57,7 +57,7 @@ const TRUSTED_HOSTNAMES = new Set([
   "jobright-internal.com",
   "alpha.jobright-internal.com",
   // Team Autofill Hub
-  "jobright-team-site.vercel.app",
+  "hub.qyvarex.com",
   "localhost",
   "127.0.0.1",
 ])

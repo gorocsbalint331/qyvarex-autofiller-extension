@@ -38,6 +38,17 @@ function isVisible(element) {
   return rect.width > 0 && rect.height > 0
 }
 
+function isChoiceVisible(element) {
+  if (isVisible(element)) return true
+  const type = (element.type || "").toLowerCase()
+  if (type !== "radio" && type !== "checkbox") return false
+  const label = element.id
+    ? document.querySelector(`label[for="${CSS.escape(element.id)}"]`)
+    : null
+  const host = label || element.closest("label") || element.parentElement
+  return isVisible(host)
+}
+
 function labelFor(element) {
   if (element.id) {
     const explicit = document.querySelector(
@@ -78,8 +89,22 @@ function labelFor(element) {
 
   const previous = element.previousElementSibling
   const previousText = shortenLabel(previous?.innerText)
-  if (previousText && previousText.length <= 80) {
+  if (previousText && previousText.length <= 80 && !previous.querySelector?.("input, select, textarea")) {
     return { text: previousText, element: previous }
+  }
+
+  let node = element.parentElement
+  for (let depth = 0; depth < 3 && node; depth += 1) {
+    const sibling = node.previousElementSibling
+    const text = shortenLabel(sibling?.innerText)
+    if (
+      text &&
+      text.length <= 80 &&
+      !sibling.querySelector?.("input, select, textarea")
+    ) {
+      return { text, element: sibling }
+    }
+    node = node.parentElement
   }
 
   return null
@@ -98,12 +123,16 @@ function optionText(option) {
 }
 
 function fieldRoots() {
+  const dialogs = Array.from(
+    document.querySelectorAll("dialog[open], [role='dialog'], [aria-modal='true']"),
+  ).filter((node) => isVisible(node) && !inExtensionUi(node))
   const forms = Array.from(document.querySelectorAll("form")).filter(
     (form) => !inExtensionUi(form),
   )
   const rich = forms.filter(
     (form) => form.querySelectorAll(CONTROL_SELECTOR).length >= 2,
   )
+  if (dialogs.length) return [...dialogs, ...(rich.length ? rich : forms)]
   if (rich.length) return rich
   const main = document.querySelector("main") || document.body
   return main ? [main] : []
@@ -216,10 +245,15 @@ export function getRules() {
   for (const root of fieldRoots()) {
     const controls = Array.from(root.querySelectorAll(CONTROL_SELECTOR))
     for (const element of controls) {
-      if (inExtensionUi(element) || !isVisible(element)) continue
+      if (inExtensionUi(element)) continue
+      const type = (element.type || "").toLowerCase()
+      const shown =
+        type === "radio" || type === "checkbox"
+          ? isChoiceVisible(element)
+          : isVisible(element)
+      if (!shown) continue
       const nearby = labelFor(element)?.text || ""
       if (/how was your experience on this website/i.test(nearby)) continue
-      const type = (element.type || "").toLowerCase()
       if (type === "checkbox") {
         const key = choiceGroupKey(element, "checkbox")
         const group = checkboxGroups.get(key) || []
@@ -239,14 +273,14 @@ export function getRules() {
   }
 
   for (const boxes of checkboxGroups.values()) {
-    const visible = boxes.filter((box) => isVisible(box) && !inExtensionUi(box))
+    const visible = boxes.filter((box) => isChoiceVisible(box) && !inExtensionUi(box))
     if (!visible.length) continue
     const rule = checkboxRule(visible)
     if (rule) rules.push(rule)
   }
 
   for (const radios of radioGroups.values()) {
-    const visible = radios.filter((radio) => isVisible(radio) && !inExtensionUi(radio))
+    const visible = radios.filter((radio) => isChoiceVisible(radio) && !inExtensionUi(radio))
     if (!visible.length) continue
     const rule = radioRule(visible)
     if (rule) rules.push(rule)
@@ -256,7 +290,46 @@ export function getRules() {
     if (rules.some((existing) => existing.label === rule.label)) continue
     rules.push(rule)
   }
+  for (const rule of radioRoleRules()) {
+    if (rules.some((existing) => existing.label === rule.label)) continue
+    rules.push(rule)
+  }
 
+  return rules
+}
+
+function radioRoleRules() {
+  const radios = Array.from(document.querySelectorAll("[role='radio']")).filter(
+    (radio) => isVisible(radio) && !inExtensionUi(radio),
+  )
+  const groups = new Map()
+  for (const radio of radios) {
+    const group = radio.closest("[role='radiogroup']") || radio.parentElement
+    if (!group) continue
+    const list = groups.get(group) || []
+    list.push(radio)
+    groups.set(group, list)
+  }
+  const rules = []
+  for (const [group, list] of groups) {
+    if (list.length < 2 || list.length > 12) continue
+    const options = list.map((item) =>
+      cleanLabel(item.innerText || item.getAttribute("aria-label") || item.textContent),
+    )
+    if (options.some((text) => !text || text.length > 80)) continue
+    const label =
+      shortenLabel(group.getAttribute("aria-label")) || questionAbove(list[0])
+    if (!label) continue
+    rules.push({
+      type: enums.FIELD_TYPE.RADIOGROUP,
+      label,
+      required: group.getAttribute("aria-required") === "true" || /\*/.test(label),
+      options,
+      $radios: list,
+      $input: list[0],
+      $label: group,
+    })
+  }
   return rules
 }
 

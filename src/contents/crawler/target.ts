@@ -247,6 +247,7 @@ export function getTargetName() {
   if (isDomainMatch(hostname, "careers.jacobs.com")) return "jacobs"
   if (isDomainMatch(hostname, "careers.toasttab.com")) return "careerstoasttab"
   if (isDomainMatch(hostname, "jobdiva.com")) return "jobdiva"
+  if (isDomainMatch(hostname, "untypical.co.uk")) return "untypical"
 
   if (url.searchParams.get("gh_src") || url.searchParams.get("gh_jid")) {
     return "greenhouse"

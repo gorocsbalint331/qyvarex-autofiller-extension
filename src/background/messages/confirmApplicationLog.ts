@@ -3,7 +3,8 @@ import type { PlasmoMessaging } from "@plasmohq/messaging"
 import {
   clearPendingApplication,
   peekPendingApplication,
-  recordApplication
+  recordApplication,
+  withAutofillPosting
 } from "~background/lib/application-log"
 
 function pageMeta(body: unknown) {
@@ -31,8 +32,10 @@ const handler: PlasmoMessaging.MessageHandler = async (req, res) => {
   try {
     const tabId = req.sender?.tab?.id
     const pending = tabId == null ? null : await peekPendingApplication(tabId)
-    const meta = pending || pageMeta(req.body)
-    if (!meta) {
+    const page = pageMeta(req.body)
+    const chosen = pending || page
+    const meta = chosen ? await withAutofillPosting(tabId, chosen) : null
+    if (!meta?.link) {
       res.send({ ok: false, message: "not_armed" })
       return
     }

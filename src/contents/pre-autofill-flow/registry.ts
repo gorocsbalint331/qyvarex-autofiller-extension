@@ -13,6 +13,7 @@ import {
   workdayResetPasswordFlowAdapter,
 } from "../sites/myworkday/account-preflow.ts"
 import { smartRecruitersEntryAdapter } from "../sites/smartrecruiters/entry-preflow.ts"
+import { untypicalAccountFlowAdapter } from "../sites/untypical/account-preflow.ts"
 import { preAutofillAccountTransitionSession } from "./account-flow.ts"
 
 const WORKDAY_STANDARD_AUTOFILL_START_DELAY_MS = 1000
@@ -39,6 +40,9 @@ const TARGET_CONFIG = {
       standardAutofillStartDelayMs: WORKDAY_STANDARD_AUTOFILL_START_DELAY_MS,
       suppressStandardAutofillUntilReady: true,
     },
+  },
+  untypical: {
+    adapters: [untypicalAccountFlowAdapter],
   },
 }
 

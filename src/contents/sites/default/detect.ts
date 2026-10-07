@@ -5,7 +5,7 @@
 
 const EXCLUDED_HOSTS = [
   "linkedin.com",
-  "jobright-team-site.vercel.app",
+  "hub.qyvarex.com",
   "localhost",
   "127.0.0.1",
 ]

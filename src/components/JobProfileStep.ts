@@ -11,6 +11,7 @@ import { isNumber } from "lodash-es"
 import { sendToBackground } from "@plasmohq/messaging"
 import { HOST_DOMAIN } from "../api/env-resolver.ts"
 import { MEMBERSHIP_RETARGET_PATH } from "../constants/payment.ts"
+import { cacheApplicationOnAutofill } from "../contents/shared/application-log-watcher.ts"
 import { getTargetName } from "../contents/crawler/target.ts"
 import * as accountFlowState from "../contents/pre-autofill-flow/account-flow-state.ts"
 import * as accountTracking from "../contents/pre-autofill-flow/tracking.ts"
@@ -24,6 +25,7 @@ import useSubmitApplication from "../hooks/useSubmitApplication.ts"
 import useUpdateAgentResume from "../hooks/useUpdateAgentResume.ts"
 import useUpdateCoverLetter from "../hooks/useUpdateCoverLetter.ts"
 import { useAutofillResultStore } from "../store/autofillResult.ts"
+import { useAutofillInfoStore } from "../store/autofillInfo.ts"
 import { useExternalJobStore } from "../store/externalJob.ts"
 import { useFeedbackStore } from "../store/feedback.ts"
 import { useProfileStore } from "../store/profile.ts"
@@ -46,6 +48,7 @@ import { resolveJobToShow } from "./JobProfileStep/resolve-job-to-show.ts"
 import LoadingButton from "./LoadingButton.ts"
 import LogApplicationButton from "./LogApplicationButton.ts"
 import NextPageButton from "./NextPageButton.ts"
+import ProfilePicker from "./ProfilePicker.ts"
 import AutofillErrorModal from "./Popups/AutofillErrorModal.ts"
 import DoubleConfirmPopup from "./Popups/DoubleConfirmPopup.ts"
 import OutofCreditModal from "./Popups/OutofCreditModal.ts"
@@ -476,6 +479,7 @@ export default function JobProfileStep({
 
   const handleAutofillClick = async () => {
     if (isFilling) return
+    cacheApplicationOnAutofill(jobToShow)
     const status = accountTracking.getWorkdayAccountCtaStatus({
       targetName,
       match,
@@ -561,6 +565,18 @@ export default function JobProfileStep({
                 gap: 12,
                 className: "job-profile-content-section",
                 children: [
+                  jsx(ProfilePicker, {
+                    disabled: isFilling,
+                    onChanged: async () => {
+                      await useProfileStore.getState().initUserStage()
+                      await useAutofillInfoStore.getState().fetchAutofillInfo(true)
+                      await useResumeStore.getState().initResume(
+                        true,
+                        useProfileStore.getState().userStage,
+                        currentTabJob,
+                      )
+                    },
+                  }),
                   jsxs(Flex, {
                     vertical: true,
                     className: showCreditRow

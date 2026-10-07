@@ -1,10 +1,10 @@
 import type { PlasmoMessaging } from "@plasmohq/messaging"
 
-import { armPendingApplication, withAutofillPosting } from "~background/lib/application-log"
+import { rememberAutofillPosting } from "~background/lib/application-log"
 import { getJobSalaryRange } from "~background/lib/job-salary"
 import { formatSalaryRangeLabel } from "~lib/salary"
 
-/** A submit button was clicked on a job form; wait for the success page to confirm. */
+/** Autofill was clicked. Keep this tab's site URL, company, and role until submit. */
 const handler: PlasmoMessaging.MessageHandler = async (req, res) => {
   const tabId = req.sender?.tab?.id
   if (tabId == null) {
@@ -18,13 +18,12 @@ const handler: PlasmoMessaging.MessageHandler = async (req, res) => {
     if (range) cost = formatSalaryRangeLabel(range)
   }
   const bodyLink = typeof body.link === "string" ? body.link.trim() : ""
-  const meta = await withAutofillPosting(tabId, {
+  await rememberAutofillPosting(tabId, {
     title: typeof body.title === "string" ? body.title : "",
     company: typeof body.company === "string" ? body.company : "",
     link: /^https?:/i.test(bodyLink) ? bodyLink : req.sender?.tab?.url || bodyLink,
     cost
   })
-  await armPendingApplication(tabId, meta)
   res.send({ ok: true })
 }
 

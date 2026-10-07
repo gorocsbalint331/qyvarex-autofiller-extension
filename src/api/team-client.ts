@@ -25,9 +25,28 @@ export const DEFAULT_TEAM_SETTINGS: TeamSettings = {
   userName: ""
 }
 
+const LEGACY_HUB_HOSTS = new Set([
+  "jobright-team-site.vercel.app",
+  "jobright-team-site-git-dev-gorocsbalint331.vercel.app"
+])
+
+function isLegacyHub(url: string | undefined | null) {
+  if (!url) return true
+  try {
+    return LEGACY_HUB_HOSTS.has(new URL(url).hostname)
+  } catch {
+    return true
+  }
+}
+
 export async function getTeamSettings(): Promise<TeamSettings> {
   const saved = await storage.get<TeamSettings>(TEAM_SETTINGS_KEY)
-  return { ...DEFAULT_TEAM_SETTINGS, ...(saved || {}) }
+  const merged: TeamSettings = { ...DEFAULT_TEAM_SETTINGS, ...(saved || {}) }
+  if (isLegacyHub(merged.siteUrl)) {
+    merged.siteUrl = getHubUrl().replace(/\/+$/, "")
+    if (saved) await storage.set(TEAM_SETTINGS_KEY, merged)
+  }
+  return merged
 }
 
 export async function saveTeamSettings(
@@ -104,15 +123,12 @@ export async function signInWithPassword(opts: {
     return { ok: false, error: "Email and password required" }
   }
 
-  const device = await ensureDevice()
   const res = await fetch(joinUrl(siteUrl, "/api/auth/login"), {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
       email,
-      password,
-      deviceKey: device.key,
-      label: device.label
+      password
     })
   })
 
@@ -137,7 +153,7 @@ export async function signInWithPassword(opts: {
     if (err === "device_pending") {
       return {
         ok: false,
-        error: "Nathan or R32 still need to tap Approve in Telegram. After they do, sign in again."
+        error: "Approve this browser on the team site first. The extension does not send its own request."
       }
     }
     if (err === "device_denied") {
@@ -168,15 +184,14 @@ export async function signInWithPassword(opts: {
   }
 }
 
-/** Clears a saved sign-in unless Nathan or R32 have approved this browser. */
+/** Clears a saved sign-in unless the team site already approved a browser for this account. */
 export async function readDeviceAccess(): Promise<{ approved: boolean; message: string }> {
   const settings = await getTeamSettings()
   if (!settings.apiToken) return { approved: false, message: "" }
-  const device = await ensureDevice()
   const res = await fetch(joinUrl(settings.siteUrl, "/api/v1/devices/status"), {
+    cache: "no-store",
     headers: {
-      Authorization: `Bearer ${settings.apiToken}`,
-      "X-Qyvarex-Device": device.key
+      Authorization: `Bearer ${settings.apiToken}`
     }
   })
   const data = (await res.json().catch(() => null)) as { status?: string } | null
@@ -195,7 +210,7 @@ export async function readDeviceAccess(): Promise<{ approved: boolean; message: 
   }
   return {
     approved: false,
-    message: "This browser is not approved yet. The extension stays locked until Nathan or R32 tap Approve in Telegram."
+    message: "Approve this browser on the team site. The extension does not send its own request."
   }
 }
 

@@ -410,5 +410,9 @@ export const SITE_REGISTRY = {
     pageSourceDomain: "recruiterflow.com",
     pathRegex: "^/[^/]+/jobs/[^/?#]+"
   },
-  careerstoasttab: { patterns: ["*://careers.toasttab.com/jobs*"] }
+  careerstoasttab: { patterns: ["*://careers.toasttab.com/jobs*"] },
+  untypical: {
+    domains: ["untypical.co.uk"],
+    pathRegex: "^/careers/(?:vacancies|registration|Popups)/"
+  }
 }

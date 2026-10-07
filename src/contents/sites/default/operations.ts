@@ -839,21 +839,70 @@ export async function fillCheckboxField(rule, value) {
 export async function fillRadioField(rule, value) {
   const wanted = firstValue(value)
   const radios = rule?.$radios || []
-  if (!wanted || !radios.length) return false
-  const index = radios.findIndex((radio, radioIndex) =>
-    optionMatches(
-      rule.options?.[radioIndex] || "",
-      radio.value,
-      wanted,
-    ),
-  )
+  if (!radios.length) return false
+  let index = wanted
+    ? radios.findIndex((radio, radioIndex) =>
+        optionMatches(
+          rule.options?.[radioIndex] || radio.innerText || radio.textContent || "",
+          radio.value,
+          wanted,
+        ),
+      )
+    : -1
+  if (index < 0) index = fallbackRadioIndex(rule, wanted)
   if (index < 0) return false
   const radio = radios[index]
+  pressChoice(radio)
   const pressed =
     radio.checked === true ||
     radio.getAttribute?.("aria-pressed") === "true" ||
     radio.getAttribute?.("aria-checked") === "true"
-  if (!pressed) radio.click()
-  return true
+  return pressed || radio.checked === true || radio.getAttribute?.("aria-checked") === "true"
+}
+
+function fallbackRadioIndex(rule, wanted) {
+  const options = (rule?.options || []).map((text) => String(text || ""))
+  const label = String(rule?.label || "").toLowerCase()
+  const answer = String(wanted || "").toLowerCase()
+  if (/availab|start a new position|earliest available/.test(label)) {
+    const immediately = options.findIndex((text) => /^immediately$/i.test(text))
+    if (immediately >= 0) return immediately
+  }
+  if (/authorized to work|legally authorized/.test(label)) {
+    const yes = /\bno\b|not authorized|require sponsorship/.test(answer) ? "no" : "yes"
+    const index = options.findIndex((text) => text.trim().toLowerCase() === yes)
+    if (index >= 0) return index
+  }
+  if (/source of your right to work|right to work/.test(label)) {
+    const sponsor = /sponsor/.test(answer)
+    const index = options.findIndex((text) =>
+      sponsor ? /sponsor/i.test(text) : /citizen or permanent/i.test(text),
+    )
+    if (index >= 0) return index
+  }
+  return -1
+}
+
+function pressChoice(radio) {
+  const explicit = radio.id
+    ? document.querySelector(`label[for="${CSS.escape(radio.id)}"]`)
+    : null
+  const target = radio.closest?.("label") || explicit || radio
+  target.dispatchEvent(new MouseEvent("click", { bubbles: true, cancelable: true }))
+  if (typeof radio.click === "function") radio.click()
+  if (radio instanceof HTMLInputElement && (radio.type === "radio" || radio.type === "checkbox")) {
+    if (!radio.checked) {
+      radio.checked = true
+      radio.dispatchEvent(new Event("input", { bubbles: true }))
+      radio.dispatchEvent(new Event("change", { bubbles: true }))
+    }
+  }
+  if (radio.getAttribute?.("role") === "radio") {
+    const group = radio.closest("[role='radiogroup']") || radio.parentElement
+    group?.querySelectorAll("[role='radio']").forEach((item) => {
+      item.setAttribute("aria-checked", item === radio ? "true" : "false")
+    })
+    radio.setAttribute("aria-checked", "true")
+  }
 }
 

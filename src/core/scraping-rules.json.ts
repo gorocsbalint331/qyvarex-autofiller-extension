@@ -642,6 +642,14 @@ const scrapingRules = {
       ".//p[contains(@class, \"bd-title\") and (contains(., \"Job Information\") or contains(., \"Qualifications\") or contains(., \"Responsibilities\"))]/parent::*/parent::*/parent::*"
     ],
     "jobCompanyNamePath": "\"ByteDance\""
+  },
+  "Untypical": {
+    "urls": [
+      "*://*.untypical.co.uk/careers/vacancies/*"
+    ],
+    "jobTitlePath": ".//h1[contains(@id, 'JobTitle')]",
+    "jobDescriptionPath": ".//div[contains(@class, 'vacancy-details') or contains(@class, 'vac-d')]",
+    "jobCompanyNamePath": "\"untypical\""
   }
 };
 

@@ -130,7 +130,7 @@ function OptionsPage() {
           onChange={(e) =>
             setSettings({ ...settings, siteUrl: e.target.value.trim() })
           }
-          placeholder="https://jobright-team-site.vercel.app"
+          placeholder="https://hub.qyvarex.com"
           disabled={signedIn}
         />
       </label>

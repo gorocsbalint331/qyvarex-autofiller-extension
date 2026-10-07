@@ -35,6 +35,7 @@ export function usePreAutofillFlow({
 
     const resolveFlow = () => {
       if (cancelled) return
+      attachFrames()
       const nextFlow = resolvePreAutofillFlow({
         targetName,
         url,
@@ -51,14 +52,12 @@ export function usePreAutofillFlow({
       animationFrameId = window.requestAnimationFrame(resolveFlow)
     }
 
-    resolveFlow()
-
     const observeRoot = document.body || document.documentElement
     const observer =
       observeRoot && typeof MutationObserver !== "undefined"
         ? new MutationObserver(scheduleResolve)
         : null
-    observer?.observe(observeRoot, {
+    const observeOptions = {
       childList: true,
       subtree: true,
       characterData: true,
@@ -68,12 +67,31 @@ export function usePreAutofillFlow({
         "role",
         "href",
         "aria-label",
+        "aria-selected",
         "id",
         "class",
         "style",
         "title",
       ],
-    })
+    }
+    const observed = new Set()
+    const attach = (root) => {
+      if (!observer || !root || observed.has(root)) return
+      observed.add(root)
+      observer.observe(root, observeOptions)
+    }
+    function attachFrames() {
+      for (const frame of document.querySelectorAll("iframe")) {
+        try {
+          attach(frame.contentDocument?.body)
+        } catch {
+          /* frame is not readable */
+        }
+      }
+    }
+    attach(observeRoot)
+
+    resolveFlow()
 
     const intervalId = window.setInterval(resolveFlow, POLL_INTERVAL_MS)
     const stopIntervalTimeoutId = window.setTimeout(() => {

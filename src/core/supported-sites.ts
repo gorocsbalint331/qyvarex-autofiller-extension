@@ -457,6 +457,10 @@ export const SITE_REGISTRY = {
   careerstoasttab: {
     patterns: ["*://careers.toasttab.com/jobs*"],
   },
+  untypical: {
+    domains: ["untypical.co.uk"],
+    pathRegex: "^/careers/(?:vacancies|registration|Popups)/",
+  },
 };
 
 function extractHostFromMatchPattern(pattern) {

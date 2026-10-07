@@ -1,5 +1,12 @@
 import { logApplication } from "~api/team-client"
 import { resolveJobContext } from "../../lib/job-context"
+import {
+  applicationKey,
+  preferCachedPosting,
+  type PostingIdentity
+} from "../../lib/posting-identity"
+
+export { applicationKey }
 
 export type ApplicationMeta = {
   title?: string
@@ -21,11 +28,10 @@ export type ApplicationLogResult = {
 const LOGGED_KEY = "qx-logged-applications"
 const logInFlight = new Map<string, Promise<ApplicationLogResult>>()
 const PENDING_PREFIX = "qx-pending-application:"
+const DRAFT_PREFIX = "qx-autofill-posting:"
 const DUPLICATE_WINDOW_MS = 24 * 60 * 60 * 1000
 const LOGGED_RETENTION_MS = 7 * 24 * 60 * 60 * 1000
 const PENDING_TTL_MS = 24 * 60 * 60 * 1000
-
-const TRACKING_PARAMS = /^(utm_|gh_src$|source$|ref$|lever-|src$|jr_id$|fbclid$|gclid$)/i
 
 /** Drop a confirmation suffix so the sheet stores the posting, not /thanks. */
 function postingLink(link: string): string {
@@ -45,25 +51,6 @@ function localAppliedDate() {
   const m = String(now.getMonth() + 1).padStart(2, "0")
   const d = String(now.getDate()).padStart(2, "0")
   return `${y}-${m}-${d}`
-}
-
-/** Same job → same key, whether logged from the form, the /apply URL, or a manual click. */
-export function applicationKey(link: string): string {
-  try {
-    const u = new URL(link)
-    const path = u.pathname
-      .replace(/\/(apply|application|thanks|thank-you|confirmation|success)\/?$/i, "")
-      .replace(/\/+$/, "")
-    const params = [...u.searchParams.entries()]
-      .filter(([k]) => !TRACKING_PARAMS.test(k))
-      .sort(([a], [b]) => a.localeCompare(b))
-      .map(([k, v]) => `${k}=${v}`)
-      .join("&")
-    const hash = u.hash && u.hash !== "#" ? u.hash : ""
-    return `${u.origin.toLowerCase()}${path}${params ? `?${params}` : ""}${hash}`
-  } catch {
-    return link.trim()
-  }
 }
 
 async function readLogged(): Promise<Record<string, number>> {
@@ -110,13 +97,16 @@ function withPostingIdentity(meta: ApplicationMeta): ApplicationMeta {
   const hostCompany = pinpointCompany(link)
   const nextTitle =
     (comeet || !title || BAD_TITLE.test(title)) && fromUrl.title ? fromUrl.title : title
+  const companyLower = company.toLowerCase()
+  const titleLower = title.toLowerCase()
   const companyIsTitle =
     !!fromUrl.company &&
     !!company &&
     !!title &&
-    (company.toLowerCase() === title.toLowerCase() ||
-      title.toLowerCase().startsWith(company.toLowerCase()) ||
-      company.toLowerCase().startsWith(title.toLowerCase()))
+    (companyLower === titleLower ||
+      titleLower.startsWith(companyLower) ||
+      companyLower.startsWith(titleLower) ||
+      (titleLower.endsWith(companyLower) && titleLower.length > companyLower.length))
   let nextCompany =
     (comeet || !company || companyIsTitle || PLATFORM_COMPANY.test(company)) && fromUrl.company
       ? fromUrl.company
@@ -130,7 +120,18 @@ function withPostingIdentity(meta: ApplicationMeta): ApplicationMeta {
   ) {
     nextCompany = hostCompany
   }
-  return { ...meta, title: nextTitle, company: nextCompany }
+  const titled = nextCompany
+    ? nextTitle
+        .replace(
+          new RegExp(
+            `^${nextCompany.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}\\s*[-–—|:·•]\\s*`,
+            "i"
+          ),
+          ""
+        )
+        .trim()
+    : nextTitle
+  return { ...meta, title: titled || nextTitle, company: nextCompany }
 }
 
 export async function recordApplication(
@@ -183,6 +184,44 @@ async function writeApplication(
   return { ok: true, duplicate: result.duplicate === true, tabName: result.tabName }
 }
 
+type StoredDraft = { meta: ApplicationMeta; savedAt: number }
+
+/** Snapshot taken when Autofill is clicked. Submit uploads this, not the thank-you page. */
+export async function rememberAutofillPosting(tabId: number, meta: ApplicationMeta) {
+  const key = `${DRAFT_PREFIX}${tabId}`
+  const existing = await peekAutofillPosting(tabId)
+  const next = preferCachedPosting(existing, meta)
+  const same =
+    !!existing?.link && !!next.link && existing.link === next.link && existing.title === next.title
+  const previous = same
+    ? ((await chrome.storage.session.get(key))[key] as StoredDraft | undefined)
+    : undefined
+  await chrome.storage.session.set({
+    [key]: { meta: next, savedAt: previous?.savedAt || Date.now() }
+  })
+}
+
+export async function peekAutofillPosting(tabId: number): Promise<ApplicationMeta | null> {
+  const key = `${DRAFT_PREFIX}${tabId}`
+  const stored = (await chrome.storage.session.get(key))[key] as StoredDraft | undefined
+  if (!stored?.meta) return null
+  if (Date.now() - stored.savedAt >= PENDING_TTL_MS) {
+    await chrome.storage.session.remove(key)
+    return null
+  }
+  return stored.meta
+}
+
+/** Fill a submit-time or thank-you scrape with the Autofill snapshot for this tab. */
+export async function withAutofillPosting(
+  tabId: number | undefined,
+  meta: PostingIdentity
+): Promise<ApplicationMeta> {
+  if (tabId == null) return meta
+  const cached = await peekAutofillPosting(tabId)
+  return preferCachedPosting(cached, meta)
+}
+
 /** Remember a submitted-but-unconfirmed application for a tab (survives navigation). */
 export async function armPendingApplication(tabId: number, meta: ApplicationMeta) {
   await chrome.storage.session.set({
@@ -204,5 +243,8 @@ export async function peekPendingApplication(tabId: number): Promise<Application
 }
 
 export async function clearPendingApplication(tabId: number) {
-  await chrome.storage.session.remove(`${PENDING_PREFIX}${tabId}`)
+  await chrome.storage.session.remove([
+    `${PENDING_PREFIX}${tabId}`,
+    `${DRAFT_PREFIX}${tabId}`
+  ])
 }

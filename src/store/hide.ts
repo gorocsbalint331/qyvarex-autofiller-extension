@@ -8,8 +8,12 @@ import { agentDomains } from "../api/env-resolver.js"
 
 export const useHideStore = create((set) => ({
   displayIcon: agentDomains.includes(new URL(window.location.href).hostname),
+  openedFromIcon: false,
   setDisplayIcon: (displayIcon) => set(() => ({
     displayIcon
+  })),
+  setOpenedFromIcon: (openedFromIcon) => set(() => ({
+    openedFromIcon
   })),
   openCard: false,
   setOpenCard: (valueOrUpdater) => set((state) => ({

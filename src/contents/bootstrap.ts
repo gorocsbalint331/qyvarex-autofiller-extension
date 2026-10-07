@@ -35,7 +35,7 @@ export const config: PlasmoCSConfig = {
     "https://*.fls.doubleclick.net/activityi*",
     "https://lnkd.demdex.net/*",
     "https://crcldu.com/*",
-    "https://jobright-team-site.vercel.app/*",
+    "https://hub.qyvarex.com/*",
     "http://localhost:3210/*",
     "http://127.0.0.1:3210/*",
     // All Google consumer / Workspace hosts (Translate, Docs, Gmail, …).
@@ -153,6 +153,9 @@ async function injectAndBootstrapHelper(reason: RuntimeActivationReason) {
       throw new Error("Extension context invalidated.")
     }
 
+    if (reason === "extension_icon") {
+      ;(globalThis as any).__jobrightOpenHelperOnBoot = true
+    }
     const bundleUrl = chrome.runtime.getURL(HELPER_BUNDLE)
     const injected = await sendToBackground({
       name: "injectHelperAppBundle",

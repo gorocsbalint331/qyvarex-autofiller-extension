@@ -138,6 +138,15 @@ function L(e) {
 }
 function R(e) {
   if (!(e instanceof HTMLElement)) return false;
+  if (e instanceof HTMLInputElement && (e.type === "radio" || e.type === "checkbox")) {
+    const label = e.id ? document.querySelector(`[for="${CSS.escape(e.id)}"]`) : null;
+    const host = label || e.closest("label") || e.parentElement;
+    if (host instanceof HTMLElement) {
+      const rect = host.getBoundingClientRect();
+      const style = window.getComputedStyle(host);
+      if (rect.width > 0 && rect.height > 0 && "none" !== style.display && "hidden" !== style.visibility) return true;
+    }
+  }
   let t = e;
   for (; t; ) {
     if (t.hidden || _(t)) return false;

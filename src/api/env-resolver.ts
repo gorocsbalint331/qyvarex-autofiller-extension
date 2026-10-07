@@ -6,7 +6,7 @@
  * that go through background → team-client).
  */
 
-const TEAM_HUB = "https://jobright-team-site.vercel.app"
+const TEAM_HUB = "https://hub.qyvarex.com"
 const DEV_HUB = "http://localhost:3210"
 
 function resolveDomains() {
@@ -29,4 +29,4 @@ export const HOST_DOMAIN = domains.hostDomain
 export const COOKIE_DOMAIN = domains.cookieDomain
 
 /** Team hub host only — not localhost (avoids activating on unrelated local apps). */
-export const agentDomains = ["jobright-team-site.vercel.app"]
+export const agentDomains = ["hub.qyvarex.com"]

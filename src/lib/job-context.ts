@@ -82,6 +82,7 @@ function companyFromHost(url: string): string {
     if (pinpoint && pinpoint[1] !== "www" && pinpoint[1] !== "app") {
       return humanizeHostSlug(pinpoint[1])
     }
+    if (/(^|\.)untypical\.co\.uk$/i.test(host)) return "untypical"
     if (/(^|\.)lever\.co$/i.test(host)) {
       const slug = parsed.pathname.split("/").filter(Boolean)[0] || ""
       if (slug && !/^(jobs|thanks)$/i.test(slug)) return humanizeHostSlug(slug)

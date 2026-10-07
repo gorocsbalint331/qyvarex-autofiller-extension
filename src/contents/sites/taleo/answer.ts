@@ -53,6 +53,13 @@ function formatWorkExperienceDates(items) {
   return Array.isArray(items)
     ? items.map((item) => {
         const next = { ...item }
+        const dates = next.dates && typeof next.dates === "object" ? next.dates : null
+        if (dates) {
+          if (!next.Start && dates.start_date) next.Start = dates.start_date
+          if (!next.End && dates.completion_date) next.End = dates.completion_date
+          if (dates.is_current || dates.isCurrent) next.isCurrent = true
+        }
+        if (next.is_current) next.isCurrent = true
         const start = String(next.Start ?? next["Start Date"] ?? "").trim()
         if (start && !next.Start) next.Start = start
         if (start) {
@@ -70,6 +77,29 @@ function formatWorkExperienceDates(items) {
             next["Date To Month"] = [parsed.format("MMMM")]
             next["Date To Year"] = [parsed.format("YYYY")]
           }
+        }
+        const title = String(
+          next["Job Title"] || next.jobTitle || next.job_title || next.Title || next.title || next.Position || ""
+        ).trim()
+        if (title) {
+          if (!next["Job Title"]) next["Job Title"] = title
+          if (!next.jobTitle) next.jobTitle = title
+          if (!next.Title) next.Title = title
+          if (!next["Position Title"]) next["Position Title"] = title
+        }
+        const employer = String(
+          next["Employer Name"] ||
+            next.Employer ||
+            next.organization ||
+            next.Company ||
+            next["Company Name"] ||
+            next.employer ||
+            ""
+        ).trim()
+        if (employer) {
+          if (!next["Employer Name"]) next["Employer Name"] = employer
+          if (!next.Employer) next.Employer = employer
+          if (!next["Company Name"]) next["Company Name"] = employer
         }
         return next
       })
@@ -132,7 +162,15 @@ function formatEducationType1(items) {
         ""
     }
     if (!next["Education Level"]) {
-      next["Education Level"] = next["Highest Degree Achieved"] || next.Degree || ""
+      next["Education Level"] =
+        next["Highest Degree Achieved"] || next.Degree || next.degree || next.rawDegree || ""
+    }
+    if (!next.Degree) {
+      next.Degree = next["Education Level"] || next.degree || next.rawDegree || ""
+    }
+    if (!next.Major && !next["Major"]) {
+      next.Major =
+        next.rawMajor || next.major || next.Study || next["Field of Study"] || next["Field of Study/Major"] || ""
     }
     if (!next["Type of School"]) next["Type of School"] = resolveSchoolType(next)
     return next

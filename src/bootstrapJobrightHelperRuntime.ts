@@ -351,10 +351,21 @@ function ensureHelperShadowRoot() {
   }
   helperHostElement = host
   applyHelperHostStackingStyle(host)
-  if (!host.isConnected) {
-    ;(document.body || document.documentElement).appendChild(host)
-  }
+  const parent = document.documentElement || document.body
+  if (parent && host.parentElement !== parent) parent.appendChild(host)
   return host.shadowRoot || host.attachShadow({ mode: "open" })
+}
+
+function watchHelperHost() {
+  if ((globalThis as any).__jobrightHelperHostWatch) return
+  ;(globalThis as any).__jobrightHelperHostWatch = true
+  const observer = new MutationObserver(() => {
+    if (!helperHostElement || helperHostElement.isConnected) return
+    const parent = document.documentElement || document.body
+    if (parent) parent.appendChild(helperHostElement)
+    applyHelperHostStackingStyle(helperHostElement)
+  })
+  observer.observe(document.documentElement, { childList: true })
 }
 
 async function mountHelperHost() {
@@ -366,6 +377,7 @@ async function mountHelperHost() {
     if (staleHost && staleHost !== helperHostElement) staleHost.remove()
   }
   let shadowRoot = ensureHelperShadowRoot()
+  watchHelperHost()
   if (helperRootElement && shadowRoot.contains(helperRootElement)) return
   upsertDocumentStyle(DOCUMENT_FONT_STYLE_ID, fontText)
   upsertStyleInRoot(shadowRoot, SHADOW_FONT_STYLE_ID, fontText)
@@ -604,6 +616,10 @@ let JobrightHelperApp = () => {
   }, [])
 
   useEffect(() => {
+    if (useHideStore.getState().openedFromIcon) {
+      setDisplayIcon(true)
+      return
+    }
     if (!domainSupport) {
       setDisplayIcon(false)
       return
@@ -611,7 +627,8 @@ let JobrightHelperApp = () => {
     let cancelled = false
     return (
       shouldHideOnDomain(window.location.hostname).then((shouldHide) => {
-        if (!cancelled) setDisplayIcon(!shouldHide)
+        if (cancelled || useHideStore.getState().openedFromIcon) return
+        setDisplayIcon(!shouldHide)
       }),
       () => {
         cancelled = true
@@ -784,6 +801,15 @@ let extensionIconPending = false
 let extensionIconOpenHandler = null
 
 export function openJobrightHelperFromExtensionIcon() {
+  const hide = useHideStore.getState()
+  hide.setOpenedFromIcon(true)
+  hide.setDisplayIcon(true)
+  hide.setOpenCard(true)
+  if (!helperHostElement?.isConnected) {
+    void mountHelperHost().catch((error) => {
+      console.warn("[jobright] failed to remount helper:", error)
+    })
+  }
   if (!extensionIconOpenHandler) {
     extensionIconPending = true
     console.info("[jobright] extension icon waiting for helper UI")
@@ -810,7 +836,8 @@ export async function bootstrapJobrightHelperRuntime() {
   notifyParentIframeLoaded()
   setupIframeEventHandling()
   registerTurbolinksRemount()
-  if (isGreenhouseStylePage()) {
+  const openNow = (globalThis as any).__jobrightOpenHelperOnBoot === true
+  if (isGreenhouseStylePage() && !openNow) {
     setTimeout(() => {
       mountHelperHost().catch((error) => {
         console.warn("[jobright] failed to mount helper:", error)

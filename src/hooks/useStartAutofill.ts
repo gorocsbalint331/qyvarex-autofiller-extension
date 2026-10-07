@@ -8,6 +8,7 @@ import { sendToBackground } from "@plasmohq/messaging"
 import { agentDomains } from "../api/env-resolver.js"
 import { getAutofillInstance } from "../helper-shims/host.ts"
 import { CancelledError } from "../contents/methods/cancellation.ts"
+import { cacheApplicationOnAutofill } from "../contents/shared/application-log-watcher.ts"
 import { beginFalconResponseAnswerRequest } from "../contents/sites/falcon-answer-tracking.ts"
 import {
   APPLICATION_STATUS,
@@ -159,6 +160,7 @@ export default function useStartAutofill(options = {}) {
 
   const startAutofill = useCallback(
     async (fromAgent = false) => {
+      cacheApplicationOnAutofill(options.currentTabJob)
       beginFalconResponseAnswerRequest()
       setFillingMode("standard_autofill")
       setProgressTitle(null)

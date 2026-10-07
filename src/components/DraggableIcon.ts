@@ -33,16 +33,11 @@ export default function DraggableIcon({ hostId, domainSupport, helperReady }) {
   const [isDragging, setIsDragging] = useState(false)
   const [hideMenuOpen, setHideMenuOpen] = useState(false)
   const [hideMenuPosition, setHideMenuPosition] = useState({ top: 0, right: 0 })
-  const [helperWasReady, setHelperWasReady] = useState(false)
   const closeButtonRef = useRef(null)
 
   const openCard = useHideStore((state) => state.openCard)
   const setOpenCard = useHideStore((state) => state.setOpenCard)
   const setDisplayIcon = useHideStore((state) => state.setDisplayIcon)
-
-  useEffect(() => {
-    if (helperReady) setHelperWasReady(true)
-  }, [helperReady])
 
   async function handleHideMenuSelect(key) {
     if (key === "this_domain") {
@@ -51,6 +46,7 @@ export default function DraggableIcon({ hostId, domainSupport, helperReady }) {
       await hideOnAllWebsites()
     }
     setHideMenuOpen(false)
+    useHideStore.getState().setOpenedFromIcon(false)
     setDisplayIcon(false)
     trackEvent("autofill_plugin_hide", {
       hide_type: key,
@@ -216,7 +212,6 @@ export default function DraggableIcon({ hostId, domainSupport, helperReady }) {
             ),
           }),
         openCard &&
-          (helperReady || helperWasReady) &&
           jsx(HelperContainer, {
             domainSupport:
               domainSupport ||

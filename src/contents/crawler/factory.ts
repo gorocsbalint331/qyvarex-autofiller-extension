@@ -75,6 +75,7 @@ import { XCompany } from "../sites/xcompany.ts"
 import { YCombinator } from "../sites/ycombinator.ts"
 import { ZohoRecruit } from "../sites/zohorecruit.ts"
 import { ZohoRecruitV2 } from "../sites/zohorecruit-v2.ts"
+import { Untypical } from "../sites/untypical.ts"
 import { DoverAutoFill } from "./dover.ts"
 import { getTargetName } from "./target.ts"
 
@@ -153,6 +154,7 @@ const TARGET_CLASS_MAP = {
   jacobs: Jacobs,
   careerstoasttab: CareersToasttab,
   jobdiva: Jobdiva,
+  untypical: Untypical,
   default: DefaultFiller,
 }
 

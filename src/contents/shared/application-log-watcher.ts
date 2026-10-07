@@ -7,7 +7,7 @@
 import { sendToBackground } from "@plasmohq/messaging"
 
 import { scrapeGenericJobData } from "~core/genericJobScraper"
-import { companyBesideTitle } from "~lib/job-context"
+import { companyBesideTitle, resolveJobContext } from "~lib/job-context"
 import { extractSalaryRange, formatSalaryRangeLabel } from "~lib/salary"
 
 const SUBMIT_LABEL_RE =
@@ -24,6 +24,7 @@ const PLATFORM_NAME_RE =
 const TITLE_SELECTORS = [
   '[data-automation-id="jobPostingHeader"]',
   ".posting-headline h2",
+  ".posting-header h2",
   '[data-testid="job-title"]',
   ".app-title",
   ".job-title",
@@ -68,7 +69,35 @@ function companyFromHost(): string {
     .join(" ")
 }
 
+function untypicalVacancyDocument() {
+  if (!/(^|\.)untypical\.co\.uk$/i.test(location.hostname)) return null
+  const own = document.querySelector("h1[id*='JobTitle']")
+  if (own) return document
+  try {
+    const parent = window.parent?.document
+    if (parent && parent !== document && parent.querySelector("h1[id*='JobTitle']")) return parent
+  } catch {
+    /* parent is not readable */
+  }
+  return null
+}
+
+function applicationPageUrl() {
+  const vacancy = untypicalVacancyDocument()
+  if (vacancy?.location?.href) return vacancy.location.href
+  try {
+    const topHref = window.top?.location?.href
+    if (topHref) return topHref
+  } catch {
+    /* the application frame cannot read the parent */
+  }
+  return window.location.href
+}
+
 function scrapeTitle(): string {
+  const vacancy = untypicalVacancyDocument()
+  const vacancyTitle = cleanText(vacancy?.querySelector("h1[id*='JobTitle']")?.textContent)
+  if (vacancyTitle) return vacancyTitle
   for (const selector of TITLE_SELECTORS) {
     for (const el of document.querySelectorAll<HTMLElement>(selector)) {
       const text = cleanText(el.innerText)
@@ -86,6 +115,8 @@ function scrapeTitle(): string {
 }
 
 function scrapeCompany(title: string): string {
+  const fromUrl = resolveJobContext({ url: location.href }).company
+  if (fromUrl && fromUrl.toLowerCase() !== title.trim().toLowerCase()) return fromUrl
   const fromHost = companyFromHost()
   if (fromHost) return fromHost
   const siteName = cleanText(
@@ -169,9 +200,52 @@ export function scrapeApplicationMeta() {
   return {
     title: title || "Untitled role",
     company: scrapeCompany(title),
-    link: window.location.href,
+    link: applicationPageUrl(),
     cost: scrapeSalaryText()
   }
+}
+
+function cardText(value: unknown) {
+  return typeof value === "string" ? cleanText(value) : ""
+}
+
+/** Site URL, company, and role at the moment Autofill is clicked. */
+export function detectApplicationIdentity(job?: {
+  jobResult?: { jobTitle?: string; userCompanyName?: string }
+  companyResult?: { companyName?: string }
+}) {
+  const scraped = scrapeApplicationMeta()
+  const fromCardTitle = cardText(job?.jobResult?.jobTitle)
+  const fromCardCompany = cardText(
+    job?.companyResult?.companyName || job?.jobResult?.userCompanyName
+  )
+  const title =
+    fromCardTitle && !isGenericTitle(fromCardTitle) ? fromCardTitle : scraped.title
+  const company =
+    fromCardCompany &&
+    !PLATFORM_NAME_RE.test(fromCardCompany) &&
+    fromCardCompany.toLowerCase() !== title.toLowerCase()
+      ? fromCardCompany
+      : scraped.company
+  return {
+    title: title || "Untitled role",
+    company,
+    link: scraped.link,
+    cost: scraped.cost
+  }
+}
+
+/** Save the posting now. Submit later uploads this snapshot to the sheet. */
+export function cacheApplicationOnAutofill(job?: {
+  jobResult?: { jobTitle?: string; userCompanyName?: string }
+  companyResult?: { companyName?: string }
+}) {
+  const meta = detectApplicationIdentity(job)
+  void sendToBackground({
+    name: "cacheApplicationLog",
+    body: meta
+  }).catch(() => {})
+  return meta
 }
 
 function showToast(message: string) {
