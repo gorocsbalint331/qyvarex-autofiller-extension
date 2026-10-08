@@ -197,7 +197,7 @@ export const SITE_REGISTRY = {
     patterns: ["*://apply.workable.com/*", "*://jobs.workable.com/*"],
     iframeDomains: ["workable.com"],
     queryParams: ["selectedJobId"],
-    pathRegex: "^/(?:[^/]+/j/[^/]+(?:/apply)?/?$|(?:[a-z]{2}/)?(?:view|company)/[\\w-]+)"
+    pathRegex: "^/(?:search(?:/|$)|[^/]+/j/[^/]+(?:/apply)?/?$|(?:[a-z]{2}/)?(?:view|company)/[\\w-]+)"
   },
   gohire: {
     patterns: ["*://jobs.gohire.io/*/*"],

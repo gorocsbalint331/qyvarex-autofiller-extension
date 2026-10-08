@@ -12,22 +12,29 @@ import { formatSalaryRangeLabel } from "~lib/salary"
 const handler: PlasmoMessaging.MessageHandler = async (req, res) => {
   try {
     const body = req.body ?? {}
+    const manual = body.manual === true
     let cost = typeof body.cost === "string" ? body.cost.trim() : ""
-    if (!cost) {
+    if (!cost && !manual) {
       const range = await getJobSalaryRange(req.sender)
       if (range) cost = formatSalaryRangeLabel(range)
     }
     const bodyLink = typeof body.link === "string" ? body.link.trim() : ""
-    const meta = await withAutofillPosting(req.sender?.tab?.id, {
-      title: typeof body.title === "string" ? body.title : "",
-      company: typeof body.company === "string" ? body.company : "",
+    const text = (value: unknown) => (typeof value === "string" ? value : "")
+    const incoming = {
+      title: text(body.title),
+      company: text(body.company),
       link: /^https?:/i.test(bodyLink) ? bodyLink : req.sender?.tab?.url || bodyLink,
       cost,
-      resume: typeof body.resume === "string" ? body.resume : "",
-      country: typeof body.country === "string" ? body.country : "",
-      other: typeof body.other === "string" ? body.other : ""
-    })
-    const result = await recordApplication(meta, { force: body.force === true })
+      resume: text(body.resume),
+      country: text(body.country),
+      other: text(body.other),
+      status: text(body.status),
+      appliedDate: text(body.appliedDate)
+    }
+    const meta = manual
+      ? incoming
+      : await withAutofillPosting(req.sender?.tab?.id, incoming)
+    const result = await recordApplication(meta, { force: body.force === true, manual })
     res.send(result)
   } catch (err) {
     res.send({

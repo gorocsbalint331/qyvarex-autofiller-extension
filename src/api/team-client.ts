@@ -25,25 +25,25 @@ export const DEFAULT_TEAM_SETTINGS: TeamSettings = {
   userName: ""
 }
 
-const LEGACY_HUB_HOSTS = new Set([
-  "jobright-team-site.vercel.app",
-  "jobright-team-site-git-dev-gorocsbalint331.vercel.app"
-])
+const LIVE_HUB = "https://jobright-team-site.vercel.app"
 
-function isLegacyHub(url: string | undefined | null) {
-  if (!url) return true
+function canonicalHub(url: string | undefined | null) {
+  if (!url) return getHubUrl().replace(/\/+$/, "")
   try {
-    return LEGACY_HUB_HOSTS.has(new URL(url).hostname)
+    const host = new URL(url).hostname
+    if (host === "hub.qyvarex.com") return LIVE_HUB
+    return url.replace(/\/+$/, "")
   } catch {
-    return true
+    return getHubUrl().replace(/\/+$/, "")
   }
 }
 
 export async function getTeamSettings(): Promise<TeamSettings> {
   const saved = await storage.get<TeamSettings>(TEAM_SETTINGS_KEY)
   const merged: TeamSettings = { ...DEFAULT_TEAM_SETTINGS, ...(saved || {}) }
-  if (isLegacyHub(merged.siteUrl)) {
-    merged.siteUrl = getHubUrl().replace(/\/+$/, "")
+  const siteUrl = canonicalHub(merged.siteUrl)
+  if (siteUrl !== merged.siteUrl) {
+    merged.siteUrl = siteUrl
     if (saved) await storage.set(TEAM_SETTINGS_KEY, merged)
   }
   return merged
@@ -407,6 +407,23 @@ export async function mergeProfileAnswers(
     return { ok: false, error: data.error || "save_failed" }
   }
   return { ok: true, answers: data.answers, extras: data.extras }
+}
+
+/** Merge answers into the team-wide site memory used by every profile. */
+export async function mergeSharedAnswers(
+  answers: Record<string, string>,
+  scopeKey: string
+): Promise<{ ok: boolean; error?: string }> {
+  if (!scopeKey || !Object.keys(answers).length) return { ok: false, error: "empty" }
+  const { ok, data } = await teamFetch<{ ok: boolean; error?: string }>(
+    "/api/v1/shared-answers",
+    {
+      method: "PATCH",
+      body: JSON.stringify({ scopeKey, answers })
+    }
+  )
+  if (!ok || !data.ok) return { ok: false, error: data.error || "save_failed" }
+  return { ok: true }
 }
 
 /** Log a successful job application to the hub Google Sheet. */

@@ -120,7 +120,7 @@ export async function openWorkableJobBoardForm() {
 }
 
 const RESUME_FILE_TEXT =
-  /resume|curriculum|\bcv\b|lebenslauf|datei hochladen|upload file|drag\s*&?\s*drop/i
+  /resume|curriculum|\bcv\b|lebenslauf|datei hochladen|upload file|drag\s*&?\s*drop|dodaj plik|doda[cć] plik/i
 
 function outsideExtension(element) {
   return !element.closest?.(
@@ -201,6 +201,80 @@ function resumeFile(prepared) {
   return list && list.length ? list[0] : null
 }
 
+function isWorkableJobBoard() {
+  return /(^|\.)jobs\.workable\.com$/i.test(location.hostname)
+}
+
+function isWorkableAutofillInput(input) {
+  return input?.id === "file-upload" || input?.getAttribute("data-ui") === "autofill-computer"
+}
+
+function shortLabelText(element) {
+  return controlText(element)
+    .replace(/[*✱]/g, "")
+    .replace(/\s+/g, " ")
+    .trim()
+}
+
+function fileInputOnChange(input) {
+  let fiber = reactFiber(input)
+  for (let depth = 0; fiber && depth < 12; depth += 1) {
+    const props = fiber.memoizedProps || fiber.pendingProps
+    if (props?.type === "file" && typeof props.onChange === "function") return props.onChange
+    fiber = fiber.return
+  }
+  return null
+}
+
+function resumeLabelInput(label) {
+  let node = label
+  for (let depth = 0; node && depth < 8; depth += 1) {
+    const input = [...node.querySelectorAll('input[type="file"]')].find(
+      (item) => outsideExtension(item) && !isWorkableAutofillInput(item),
+    )
+    if (input) return input
+    node = node.parentElement
+  }
+  return null
+}
+
+/** The resume dropzone's hidden input. Ignores the header "import a CV" control. */
+export function findWorkableResumeInput() {
+  const byId = document.querySelector('input[type="file"][data-ui="resume"]')
+  if (byId instanceof HTMLInputElement && outsideExtension(byId) && !isWorkableAutofillInput(byId)) {
+    return byId
+  }
+  const labelled = [...document.querySelectorAll("label, span, div, p, legend, h2, h3")].filter((element) => {
+    if (!outsideExtension(element)) return false
+    const text = shortLabelText(element)
+    return /^resume\b/i.test(text) && text.length < 48
+  })
+  for (const label of labelled) {
+    const input = resumeLabelInput(label)
+    if (input) return input
+  }
+  const inputs = [...document.querySelectorAll('input[type="file"]')].filter(
+    (input) => outsideExtension(input) && !isWorkableAutofillInput(input),
+  )
+  return (
+    inputs.find((input) => /resume|\bcv\b/i.test(`${input.getAttribute("data-ui") || ""} ${input.name || ""} ${input.id || ""}`)) ||
+    null
+  )
+}
+
+function resumeZoneText(input) {
+  let node = input.parentElement
+  let best = ""
+  for (let depth = 0; node && depth < 8; depth += 1) {
+    const text = controlText(node)
+    if (text.length > 700) break
+    best = text
+    if (/choose file|drag and drop|replace file/i.test(text)) return text
+    node = node.parentElement
+  }
+  return best
+}
+
 /**
  * Join.com's dropzone ignores a plain change event. Its React handler expects
  * `{ acceptedFiles }` and is what actually stores the PDF.
@@ -238,13 +312,54 @@ export function attachResumeToDropzone(input, prepared) {
   return true
 }
 
+/**
+ * The Jobs by Workable resume box only updates when its hidden file input's
+ * React onChange runs. That handler stores the PDF and starts the upload.
+ * The separate "Choose file" control at the top of the form only imports a
+ * CV to fill other fields.
+ */
+export async function attachWorkableResume(prepared) {
+  const file = resumeFile(prepared)
+  const input = findWorkableResumeInput()
+  if (!file || !(input instanceof HTMLInputElement)) return false
+  const transfer = new DataTransfer()
+  transfer.items.add(file)
+  input.files = transfer.files
+  const onChange = fileInputOnChange(input)
+  try {
+    if (onChange) onChange({ currentTarget: input, target: input })
+    else {
+      input.dispatchEvent(new Event("input", { bubbles: true }))
+      input.dispatchEvent(new Event("change", { bubbles: true }))
+    }
+  } catch (error) {
+    console.error("Workable resume upload failed:", error)
+    return false
+  }
+  const name = String(file.name || "").toLowerCase()
+  for (let attempt = 0; attempt < 12; attempt += 1) {
+    await sleep(400)
+    const text = resumeZoneText(input)
+    if (/something went wrong|file is too big|use a different file/i.test(text)) return false
+    if (name && text.toLowerCase().includes(name)) return true
+    if (/replace file/i.test(text)) return true
+  }
+  return false
+}
+
 export function findResumeFileInput() {
   if (isJoinApplyPage() && joinStepKind() !== "cv") return null
-  const inputs = [...document.querySelectorAll('input[type="file"]')].filter(outsideExtension)
+  const inputs = [...document.querySelectorAll('input[type="file"]')].filter(
+    (input) => outsideExtension(input) && !isWorkableAutofillInput(input),
+  )
+  if (isWorkableJobBoard()) {
+    const zoned = findWorkableResumeInput()
+    if (zoned) return zoned
+  }
   const labeled = inputs.filter((input) => RESUME_FILE_TEXT.test(fileInputText(input)))
   const labeledMatch = labeled.find(fileInputIsVisible) || labeled[0]
   if (labeledMatch) return labeledMatch
-  if (pageAsksForResume() || /(^|\.)jobs\.workable\.com$/i.test(location.hostname)) {
+  if (pageAsksForResume() || isWorkableJobBoard()) {
     return inputs.find(fileInputIsVisible) || inputs[0] || null
   }
   return null

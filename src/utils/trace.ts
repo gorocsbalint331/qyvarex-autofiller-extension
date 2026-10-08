@@ -9,9 +9,9 @@ import * as messaging from "@plasmohq/messaging"
 import * as autofillAnswerPair from "./autofill-answer-pair.ts"
 
 function isExtensionRuntimeUnavailableError(error) {
-  return (
-    error instanceof Error &&
-    /Extension runtime is not available/i.test(error.message)
+  const message = error instanceof Error ? error.message : String(error || "")
+  return /Extension runtime is not available|Extension context invalidated/i.test(
+    message
   )
 }
 

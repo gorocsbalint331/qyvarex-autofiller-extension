@@ -297,6 +297,7 @@ export default function FillProgress({
   connected = false,
   expanded,
   onToggleExpanded,
+  currentTabJob,
 }) {
   const isFilling = useAutofillResultStore((state) => state.isFilling)
   const fillingMode = useAutofillResultStore((state) => state.fillingMode)
@@ -554,7 +555,7 @@ export default function FillProgress({
                   }),
                 !isFilling &&
                   !isSignupFlow &&
-                  jsx(LogApplicationButton, {}),
+                  jsx(LogApplicationButton, { currentTabJob, disabled: isFilling }),
               ],
             }),
       ],

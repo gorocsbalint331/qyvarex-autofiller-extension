@@ -1,10 +1,10 @@
 {
   "name": "jobright-fork-extension",
   "displayName": "Qyvarex Autofill",
-  "version": "0.6.0",
+  "version": "0.6.3",
   "description": "Autofill job applications from your Qyvarex team profiles, resumes, and saved answers.",
   "author": "Qyvarex",
-  "homepage": "https://hub.qyvarex.com",
+  "homepage": "https://jobright-team-site.vercel.app",
   "scripts": {
     "dev": "plasmo dev --src-path=src --no-cs-reload",
     "predev": "node build-helper.mjs",
@@ -53,6 +53,7 @@
       "matches": [
         "http://localhost:3210/*",
         "http://127.0.0.1:3210/*",
+        "https://jobright-team-site.vercel.app/*",
         "https://hub.qyvarex.com/*"
       ]
     },

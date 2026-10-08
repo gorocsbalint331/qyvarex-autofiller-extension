@@ -237,6 +237,15 @@ type FillElement = {
 function normalizeLabel(text: string) {
   return (text || "")
     .toLowerCase()
+    .replace(/[ąàáâã]/g, "a")
+    .replace(/ć/g, "c")
+    .replace(/[ęèéêë]/g, "e")
+    .replace(/ł/g, "l")
+    .replace(/ń/g, "n")
+    .replace(/[óòôõö]/g, "o")
+    .replace(/ś/g, "s")
+    .replace(/[üùúû]/g, "u")
+    .replace(/[żź]/g, "z")
     .replace(/\s*\*\s*/g, " ")
     .replace(/[^a-z0-9]+/g, " ")
     .trim()
@@ -369,6 +378,37 @@ function experienceYearsNumber(text: string): string {
   }
   const single = raw.match(/(\d+)/)
   return single ? single[1] : ""
+}
+
+function isNoticeOrStartSpeedQuestion(norm: string): boolean {
+  return /notice period|how quickly|how soon|when can you start|start a new role|earliest you can start/.test(
+    norm
+  )
+}
+
+function daysUntilHiring(hub: AutofillInfoPayload): number {
+  const start = Date.parse(`${formatHiringDate(hub)}T00:00:00`)
+  const today = Date.parse(`${localTodayYmd()}T00:00:00`)
+  if (!Number.isFinite(start) || !Number.isFinite(today)) return 1
+  return Math.max(0, Math.round((start - today) / 86400000))
+}
+
+function noticePhrase(days: number): string {
+  if (days <= 1) return "1 day"
+  if (days < 7) return `${days} days`
+  if (days < 14) {
+    const weeks = Math.max(1, Math.round(days / 7))
+    return weeks === 1 ? "1 week" : `${weeks} weeks`
+  }
+  const months = Math.max(1, Math.round(days / 30))
+  return months === 1 ? "1 month" : `${months} months`
+}
+
+function noticePeriodAnswer(hub: AutofillInfoPayload, norm: string): string {
+  const explicit = extrasString(hub, "noticePeriod") || extrasString(hub, "notice")
+  const raw = explicit.trim() || noticePhrase(daysUntilHiring(hub))
+  if (/\bweeks?\b/.test(norm)) return noticePeriodWeeks(raw)
+  return raw
 }
 
 function noticePeriodWeeks(text: string): string {
@@ -531,7 +571,7 @@ type AnswerResolver = {
 
 const ANSWER_RESOLVERS: AnswerResolver[] = [
   {
-    keys: ["first name", "firstname", "given name", "legal first name"],
+    keys: ["first name", "firstname", "given name", "legal first name", "imie"],
     priority: 20,
     get: (h) => h.identity.firstName
   },
@@ -541,14 +581,14 @@ const ANSWER_RESOLVERS: AnswerResolver[] = [
     get: (h) => extrasString(h, "middleName")
   },
   {
-    keys: ["last name", "lastname", "surname", "family name", "legal last name"],
+    keys: ["last name", "lastname", "surname", "family name", "legal last name", "nazwisko"],
     priority: 20,
     get: (h) => h.identity.lastName
   },
   {
     keys: ["preferred name", "preferred first name"],
     priority: 15,
-    get: (h) => extrasString(h, "preferredFirstName")
+    get: (h) => extrasString(h, "preferredFirstName") || h.identity.firstName
   },
   {
     keys: ["full name", "candidate name", "applicant name"],
@@ -593,6 +633,25 @@ const ANSWER_RESOLVERS: AnswerResolver[] = [
   {
     keys: ["website", "personal website", "portfolio", "personal site"],
     get: (h) => h.identity.website
+  },
+  {
+    keys: ["other links", "other link", "additional links"],
+    priority: 20,
+    get: (h) => {
+      const links = [
+        h.identity.website,
+        extrasString(h, "github"),
+        h.identity.linkedin
+      ]
+        .map((value) => value.trim())
+        .filter(Boolean)
+      return [...new Set(links)].join("\n")
+    }
+  },
+  {
+    keys: ["twitter", "twitter url", "x handle"],
+    priority: 20,
+    get: (h) => extrasString(h, "twitter") || extrasString(h, "twitterUrl")
   },
   {
     keys: [
@@ -737,12 +796,16 @@ const ANSWER_RESOLVERS: AnswerResolver[] = [
       "years of experience",
       "years experience",
       "total experience",
-      "how many years"
+      "how many years",
+      "lat doswiadczenia"
     ],
     priority: 35,
     get: (h, labelNorm, options) => {
       if (isLegalEligibilityQuestion(labelNorm)) return ""
-      const v = extrasString(h, "yearsOfExperience")
+      const fromCareer = careerYears(h)
+      const v =
+        extrasString(h, "yearsOfExperience") ||
+        (fromCareer != null ? String(Math.max(1, Math.round(fromCareer))) : "")
       if (!v) return ""
       if (options.length) return adaptToOptions(v, options)
       return experienceYearsNumber(v) || v
@@ -772,13 +835,18 @@ const ANSWER_RESOLVERS: AnswerResolver[] = [
       "start date",
       "startdatum",
       "hiring date",
-      "availability"
+      "availability",
+      "dostepny",
+      "zatrudnienia"
     ],
     priority: 20,
-    get: (h, _n, options) => {
+    get: (h, labelNorm, options) => {
       const iso = formatHiringDate(h)
       const us = formatHiringDateUs(h)
-      if (!options.length) return iso
+      if (!options.length) {
+        if (/dostepn|zatrudnien/.test(labelNorm)) return iso.replace(/-/g, "/")
+        return iso
+      }
       const joined = options.map(normalizeLabel).join(" ")
       if (joined.includes("mm") || joined.includes("dd")) return us
       return iso
@@ -789,6 +857,7 @@ const ANSWER_RESOLVERS: AnswerResolver[] = [
       "source",
       "job portal",
       "how did you hear",
+      "how did you find",
       "where did you hear",
       "hear about this job",
       "referral source",
@@ -1021,6 +1090,11 @@ export function lookupAnswer(
     return options.length ? adaptToOptions(employer, options) : employer
   }
 
+  if (isNoticeOrStartSpeedQuestion(norm)) {
+    const notice = noticePeriodAnswer(hub, norm)
+    if (notice) return options.length ? adaptToOptions(notice, options) : notice
+  }
+
   // Explicit Q&A from hub first (exact / careful contains)
   let bestAnswer: string | null = null
   let bestAnswerScore = 0
@@ -1239,11 +1313,8 @@ function answerFromResume(
       null
     )
   }
-  if (/notice period/.test(norm) && !options.length) {
-    const notice = extrasString(hub, "noticePeriod") || extrasString(hub, "notice")
-    const raw = notice.trim() || "1 month"
-    if (/week/.test(norm)) return noticePeriodWeeks(raw)
-    return raw
+  if (isNoticeOrStartSpeedQuestion(norm)) {
+    return noticePeriodAnswer(hub, norm)
   }
   return null
 }

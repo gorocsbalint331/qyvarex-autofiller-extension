@@ -139,7 +139,7 @@ export function salaryTarget(range: SalaryRange | null | undefined): SalaryTarge
 
 /** Questions that ask for a salary figure, including current and expected pay. */
 export function isSalaryExpectationQuestion(norm: string): boolean {
-  const strong = /\b(salary|salaries|compensation|remuneration|ctc|gehalt\w*)\b/.test(norm)
+  const strong = /\b(salary|salaries|compensation|remuneration|ctc|gehalt\w*|finansow\w*|wynagrodzen\w*|pensj\w*)\b/.test(norm)
   const weak =
     /\b(pay|wage|wages|rate)\b/.test(norm) &&
     /\b(expect\w*|desired|require\w*|looking for|current|gross)\b/.test(norm)

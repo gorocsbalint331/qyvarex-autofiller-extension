@@ -6,7 +6,7 @@
  * not Jobright cloud — see ~api/team-client and extension Options.
  */
 
-const PROD_HUB = "https://hub.qyvarex.com"
+const PROD_HUB = "https://jobright-team-site.vercel.app"
 const DEV_HUB = "http://localhost:3210"
 
 export const TEAM_SITE_URL =
@@ -29,4 +29,4 @@ export const COOKIE_DOMAIN =
   process.env.PLASMO_PUBLIC_COOKIE_DOMAIN ?? "localhost"
 
 /** Team hub host only — do NOT include localhost (would activate on every local app). */
-export const agentDomains = ["hub.qyvarex.com"] as const
+export const agentDomains = ["jobright-team-site.vercel.app"] as const

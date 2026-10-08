@@ -3,9 +3,19 @@
  * Message handlers live in background/messages/*.
  */
 
+import "~lib/ignore-bfcache-ports"
+
 import { getHubUrl } from "~api/hub-env"
 import { saveTeamSettings } from "~api/team-client"
+import { activateHelperTab } from "~background/messages/activateHelperOnTab"
 import { ensureDevice } from "~lib/device"
+
+chrome.action.onClicked.addListener((tab) => {
+  if (typeof tab.id !== "number") return
+  void activateHelperTab(tab.id).catch((error) => {
+    console.warn("[qyvarex] could not open the helper", error)
+  })
+})
 
 chrome.runtime.onMessageExternal.addListener((message, _sender, sendResponse) => {
   if (message?.type === "TEAM_HUB_DEVICE") {

@@ -3,6 +3,8 @@
  * Ported from Jobright contents.d42e7fcf.js — activation gate + helper inject.
  */
 
+import "~lib/ignore-bfcache-ports"
+
 import type { PlasmoCSConfig } from "plasmo"
 import { sendToBackground } from "@plasmohq/messaging"
 
@@ -36,6 +38,7 @@ export const config: PlasmoCSConfig = {
     "https://lnkd.demdex.net/*",
     "https://crcldu.com/*",
     "https://hub.qyvarex.com/*",
+    "https://jobright-team-site.vercel.app/*",
     "http://localhost:3210/*",
     "http://127.0.0.1:3210/*",
     // All Google consumer / Workspace hosts (Translate, Docs, Gmail, …).

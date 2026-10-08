@@ -48,13 +48,35 @@ export class DefaultFiller extends BaseFiller {
   }
 
   async extractFormRules() {
-    return rules.getRules()
+    const found = rules.getRules()
+    if (!/(^|\.)jobs\.workable\.com$/i.test(location.hostname)) return found
+    const input = operations.findWorkableResumeInput()
+    if (!input || found.some((rule) => /resume|\bcv\b/i.test(rule.label || ""))) return found
+    found.push({
+      type: "file",
+      label: "Resume/CV",
+      required: true,
+      options: [],
+      $input: input,
+      $label: null,
+    })
+    return found
   }
 
   async handleResumeUpload() {
-    const input = operations.findResumeFileInput()
-    if (!input || this.disableUploadResume || !this.resumeInfo) return
+    if (this.disableUploadResume || !this.resumeInfo) return
     const prepared = await answerMethods.fetchPdfAsBlob(this.resumeInfo)
+    if (/(^|\.)jobs\.workable\.com$/i.test(location.hostname)) {
+      const input = operations.findWorkableResumeInput()
+      if (!input) return
+      this.progressTracker.updateFieldRequiredStatus({ label: "Resume/CV", required: true })
+      const attached = await operations.attachWorkableResume(prepared)
+      if (attached) this.progressTracker.updateFilledProgress("Resume/CV")
+      else this.progressTracker.updateMissedProgress("Resume/CV")
+      return
+    }
+    const input = operations.findResumeFileInput()
+    if (!input) return
     if (/(^|\.)join\.com$/i.test(location.hostname)) {
       operations.attachResumeToDropzone(input, prepared)
     }
@@ -68,7 +90,9 @@ export class DefaultFiller extends BaseFiller {
   }
 
   async doFillForm(forceRefetch = false) {
-    if (!operations.isJoinApplyPage()) return super.doFillForm(forceRefetch)
+    if (!operations.isJoinApplyPage()) {
+      return super.doFillForm(forceRefetch)
+    }
     await this.initializeFillForm()
     const seen = new Set()
     for (let step = 0; step < 8; step += 1) {

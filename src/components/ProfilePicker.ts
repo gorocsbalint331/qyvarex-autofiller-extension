@@ -6,6 +6,7 @@
 import { useEffect, useState } from "react"
 import { jsx, jsxs } from "react/jsx-runtime"
 import { sendToBackground } from "@plasmohq/messaging"
+import { useProfileStore } from "../store/profile.ts"
 
 function profileOptionLabel(profile) {
   const name = [profile.firstName, profile.lastName].filter(Boolean).join(" ")
@@ -51,9 +52,23 @@ export default function ProfilePicker({ disabled = false, onChanged }) {
     }
   }
 
+  async function onSignOut() {
+    if (busy) return
+    setBusy(true)
+    try {
+      await sendToBackground({ name: "signOutHub" })
+      await useProfileStore.getState().initUserStage()
+    } finally {
+      setBusy(false)
+    }
+  }
+
   if (!profiles.length) return null
 
-  return jsxs("label", {
+  return jsxs("div", {
+    style: { display: "flex", flexDirection: "column", gap: 8, width: "100%" },
+    children: [
+  jsxs("label", {
     style: {
       display: "flex",
       flexDirection: "column",
@@ -93,6 +108,24 @@ export default function ProfilePicker({ disabled = false, onChanged }) {
             profile.id
           )
         )
+      })
+    ]
+  }),
+      jsx("button", {
+        type: "button",
+        disabled: busy,
+        onClick: () => void onSignOut(),
+        style: {
+          alignSelf: "flex-start",
+          border: 0,
+          background: "transparent",
+          padding: 0,
+          color: "#667085",
+          font: "500 13px/18px Inter, -apple-system, sans-serif",
+          cursor: busy ? "default" : "pointer",
+          textDecoration: "underline"
+        },
+        children: busy ? "Signing out…" : "Sign out"
       })
     ]
   })

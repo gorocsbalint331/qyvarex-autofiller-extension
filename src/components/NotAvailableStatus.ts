@@ -15,7 +15,6 @@ import ExternalJobFail from "./ExternalJob/ExternalJobFail.ts"
 import ExternalJobForm from "./ExternalJob/ExternalJobForm.ts"
 import JobCard from "./JobCard.ts"
 import ResumeSwitcher from "./ResumeSwitcher.ts"
-import { JOB_RECOMMEND_LIST_PATHNAME } from "../contents/shared/constants.ts"
 import { checkSupportDomainLevel } from "../core/utils.ts"
 import { useExternalJobStore } from "../store/externalJob.ts"
 import { isLinkedinDomain } from "../utils/checkLinkedin.ts"
@@ -180,13 +179,13 @@ export default function NotAvailableStatus() {
           }),
           jsxs("a", {
             className: "not-available-status-find-more-button",
-            href: `${HOST_DOMAIN}${JOB_RECOMMEND_LIST_PATHNAME}`,
+            href: `${HOST_DOMAIN}/dashboard/jobs`,
             target: "_blank",
             rel: "noreferrer",
             children: [
               jsx(SearchJobsIcon, {}),
               jsx("span", {
-                children: "Find More Jobs on Jobright",
+                children: "Find More Jobs on Qyvarex",
               }),
             ],
           }),

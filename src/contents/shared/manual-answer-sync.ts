@@ -131,6 +131,117 @@ function showToast(message: string) {
   window.setTimeout(() => host.remove(), 2800)
 }
 
+type SaveTarget = "profile" | "shared"
+
+function sidebarSlot() {
+  const hosts = document.querySelectorAll(
+    "#jobright-helper-plugin, #jobright-fork-helper-plugin, plasmo-csui"
+  )
+  for (const host of hosts) {
+    const shadow = host.shadowRoot
+    const panel = shadow?.querySelector("#jobright-helper-id")
+    if (shadow && panel instanceof HTMLElement) return { shadow, panel }
+  }
+  return null
+}
+
+function placeSavePrompt(host: HTMLElement, panel: HTMLElement) {
+  const rect = panel.getBoundingClientRect()
+  const width = Math.max(220, rect.width - 16)
+  host.style.position = "fixed"
+  host.style.left = `${rect.left + 8}px`
+  host.style.width = `${width}px`
+  host.style.bottom = `${window.innerHeight - rect.bottom + 64}px`
+  host.style.zIndex = "10020"
+}
+
+function askWhereToSave(
+  hostname: string,
+  question: string,
+  answer: string,
+  profileLabel: string
+): Promise<SaveTarget | null> {
+  return new Promise((resolve) => {
+    const slot = sidebarSlot()
+    const host = document.createElement("div")
+    host.style.cssText = slot
+      ? "all: initial; display: block; position: fixed; z-index: 10020;"
+      : "all: initial; display: block; position: fixed; right: 16px; bottom: 16px; z-index: 2147483647; width: min(360px, calc(100vw - 32px));"
+    if (slot) placeSavePrompt(host, slot.panel)
+    const shadow = host.attachShadow({ mode: "closed" })
+    const style = document.createElement("style")
+    style.textContent = `
+      .card { box-sizing: border-box; width: 100%; background: #fff; color: #0f172a; border: 1px solid #e2e8f0; border-radius: 12px; box-shadow: 0 12px 40px rgba(0,0,0,.22); padding: 14px; font: 500 13px/18px Inter, -apple-system, sans-serif; }
+      h2 { margin: 0 0 6px; font-size: 14px; }
+      p { margin: 0 0 8px; color: #475569; }
+      .qa { margin: 0 0 12px; color: #0f172a; }
+      .row { display: flex; flex-direction: column; gap: 8px; }
+      button { border: 0; border-radius: 8px; padding: 9px 12px; cursor: pointer; font: inherit; text-align: left; }
+      .primary { background: #0b6e4f; color: #fff; }
+      .shared { background: #e8f3ef; color: #0b6e4f; }
+      .skip { background: transparent; color: #64748b; text-align: center; }
+    `
+    const card = document.createElement("div")
+    card.className = "card"
+    const title = document.createElement("h2")
+    title.textContent = `Save this answer for ${hostname}?`
+    const hint = document.createElement("p")
+    hint.textContent = "Choose where the next autofill should find it."
+    const qa = document.createElement("p")
+    qa.className = "qa"
+    qa.textContent = `${question}: ${answer}`
+    const row = document.createElement("div")
+    row.className = "row"
+    const profileBtn = document.createElement("button")
+    profileBtn.className = "primary"
+    profileBtn.type = "button"
+    profileBtn.textContent = `Selected profile${profileLabel ? `: ${profileLabel}` : ""}`
+    const sharedBtn = document.createElement("button")
+    sharedBtn.className = "shared"
+    sharedBtn.type = "button"
+    sharedBtn.textContent = "Shared answers for every profile"
+    const skip = document.createElement("button")
+    skip.className = "skip"
+    skip.type = "button"
+    skip.textContent = "Don't save"
+    let settled = false
+    const onLayout = () => {
+      if (slot?.panel.isConnected) placeSavePrompt(host, slot.panel)
+    }
+    const finish = (choice: SaveTarget | null) => {
+      if (settled) return
+      settled = true
+      window.removeEventListener("resize", onLayout)
+      host.remove()
+      resolve(choice)
+    }
+    profileBtn.addEventListener("click", () => finish("profile"))
+    sharedBtn.addEventListener("click", () => finish("shared"))
+    skip.addEventListener("click", () => finish(null))
+    row.append(profileBtn, sharedBtn, skip)
+    card.append(title, hint, qa, row)
+    shadow.append(style, card)
+    if (slot) window.addEventListener("resize", onLayout)
+    ;(slot?.shadow || document.body).appendChild(host)
+  })
+}
+
+async function selectedProfileLabel() {
+  try {
+    const response = await sendToBackground<{
+      ok?: boolean
+      selectedProfileId?: string | null
+      profiles?: { id: string; label: string }[]
+    }>({ name: "teamProfiles" })
+    const selected = response?.profiles?.find(
+      (profile) => profile.id === response.selectedProfileId
+    )
+    return selected?.label || ""
+  } catch {
+    return ""
+  }
+}
+
 async function persist(question: string, answer: string) {
   const q = clean(question)
   const a = clean(answer)
@@ -145,6 +256,9 @@ async function persist(question: string, answer: string) {
   const scopeKey = jobsiteScopeKey(hostname)
   if (!scopeKey) return
 
+  const destination = await askWhereToSave(hostname, q, a, await selectedProfileLabel())
+  if (!destination) return
+
   try {
     const response = await sendToBackground<{ ok?: boolean; message?: string }>({
       name: "learnAnswers",
@@ -152,7 +266,8 @@ async function persist(question: string, answer: string) {
         answers: { [q]: a },
         scopeKey,
         hostname,
-        stepKey: "site"
+        stepKey: "site",
+        destination
       }
     })
     if (!response?.ok) {
@@ -160,8 +275,8 @@ async function persist(question: string, answer: string) {
       console.warn("[qyvarex] could not save answer", response?.message)
       return
     }
-    console.info("[qyvarex] saved answer for job site", { hostname, question: q, answer: a })
-    showToast(`Saved for ${hostname}`)
+    console.info("[qyvarex] saved answer for job site", { hostname, question: q, answer: a, destination })
+    showToast(destination === "shared" ? `Saved for every profile on ${hostname}` : `Saved for ${hostname}`)
   } catch (error) {
     recent.delete(key)
     const message = error instanceof Error ? error.message : String(error)
@@ -171,6 +286,29 @@ async function persist(question: string, answer: string) {
     }
     console.warn("[qyvarex] could not save answer", message)
   }
+}
+
+function dropdownOption(target: Element): Element | null {
+  const option = target.closest('.select__option, [role="option"]')
+  if (!option || isExtensionUi(option)) return null
+  return option
+}
+
+function dropdownQuestion(option: Element) {
+  const menu = option.closest('.select__menu, [role="listbox"]')
+  const listId = menu?.id || ""
+  const input = listId
+    ? document.querySelector(`[aria-controls="${CSS.escape(listId)}"]`)
+    : null
+  const control = input?.closest(".select__control, .select") || input
+  const field =
+    control?.closest(
+      ".select__container, .field, [class*='field'], [class*='question']"
+    ) || control?.parentElement
+  const fromField = questionFrom(field, input instanceof Element ? input : null)
+  if (fromField.length >= 8) return fromField
+  const label = field?.querySelector("label") || field?.previousElementSibling
+  return clean(label?.textContent).replace(/\*+$/g, "").trim()
 }
 
 function clickedChoice(target: Element): Element | null {
@@ -191,6 +329,11 @@ function onClick(event: Event) {
   if (!event.isTrusted) return
   const target = event.target
   if (!(target instanceof Element) || isExtensionUi(target)) return
+  const option = dropdownOption(target)
+  if (option) {
+    void persist(dropdownQuestion(option), optionText(option))
+    return
+  }
   const control = clickedChoice(target)
   if (!control) return
   const group = tightChoiceRoot(control)

@@ -53,7 +53,11 @@ export function siteAnswersForHost(
 export function applySiteAnswers<
   T extends { answers: Record<string, string>; extras?: Record<string, unknown> }
 >(hub: T, hostname: string): T {
+  const shared = siteAnswersForHost(
+    { siteStepAnswers: hub.extras?.sharedSiteAnswers },
+    hostname
+  )
   const scoped = siteAnswersForHost(hub.extras, hostname)
-  if (!Object.keys(scoped).length) return hub
-  return { ...hub, answers: { ...hub.answers, ...scoped } }
+  if (!Object.keys(shared).length && !Object.keys(scoped).length) return hub
+  return { ...hub, answers: { ...hub.answers, ...shared, ...scoped } }
 }

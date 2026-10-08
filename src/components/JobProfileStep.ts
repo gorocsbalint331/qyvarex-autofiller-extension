@@ -46,7 +46,6 @@ import {
 } from "./JobProfileStep/myworkday-progress.ts"
 import { resolveJobToShow } from "./JobProfileStep/resolve-job-to-show.ts"
 import LoadingButton from "./LoadingButton.ts"
-import LogApplicationButton from "./LogApplicationButton.ts"
 import NextPageButton from "./NextPageButton.ts"
 import ProfilePicker from "./ProfilePicker.ts"
 import AutofillErrorModal from "./Popups/AutofillErrorModal.ts"
@@ -644,10 +643,6 @@ export default function JobProfileStep({
                       disabled: isFilling,
                       onClick: handleUpdateJobInfo,
                     }),
-                  jsx(LogApplicationButton, {
-                    currentTabJob,
-                    disabled: isFilling,
-                  }),
                 ],
               }),
               jsx(
@@ -657,6 +652,7 @@ export default function JobProfileStep({
                   expanded: fillProgressExpanded,
                   onToggleExpanded: () =>
                     setFillProgressExpanded((expanded) => !expanded),
+                  currentTabJob,
                 },
                 fillProgressKey,
               ),

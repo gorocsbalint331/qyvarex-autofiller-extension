@@ -11,7 +11,23 @@ import { HOST_DOMAIN } from "../api/env-resolver.ts"
 import QuickChecklistItem from "./QuickChecklistItem.ts"
 import { useProfileStore } from "../store/profile.ts"
 import Image from "../ui/Image.ts"
-import { buildJobrightLoginUrl } from "../utils/jobright-url.ts"
+function hubBase() {
+  return String(HOST_DOMAIN || "").replace(/\/+$/, "")
+}
+
+function openHubSignIn() {
+  const extensionId =
+    typeof chrome !== "undefined" && chrome.runtime?.id ? chrome.runtime.id : ""
+  window.open(
+    `${hubBase()}/extension/connect?ext=${encodeURIComponent(extensionId)}`,
+    "_blank",
+    "noopener,noreferrer"
+  )
+}
+
+function openHubSignUp() {
+  window.open(`${hubBase()}/?mode=register`, "_blank", "noopener,noreferrer")
+}
 
 function assetUrl(mod) {
   return mod?.default ?? mod
@@ -64,9 +80,7 @@ export default function Onboarding() {
             jsx(QuickChecklistItem, {
               checked: isLoggedIn,
               stepNumber: 1,
-              onClick: () => {
-                window.open(buildJobrightLoginUrl(HOST_DOMAIN), "_blank")
-              },
+              onClick: openHubSignIn,
               title: "Sign in to Team Hub",
             }),
             jsx(QuickChecklistItem, {
@@ -85,16 +99,32 @@ export default function Onboarding() {
         vertical: true,
         gap: 12,
         align: "center",
-        children: jsx(Button, {
-          className: "go-to-next-button",
-          disabled:
-            !userStage?.logined ||
-            (!!userStage?.logined && userProfile?.step !== 5),
-          onClick: () => {
-            setPluginActived(true)
-          },
-          children: "Start Applying",
-        }),
+        children: [
+          jsx(Button, {
+            className: "go-to-next-button",
+            disabled:
+              !userStage?.logined ||
+              (!!userStage?.logined && userProfile?.step !== 5),
+            onClick: () => {
+              setPluginActived(true)
+            },
+            children: "Start Applying",
+          }),
+          !isLoggedIn
+            ? jsx("button", {
+                type: "button",
+                onClick: openHubSignUp,
+                style: {
+                  border: 0,
+                  background: "transparent",
+                  color: "#667085",
+                  fontSize: 13,
+                  cursor: "pointer",
+                },
+                children: "Don't have an account? Sign up",
+              })
+            : null,
+        ],
       }),
     ],
   })

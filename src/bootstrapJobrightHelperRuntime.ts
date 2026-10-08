@@ -12,7 +12,9 @@ import {
   useRef,
   useCallback,
 } from "react"
+import { Component } from "react"
 import { createRoot } from "react-dom/client"
+import { isTraffitFormPage } from "./contents/sites/traffit/detect.ts"
 import * as globalLessModule from "url:../global.less"
 import * as interCssModule from "url:../inter.css"
 import { sendToBackground } from "@plasmohq/messaging"
@@ -87,6 +89,51 @@ const CrawlerFactory = interopDefault(CrawlerFactoryModule)
 const useOpenNewTab = interopDefault(useOpenNewTabModule)
 const useSubscribeTabUrl = interopDefault(useSubscribeTabUrlModule)
 const useSettingStore = interopDefault(useSettingStoreModule)
+
+let skipPagePortals = false
+
+/** Traffit replaces form nodes while React is still cleaning up portals. */
+function ignoreDetachedNodeMoves() {
+  const proto = Node.prototype
+  if (proto.__qyvarexDetachedGuard) return
+  const removeChild = proto.removeChild
+  const insertBefore = proto.insertBefore
+  proto.removeChild = function (child) {
+    if (child && child.parentNode !== this) return child
+    return removeChild.call(this, child)
+  }
+  proto.insertBefore = function (node, child) {
+    if (child && child.parentNode !== this) return node
+    return insertBefore.call(this, node, child)
+  }
+  proto.__qyvarexDetachedGuard = true
+}
+
+ignoreDetachedNodeMoves()
+
+class HelperErrorBoundary extends Component {
+  constructor(props) {
+    super(props)
+    this.state = { attempt: 0 }
+    this.retries = 0
+  }
+
+  static getDerivedStateFromError() {
+    skipPagePortals = true
+    return { attempt: 1 }
+  }
+
+  componentDidCatch(error) {
+    this.retries += 1
+    console.warn("[qyvarex] helper UI recovered after a page DOM error", error)
+    if (this.retries > 1) this.setState({ attempt: -1 })
+  }
+
+  render() {
+    if (this.state.attempt < 0) return null
+    return jsx(JobrightHelperApp, { key: this.state.attempt })
+  }
+}
 
 const HELPER_ROOT_ID = "jobright-helper-root"
 const DOCUMENT_FONT_STYLE_ID = "jobright-helper-document-font-style"
@@ -669,18 +716,22 @@ let JobrightHelperApp = () => {
   }, [refreshProfileState])
 
   useEffect(() => {
-    if (settingsReady) {
-      if (
-        "Minimized" !== defaultView ||
-        currentJobId ||
-        agentDomains.includes(new URL(window.location.href).hostname)
-      ) {
-        setOpenCard(true)
-      } else {
-        setOpenCard(false)
-      }
+    if (!settingsReady) return
+    if (domainSupport && isDomainSupportedNow()) {
+      setDisplayIcon(true)
+      setOpenCard(true)
+      return
     }
-  }, [settingsReady])
+    if (
+      "Minimized" !== defaultView ||
+      currentJobId ||
+      agentDomains.includes(new URL(window.location.href).hostname)
+    ) {
+      setOpenCard(true)
+    } else {
+      setOpenCard(false)
+    }
+  }, [settingsReady, domainSupport, defaultView])
 
   useEffect(() => {
     if (settingsReady) {
@@ -737,7 +788,8 @@ let JobrightHelperApp = () => {
   let isAgentHost = agentDomains.includes(
     new URL(window.location.href).hostname,
   )
-  let showTextareaGenerateLayer = domainSupport && !isAgentHost
+  let showTextareaGenerateLayer =
+    domainSupport && !isAgentHost && !skipPagePortals && !isTraffitFormPage()
   let topFrameOverlays = isTopWindow
     ? jsxs(Fragment, {
         children: [
@@ -794,7 +846,8 @@ let JobrightHelperApp = () => {
 
 function renderHelperApp(rootElement, styleText) {
   cachedHelperStyleText = styleText
-  createRoot(rootElement).render(jsx(JobrightHelperApp, {}))
+  ignoreDetachedNodeMoves()
+  createRoot(rootElement).render(jsx(HelperErrorBoundary, {}))
 }
 
 let extensionIconPending = false

@@ -206,13 +206,27 @@ function isIdentityQuestion(label: string) {
 
 function parseNumberedAnswers(text: string, count: number) {
   const answers = Array.from({ length: count }, () => "")
-  for (const line of text.split(/\n+/)) {
-    const match = line.match(/^\s*(\d+)[.)]\s+(.+)$/)
+  const parts = text
+    .split(/(?=(?:^|\s)\d+[.)]\s+)/)
+    .map((part) => part.trim())
+    .filter(Boolean)
+  for (const part of parts) {
+    const match = part.match(/^(\d+)[.)]\s*([\s\S]*)$/)
     if (!match) continue
     const index = Number(match[1]) - 1
-    if (index >= 0 && index < count) answers[index] = match[2].trim()
+    const value = match[2].replace(/\s+/g, " ").trim()
+    if (index >= 0 && index < count && value) answers[index] = value
   }
   return answers
+}
+
+/** A batch reply stuffed into one box looks like "1. N/A2. Petru3. https://...". */
+function answerIsMixedList(value: string) {
+  const text = value.replace(/\s+/g, " ").trim()
+  if (!text) return false
+  const markers = text.match(/\d+[.)]\s*/g) || []
+  if (markers.length >= 2) return true
+  return (text.match(/https?:\/\//gi) || []).length > 1
 }
 
 function snapChoice(answer: string, options: string[], multiple: boolean) {
@@ -247,6 +261,13 @@ async function fillUnansweredFromResume(
   const pending = elements.filter((el) => {
     const label = typeof el.label === "string" ? el.label.trim() : ""
     if (!label || answered.has(label) || isIdentityQuestion(label)) return false
+    if (
+      /twitter|preferred name|name pronunciation|pronouns|other links|github|linkedin profile|portfolio/.test(
+        label.toLowerCase()
+      )
+    ) {
+      return false
+    }
     if (isCurrentEmployerQuestion(label.toLowerCase().replace(/[^a-z0-9]+/g, " ").trim())) {
       return false
     }
@@ -288,7 +309,7 @@ async function fillUnansweredFromResume(
         "When choices are listed, copy the matching choice exactly. If the question allows more than one, list every matching choice separated by commas.",
         "For YES or NO questions, reply YES or NO.",
         "For privacy, consent, and whether the CV was submitted in English, reply YES.",
-        "For a notice period that is not stated on the resume, reply with a whole number of weeks when the question says weeks (1 month = 4). Otherwise reply: 1 month.",
+        "For how soon the candidate can start or a notice period, use the profile start date. If they can start tomorrow, reply: 1 day. Do not default to 1 month.",
         "When a question asks for years of experience as a number, reply with one integer, not a range and not the word years.",
         "Keep each answer to a single short line."
       ]
@@ -302,7 +323,7 @@ async function fillUnansweredFromResume(
       const value = withoutResumeDisclaimer(
         snapChoice(answers[index] || "", options, multiple)
       )
-      if (!value) return
+      if (!value || answerIsMixedList(value)) return
       const existing = fillDataList.find((row) => row.name === label)
       if (existing) existing.value = value
       else fillDataList.push({ name: label, value })

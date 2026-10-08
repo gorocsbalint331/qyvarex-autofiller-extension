@@ -16,6 +16,8 @@ export type ApplicationMeta = {
   resume?: string
   country?: string
   other?: string
+  status?: string
+  appliedDate?: string
 }
 
 export type ApplicationLogResult = {
@@ -71,7 +73,7 @@ async function markLogged(key: string) {
 
 const BAD_TITLE = /^(null|undefined|untitled(?: role)?|careers?|jobs?|apply|application)$/i
 const PLATFORM_COMPANY =
-  /spark hire|comeet|greenhouse|lever\b|ashby|workday|workable|smartrecruiters|jobvite|icims/i
+  /spark hire|comeet|greenhouse|lever\b|ashby|workday|workable|smartrecruiters|jobvite|icims|traffit/i
 
 function pinpointCompany(link: string): string {
   try {
@@ -136,9 +138,9 @@ function withPostingIdentity(meta: ApplicationMeta): ApplicationMeta {
 
 export async function recordApplication(
   meta: ApplicationMeta,
-  options: { force?: boolean } = {}
+  options: { force?: boolean; manual?: boolean } = {}
 ): Promise<ApplicationLogResult> {
-  meta = withPostingIdentity(meta)
+  if (!options.manual) meta = withPostingIdentity(meta)
   const link = postingLink((meta.link || "").trim())
   if (!link) return { ok: false, message: "link_required" }
   const key = applicationKey(link)
@@ -174,8 +176,8 @@ async function writeApplication(
     resume: meta.resume || "",
     country: meta.country || "",
     other: meta.other || "",
-    appliedDate: localAppliedDate(),
-    status: "applied"
+    appliedDate: (meta.appliedDate || "").trim() || localAppliedDate(),
+    status: (meta.status || "").trim() || "applied"
   })
   if (!result.ok) {
     return { ok: false, message: result.message || result.error, tabName: result.tabName }

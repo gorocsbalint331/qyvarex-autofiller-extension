@@ -20,7 +20,7 @@ const FAILURE_RE =
   /couldn'?t submit|could not submit|cannot submit|can'?t submit|unable to submit|was not submitted|not been submitted|limiting applications|you cannot submit|did not go through|error submitting/i
 const SUCCESS_URL_RE = /thank|success|confirmation|submitted|application-complete/i
 const PLATFORM_NAME_RE =
-  /^(ashby|bamboohr|breezy hr|comeet|greenhouse|icims|jobvite|lever|linkedin|pinpoint(?:hq)?|recruitee|smartrecruiters|spark hire(?: recruit(?: jobs)?)?|taleo|workable|workday|careers?|jobs?|job details|apply|application|new application)$/i
+  /^(ashby|bamboohr|breezy hr|comeet|greenhouse|icims|jobvite|lever|linkedin|pinpoint(?:hq)?|recruitee|smartrecruiters|spark hire(?: recruit(?: jobs)?)?|taleo|traffit|workable|workday|careers?|jobs?|job details|apply|application|new application)$/i
 const TITLE_SELECTORS = [
   '[data-automation-id="jobPostingHeader"]',
   ".posting-headline h2",
@@ -94,7 +94,29 @@ function applicationPageUrl() {
   return window.location.href
 }
 
+function traffitCompanyBrand(): string {
+  if (!/(^|\.)traffit\.com$/i.test(location.hostname)) return ""
+  const slug = location.hostname.split(".")[0]?.toLowerCase() || ""
+  if (!slug || /^(www|app)$/.test(slug)) return ""
+  for (const el of document.querySelectorAll("img[alt], a, span, strong, h1, h2")) {
+    const raw = cleanText(el.getAttribute("alt") || el.textContent)
+    const bare = raw.replace(/\.io$/i, "")
+    if (bare && bare.toLowerCase() === slug) return bare
+  }
+  return slug.charAt(0).toUpperCase() + slug.slice(1)
+}
+
 function scrapeTitle(): string {
+  const traffitBrand = traffitCompanyBrand().toLowerCase()
+  if (traffitBrand) {
+    for (const el of document.querySelectorAll<HTMLElement>("h1, h2")) {
+      const text = cleanText(el.innerText)
+      if (el.closest('[id^="jobright"], plasmo-csui')) continue
+      if (text.length < 8 || text.length > 200 || isGenericTitle(text)) continue
+      if (text.toLowerCase().replace(/\.io$/, "") === traffitBrand) continue
+      return text
+    }
+  }
   const vacancy = untypicalVacancyDocument()
   const vacancyTitle = cleanText(vacancy?.querySelector("h1[id*='JobTitle']")?.textContent)
   if (vacancyTitle) return vacancyTitle
@@ -115,6 +137,8 @@ function scrapeTitle(): string {
 }
 
 function scrapeCompany(title: string): string {
+  const traffitBrand = traffitCompanyBrand()
+  if (traffitBrand && traffitBrand.toLowerCase() !== title.trim().toLowerCase()) return traffitBrand
   const fromUrl = resolveJobContext({ url: location.href }).company
   if (fromUrl && fromUrl.toLowerCase() !== title.trim().toLowerCase()) return fromUrl
   const fromHost = companyFromHost()

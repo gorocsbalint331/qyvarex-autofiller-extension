@@ -43,6 +43,7 @@ import { Jazzhr } from "../sites/jazzhr.ts"
 import { Jobdiva } from "../sites/jobdiva.ts"
 import { JobScore } from "../sites/JobScore.ts"
 import { Jobvite } from "../sites/jobvite.ts"
+import { JustJoin } from "../sites/justjoin.ts"
 import { Kula } from "../sites/kula.ts"
 import { Lever } from "../sites/lever.ts"
 import { MetaCareers } from "../sites/metacareers.ts"
@@ -62,8 +63,10 @@ import { Rippling } from "../sites/rippling.ts"
 import { SmartRecruiters } from "../sites/smartrecruiters.ts"
 import { SuccessFactors } from "../sites/successfactors.ts"
 import { Taleo } from "../sites/taleo.ts"
+import { Traffit } from "../sites/traffit.ts"
 import { TeamTailor } from "../sites/teamtailor.ts"
 import { Tesla } from "../sites/tesla.ts"
+import { TestedRecruits } from "../sites/testedrecruits.ts"
 import { Tiktok } from "../sites/tiktok.ts"
 import { Trakstar } from "../sites/trakstar.ts"
 import { Trinethire } from "../sites/trinethire.ts"
@@ -94,16 +97,19 @@ const TARGET_CLASS_MAP = {
   lever: Lever,
   ashbyhq: Ashby,
   jobvite: Jobvite,
+  justjoin: JustJoin,
   kula: Kula,
   icims: Icims,
   breezy: Breezy,
   phenom: Phenom,
   tesla: Tesla,
+  testedrecruits: TestedRecruits,
   dover: DoverAutoFill,
   amazon: Amazon,
   dayforce: Dayforce,
   ultipro: Ultipro,
   taleo: Taleo,
+  traffit: Traffit,
   bamboohr: Bamboohr,
   brassring: Brassring,
   rippling: Rippling,

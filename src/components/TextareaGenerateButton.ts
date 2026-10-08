@@ -453,10 +453,13 @@ function TextareaShadowHost({ textarea, children }) {
     host.className = JR_EDIT_AI_HOST_CLASS
     host.style.cssText =
       "all: initial; position: relative; display: block; width: 0; height: 0; align-self: flex-start; pointer-events: none;"
-    const shadow = host.attachShadow({
-      mode: "open",
-    })
-    parent.insertBefore(host, textarea.nextSibling)
+    let shadow = null
+    try {
+      shadow = host.attachShadow({ mode: "open" })
+      parent.insertBefore(host, textarea.isConnected ? textarea.nextSibling : null)
+    } catch {
+      return
+    }
     setShadowRoot(shadow)
 
     let reinsertCount = 0
@@ -487,7 +490,11 @@ function TextareaShadowHost({ textarea, children }) {
 
     return () => {
       observer.disconnect()
-      host.remove()
+      try {
+        host.remove()
+      } catch {
+        /* The page framework may already have detached this host. */
+      }
       setShadowRoot(null)
     }
   }, [textarea])

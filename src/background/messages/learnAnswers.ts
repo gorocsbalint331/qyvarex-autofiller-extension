@@ -1,6 +1,6 @@
 import type { PlasmoMessaging } from "@plasmohq/messaging"
 
-import { mergeProfileAnswers } from "~api/team-client"
+import { mergeProfileAnswers, mergeSharedAnswers } from "~api/team-client"
 
 const NOISE_RE =
   /qyvarex|filled\s*\d*\s*items?|text fields? ok|no resume file input|fill\s*again|dismiss|button clicks sync|learning answers for next|saved to hub/i
@@ -12,7 +12,8 @@ const NOISE_RE =
  *   profileId?: string,
  *   scopeKey?: string,
  *   hostname?: string,
- *   stepKey?: string
+ *   stepKey?: string,
+ *   destination?: "profile" | "shared"
  * }
  */
 const handler: PlasmoMessaging.MessageHandler = async (req, res) => {
@@ -50,6 +51,21 @@ const handler: PlasmoMessaging.MessageHandler = async (req, res) => {
       typeof req.body?.hostname === "string" ? req.body.hostname.trim() : ""
     const stepKey =
       typeof req.body?.stepKey === "string" ? req.body.stepKey.trim() : ""
+
+    const destination = req.body?.destination === "shared" ? "shared" : "profile"
+    if (destination === "shared") {
+      if (!scopeKey) {
+        res.send({ ok: false, message: "scope_required" })
+        return
+      }
+      const shared = await mergeSharedAnswers(cleaned, scopeKey)
+      if (!shared.ok) {
+        res.send({ ok: false, message: shared.error || "save_failed" })
+        return
+      }
+      res.send({ ok: true, learned: cleaned, scopeKey, destination })
+      return
+    }
 
     const result = await mergeProfileAnswers(
       cleaned,
