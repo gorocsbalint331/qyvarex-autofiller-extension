@@ -67,6 +67,8 @@ export type AutofillInfoPayload = {
       loginPassword: string
     }>
   }
+  /** Profile login email used as the sign-up registration address. */
+  signupEmail?: string
   answers: Record<string, string>
   extras: Record<string, unknown>
   resumes: Array<{

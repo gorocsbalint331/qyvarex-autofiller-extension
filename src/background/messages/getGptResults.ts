@@ -195,10 +195,18 @@ function resumeBrief(extras: unknown) {
   return lines.join("\n").slice(0, 1800)
 }
 
+function isSubmitPhrase(value: string) {
+  const text = value.replace(/\s+/g, " ").trim().toLowerCase()
+  return (
+    /^(submit|send)(\s+(application|applicant|now))?$/.test(text) ||
+    /^apply(\s+now)?$/.test(text)
+  )
+}
+
 function isIdentityQuestion(label: string) {
   const text = label.toLowerCase()
   return (
-    /\b(first name|last name|full name|e-?mail|phone|mobile|address|city|linkedin|github)\b/.test(
+    /\b(first name|given name|last name|surname|family name|full name|e-?mail|phone|mobile|address|city|linkedin|github)\b/.test(
       text
     ) && !/\b(salary|experience|notice|visa|sponsor)\b/.test(text)
   )
@@ -261,6 +269,7 @@ async function fillUnansweredFromResume(
   const pending = elements.filter((el) => {
     const label = typeof el.label === "string" ? el.label.trim() : ""
     if (!label || answered.has(label) || isIdentityQuestion(label)) return false
+    if (isSubmitPhrase(label)) return false
     if (
       /twitter|preferred name|name pronunciation|pronouns|other links|github|linkedin profile|portfolio/.test(
         label.toLowerCase()
@@ -301,7 +310,7 @@ async function fillUnansweredFromResume(
       },
       promptList: [
         "Write only in English, even if the question is in another language.",
-        "Answer in the first person, as the candidate would submit it.",
+        "Answer in the first person, in the words the candidate would type into that field.",
         "Never say that something was not specified, not mentioned, or missing from the resume. Do not write \"I haven't specified\" or \"I have not mentioned\".",
         "Use the resume and profile. Do not invent employers, degrees, dates, or tools. If a topic is absent, still give a short practical answer from the listed work.",
         brief ? `Resume:\n${brief}` : "Use the candidate profile already provided.",
@@ -323,7 +332,7 @@ async function fillUnansweredFromResume(
       const value = withoutResumeDisclaimer(
         snapChoice(answers[index] || "", options, multiple)
       )
-      if (!value || answerIsMixedList(value)) return
+      if (!value || answerIsMixedList(value) || isSubmitPhrase(value)) return
       const existing = fillDataList.find((row) => row.name === label)
       if (existing) existing.value = value
       else fillDataList.push({ name: label, value })

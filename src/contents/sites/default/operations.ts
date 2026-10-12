@@ -887,9 +887,15 @@ export async function clickJoinNext() {
   return false
 }
 
+function isSubmitPhrase(value) {
+  const text = String(value || "").replace(/\s+/g, " ").trim().toLowerCase()
+  return /^(submit|send)(\s+(application|applicant|now))?$/.test(text)
+    || /^apply(\s+now)?$/.test(text)
+}
+
 export async function fillTextField(element, value) {
   const text = firstValue(value)
-  if (!element || !text) return false
+  if (!element || !text || isSubmitPhrase(text)) return false
   element.focus()
   setNativeValue(element, text)
   element.blur()

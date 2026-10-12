@@ -572,31 +572,39 @@ export default function Editor() {
             name: "saveAutofillInfo",
             body: saveBody,
           })
-        } else if (hasRegistrationEmailChanges) {
+          if (!isAutofillInfoSaveSuccess(response)) {
+            console.warn("[AutofillInfo] Editor save failed", {
+              reason: isAutofillInfoConflict(response)
+                ? "revision_conflict"
+                : "save_failed",
+              expectedRevision: saveBody.expectedRevision,
+            })
+            if (isAutofillInfoConflict(response)) {
+              setHasConflict(true)
+              await fetchAutofillInfo(true)
+            } else {
+              message.error(
+                "Failed to update autofill information. Please try again.",
+              )
+            }
+            return
+          }
+        }
+        if (hasRegistrationEmailChanges) {
           response = await sendToBackground({
             name: "updateAutofillSection",
-            body: registrationEmailBody,
+            body: {
+              ...registrationEmailBody,
+              profileId: autofillInfo?.profileId || undefined,
+            },
           })
-        }
-        if (
-          (hasRegularChanges || hasRegistrationEmailChanges) &&
-          !isAutofillInfoSaveSuccess(response)
-        ) {
-          console.warn("[AutofillInfo] Editor save failed", {
-            reason: isAutofillInfoConflict(response)
-              ? "revision_conflict"
-              : "save_failed",
-            expectedRevision: saveBody.expectedRevision,
-          })
-          if (isAutofillInfoConflict(response)) {
-            setHasConflict(true)
-            await fetchAutofillInfo(true)
-          } else {
+          if (!isAutofillInfoSaveSuccess(response)) {
+            console.warn("[AutofillInfo] Signup email save failed", response)
             message.error(
-              "Failed to update autofill information. Please try again.",
+              "Failed to save the sign-up email on this profile. Please try again.",
             )
+            return
           }
-          return
         }
       } catch {
         message.error(

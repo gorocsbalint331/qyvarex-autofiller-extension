@@ -223,8 +223,22 @@ export function hubToJobrightAutofill(
     phoneCountryCode: String(extras.phoneCountryCode ?? ""),
     _hubAnswers: hub.answers || {},
     defaultResumeId: hub.defaultResumeId,
-    resumes: hub.resumes
+    resumes: hub.resumes,
+    regenerationEmail: storedSignupEmail(hub)
   }
+}
+
+function storedSignupEmail(hub: AutofillInfoPayload) {
+  if (typeof hub.signupEmail === "string" && hub.signupEmail.trim()) {
+    return hub.signupEmail.trim()
+  }
+  const extras = hub.extras && typeof hub.extras === "object" ? hub.extras : {}
+  const fromExtras = (extras as { registrationEmail?: unknown }).registrationEmail
+  if (typeof fromExtras === "string" && fromExtras.trim()) return fromExtras.trim()
+  const login = String(hub.credentials?.loginEmail || "").trim()
+  const personal = String(hub.identity?.email || "").trim()
+  if (login && personal && login.toLowerCase() === personal.toLowerCase()) return ""
+  return login
 }
 
 type FillElement = {
@@ -500,6 +514,18 @@ function phoneCountryAnswer(hub: AutofillInfoPayload): string {
   if (!parts.dialCode) return explicit
   const country = parts.iso2 ? getCountryByIso2(parts.iso2)?.name || "" : ""
   return country ? `+${parts.dialCode} ${country}` : `+${parts.dialCode}`
+}
+
+function isSubmitPhrase(value: string) {
+  const text = value.replace(/\s+/g, " ").trim().toLowerCase()
+  return (
+    /^(submit|send)(\s+(application|applicant|now))?$/.test(text) ||
+    /^apply(\s+now)?$/.test(text)
+  )
+}
+
+function isPersonNameLabel(norm: string) {
+  return /\b(first name|given name|last name|surname|family name|full name)\b/.test(norm)
 }
 
 function labelMatches(norm: string, keys: string[]): boolean {
@@ -1099,7 +1125,7 @@ export function lookupAnswer(
   let bestAnswer: string | null = null
   let bestAnswerScore = 0
   for (const [key, value] of Object.entries(hub.answers || {})) {
-    if (!value) continue
+    if (!value || (isPersonNameLabel(norm) && isSubmitPhrase(value))) continue
     const nk = normalizeLabel(key)
     let score = 0
     if (nk === norm) score = 100

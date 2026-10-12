@@ -45,7 +45,16 @@ const handler: PlasmoMessaging.MessageHandler = async (req, res) => {
         ? (body.structuredData as Record<string, unknown>)
         : null
     if (structured && typeof structured.regenerationEmail === "string") {
-      patch.loginEmail = structured.regenerationEmail.trim()
+      const email = structured.regenerationEmail.trim()
+      patch.loginEmail = email
+      const current = await teamFetch<{
+        ok?: boolean
+        profile?: { extras?: Record<string, unknown> }
+      }>(`/api/v1/profiles/${encodeURIComponent(id)}`)
+      const previous = current.data?.profile?.extras
+      if (previous && typeof previous === "object" && !Array.isArray(previous)) {
+        patch.extras = { ...previous, registrationEmail: email }
+      }
     }
     if (body.extras && typeof body.extras === "object") patch.extras = body.extras
     if (body.data && typeof body.data === "object") {

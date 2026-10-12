@@ -11,7 +11,7 @@ import { jobsiteHostname, jobsiteScopeKey } from "~lib/site-answers"
 const IDENTITY_RE =
   /^(first name|last name|full name|legal name|preferred name|name|email|e-mail|email address|phone|mobile|telephone|cell|linkedin|website|address|street|city|state|province|zip|postal|country|resume|cv|cover letter)\b/i
 const SKIP_CHOICE_RE =
-  /^(submit|apply|replace|upload|cancel|back|next|save|continue|dismiss|fill again|ok)$/i
+  /^(submit(\s+(application|applicant|now))?|apply(\s+now)?|send(\s+application)?|replace|upload|cancel|back|next|save(\s+and\s+continue)?|continue|dismiss|fill again|ok)$/i
 const PLACEHOLDER_RE = /^(select|choose|please select|search|type to search|--|n\/a)$/i
 const CHOICE_SELECTOR =
   'button, [role="button"], [role="radio"], input[type="radio"]'

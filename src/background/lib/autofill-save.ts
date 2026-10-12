@@ -143,6 +143,9 @@ export function structuredDataToHubPatch(structured: Obj, current: HubProfile) {
     postalCode: str(location.postCode),
     country: str(location.country)
   }
+  if ("regenerationEmail" in structured) {
+    patch.loginEmail = str(structured.regenerationEmail).trim()
+  }
 
   const addressLine = str(structured.addressLine).trim()
   const currentLine = [current.address1, current.address2]
@@ -173,6 +176,9 @@ export function structuredDataToHubPatch(structured: Obj, current: HubProfile) {
       obj(structured.employmentInfo)
     ),
     skills: extractSkillList(structured)
+  }
+  if ("regenerationEmail" in structured) {
+    extras.registrationEmail = str(structured.regenerationEmail).trim()
   }
   const education = mapEducation(structured.education, prevExtras.education)
   if (education) extras.education = education

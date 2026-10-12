@@ -49,63 +49,117 @@ function isChoiceVisible(element) {
   return isVisible(host)
 }
 
+function isActionControl(node) {
+  if (!(node instanceof Element)) return false
+  const role = node.getAttribute("role")
+  const type = (node.getAttribute("type") || "").toLowerCase()
+  return (
+    node.tagName === "BUTTON" ||
+    node.tagName === "A" ||
+    role === "button" ||
+    type === "submit" ||
+    type === "button"
+  )
+}
+
+/** Button captions such as "Submit application" are not field labels or answers. */
+function isActionText(text) {
+  const label = cleanLabel(text).toLowerCase()
+  if (!label || label.length > 48) return false
+  return /^(submit|send|apply)(\s+(application|applicant|now|for this job))?$/.test(label)
+    || /^(continue|next|save and continue|cancel|back)$/.test(label)
+}
+
+function textWithoutActions(node) {
+  if (!node || isActionControl(node)) return ""
+  const clone = node.cloneNode(true)
+  clone.querySelectorAll?.("button, a, input, select, textarea, [role='button']").forEach((child) => {
+    child.remove()
+  })
+  const text = shortenLabel(clone.innerText || clone.textContent)
+  if (!text || isActionText(text)) return ""
+  return text
+}
+
+function hintLabel(element) {
+  const hint = [
+    element.getAttribute?.("autocomplete"),
+    element.getAttribute?.("data-ui"),
+    element.getAttribute?.("name"),
+    element.id,
+    element.getAttribute?.("placeholder"),
+  ]
+    .join(" ")
+    .toLowerCase()
+  if (/family-name|family_name|lastname|last-name|last_name|surname/.test(hint) && !/first/.test(hint)) {
+    return "Last name"
+  }
+  if (/given-name|firstname|first-name|first_name/.test(hint)) return "First name"
+  if (/e-?mail/.test(hint)) return "Email"
+  return ""
+}
+
 function labelFor(element) {
   if (element.id) {
     const explicit = document.querySelector(
       `label[for="${CSS.escape(element.id)}"]`,
     )
-    const text = shortenLabel(explicit?.innerText)
+    const text = textWithoutActions(explicit)
     if (text) return { text, element: explicit }
   }
 
   const wrapping = element.closest("label")
-  if (wrapping) {
-    const clone = wrapping.cloneNode(true)
-    clone.querySelectorAll("input, select, textarea").forEach((node) => {
-      node.remove()
-    })
-    const text = shortenLabel(clone.innerText)
-    if (text) return { text, element: wrapping }
+  const wrappingText = textWithoutActions(wrapping)
+  if (wrappingText && wrappingText.length <= 80) {
+    return { text: wrappingText, element: wrapping }
   }
 
   const aria = shortenLabel(element.getAttribute("aria-label"))
-  if (aria) return { text: aria, element: null }
+  if (aria && !isActionText(aria)) return { text: aria, element: null }
 
   const labelledBy = element.getAttribute("aria-labelledby")
   if (labelledBy) {
     const text = shortenLabel(
       labelledBy
         .split(/\s+/)
-        .map((id) => document.getElementById(id)?.innerText || "")
+        .map((id) => textWithoutActions(document.getElementById(id)))
+        .filter(Boolean)
         .join(" "),
     )
-    if (text) return { text, element: null }
+    if (text && !isActionText(text)) return { text, element: null }
   }
 
   const placeholder = shortenLabel(element.getAttribute("placeholder"))
-  if (placeholder && !/^select$/i.test(placeholder)) {
+  if (placeholder && !/^select$/i.test(placeholder) && !isActionText(placeholder)) {
     return { text: placeholder, element: null }
   }
 
   const previous = element.previousElementSibling
-  const previousText = shortenLabel(previous?.innerText)
-  if (previousText && previousText.length <= 80 && !previous.querySelector?.("input, select, textarea")) {
+  const previousText = textWithoutActions(previous)
+  if (
+    previousText &&
+    previousText.length <= 80 &&
+    !previous.querySelector?.("input, select, textarea")
+  ) {
     return { text: previousText, element: previous }
   }
 
   let node = element.parentElement
   for (let depth = 0; depth < 3 && node; depth += 1) {
     const sibling = node.previousElementSibling
-    const text = shortenLabel(sibling?.innerText)
+    const text = textWithoutActions(sibling)
     if (
       text &&
       text.length <= 80 &&
-      !sibling.querySelector?.("input, select, textarea")
+      !sibling.querySelector?.("input, select, textarea, button")
     ) {
       return { text, element: sibling }
     }
     node = node.parentElement
   }
+
+  const hinted = hintLabel(element)
+  if (hinted) return { text: hinted, element: null }
 
   return null
 }
