@@ -580,28 +580,48 @@ function walkFibers(root, visit) {
   }
 }
 
+function joinFormOnNode(node) {
+  const bags = [node?.memoizedProps?.value, node?.memoizedProps, node?.stateNode]
+  for (const bag of bags) {
+    if (!bag || typeof bag !== "object") continue
+    if (typeof bag.setValue === "function" && typeof bag.getValues === "function") {
+      const values = bag.getValues()
+      if (values && typeof values === "object" && values.candidate) return { kind: "rhf", bag }
+    }
+    const form = typeof bag.change === "function" ? bag : bag.form
+    if (form && typeof form.change === "function" && typeof form.getState === "function") {
+      const values = form.getState()?.values
+      if (values && typeof values === "object" && values.candidate) return { kind: "final", form }
+    }
+  }
+  return null
+}
+
+function findJoinFormFrom(element) {
+  let fiber = reactFiber(element)
+  for (let depth = 0; fiber && depth < 60; depth += 1) {
+    const found = joinFormOnNode(fiber)
+    if (found) return found
+    fiber = fiber.return
+  }
+  return null
+}
+
 function findJoinForm() {
+  const anchors = [
+    document.querySelector("[data-testid='CityName']"),
+    document.querySelector("input[name='candidate.email']"),
+    document.querySelector("input[name='candidate.firstName']"),
+    document.querySelector("input[name='email']"),
+  ].filter(Boolean)
+  for (const anchor of anchors) {
+    const found = findJoinFormFrom(anchor)
+    if (found) return found
+  }
   let found = null
   walkFibers(fiberHost(), (node) => {
     if (found) return
-    const bags = [node.memoizedProps?.value, node.memoizedProps]
-    for (const bag of bags) {
-      if (!bag || typeof bag !== "object") continue
-      if (typeof bag.setValue === "function" && typeof bag.getValues === "function") {
-        const values = bag.getValues()
-        if (values && typeof values === "object" && values.candidate) {
-          found = { kind: "rhf", bag }
-          return
-        }
-      }
-      const form = typeof bag.change === "function" ? bag : bag.form
-      if (form && typeof form.change === "function" && typeof form.getState === "function") {
-        const values = form.getState()?.values
-        if (values && typeof values === "object" && values.candidate) {
-          found = { kind: "final", form }
-        }
-      }
-    }
+    found = joinFormOnNode(node) || found
   })
   return found
 }
@@ -684,6 +704,8 @@ async function chooseMenuOption(queries, acceptFirst = false) {
     if (!typed) {
       const search = [...document.querySelectorAll("input")].find((element) => {
         if (!outsideExtension(element) || !isControlVisible(element)) return false
+        if (element.closest("[data-testid='CityName']")) return false
+        if (!element.closest("[role='listbox'], [role='dialog'], [role='menu']")) return false
         const hint = `${element.getAttribute("placeholder") || ""} ${element.getAttribute("role") || ""}`.toLowerCase()
         return /such|search|filter|stadt|city|land|country|combobox/.test(hint)
       })
@@ -706,6 +728,63 @@ async function chooseMenuOption(queries, acceptFirst = false) {
   return false
 }
 
+function placeQueries(value) {
+  const full = String(value || "").replace(/\s+/g, " ").trim()
+  const head = full.split(",")[0].trim()
+  return [...new Set([head, full].filter((item) => item.length >= 2))]
+}
+
+function suggestionMatches(text, query) {
+  const option = String(text || "").replace(/\s+/g, " ").trim().toLowerCase()
+  const target = String(query || "").replace(/\s+/g, " ").trim().toLowerCase()
+  if (!option || !target) return false
+  if (menuQueryMatches(option, query)) return true
+  const head = option.split(",")[0].trim()
+  return head === target || head.startsWith(target) || option.startsWith(target)
+}
+
+/** Type into a live search box and leave it focused so suggestions can load. */
+async function typeLiveQuery(element, value) {
+  const text = String(value || "").trim()
+  if (!element || !text) return
+  element.focus()
+  element.click()
+  setNativeValue(element, "")
+  element.dispatchEvent(new InputEvent("input", { bubbles: true, inputType: "deleteContentBackward" }))
+  await sleep(40)
+  setNativeValue(element, text)
+  element.dispatchEvent(
+    new InputEvent("input", { bubbles: true, data: text, inputType: "insertText" }),
+  )
+}
+
+async function waitForSuggestion(queries, acceptFirst, timeout = 5000) {
+  const started = Date.now()
+  while (Date.now() - started < timeout) {
+    const options = menuOptions().filter((element) => {
+      const text = controlText(element)
+      return text && !/no options|couldn't find|couldn’t find|not found|no city/i.test(text)
+    })
+    const option = options.find((element) =>
+      queries.some((query) => suggestionMatches(controlText(element), query)),
+    )
+    if (option) return option
+    if (acceptFirst && options.length === 1 && Date.now() - started > 700) return options[0]
+    await sleep(150)
+  }
+  return null
+}
+
+async function chooseSearchOption(input, queries, acceptFirst = false, timeout = 5000) {
+  if (!input || !queries.length) return false
+  await typeLiveQuery(input, queries[0])
+  const option = await waitForSuggestion(queries, acceptFirst, timeout)
+  if (!option) return false
+  press(option)
+  await sleep(400)
+  return true
+}
+
 async function chooseLabeledOption(patterns, queries, acceptFirst = false) {
   const block = fieldBlock(patterns)
   if (!block || !queries.length) return false
@@ -714,13 +793,72 @@ async function chooseLabeledOption(patterns, queries, acceptFirst = false) {
   const opener =
     block.controls.find((element) => element.tagName === "BUTTON" || element.getAttribute("role") === "combobox") ||
     block.controls[0]
-  if (opener?.tagName === "INPUT") {
-    await fillTextField(opener, queries[0])
-  } else if (opener) {
+  if (opener?.tagName === "INPUT") return chooseSearchOption(opener, queries, acceptFirst)
+  if (opener) {
     press(opener)
     await sleep(200)
   }
   return chooseMenuOption(queries, acceptFirst)
+}
+
+function joinControlLabel(input) {
+  if (input.labels && input.labels.length) return controlText(input.labels[0])
+  const wrapping = input.closest("label")
+  if (wrapping) return controlText(wrapping)
+  if (input.id) {
+    const linked = document.querySelector(`label[for="${CSS.escape(input.id)}"]`)
+    if (linked) return controlText(linked)
+  }
+  let node = input.parentElement
+  for (let depth = 0; depth < 4 && node; depth += 1) {
+    const label = [...node.children].find((child) => child.tagName === "LABEL")
+    if (label) return controlText(label)
+    node = node.parentElement
+  }
+  return ""
+}
+
+function joinEmailInputs() {
+  return [...document.querySelectorAll("input")].filter((input) => {
+    if (!outsideExtension(input) || !isControlVisible(input)) return false
+    const type = String(input.getAttribute("type") || "text").toLowerCase()
+    if (["hidden", "password", "file", "checkbox", "radio", "submit", "button"].includes(type)) return false
+    const hint = [
+      input.name,
+      input.id,
+      input.getAttribute("autocomplete"),
+      input.getAttribute("aria-label"),
+      input.getAttribute("placeholder"),
+      joinControlLabel(input),
+    ]
+      .join(" ")
+      .toLowerCase()
+    return /e-?mail/.test(hint)
+  })
+}
+
+/**
+ * Join keeps the signed-in account email, including when that account is the
+ * team hub login. The application should use the selected profile instead.
+ */
+async function fillJoinProfileEmail(profile) {
+  const email = String(profile?.email || "").trim()
+  if (!email) return false
+  const form = findJoinForm()
+  if (form) writeJoinField(form, "candidate.email", email)
+  let filled = false
+  for (const input of joinEmailInputs()) {
+    input.disabled = false
+    input.readOnly = false
+    if (await fillTextField(input, email)) filled = true
+  }
+  return filled || Boolean(form)
+}
+
+function joinCityInput() {
+  const marked = document.querySelector("[data-testid='CityName'] input")
+  if (marked && outsideExtension(marked) && isControlVisible(marked)) return marked
+  return textInput(fieldBlock([/^stadt\b/i, /^city\b/i, /stadt auswählen/i, /select city/i]))
 }
 
 function clearJoinAvatar() {
@@ -768,12 +906,27 @@ export async function fillJoinPersonalForm(profile) {
   const lastInput = textInput(fieldBlock([/^nachname\b/i, /last name/i, /surname/i]))
   if (first && firstInput && (await fillTextField(firstInput, first))) filled.push("First name")
   if (last && lastInput && (await fillTextField(lastInput, last))) filled.push("Last name")
+  if (await fillJoinProfileEmail(profile)) filled.push("Email")
   if (profile.country && (await chooseLabeledOption([/land des wohnsitzes/i, /country of residence/i, /^country$/i, /^land$/i], countryQueries(profile.country)))) {
     filled.push("Country")
   }
-  if (profile.city && (await chooseLabeledOption([/^stadt\b/i, /^city\b/i, /stadt auswählen/i, /select city/i], [profile.city], true))) {
-    filled.push("City")
+  const cityQueries = placeQueries(profile.city)
+  const cityInput = joinCityInput()
+  let cityPicked = false
+  if (cityQueries.length && cityInput) {
+    cityPicked = await chooseSearchOption(cityInput, cityQueries, false, 3500)
+    if (!cityPicked) {
+      const form = findJoinForm()
+      if (form) writeJoinField(form, "candidate.countryId", null)
+      cityPicked = await chooseSearchOption(cityInput, cityQueries, false, 3500)
+    }
+  } else if (cityQueries.length) {
+    cityPicked = await chooseLabeledOption(
+      [/^stadt\b/i, /^city\b/i, /stadt auswählen/i, /select city/i],
+      cityQueries,
+    )
   }
+  if (cityPicked) filled.push("City")
   const phone = decomposePhone(profile.phone, profile.country)
   const phoneBlock = fieldBlock([/telefonnummer/i, /phone number/i, /^phone$/i])
   const phoneInput = textInput(phoneBlock)
@@ -837,7 +990,11 @@ export async function fillJoinIdentityInputs(profile) {
       .join(" ")
       .toLowerCase()
     let value = ""
-    if (/e-?mail/.test(hint)) value = profile.email
+    if (/e-?mail/.test(hint)) {
+      input.disabled = false
+      input.readOnly = false
+      value = profile.email
+    }
     else if (/phone|mobile|tel/.test(hint) && !/code|dial/.test(hint)) value = profile.phone
     else if (/first/.test(hint) && /name/.test(hint)) value = profile.firstName
     else if (/(last|family|surname)/.test(hint)) value = profile.lastName
