@@ -74,6 +74,23 @@ function companyFromWorkableUrl(url: string): string {
   }
 }
 
+/** Greenhouse board token, e.g. /addepar1/jobs/123 or ?for=addepar1. */
+function companyFromGreenhouseUrl(url: URL): string {
+  if (!/(^|\.)greenhouse\.io$/i.test(url.hostname)) return ""
+  const reserved = new Set(["embed", "jobs", "job", "job_app", "apply", "application", "v1"])
+  const fromQuery = url.searchParams.get("for") || ""
+  const fromPath = url.pathname
+    .split("/")
+    .filter(Boolean)
+    .find((part) => !reserved.has(part.toLowerCase()))
+  const token = decodeURIComponent(fromQuery || fromPath || "").trim()
+  if (!token || reserved.has(token.toLowerCase()) || /^\d+$/.test(token)) return ""
+  // Board tokens often append a number when the name is taken: addepar1.
+  const base = token.replace(/([a-z])\d+$/i, "$1").replace(/[-_]+/g, " ").trim()
+  if (!base || /^(jobs|greenhouse)$/i.test(base)) return ""
+  return base.replace(/\b[a-z]/g, (char) => char.toUpperCase())
+}
+
 function companyFromHost(url: string): string {
   try {
     const parsed = new URL(url)
@@ -91,6 +108,8 @@ function companyFromHost(url: string): string {
       const slug = parsed.pathname.split("/").filter(Boolean)[0] || ""
       if (slug && !/^(jobs|thanks)$/i.test(slug)) return humanizeHostSlug(slug)
     }
+    const greenhouse = companyFromGreenhouseUrl(parsed)
+    if (greenhouse) return greenhouse
     return ""
   } catch {
     return ""

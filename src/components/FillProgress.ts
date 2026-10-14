@@ -95,6 +95,51 @@ function SetupCredentialChip({ label, onClick }) {
   })
 }
 
+function FillPanelTabs({ tab, onChange }) {
+  const tabs = [
+    ["fields", "Required"],
+    ["sheet", "Google Sheet"],
+  ]
+  return jsx("div", {
+    role: "tablist",
+    "aria-label": "Application panel",
+    style: {
+      display: "flex",
+      gap: 4,
+      width: "100%",
+      flexShrink: 0,
+      padding: 4,
+      borderRadius: 12,
+      background: "#f1f5f9",
+      boxSizing: "border-box",
+    },
+    children: tabs.map(([id, label]) =>
+      jsx(
+        "button",
+        {
+          type: "button",
+          role: "tab",
+          "aria-selected": tab === id,
+          onClick: () => onChange(id),
+          style: {
+            flex: 1,
+            minHeight: 34,
+            border: 0,
+            borderRadius: 8,
+            background: tab === id ? "#fff" : "transparent",
+            color: tab === id ? "#064e3b" : "#64748b",
+            font: `${tab === id ? 600 : 500} 13px/18px Inter, -apple-system, sans-serif`,
+            boxShadow: tab === id ? "0 1px 2px rgba(15, 23, 42, 0.08)" : "none",
+            cursor: "pointer",
+          },
+          children: label,
+        },
+        id,
+      ),
+    ),
+  })
+}
+
 function SubmitErrorBanner({ message }) {
   return jsxs("div", {
     className: "signup-autofill-submit-error",
@@ -317,6 +362,7 @@ export default function FillProgress({
   )
   const isOpen = isFilling || expanded
   const [isOpenAnimated, setIsOpenAnimated] = useState(false)
+  const [panelTab, setPanelTab] = useState("fields")
 
   useEffect(() => {
     if (!isOpen) {
@@ -520,42 +566,86 @@ export default function FillProgress({
                   className: "auto-fill-progress-bar",
                   percent,
                 }),
-                autoFillResult &&
-                  jsx("div", {
-                    className: "auto-fill-fields-group-container",
-                    children: isSignupFlow
-                      ? jsx(SignupAutofillProgress, {
-                          autoFillResult,
-                          isFilling,
-                          onSetupCredential: (credential) => {
-                            trackEvent(
-                              "autofill_workday_setup_password_click",
-                              {
-                                website_url: window.location.href,
-                                uid: useProfileStore.getState().userStage
-                                  ?.userId,
-                                filed: credential,
-                              },
-                            )
-                            setOpenAutofillInfo(true, "signupInformation")
-                          },
-                        })
-                      : jsxs(Fragment, {
-                          children: [
-                            jsx(AutoFillRuleGroup, {
-                              autoFillResult,
-                              isFilling,
-                            }),
-                            submitMessage &&
-                              jsx(SubmitErrorBanner, {
-                                message: submitMessage,
-                              }),
-                          ],
+                !isFilling && !isSignupFlow
+                  ? jsxs("div", {
+                      className: "fill-panel-pages",
+                      style: {
+                        display: "flex",
+                        flexDirection: "column",
+                        flex: "1 1 0",
+                        minHeight: 0,
+                        width: "100%",
+                        gap: 8,
+                      },
+                      children: [
+                        jsx(FillPanelTabs, {
+                          tab: panelTab,
+                          onChange: setPanelTab,
                         }),
-                  }),
-                !isFilling &&
-                  !isSignupFlow &&
-                  jsx(LogApplicationButton, { currentTabJob, disabled: isFilling }),
+                        panelTab === "sheet"
+                          ? jsx("div", {
+                              className: "auto-fill-fields-group-container",
+                              children: jsx(LogApplicationButton, {
+                                currentTabJob,
+                                disabled: isFilling,
+                                page: true,
+                              }),
+                            })
+                          : autoFillResult &&
+                            jsx("div", {
+                              className: "auto-fill-fields-group-container",
+                              children: jsxs(Fragment, {
+                                children: [
+                                  jsx(AutoFillRuleGroup, {
+                                    autoFillResult,
+                                    isFilling,
+                                  }),
+                                  submitMessage &&
+                                    jsx(SubmitErrorBanner, {
+                                      message: submitMessage,
+                                    }),
+                                ],
+                              }),
+                            }),
+                      ],
+                    })
+                  : jsxs(Fragment, {
+                      children: [
+                        autoFillResult &&
+                          jsx("div", {
+                            className: "auto-fill-fields-group-container",
+                            children: isSignupFlow
+                              ? jsx(SignupAutofillProgress, {
+                                  autoFillResult,
+                                  isFilling,
+                                  onSetupCredential: (credential) => {
+                                    trackEvent(
+                                      "autofill_workday_setup_password_click",
+                                      {
+                                        website_url: window.location.href,
+                                        uid: useProfileStore.getState().userStage
+                                          ?.userId,
+                                        filed: credential,
+                                      },
+                                    )
+                                    setOpenAutofillInfo(true, "signupInformation")
+                                  },
+                                })
+                              : jsxs(Fragment, {
+                                  children: [
+                                    jsx(AutoFillRuleGroup, {
+                                      autoFillResult,
+                                      isFilling,
+                                    }),
+                                    submitMessage &&
+                                      jsx(SubmitErrorBanner, {
+                                        message: submitMessage,
+                                      }),
+                                  ],
+                                }),
+                          }),
+                      ],
+                    }),
               ],
             }),
       ],

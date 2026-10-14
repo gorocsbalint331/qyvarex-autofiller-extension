@@ -204,7 +204,20 @@ function isSubmitPhrase(value: string) {
 }
 
 function isIdentityQuestion(label: string) {
-  const text = label.toLowerCase()
+  const text = label
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, " ")
+    .trim()
+  if (
+    text === "name" ||
+    text === "your name" ||
+    text === "full name" ||
+    text === "legal name" ||
+    text === "full legal name" ||
+    text === "legal full name"
+  ) {
+    return true
+  }
   return (
     /\b(first name|given name|last name|surname|family name|full name|e-?mail|phone|mobile|address|city|linkedin|github)\b/.test(
       text

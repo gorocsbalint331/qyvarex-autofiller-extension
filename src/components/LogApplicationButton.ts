@@ -144,19 +144,23 @@ function detectedDraft(currentTabJob, resumeName, profileCountry) {
   }
 }
 
-export default function LogApplicationButton({ currentTabJob, disabled = false }) {
+export default function LogApplicationButton({
+  currentTabJob,
+  disabled = false,
+  page = false,
+}) {
   const href = window.location.href
   const resumeState = useResumeStore((state) => state)
   const autofillInfo = useAutofillInfoStore((state) => state.autofillInfo)
   const profileCountry = useAutofillInfoStore((state) => state.country)
   const fetchAutofillInfo = useAutofillInfoStore((state) => state.fetchAutofillInfo)
   const resumeName = selectedResumeName(resumeState, autofillInfo)
-  const [open, setOpen] = useState(false)
+  const [open, setOpen] = useState(Boolean(page))
   const [draft, setDraft] = useState(() => detectedDraft(currentTabJob, resumeName, profileCountry))
   const [status, setStatus] = useState("idle")
   const [detail, setDetail] = useState("")
   const edited = useRef(false)
-  const page = useRef("")
+  const seenHref = useRef("")
 
   useEffect(() => {
     fetchAutofillInfo?.().catch(() => {})
@@ -164,8 +168,8 @@ export default function LogApplicationButton({ currentTabJob, disabled = false }
 
   useEffect(() => {
     const next = detectedDraft(currentTabJob, resumeName, profileCountry)
-    if (page.current !== href) {
-      page.current = href
+    if (seenHref.current !== href) {
+      seenHref.current = href
       edited.current = false
       setDraft(next)
       setStatus("idle")
@@ -267,46 +271,83 @@ export default function LogApplicationButton({ currentTabJob, disabled = false }
         : "Log to Google Sheet"
 
   const summary = [draft.title, draft.company].filter(Boolean).join(" · ")
+  const showForm = page || open
   return jsxs("div", {
     style: {
       display: "flex",
       flexDirection: "column",
-      gap: 8,
+      gap: 10,
       width: "100%",
-      padding: "4px 0 8px",
+      marginTop: page ? 0 : 8,
+      padding: 10,
+      border: "1px solid #d1fae5",
+      borderRadius: 12,
+      background: "#f0fdf4",
+      boxSizing: "border-box",
     },
     children: [
-      jsxs("button", {
+      page
+        ? null
+        : jsxs("button", {
         type: "button",
         onClick: () => setOpen((value) => !value),
         "aria-expanded": open,
+        "aria-label": open ? "Hide Google Sheet details" : "Show Google Sheet details",
         style: {
           display: "flex",
           alignItems: "center",
-          justifyContent: "space-between",
+          gap: 10,
           width: "100%",
-          padding: 0,
+          minHeight: 48,
+          padding: "4px 2px",
           border: 0,
           background: "transparent",
           cursor: "pointer",
           textAlign: "left",
         },
         children: [
+          jsx("span", {
+            "aria-hidden": true,
+            style: {
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              width: 36,
+              height: 36,
+              flexShrink: 0,
+              borderRadius: 10,
+              background: "#12b76a",
+              color: "#fff",
+            },
+            children: jsx("svg", {
+              width: 20,
+              height: 20,
+              viewBox: "0 0 20 20",
+              fill: "none",
+              children: jsx("path", {
+                d: "M4 3.5h8.5L16 7v9.5a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1v-12a1 1 0 0 1 1-1Z M12.5 3.5V7H16 M5.5 10.5h9 M5.5 13.5h9",
+                stroke: "currentColor",
+                strokeWidth: 1.6,
+                strokeLinecap: "round",
+                strokeLinejoin: "round",
+              }),
+            }),
+          }),
           jsxs("span", {
-            style: { display: "flex", flexDirection: "column", gap: 2, minWidth: 0 },
+            style: { display: "flex", flexDirection: "column", gap: 2, minWidth: 0, flex: 1 },
             children: [
               jsx("span", {
                 style: {
-                  font: "600 12px/16px Inter, -apple-system, sans-serif",
-                  color: "#111827",
+                  font: "600 14px/18px Inter, -apple-system, sans-serif",
+                  color: "#064e3b",
                 },
                 children: "Google Sheet",
               }),
               !open && summary
                 ? jsx("span", {
                     style: {
-                      font: "400 11px/14px Inter, -apple-system, sans-serif",
-                      color: "#64748b",
+                      font: "500 13px/18px Inter, -apple-system, sans-serif",
+                      color: "#3f6212",
                       overflow: "hidden",
                       textOverflow: "ellipsis",
                       whiteSpace: "nowrap",
@@ -319,42 +360,67 @@ export default function LogApplicationButton({ currentTabJob, disabled = false }
           jsx("span", {
             "aria-hidden": true,
             style: {
-              font: "600 14px/16px Inter, sans-serif",
-              color: "#64748b",
-              transform: open ? "rotate(180deg)" : "none",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              width: 32,
+              height: 32,
+              flexShrink: 0,
+              borderRadius: 999,
+              background: "#fff",
+              color: "#047857",
+              border: "1px solid #a7f3d0",
             },
-            children: "▾",
+            children: jsx("svg", {
+              width: 20,
+              height: 20,
+              viewBox: "0 0 20 20",
+              fill: "none",
+              style: {
+                display: "block",
+                transform: open ? "none" : "rotate(180deg)",
+                transition: "transform .15s ease",
+              },
+              children: jsx("path", {
+                d: "M5 7.5 10 12.5 15 7.5",
+                stroke: "currentColor",
+                strokeWidth: 2.2,
+                strokeLinecap: "round",
+                strokeLinejoin: "round",
+              }),
+            }),
           }),
         ],
       }),
-      open
+      showForm
         ? jsxs("div", {
-            style: { display: "flex", flexDirection: "column", gap: 8 },
+            style: { display: "flex", flexDirection: "column", gap: 10 },
             children: [
               ...FIELDS.map(([key, label]) =>
                 jsxs(
                   "label",
                   {
-                    style: { display: "flex", flexDirection: "column", gap: 2 },
+                    style: { display: "flex", flexDirection: "column", gap: 4 },
                     children: [
                       jsx("span", {
                         style: {
-                          font: "600 11px/14px Inter, -apple-system, sans-serif",
-                          color: "#64748b",
+                          font: "600 12px/16px Inter, -apple-system, sans-serif",
+                          color: "#3f6212",
                         },
                         children: label,
                       }),
                       jsx("input", {
+                        type: key === "appliedDate" ? "date" : "text",
                         value: draft[key],
                         disabled: busy,
                         onChange: (event) => updateField(key, event.target.value),
                         style: {
                           width: "100%",
                           boxSizing: "border-box",
-                          border: "1px solid #e5e7eb",
-                          borderRadius: 8,
-                          padding: "6px 8px",
-                          font: "400 12px/16px Inter, -apple-system, sans-serif",
+                          border: "1px solid #bbf7d0",
+                          borderRadius: 10,
+                          padding: "9px 10px",
+                          font: "400 13px/18px Inter, -apple-system, sans-serif",
                           color: "#111827",
                           background: busy ? "#f8fafc" : "#fff",
                         },
@@ -370,11 +436,12 @@ export default function LogApplicationButton({ currentTabJob, disabled = false }
                 onClick: handleLog,
                 style: {
                   border: 0,
-                  borderRadius: 8,
-                  padding: "8px 12px",
+                  borderRadius: 10,
+                  minHeight: 42,
+                  padding: "10px 14px",
                   background: busy ? "#94a3b8" : "#0b6e4f",
                   color: "#fff",
-                  font: "600 13px/18px Inter, -apple-system, sans-serif",
+                  font: "600 14px/20px Inter, -apple-system, sans-serif",
                   cursor: busy ? "default" : "pointer",
                 },
                 children: buttonLabel,
@@ -382,7 +449,7 @@ export default function LogApplicationButton({ currentTabJob, disabled = false }
               detail
                 ? jsx("div", {
                     style: {
-                      font: "500 12px/16px Inter, -apple-system, sans-serif",
+                      font: "500 13px/18px Inter, -apple-system, sans-serif",
                       color: status === "error" ? "#b91c1c" : "#0b6e4f",
                     },
                     children: detail,

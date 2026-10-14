@@ -223,12 +223,14 @@ const scrapingRules = {
     ],
     "jobCompanyNamePath": [
       "substring(normalize-space(.//div[@id=\"app_body\"]//span[@class=\"company-name\"]/text()), 4)",
+      "substring-before(.//img[contains(@class, \"logo\") and contains(@alt, \" Logo\")]/@alt, \" Logo\")",
+      "substring-before(.//*[contains(@class, \"logo\")]//img[contains(@alt, \" Logo\")]/@alt, \" Logo\")",
       "substring-after(.//meta[(@property=\"og:site_name\" or @name=\"application-name\") and starts-with(@content, \"Careers at \")]/@content, \"Careers at \")",
       ".//meta[@property=\"og:site_name\" or @name=\"application-name\"]/@content",
       "substring-before(.//a[@class=\"logo\"]/img[contains(@alt, \" Logo\")]/@alt, \" Logo\")",
-      "substring-before(.//div[@class=\"image-container\"]/img[contains(@alt, \" Logo\")]/@alt, \" Logo\")",
+      "substring-before(.//div[@class=\"image-container\"]//img[contains(@alt, \" Logo\")]/@alt, \" Logo\")",
       ".//a[@class=\"logo\"]/img/@alt",
-      ".//div[@class=\"image-container\"]/img/@alt"
+      ".//div[@class=\"image-container\"]//img/@alt"
     ]
   },
   "ICIMS": {

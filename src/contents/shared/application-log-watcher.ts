@@ -136,28 +136,79 @@ function scrapeTitle(): string {
   return isGenericTitle(scraped) ? "" : scraped
 }
 
+function companyFromLogo(root: ParentNode = document): string {
+  const images = root.querySelectorAll<HTMLElement>(
+    'a.logo img[alt], img.logo[alt], header img[alt], [class*="logo" i] img[alt], a.logo svg[aria-label], [class*="logo" i] svg[aria-label]'
+  )
+  for (const img of images) {
+    if (img.closest('[id^="jobright"], plasmo-csui')) continue
+    const alt = cleanText(img.getAttribute("alt") || img.getAttribute("aria-label"))
+      .replace(/\s+logo$/i, "")
+      .trim()
+    if (!alt || alt.length > 80 || /^logo$/i.test(alt) || PLATFORM_NAME_RE.test(alt)) continue
+    return alt
+  }
+  return ""
+}
+
+function postingDocument(): Document {
+  try {
+    const top = window.top
+    if (top && top !== window && top.document) return top.document
+  } catch {
+    /* the application frame cannot read the parent */
+  }
+  return document
+}
+
+function companyFromBoardHeading(): string {
+  const sources = [document.title, document.querySelector("h1")?.textContent || ""]
+  for (const source of sources) {
+    const match = cleanText(source).match(
+      /^(?:jobs|careers|current openings|open positions)\s+at\s+(.+)$/i
+    )
+    const name = cleanText(match?.[1]).replace(/\s+logo$/i, "")
+    if (name && !PLATFORM_NAME_RE.test(name)) return name
+  }
+  return ""
+}
+
+function usableCompany(name: string, title: string): boolean {
+  const value = cleanText(name)
+  if (!value || PLATFORM_NAME_RE.test(value)) return false
+  return value.toLowerCase() !== title.trim().toLowerCase()
+}
+
 function scrapeCompany(title: string): string {
   const traffitBrand = traffitCompanyBrand()
-  if (traffitBrand && traffitBrand.toLowerCase() !== title.trim().toLowerCase()) return traffitBrand
-  const fromUrl = resolveJobContext({ url: location.href }).company
-  if (fromUrl && fromUrl.toLowerCase() !== title.trim().toLowerCase()) return fromUrl
+  if (usableCompany(traffitBrand, title)) return traffitBrand
+  const page = postingDocument()
+  const fromLogo = companyFromLogo(page) || companyFromLogo(document)
+  if (usableCompany(fromLogo, title)) return fromLogo
+  const fromBoard = companyFromBoardHeading()
+  if (usableCompany(fromBoard, title)) return fromBoard
+  // Greenhouse titles are "Job Application for {role} at {company}". og:title is
+  // only the role, so the document title and the board URL have to be read too.
+  const fromPage = resolveJobContext({
+    url: applicationPageUrl(),
+    docTitle: page.title || document.title,
+    h1: title
+  }).company
+  if (usableCompany(fromPage, title)) return fromPage
   const fromHost = companyFromHost()
   if (fromHost) return fromHost
   const siteName = cleanText(
     document.querySelector<HTMLMetaElement>('meta[property="og:site_name"]')?.content
   )
-  if (
-    siteName &&
-    !PLATFORM_NAME_RE.test(siteName) &&
-    !/^(jobs by|careers at)\b/i.test(siteName) &&
-    siteName.toLowerCase() !== title.toLowerCase()
-  ) {
-    return siteName
-  }
-  const heading =
-    document.querySelector<HTMLMetaElement>('meta[property="og:title"]')?.content ||
-    document.title
-  return companyBesideTitle(heading, title) || cleanText(scrapeGenericJobData().companyName)
+  if (usableCompany(siteName, title) && !/^(jobs by|careers at)\b/i.test(siteName)) return siteName
+  const ogTitle =
+    document.querySelector<HTMLMetaElement>('meta[property="og:title"]')?.content || ""
+  return (
+    companyBesideTitle(page.title || "", title) ||
+    companyBesideTitle(document.title, title) ||
+    companyBesideTitle(ogTitle, title) ||
+    cleanText(scrapeGenericJobData().companyName)
+  )
 }
 
 function controlLabel(control: HTMLElement): string {

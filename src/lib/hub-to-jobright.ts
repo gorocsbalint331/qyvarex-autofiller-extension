@@ -528,6 +528,47 @@ function isPersonNameLabel(norm: string) {
   return /\b(first name|given name|last name|surname|family name|full name)\b/.test(norm)
 }
 
+/** The applicant's own name, not a company, school, or "name one project" question. */
+function isCandidateNameLabel(norm: string) {
+  if (
+    /\b(company|employer|school|university|college|institution|file|user|username|project|manager|reference|referral|emergency|bank|account|middle|first|last|surname|family|given|preferred)\b/.test(
+      norm
+    )
+  ) {
+    return false
+  }
+  return (
+    norm === "name" ||
+    norm === "your name" ||
+    norm === "full name" ||
+    norm === "legal name" ||
+    norm === "full legal name" ||
+    norm === "legal full name" ||
+    norm === "candidate name" ||
+    norm === "applicant name"
+  )
+}
+
+function looksLikePersonName(value: string) {
+  const text = value.replace(/\s+/g, " ").trim()
+  if (!text || text.length > 60 || /^\d/.test(text) || /\d+[.)]/.test(text)) return false
+  const words = text.split(" ")
+  if (words.length > 5) return false
+  return !/\b(led|application|experience|frontend|backend)\b/i.test(text)
+}
+
+function candidateName(hub: AutofillInfoPayload) {
+  const name = (
+    hub.identity.fullName ||
+    `${hub.identity.firstName || ""} ${hub.identity.lastName || ""}`.trim()
+  ).trim()
+  return looksLikePersonName(name) ? name : ""
+}
+
+function isBatchPromptKey(norm: string) {
+  return norm.startsWith("answer each application question")
+}
+
 function labelMatches(norm: string, keys: string[]): boolean {
   for (const key of keys) {
     if (norm === key) return true
@@ -1121,12 +1162,19 @@ export function lookupAnswer(
     if (notice) return options.length ? adaptToOptions(notice, options) : notice
   }
 
+  if (isCandidateNameLabel(norm)) {
+    const name = candidateName(hub)
+    if (name) return options.length ? adaptToOptions(name, options) : name
+    return null
+  }
+
   // Explicit Q&A from hub first (exact / careful contains)
   let bestAnswer: string | null = null
   let bestAnswerScore = 0
   for (const [key, value] of Object.entries(hub.answers || {})) {
     if (!value || (isPersonNameLabel(norm) && isSubmitPhrase(value))) continue
     const nk = normalizeLabel(key)
+    if (isBatchPromptKey(nk)) continue
     let score = 0
     if (nk === norm) score = 100
     else if (
@@ -1139,7 +1187,8 @@ export function lookupAnswer(
       score = 85
     } else if (
       nk.split(" ").length >= 2 &&
-      norm.split(" ").length <= nk.split(" ").length + 3 &&
+      norm.split(" ").length >= 2 &&
+      Math.abs(norm.split(" ").length - nk.split(" ").length) <= 3 &&
       (norm.includes(nk) || nk.includes(norm))
     ) {
       score = 70
