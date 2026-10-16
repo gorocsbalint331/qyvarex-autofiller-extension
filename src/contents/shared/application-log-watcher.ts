@@ -106,7 +106,47 @@ function traffitCompanyBrand(): string {
   return slug.charAt(0).toUpperCase() + slug.slice(1)
 }
 
+function joinPosting(): { title: string; company: string } | null {
+  if (!/(^|\.)join\.com$/i.test(location.hostname)) return null
+  const slug = location.pathname.match(/\/companies\/([^/]+)/i)?.[1]
+  if (!slug) return null
+  const companyPath = `/companies/${slug}`.toLowerCase()
+  let company = ""
+  let title = ""
+  for (const link of document.querySelectorAll("a[href]")) {
+    if (link.closest("[id^='jobright'], plasmo-csui")) continue
+    let path = ""
+    try {
+      path = new URL((link as HTMLAnchorElement).href, location.origin).pathname.replace(/\/+$/, "").toLowerCase()
+    } catch {
+      continue
+    }
+    const text = cleanText(link.textContent)
+    if (!text || /[{}]/.test(text) || text.length > 160) continue
+    if (path === companyPath) {
+      if (!company || /gmbh|inc\.|ltd|llc|\bag\b/i.test(text)) company = text
+      continue
+    }
+    if (!title && path.startsWith(`${companyPath}/`) && !/\/apply(?:\/|$)/i.test(path)) {
+      title = text
+    }
+  }
+  if (!title) {
+    const parts = cleanText(document.title).split(":")
+    if (parts.length > 1) title = cleanText(parts.slice(1).join(":"))
+  }
+  if (!company) {
+    const desc = document.querySelector('meta[name="description"]')?.getAttribute("content") || ""
+    const named = desc.match(/^(.+?) has (?:a|an) /i)
+    if (named) company = cleanText(named[1])
+  }
+  if (!company && !title) return null
+  return { title, company }
+}
+
 function scrapeTitle(): string {
+  const join = joinPosting()
+  if (join?.title) return join.title
   const traffitBrand = traffitCompanyBrand().toLowerCase()
   if (traffitBrand) {
     for (const el of document.querySelectorAll<HTMLElement>("h1, h2")) {
@@ -180,6 +220,8 @@ function usableCompany(name: string, title: string): boolean {
 }
 
 function scrapeCompany(title: string): string {
+  const join = joinPosting()
+  if (join && usableCompany(join.company, title)) return join.company
   const traffitBrand = traffitCompanyBrand()
   if (usableCompany(traffitBrand, title)) return traffitBrand
   const page = postingDocument()
@@ -323,18 +365,30 @@ export function cacheApplicationOnAutofill(job?: {
   return meta
 }
 
-function showToast(message: string) {
+function showToast(message: string, action?: { label: string; url: string }) {
   if (!document.body) return
   const host = document.createElement("div")
   host.style.cssText = "all: initial; position: fixed; z-index: 2147483647; right: 16px; bottom: 16px;"
   const shadow = host.attachShadow({ mode: "closed" })
   const toast = document.createElement("div")
-  toast.textContent = message
   toast.style.cssText =
-    "font: 500 13px/18px Inter, -apple-system, sans-serif; color: #fff; background: #111827; padding: 10px 14px; border-radius: 10px; box-shadow: 0 6px 24px rgba(0,0,0,.2);"
+    "max-width: 340px; font: 500 13px/18px Inter, -apple-system, sans-serif; color: #fff; background: #111827; padding: 10px 14px; border-radius: 10px; box-shadow: 0 6px 24px rgba(0,0,0,.2);"
+  const text = document.createElement("div")
+  text.textContent = message
+  toast.appendChild(text)
+  if (action) {
+    const link = document.createElement("a")
+    link.textContent = action.label
+    link.href = action.url
+    link.target = "_blank"
+    link.rel = "noopener noreferrer"
+    link.style.cssText =
+      "display: inline-block; margin-top: 6px; color: #6ee7b7; font-weight: 600; text-decoration: underline;"
+    toast.appendChild(link)
+  }
   shadow.appendChild(toast)
   document.body.appendChild(host)
-  window.setTimeout(() => host.remove(), 4000)
+  window.setTimeout(() => host.remove(), action ? 9000 : 4000)
 }
 
 async function confirmSubmission() {
@@ -345,6 +399,17 @@ async function confirmSubmission() {
         name: "confirmApplicationLog",
         body: scrapeApplicationMeta(),
       })
+      if (result?.ok && result.sheetNotConnected) {
+        if (result.showConnectHint && result.connectUrl) {
+          showToast("Applied ✓ Saved to Qyvarex. Connect Google Sheets to also keep your own log.", {
+            label: "Connect Google Sheets",
+            url: result.connectUrl
+          })
+        } else {
+          showToast("Applied ✓ Saved to Qyvarex")
+        }
+        return
+      }
       if (result?.ok && !result.duplicate) {
         showToast(`Logged to Google Sheet${result.tabName ? ` (${result.tabName})` : ""}`)
         return
@@ -352,6 +417,13 @@ async function confirmSubmission() {
       if (result?.ok) return
       lastMessage = result?.message || ""
       if (lastMessage === "not_armed") return
+      if (result?.sheetNotConnected) {
+        showToast(
+          lastMessage || "Connect Google Sheets in Qyvarex to log your applications.",
+          result.connectUrl ? { label: "Connect Google Sheets", url: result.connectUrl } : undefined
+        )
+        return
+      }
     } catch (error) {
       const message = error instanceof Error ? error.message : String(error)
       if (/extension context invalidated|receiving end does not exist/i.test(message)) {

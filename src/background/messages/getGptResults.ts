@@ -59,6 +59,16 @@ const handler: PlasmoMessaging.MessageHandler = async (req, res) => {
       data: result
     })
   } catch (err) {
+    if (err instanceof Error && err.message === "plan_limit") {
+      res.send({
+        ok: false,
+        data: {
+          HTTP_STATUS: 402
+        },
+        message: "plan_limit"
+      })
+      return
+    }
     console.error("[getGptResults] local resolve failed", err)
     res.send({
       ok: false,
@@ -123,13 +133,19 @@ async function fillNarrativeFields(
           "If the resume does not name the topic, write a direct practical answer from the candidate's listed work. Do not invent employers, degrees, dates, or tools."
         ]
       })
-      if (!generated.ok || !generated.answer?.trim()) continue
+      if (!generated.ok || !generated.answer?.trim()) {
+        if (generated.error === "plan_limit" || generated.status === 402) {
+          throw new Error("plan_limit")
+        }
+        continue
+      }
       const answer = withoutResumeDisclaimer(generated.answer)
       if (!answer) continue
       const existing = fillDataList.find((row) => row.name === label)
       if (existing) existing.value = answer
       else fillDataList.push({ name: label, value: answer })
     } catch (error) {
+      if (error instanceof Error && error.message === "plan_limit") throw error
       console.warn("[getGptResults] narrative field skipped", label, error)
     }
   }
@@ -336,7 +352,12 @@ async function fillUnansweredFromResume(
         "Keep each answer to a single short line."
       ]
     })
-    if (!generated.ok || !generated.answer?.trim()) return
+    if (!generated.ok || !generated.answer?.trim()) {
+      if (generated.error === "plan_limit" || generated.status === 402) {
+        throw new Error("plan_limit")
+      }
+      return
+    }
     const answers = parseNumberedAnswers(generated.answer, pending.length)
     pending.forEach((el, index) => {
       const label = String(el.label).trim()
@@ -351,6 +372,7 @@ async function fillUnansweredFromResume(
       else fillDataList.push({ name: label, value })
     })
   } catch (error) {
+    if (error instanceof Error && error.message === "plan_limit") throw error
     console.warn("[getGptResults] resume answers skipped", error)
   }
 }

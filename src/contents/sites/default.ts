@@ -10,7 +10,7 @@ import * as answerMethods from "../methods/answer.ts"
 import * as dom from "../methods/dom.ts"
 import * as operations from "./default/operations.ts"
 import * as rules from "./default/rules.ts"
-import { englishFieldLabel } from "../../utils/fieldLabel.js"
+import { joinQuestionForPath } from "../../lib/join-steps.ts"
 import { armSubmittedApplication } from "../shared/application-log-watcher.ts"
 
 export class DefaultFiller extends BaseFiller {
@@ -94,8 +94,12 @@ export class DefaultFiller extends BaseFiller {
       return super.doFillForm(forceRefetch)
     }
     await this.initializeFillForm()
+    for (let back = 0; back < 16; back += 1) {
+      const rewound = await operations.clickJoinBack()
+      if (!rewound) break
+    }
     const seen = new Set()
-    for (let step = 0; step < 8; step += 1) {
+    for (let step = 0; step < 16; step += 1) {
       const path = `${location.pathname}|${operations.joinHeading()}`
       if (seen.has(path)) break
       seen.add(path)
@@ -225,27 +229,52 @@ export class DefaultFiller extends BaseFiller {
   }
 
   async fillJoinQuestion(forceRefetch) {
-    const heading = operations.joinHeading()
-    const shown = englishFieldLabel(heading) || heading
+    const catalog = joinQuestionForPath()
+    const heading = catalog?.question || operations.joinHeading()
+    const shown = heading
     const rules = await this.extractFormRules()
     if (shown) {
       for (const rule of rules) {
         if (operations.isWeakJoinLabel(rule.label) || rule.label === heading) rule.label = shown
-        if (operations.joinStepKind() === "salary") rule.required = true
+        if (catalog?.required || operations.joinStepKind() === "salary") rule.required = true
+        if (catalog?.options?.length && !(rule.options || []).length) rule.options = catalog.options
       }
     }
+    const choiceOptions = catalog?.options?.length
+      ? catalog.options
+      : catalog?.type === "BOOLEAN"
+        ? ["Ja", "Nein"]
+        : []
+    const choices = /BOOLEAN|CHOICE/i.test(catalog?.type || "")
+      ? operations.findJoinChoiceButtons(choiceOptions)
+      : []
     const input = operations.findJoinAnswerInput()
-    if (shown && input && !rules.some((rule) => rule.$input === input)) {
+    if (shown && choices.length && !rules.some((rule) => (rule.$radios || []).length)) {
+      rules.push({
+        type: enums.FIELD_TYPE.RADIOGROUP,
+        label: shown,
+        required: catalog ? catalog.required : true,
+        options: choices.map((element) => String(element.innerText || "").replace(/\s+/g, " ").trim()),
+        $radios: choices,
+      })
+    } else if (shown && input && !rules.some((rule) => rule.$input === input)) {
       rules.push({
         type: enums.FIELD_TYPE.TEXT,
         label: shown,
-        required: true,
+        required: catalog ? catalog.required : true,
+        options: catalog?.options || [],
         $input: input,
       })
     }
     if (!rules.length) return
     const prepared = this.prepareCoverLetterRules(rules)
-    this.progressTracker.setFieldsRequiredStatus(prepared)
+    for (const rule of prepared) {
+      if (rule.required === false) continue
+      this.progressTracker.updateFieldRequiredStatus({
+        label: rule.label,
+        required: true,
+      })
+    }
     const answers = await this.fetchFormAnswers(prepared, forceRefetch)
     if (typeof answers === "string") return
     try {
@@ -253,13 +282,18 @@ export class DefaultFiller extends BaseFiller {
     } catch (error) {
       console.warn("[qyvarex] join question", error)
     }
-    if (operations.joinStepKind() !== "salary") return
+    const numeric =
+      catalog?.type === "INTEGER" ||
+      String(operations.findJoinAnswerInput()?.getAttribute("type") || "").toLowerCase() === "number" ||
+      operations.joinStepKind() === "salary"
+    if (!numeric) return
     const salaryInput = operations.findJoinAnswerInput()
     if (!salaryInput || String(salaryInput.value || "").trim()) return
     const record = this.answer?.regular || {}
     const raw = String(record[shown] || record[heading] || Object.values(record)[0] || "")
     const digits = raw.replace(/[^\d]/g, "")
-    await operations.fillTextField(salaryInput, digits || "60000")
+    if (!digits) return
+    await operations.fillTextField(salaryInput, digits)
   }
 
   async getAutofillSnapshot(formRules) {

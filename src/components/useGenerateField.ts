@@ -17,6 +17,7 @@ import {
   resolveEditWithAiCoverLetterSeedId,
 } from "../store/cover-letter-state.ts"
 import { useResumeStore } from "../store/resume.ts"
+import { useProfileStore } from "../store/profile.ts"
 import { useUrlStore } from "../store/url.ts"
 import { extractJobIdFromUrl } from "../utils/job-id.ts"
 import { isCoverLetterTextarea } from "./fieldFilter.ts"
@@ -93,6 +94,9 @@ export function useGenerateField() {
         })
 
         if (response?.error?.HTTP_STATUS) {
+          if (Number(response.error.HTTP_STATUS) === 402) {
+            useProfileStore.getState().setShowOutofCredit(true)
+          }
           throw Error(String(response.error.HTTP_STATUS))
         }
 
@@ -142,6 +146,9 @@ export function useGenerateField() {
         })
 
         if (response?.data?.HTTP_STATUS) {
+          if (Number(response.data.HTTP_STATUS) === 402) {
+            useProfileStore.getState().setShowOutofCredit(true)
+          }
           throw Error(response.data.HTTP_STATUS)
         }
 

@@ -12,6 +12,11 @@ import * as arrDownSvg from "../assets/inline/images/arr_down.svg.js"
 import * as editSvg from "../assets/inline/images/edit.svg.js"
 import * as accountFlow from "../contents/pre-autofill-flow/account-flow.ts"
 import { useManualFieldSync } from "../hooks/useManualFieldSync.ts"
+import {
+  isJoinPage,
+  joinResumeHref,
+  rememberJoinQuestions,
+} from "../lib/join-steps.ts"
 import { useAutofillResultStore } from "../store/autofillResult.ts"
 import { useProfileStore } from "../store/profile.ts"
 import { useResumeStore } from "../store/resume.ts"
@@ -372,6 +377,64 @@ export default function FillProgress({
     const frame = requestAnimationFrame(() => setIsOpenAnimated(true))
     return () => cancelAnimationFrame(frame)
   }, [isOpen])
+
+  useEffect(() => {
+    let url: URL
+    try {
+      url = new URL(window.location.href)
+    } catch {
+      return
+    }
+    if (!isJoinPage(url)) return
+    const publish = () => {
+      const questions = rememberJoinQuestions()
+      if (useAutofillResultStore.getState().isFilling) return
+      const required = questions.filter((question) => question.required)
+      const resume = joinResumeHref()
+      if (!required.length && !resume) return
+      useAutofillResultStore.setState((state) => {
+        const current = state.autoFillResult
+        const existing = current?.fieldRequiredStatus || []
+        const keys = new Set(existing.map((step) => normalizeFieldLabel(step?.label)))
+        const additions = []
+        if (resume && !keys.has(normalizeFieldLabel("Resume/CV"))) {
+          additions.push({ label: "Resume/CV", required: true })
+        }
+        for (const question of required) {
+          if (!keys.has(normalizeFieldLabel(question.question))) {
+            additions.push({ label: question.question, required: true })
+          }
+        }
+        if (!additions.length) return state
+        const filled = new Set(
+          (current?.filledFields || []).map((label) => normalizeFieldLabel(label)),
+        )
+        const missingFields = [...(current?.missingFields || [])]
+        const missingKeys = new Set(missingFields.map((label) => normalizeFieldLabel(label)))
+        for (const item of additions) {
+          const key = normalizeFieldLabel(item.label)
+          if (!filled.has(key) && !missingKeys.has(key)) missingFields.push(item.label)
+        }
+        return {
+          autoFillResult: {
+            filledFields: [],
+            missingFields: [],
+            fieldRequiredStatus: [],
+            ...(current || {}),
+            fieldRequiredStatus: [...existing, ...additions],
+            missingFields,
+          },
+        }
+      })
+    }
+    publish()
+    const timer = window.setInterval(publish, 1000)
+    window.addEventListener("popstate", publish)
+    return () => {
+      window.clearInterval(timer)
+      window.removeEventListener("popstate", publish)
+    }
+  }, [])
 
   useManualFieldSync(
     !isFilling && hasVisibleResult && fillingMode !== "signup_autofill_flow",

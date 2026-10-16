@@ -539,6 +539,25 @@ export function findJoinAnswerInput() {
   })
 }
 
+/** Buttons or radios whose text is one of the question's choices. */
+export function findJoinChoiceButtons(options = []) {
+  const wanted = options.map((option) => String(option).trim().toLowerCase()).filter(Boolean)
+  const nodes = [...document.querySelectorAll("button, [role='radio'], [role='option'], label")]
+    .filter((element) => outsideExtension(element) && isControlVisible(element))
+  if (!wanted.length) {
+    return nodes.filter((element) => /^(ja|nein|yes|no)$/i.test(controlText(element).trim()))
+  }
+  const matched = []
+  for (const option of wanted) {
+    const hit = nodes.find((element) => {
+      if (matched.includes(element)) return false
+      return controlText(element).trim().toLowerCase() === option
+    })
+    if (hit) matched.push(hit)
+  }
+  return matched
+}
+
 function isControlVisible(element) {
   const style = window.getComputedStyle(element)
   if (style.display === "none" || style.visibility === "hidden") return false
@@ -1023,6 +1042,27 @@ export async function clickJoinApply() {
   return true
 }
 
+function joinBackButton() {
+  return [...document.querySelectorAll("button")].find((element) => {
+    if (!outsideExtension(element) || !isControlVisible(element)) return false
+    return /^(zurück|back)\b/i.test(controlText(element))
+  })
+}
+
+/** Walk back one Join wizard step so autofill can start at the first page. */
+export async function clickJoinBack() {
+  const button = joinBackButton()
+  if (!button) return false
+  const before = `${location.pathname}|${joinHeading()}`
+  press(button)
+  const waitStarted = Date.now()
+  while (Date.now() - waitStarted < 8000) {
+    if (`${location.pathname}|${joinHeading()}` !== before && joinHeading()) return true
+    await sleep(200)
+  }
+  return false
+}
+
 /** Move to the next Join wizard step. Never clicks the final apply button. */
 export async function clickJoinNext() {
   const started = Date.now()
@@ -1138,10 +1178,23 @@ export async function fillRadioField(rule, value) {
   return pressed || radio.checked === true || radio.getAttribute?.("aria-checked") === "true"
 }
 
+function yesNoChoiceIndex(options, answer) {
+  const text = String(answer || "").trim().toLowerCase()
+  const yes = /^(yes|ja|true|oui|si|sí)$/.test(text)
+  const no = /^(no|nein|false|non)$/.test(text)
+  if (!yes && !no) return -1
+  return options.findIndex((option) => {
+    const value = String(option || "").trim().toLowerCase()
+    return yes ? /^(yes|ja|true|oui|si|sí)$/.test(value) : /^(no|nein|false|non)$/.test(value)
+  })
+}
+
 function fallbackRadioIndex(rule, wanted) {
   const options = (rule?.options || []).map((text) => String(text || ""))
   const label = String(rule?.label || "").toLowerCase()
   const answer = String(wanted || "").toLowerCase()
+  const yesNo = yesNoChoiceIndex(options, answer)
+  if (yesNo >= 0) return yesNo
   if (/availab|start a new position|earliest available/.test(label)) {
     const immediately = options.findIndex((text) => /^immediately$/i.test(text))
     if (immediately >= 0) return immediately

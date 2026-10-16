@@ -3,7 +3,7 @@
  * Out-of-credit upsell modal.
  */
 
-import { Fragment, jsx, jsxs } from "react/jsx-runtime"
+import { jsx, jsxs } from "react/jsx-runtime"
 import { Button, Flex, Modal } from "antd"
 import * as turboPng from "../../assets/inline/images/turbo.png.js"
 import { HOST_DOMAIN } from "../../api/env-resolver.ts"
@@ -26,7 +26,6 @@ export default function OutofCreditModal() {
   const showOutofCreditFrom = useProfileStore(
     (state) => state.showOutofCreditFrom,
   )
-  const creditFeed = useProfileStore((state) => state.creditFeed)
 
   return jsxs(Modal, {
     open: showOutofCredit,
@@ -47,23 +46,7 @@ export default function OutofCreditModal() {
       }),
       jsx("div", {
         children:
-          showOutofCreditFrom === "tooltip"
-            ? jsxs(Fragment, {
-                children: [
-                  "Your credits refill to ",
-                  creditFeed?.dailyFill?.autofill,
-                  " every day. Upgrade to Turbo for unlimited use.",
-                ],
-              })
-            : jsxs(Fragment, {
-                children: [
-                  "You have ",
-                  jsx("strong", { children: "0" }),
-                  " remaining Autofill credits. Your credits will be refilled up to ",
-                  creditFeed?.dailyFill?.autofill,
-                  " tomorrow. Upgrade to Turbo for unlimited use.",
-                ],
-              }),
+          "This workspace has used its AI answers for the month. Upgrade the plan to keep filling; you can pay by card or with your Qyvarex balance.",
       }),
       jsxs(Flex, {
         justify: "space-between",

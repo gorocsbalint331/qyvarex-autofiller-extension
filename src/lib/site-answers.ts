@@ -16,6 +16,13 @@ export function jobsiteScopeKey(hostname: string) {
   return host ? `${host}|site` : ""
 }
 
+/** Shared answers stored here are used on every job site. */
+export const ALL_WEBSITES_SCOPE = "*|site"
+
+function isAllWebsitesScope(scopeKey: string) {
+  return (scopeKey.split("|")[0] || "") === "*"
+}
+
 function stringMap(value: unknown): Record<string, string> {
   if (!value || typeof value !== "object" || Array.isArray(value)) return {}
   const out: Record<string, string> = {}
@@ -37,17 +44,22 @@ export function siteAnswersForHost(
 
   const stepScoped: Record<string, string> = {}
   let siteWide: Record<string, string> = {}
+  let everyWebsite: Record<string, string> = {}
   for (const [scopeKey, map] of Object.entries(raw as Record<string, unknown>)) {
+    const answers = stringMap(map)
+    if (isAllWebsitesScope(scopeKey)) {
+      everyWebsite = { ...everyWebsite, ...answers }
+      continue
+    }
     const scopeHost = jobsiteHostname(scopeKey.split("|")[0] || "")
     if (scopeHost !== host) continue
-    const answers = stringMap(map)
     if (scopeKey === host || scopeKey.endsWith("|site")) {
       siteWide = { ...siteWide, ...answers }
     } else {
       Object.assign(stepScoped, answers)
     }
   }
-  return { ...stepScoped, ...siteWide }
+  return { ...everyWebsite, ...stepScoped, ...siteWide }
 }
 
 export function applySiteAnswers<

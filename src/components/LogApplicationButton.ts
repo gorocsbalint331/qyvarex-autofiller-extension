@@ -159,6 +159,7 @@ export default function LogApplicationButton({
   const [draft, setDraft] = useState(() => detectedDraft(currentTabJob, resumeName, profileCountry))
   const [status, setStatus] = useState("idle")
   const [detail, setDetail] = useState("")
+  const [connectUrl, setConnectUrl] = useState("")
   const edited = useRef(false)
   const seenHref = useRef("")
 
@@ -229,6 +230,7 @@ export default function LogApplicationButton({
     const force = status === "duplicate"
     setStatus("logging")
     setDetail("")
+    setConnectUrl("")
     try {
       const response = await sendToBackground({
         name: "logApplication",
@@ -246,9 +248,13 @@ export default function LogApplicationButton({
           appliedDate: clean(draft.appliedDate),
         },
       })
+      if (response?.sheetNotConnected) setConnectUrl(response.connectUrl || "")
       if (!response?.ok) {
         setStatus("error")
         setDetail(response?.message || "Could not log")
+      } else if (response.sheetNotConnected) {
+        setStatus("logged")
+        setDetail("Saved to Qyvarex. Connect Google Sheets to also add it to your own sheet.")
       } else if (response.duplicate) {
         setStatus("duplicate")
         setDetail("Already logged today")
@@ -453,6 +459,19 @@ export default function LogApplicationButton({
                       color: status === "error" ? "#b91c1c" : "#0b6e4f",
                     },
                     children: detail,
+                  })
+                : null,
+              connectUrl
+                ? jsx("a", {
+                    href: connectUrl,
+                    target: "_blank",
+                    rel: "noopener noreferrer",
+                    style: {
+                      font: "600 13px/18px Inter, -apple-system, sans-serif",
+                      color: "#0b6e4f",
+                      textDecoration: "underline",
+                    },
+                    children: "Connect Google Sheets",
                   })
                 : null,
             ],

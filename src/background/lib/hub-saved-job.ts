@@ -29,7 +29,7 @@ export async function toJobBannerDetail(job: SavedJob) {
       publishTimeDesc: "",
       applyLink: job.url,
       originalUrl: job.url,
-      detailsUrl: `${siteUrl.replace(/\/+$/, "")}/dashboard/jobs`
+      detailsUrl: `${siteUrl.replace(/\/+$/, "")}/dashboard/jobs?tab=saved`
     },
     companyResult: {
       companyName: job.company,

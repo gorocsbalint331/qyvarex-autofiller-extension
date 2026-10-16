@@ -43,11 +43,13 @@ const handler: PlasmoMessaging.MessageHandler = async (req, res) => {
 
     if (!result.ok || !result.answer) {
       const status =
-        result.status === 401 || result.status === 403
-          ? 403
-          : result.status === 503
-            ? 503
-            : 500
+        result.error === "plan_limit" || result.status === 402
+          ? 402
+          : result.status === 401 || result.status === 403
+            ? 403
+            : result.status === 503
+              ? 503
+              : 500
       res.send({ data: { HTTP_STATUS: status } })
       return
     }

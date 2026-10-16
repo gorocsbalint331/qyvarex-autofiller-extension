@@ -61,9 +61,9 @@ export default function PaymentEntry() {
   function bannerCopy() {
     return isStudentPricing
       ? autofillConfig?.autofillStuBannerCopyResolved ||
-          "Turbo for Students: Get Hired Faster!"
+          "Upgrade your Qyvarex plan: Get Hired Faster"
       : autofillConfig?.autofillBannerCopyResolved ||
-          "Upgrade to Turbo: Get Hired Faster"
+          "Upgrade your Qyvarex plan: Get Hired Faster"
   }
 
   const quarterlyPlan = isStudentPricing

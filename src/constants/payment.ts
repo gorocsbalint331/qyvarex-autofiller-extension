@@ -3,8 +3,7 @@
  * Membership / subscription payment constants.
  */
 
-export const MEMBERSHIP_RETARGET_PATH =
-  "/jobs/recommend?retarget=membership&src=autofill"
+export const MEMBERSHIP_RETARGET_PATH = "/dashboard/billing"
 
 export enum SUBSCRIPTION_STATUS {
   INCOMPLETE = 1,

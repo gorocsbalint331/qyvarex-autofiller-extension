@@ -6,6 +6,7 @@
 import { isEightfoldCareerHubJobPath } from "../sites/eightfold/careerhub/route.js"
 import { PINPOINTHQ_CAREERS_CDN } from "../../core/supported-sites.ts"
 import { pageLooksLikeNewJobSite } from "../sites/default/detect.ts"
+import { isJoinPage } from "../../lib/join-steps.ts"
 import { isJustJoinOfferPage } from "../sites/justjoin/detect.ts"
 import { isTestedRecruitsPosting } from "../sites/testedrecruits/detect.ts"
 import { isTraffitFormPage } from "../sites/traffit/detect.ts"
@@ -255,6 +256,7 @@ export function getTargetName() {
   if (url.searchParams.get("gh_src") || url.searchParams.get("gh_jid")) {
     return "greenhouse"
   }
+  if (isJoinPage(url)) return "join"
   if (isJustJoinOfferPage(url)) return "justjoin"
   if (isTestedRecruitsPosting(url)) return "testedrecruits"
   if (isTraffitFormPage(url)) return "traffit"

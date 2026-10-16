@@ -200,11 +200,11 @@ export const useProfileStore = zustand.create((set, get) => ({
             autofillBannerCopyResolved:
               autofillBannerCopy?.[bannerExperiment] ??
               autofillBannerCopy?.off ??
-              "Upgrade to Turbo: Get Hired Faster",
+              "Upgrade your Qyvarex plan: Get Hired Faster",
             autofillStuBannerCopyResolved:
               autofillStuBannerCopy?.[stuBannerExperiment] ??
               autofillStuBannerCopy?.off ??
-              "Turbo for Students: Get Hired Faster!",
+              "Upgrade your Qyvarex plan: Get Hired Faster",
           }
         set({
           creditsLeft: creditsLeftResponse ?? null,

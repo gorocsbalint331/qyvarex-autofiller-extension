@@ -6,6 +6,8 @@
 
 import { sendToBackground } from "@plasmohq/messaging"
 
+import { getTargetName } from "~contents/crawler/target"
+import { getRuntimeActivationReason } from "~contents/shared/runtime-activation"
 import { jobsiteHostname, jobsiteScopeKey } from "~lib/site-answers"
 
 const IDENTITY_RE =
@@ -13,6 +15,10 @@ const IDENTITY_RE =
 const SKIP_CHOICE_RE =
   /^(submit(\s+(application|applicant|now))?|apply(\s+now)?|send(\s+application)?|replace|upload|cancel|back|next|save(\s+and\s+continue)?|continue|dismiss|fill again|ok)$/i
 const PLACEHOLDER_RE = /^(select|choose|please select|search|type to search|--|n\/a)$/i
+const PAYMENT_RE =
+  /\b(cvc|cvv|csc|security code|card number|credit card|debit card|cardholder|expiry|expiration)\b/i
+const PAYMENT_HOST_RE =
+  /(^|\.)(stripe\.com|paypal\.com|paypalobjects\.com|braintreegateway\.com|adyen\.com|checkout\.com)$/i
 const CHOICE_SELECTOR =
   'button, [role="button"], [role="radio"], input[type="radio"]'
 const UI_SELECTOR =
@@ -110,10 +116,57 @@ function choiceControls(root: Element) {
 function learnable(question: string, answer: string) {
   if (question.length < 8 || question.length > 500) return false
   if (!answer || answer.length > 2000) return false
-  if (IDENTITY_RE.test(question)) return false
+  if (IDENTITY_RE.test(question) || PAYMENT_RE.test(question)) return false
   if (SKIP_CHOICE_RE.test(answer) || PLACEHOLDER_RE.test(answer)) return false
   if (/^yesno$/i.test(answer.replace(/\s+/g, ""))) return false
   return true
+}
+
+function isPaymentControl(el: Element) {
+  const hint = [
+    el.getAttribute("autocomplete"),
+    el.getAttribute("name"),
+    el.getAttribute("id"),
+    el.getAttribute("aria-label"),
+    el.getAttribute("placeholder"),
+  ].join(" ")
+  return /\bcc-(?:number|csc|exp|name)\b/i.test(hint) || PAYMENT_RE.test(hint)
+}
+
+const JOB_APPLICATION_REASONS = new Set([
+  "supported_top_url",
+  "supported_frame_url",
+  "supported_query_param",
+  "linkedin_domain",
+])
+
+let jobPageHref = ""
+let jobPage = false
+
+/** True only on a job application surface, not on checkout or other sites. */
+function onJobApplicationPage() {
+  if (PAYMENT_HOST_RE.test(location.hostname)) return false
+  if (location.href === jobPageHref) return jobPage
+  jobPageHref = location.href
+  jobPage = false
+  try {
+    const reason = getRuntimeActivationReason({
+      href: location.href,
+      isTopFrame: window.top === window.self,
+      iframeUrls: [],
+      pageSourceUrls: [],
+    })
+    if (JOB_APPLICATION_REASONS.has(reason)) {
+      jobPage = true
+      return true
+    }
+    const target = getTargetName()
+    if (target === "join") jobPage = /\/apply(?:\/|$)/i.test(location.pathname)
+    else jobPage = target === "justjoin" || target === "traffit" || target === "testedrecruits"
+  } catch {
+    jobPage = false
+  }
+  return jobPage
 }
 
 function showToast(message: string) {
@@ -158,8 +211,7 @@ function placeSavePrompt(host: HTMLElement, panel: HTMLElement) {
 function askWhereToSave(
   hostname: string,
   question: string,
-  answer: string,
-  profileLabel: string
+  answer: string
 ): Promise<SaveTarget | null> {
   return new Promise((resolve) => {
     const slot = sidebarSlot()
@@ -192,14 +244,14 @@ function askWhereToSave(
     qa.textContent = `${question}: ${answer}`
     const row = document.createElement("div")
     row.className = "row"
-    const profileBtn = document.createElement("button")
-    profileBtn.className = "primary"
-    profileBtn.type = "button"
-    profileBtn.textContent = `Selected profile${profileLabel ? `: ${profileLabel}` : ""}`
+    const websiteBtn = document.createElement("button")
+    websiteBtn.className = "primary"
+    websiteBtn.type = "button"
+    websiteBtn.textContent = `Selected website: ${hostname}`
     const sharedBtn = document.createElement("button")
     sharedBtn.className = "shared"
     sharedBtn.type = "button"
-    sharedBtn.textContent = "Shared answers for every profile"
+    sharedBtn.textContent = "Shared answers for every website"
     const skip = document.createElement("button")
     skip.className = "skip"
     skip.type = "button"
@@ -215,10 +267,10 @@ function askWhereToSave(
       host.remove()
       resolve(choice)
     }
-    profileBtn.addEventListener("click", () => finish("profile"))
+    websiteBtn.addEventListener("click", () => finish("profile"))
     sharedBtn.addEventListener("click", () => finish("shared"))
     skip.addEventListener("click", () => finish(null))
-    row.append(profileBtn, sharedBtn, skip)
+    row.append(websiteBtn, sharedBtn, skip)
     card.append(title, hint, qa, row)
     shadow.append(style, card)
     if (slot) window.addEventListener("resize", onLayout)
@@ -226,23 +278,8 @@ function askWhereToSave(
   })
 }
 
-async function selectedProfileLabel() {
-  try {
-    const response = await sendToBackground<{
-      ok?: boolean
-      selectedProfileId?: string | null
-      profiles?: { id: string; label: string }[]
-    }>({ name: "teamProfiles" })
-    const selected = response?.profiles?.find(
-      (profile) => profile.id === response.selectedProfileId
-    )
-    return selected?.label || ""
-  } catch {
-    return ""
-  }
-}
-
 async function persist(question: string, answer: string) {
+  if (!onJobApplicationPage()) return
   const q = clean(question)
   const a = clean(answer)
   if (!learnable(q, a)) return
@@ -256,11 +293,20 @@ async function persist(question: string, answer: string) {
   const scopeKey = jobsiteScopeKey(hostname)
   if (!scopeKey) return
 
-  const destination = await askWhereToSave(hostname, q, a, await selectedProfileLabel())
+  const destination = await askWhereToSave(hostname, q, a)
   if (!destination) return
 
   try {
-    const response = await sendToBackground<{ ok?: boolean; message?: string }>({
+    const response = await sendToBackground<
+      {
+        answers: Record<string, string>
+        scopeKey: string
+        hostname: string
+        stepKey: string
+        destination: SaveTarget
+      },
+      { ok?: boolean; message?: string }
+    >({
       name: "learnAnswers",
       body: {
         answers: { [q]: a },
@@ -276,7 +322,7 @@ async function persist(question: string, answer: string) {
       return
     }
     console.info("[qyvarex] saved answer for job site", { hostname, question: q, answer: a, destination })
-    showToast(destination === "shared" ? `Saved for every profile on ${hostname}` : `Saved for ${hostname}`)
+    showToast(destination === "shared" ? "Saved for every website" : `Saved for ${hostname}`)
   } catch (error) {
     recent.delete(key)
     const message = error instanceof Error ? error.message : String(error)
@@ -328,7 +374,7 @@ function clickedChoice(target: Element): Element | null {
 function onClick(event: Event) {
   if (!event.isTrusted) return
   const target = event.target
-  if (!(target instanceof Element) || isExtensionUi(target)) return
+  if (!(target instanceof Element) || isExtensionUi(target) || isPaymentControl(target)) return
   const option = dropdownOption(target)
   if (option) {
     void persist(dropdownQuestion(option), optionText(option))
@@ -367,7 +413,7 @@ function valueFromControl(el: EventTarget | null) {
 function onChange(event: Event) {
   if (!event.isTrusted) return
   const el = event.target
-  if (!(el instanceof Element) || isExtensionUi(el)) return
+  if (!(el instanceof Element) || isExtensionUi(el) || isPaymentControl(el)) return
   if (el instanceof HTMLInputElement && el.type === "radio") {
     if (!el.checked) return
     const root = fieldRoot(el)

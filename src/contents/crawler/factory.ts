@@ -43,6 +43,7 @@ import { Jazzhr } from "../sites/jazzhr.ts"
 import { Jobdiva } from "../sites/jobdiva.ts"
 import { JobScore } from "../sites/JobScore.ts"
 import { Jobvite } from "../sites/jobvite.ts"
+import { Join } from "../sites/join.ts"
 import { JustJoin } from "../sites/justjoin.ts"
 import { Kula } from "../sites/kula.ts"
 import { Lever } from "../sites/lever.ts"
@@ -97,6 +98,7 @@ const TARGET_CLASS_MAP = {
   lever: Lever,
   ashbyhq: Ashby,
   jobvite: Jobvite,
+  join: Join,
   justjoin: JustJoin,
   kula: Kula,
   icims: Icims,

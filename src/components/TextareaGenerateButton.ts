@@ -110,14 +110,15 @@ function UpgradePopover({ onClose }) {
                 color: "#000",
               },
               children: [
-                "Upgrade to Turbo to",
+                "Upgrade your workspace plan to",
                 " ",
                 jsx("strong", {
                   style: {
                     fontWeight: 700,
                   },
-                  children: "autofill answers with AI",
+                  children: "keep autofilling answers with AI",
                 }),
+                ". Pay by card or with your Qyvarex balance.",
               ],
             }),
           ],
@@ -149,7 +150,7 @@ function UpgradePopover({ onClose }) {
           onMouseLeave: (event) => {
             event.currentTarget.style.background = "#57eba1"
           },
-          children: "Upgrade Now",
+          children: "Upgrade plan",
         }),
       ],
     }),

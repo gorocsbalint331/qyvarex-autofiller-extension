@@ -25,6 +25,11 @@ export type ApplicationLogResult = {
   duplicate?: boolean
   tabName?: string
   message?: string
+  /** Saved to Qyvarex, but the user has no Google Sheet connected yet. */
+  sheetNotConnected?: boolean
+  connectUrl?: string
+  /** At most once a day, so the reminder stays useful instead of noisy. */
+  showConnectHint?: boolean
 }
 
 const LOGGED_KEY = "qx-logged-applications"
@@ -34,6 +39,16 @@ const DRAFT_PREFIX = "qx-autofill-posting:"
 const DUPLICATE_WINDOW_MS = 24 * 60 * 60 * 1000
 const LOGGED_RETENTION_MS = 7 * 24 * 60 * 60 * 1000
 const PENDING_TTL_MS = 24 * 60 * 60 * 1000
+const SHEET_HINT_KEY = "qx-sheet-connect-hint-at"
+const SHEET_HINT_INTERVAL_MS = 24 * 60 * 60 * 1000
+
+async function takeConnectHint(): Promise<boolean> {
+  const stored = await chrome.storage.local.get(SHEET_HINT_KEY)
+  const last = Number(stored[SHEET_HINT_KEY]) || 0
+  if (Date.now() - last < SHEET_HINT_INTERVAL_MS) return false
+  await chrome.storage.local.set({ [SHEET_HINT_KEY]: Date.now() })
+  return true
+}
 
 /** Drop a confirmation suffix so the sheet stores the posting, not /thanks. */
 function postingLink(link: string): string {
@@ -179,10 +194,27 @@ async function writeApplication(
     appliedDate: (meta.appliedDate || "").trim() || localAppliedDate(),
     status: (meta.status || "").trim() || "applied"
   })
+  if (!result.ok && result.error === "sheet_not_connected" && result.recorded) {
+    await markLogged(key)
+    return {
+      ok: true,
+      sheetNotConnected: true,
+      connectUrl: result.connectUrl,
+      message: result.message,
+      showConnectHint: await takeConnectHint()
+    }
+  }
   if (!result.ok) {
-    return { ok: false, message: result.message || result.error, tabName: result.tabName }
+    return {
+      ok: false,
+      message: result.message || result.error,
+      tabName: result.tabName,
+      sheetNotConnected: result.error === "sheet_not_connected",
+      connectUrl: result.connectUrl
+    }
   }
   if (!result.duplicate) await markLogged(key)
+  void chrome.storage.local.remove(SHEET_HINT_KEY)
   return { ok: true, duplicate: result.duplicate === true, tabName: result.tabName }
 }
 

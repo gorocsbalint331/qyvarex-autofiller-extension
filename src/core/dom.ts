@@ -6,6 +6,7 @@
 import * as utils from "./utils.js";
 import * as xpath from "./xpath.js";
 import * as fieldLabel from "../utils/fieldLabel.ts";
+import { joinStepHref } from "../lib/join-steps.ts";
 
 export const ORACLE_CLOUD_FIELD_FOCUS_TOP_OFFSET = 96;
 export const LEVER_FIELD_FOCUS_TOP_OFFSET = 110;
@@ -594,7 +595,22 @@ function focusLabelOnPage(label) {
   return !!element && (scrollElementIntoView(element), true);
 }
 
+function openJoinStep(label) {
+  const href = joinStepHref(label);
+  if (!href || typeof location === "undefined") return false;
+  let next;
+  try {
+    next = new URL(href, location.origin);
+  } catch {
+    return false;
+  }
+  if (next.pathname === location.pathname) return false;
+  location.assign(next.href);
+  return true;
+}
+
 export function focusFieldByRuleLabel(label) {
+  if (openJoinStep(label)) return
   if (focusLabelOnPage(label)) {
     utils.focusIframeLabel(label)
     return

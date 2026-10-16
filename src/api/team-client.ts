@@ -439,7 +439,15 @@ export async function logApplication(row: {
   other?: string
   appliedDate?: string
   tabName?: string
-}): Promise<{ ok: boolean; error?: string; message?: string; tabName?: string; duplicate?: boolean }> {
+}): Promise<{
+  ok: boolean
+  error?: string
+  message?: string
+  tabName?: string
+  duplicate?: boolean
+  recorded?: boolean
+  connectUrl?: string
+}> {
   const settings = await getTeamSettings()
   const profileId = row.profileId || settings.selectedProfileId
   const { ok, data } = await teamFetch<{
@@ -448,6 +456,8 @@ export async function logApplication(row: {
     message?: string
     tabName?: string
     duplicate?: boolean
+    recorded?: boolean
+    connectUrl?: string
   }>("/api/v1/applications/log", {
     method: "POST",
     body: JSON.stringify({
@@ -461,7 +471,12 @@ export async function logApplication(row: {
       ok: false,
       error: data.error || "log_failed",
       message: data.message,
-      tabName: data.tabName
+      tabName: data.tabName,
+      recorded: data.recorded === true,
+      connectUrl:
+        data.error === "sheet_not_connected"
+          ? data.connectUrl || joinUrl(settings.siteUrl, "/dashboard/profiles")
+          : undefined
     }
   }
   return {
@@ -610,11 +625,11 @@ export async function regenerateAnswer(body: {
       profileId: body.profileId || settings.selectedProfileId || undefined
     })
   })
-  if (!ok || !data?.ok || !data.answer) {
+    if (!ok || !data?.ok || !data.answer) {
     return {
       ok: false,
       error: data?.error || "regenerate_failed",
-      status
+      status: data?.error === "plan_limit" ? 402 : status
     }
   }
   return {
@@ -679,7 +694,7 @@ export async function generateCoverLetter(body: {
     return {
       ok: false,
       error: data?.error || "cover_letter_failed",
-      status
+      status: data?.error === "plan_limit" ? 402 : status
     }
   }
   return { ok: true, data: payload }

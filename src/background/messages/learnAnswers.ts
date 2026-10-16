@@ -1,6 +1,7 @@
 import type { PlasmoMessaging } from "@plasmohq/messaging"
 
 import { mergeProfileAnswers, mergeSharedAnswers } from "~api/team-client"
+import { ALL_WEBSITES_SCOPE } from "~lib/site-answers"
 
 const NOISE_RE =
   /qyvarex|filled\s*\d*\s*items?|text fields? ok|no resume file input|fill\s*again|dismiss|button clicks sync|learning answers for next|saved to hub/i
@@ -54,16 +55,12 @@ const handler: PlasmoMessaging.MessageHandler = async (req, res) => {
 
     const destination = req.body?.destination === "shared" ? "shared" : "profile"
     if (destination === "shared") {
-      if (!scopeKey) {
-        res.send({ ok: false, message: "scope_required" })
-        return
-      }
-      const shared = await mergeSharedAnswers(cleaned, scopeKey)
+      const shared = await mergeSharedAnswers(cleaned, ALL_WEBSITES_SCOPE)
       if (!shared.ok) {
         res.send({ ok: false, message: shared.error || "save_failed" })
         return
       }
-      res.send({ ok: true, learned: cleaned, scopeKey, destination })
+      res.send({ ok: true, learned: cleaned, scopeKey: ALL_WEBSITES_SCOPE, destination })
       return
     }
 
